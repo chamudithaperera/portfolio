@@ -10,30 +10,26 @@ const dataBox = [
     {
         id: 1,
         img: img1,
-        title: 'Clients',
-        desc: 'Diverse clients benefiting from tailored solutions.',
-        count: '06'
+        title: 'Huge Collection',
+        desc: 'Oficia dese runt mollit anim id est labo met, consectetur adipis'
     },
     {
         id: 2,
         img: img2,
-        title: 'Experience',
-        desc: 'A track record of growth and mastery.',
-        count: '02+' 
+        title: 'High Quality',
+        desc: 'Oficia dese runt mollit anim id est labo met, consectetur adipis'
     },
     {
         id: 3,
         img: img3,
-        title: 'Projects',
-        desc: 'From simple designs to complex applications.',
-        count: '09'
+        title: 'Top Resource',
+        desc: 'Oficia dese runt mollit anim id est labo met, consectetur adipis'
     },
     {
         id: 4,
         img: img4,
-        title: 'Rate',
-        desc: 'A reflection of our commitment to excellence.',
-        count: '03'
+        title: 'Big Community',
+        desc: 'Oficia dese runt mollit anim id est labo met, consectetur adipis'
     },
 
 ]

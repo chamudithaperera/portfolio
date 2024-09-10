@@ -5,18 +5,18 @@ import dataPortfolio from '../assets/fake-data/data-portfolio';
 import dataRoadMap from '../assets/fake-data/data-roadmap';
 import dataTestimonials from '../assets/fake-data/data-testimonials';
 import dataProject from '../assets/fake-data/dataProject';
-// import dataTeam from '../assets/fake-data/dataTeam';
+import dataTeam from '../assets/fake-data/dataTeam';
 import About from '../components/about/About';
 import Banner from '../components/banner/Banner';
-// import Create from '../components/create/Create';
+import Create from '../components/create/Create';
 import Faqs from '../components/faqs/Faqs';
 import Footer from '../components/footer/Footer';
-//import Portfolio from '../components/portfolio/Portfolio';
+import Portfolio from '../components/portfolio/Portfolio';
 import Project from '../components/project/Project';
 import Roadmap from '../components/roadmap/Roadmap';
 import Speciality from '../components/speciality/Speciality';
-// import Team from '../components/team/Team';
-// import Testimonials from '../components/testimonials/Testimonials';
+import Team from '../components/team/Team';
+import Testimonials from '../components/testimonials/Testimonials';
 
 
 
@@ -31,19 +31,19 @@ function Home01(props) {
 
             <Speciality data={dataBox} />
 
-            {/* <Portfolio data={dataPortfolio} /> */}
+            <Portfolio data={dataPortfolio} />
 
             <Project data={dataProject} />
            
             <Roadmap  data={dataRoadMap} />
 
-            {/* <Team data={dataTeam} /> */}
+            <Team data={dataTeam} />
 
-            {/* <Testimonials data={dataTestimonials} /> */}
+            <Testimonials data={dataTestimonials} />
 
             <Faqs data={dataFaqs} />
 
-            {/* <Create /> */}
+            <Create />
 
             <Footer />
         </div>

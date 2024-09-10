@@ -18,8 +18,8 @@ function Project(props) {
 
     const [dataBlock] = useState(
         {
-            subheading: 'Our Projects',
-            heading: 'Our Projects',
+            subheading: 'Our Speciality',
+            heading: 'OUR COLLECTION',
             
         }
     )

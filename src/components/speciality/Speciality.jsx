@@ -8,9 +8,9 @@ function Speciality(props) {
 
     const [dataBlock] = useState(
         {
-            subheading: 'Our Achievements',
-            heading: 'Experience and Innovation in Action',
-            desc: 'Discover the impact of our work through key metrics that highlight our success' ,
+            subheading: 'Our Speciality',
+            heading: 'Complete Solutions for your NFT',
+            desc: 'Cyfonii is the premier marketplace for nifties, which are digital items you can truly own for yourself' ,
             
         }
     )
@@ -35,7 +35,7 @@ function Speciality(props) {
                                         </div>
                                         <h5 className="title">{idx.title}</h5>
                                         <p>{idx.desc}</p>
-                                        <h3 className="number">{idx.count}</h3>
+                                        <h3 className="number">0{idx.id}</h3>
                                     </div>
                                 </div>
                             ))

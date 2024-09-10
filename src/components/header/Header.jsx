@@ -83,7 +83,7 @@ const Header = () => {
                                         <path d="M16.0176 16.4849L19.5416 19.9997" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>                                    
                                 </Link>
-                                <Link to="/contact" className="action-btn"><span>Download CV</span></Link>
+                                <Link to="/contact" className="action-btn"><span>Join Now</span></Link>
                             </div>
                         </div>
                     </div>

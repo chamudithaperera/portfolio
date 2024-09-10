@@ -42,9 +42,9 @@ function About(props) {
     const [dataBlock] = useState(
         {
             subheading: 'About us',
-            heading: 'Welcome!',
-            desc1: 'I’m an Information Technology undergraduate at the University of Jaffna, Sri Lanka, with expertise in UI/UX design, web development, graphic design, Flutter app development, and project leadership. I’m passionate about blending creativity with functionality to craft engaging digital experiences.' ,
-            desc2 :'I’m committed to contributing to the tech community through collaboration, knowledge sharing, and innovative projects. Let’s connect and create something extraordinary together!'
+            heading: 'Hight Quality NFT Collections',
+            desc1: 'Cyfonii is the premier marketplace for nifties, which are digital items you can truly own for yourself' ,
+            desc2 :'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occae cat cupidatat non proident, sunt in culpa qui officia dese runt mollit anim id est laborum velit esse cillum dolore eu fugiat nulla pariatu epteur sint occaecat'
 
         }
     )

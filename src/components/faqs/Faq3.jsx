@@ -17,7 +17,7 @@ function Faq3(props) {
         {
             subheading: 'FAQs',
             heading: 'Frequently Aksed Questions',
-            desc:''
+            desc:'Below is a list of frequently asked questions and answers from partners and 3D artist. Please check this FAQ first before contacting us.'
             
         }
     )

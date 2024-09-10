@@ -77,7 +77,7 @@ function Footer2(props) {
                                         </div>
 
                                         <div className="bottom">
-                                            <p>Copyright © 2022, Cyfonii. Designed by ChamudithaPerera.DEV</p>
+                                            <p>Copyright © 2022, Cyfonii. Designed by Themesflat</p>
                                             <ul className="list">
                                                 <li><Link to="#">Terms & Condition</Link></li>
                                                 <li><Link to="#">Privacy Policy</Link></li>

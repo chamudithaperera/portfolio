@@ -31,14 +31,14 @@ function Partner(props) {
                                         slidesPerView: 6,
                                     },
                                 }}
-                                // loop={true}
+                                loop={true}
                                 
                                 
                             >
                                 {
                                     data.map(idx => (
                                         <SwiperSlide key={idx.id} >
-                                            <Link to="https://web99x.com/"><img src={idx.img} alt="Cyfonii" /></Link>
+                                            <Link to="#"><img src={idx.img} alt="Cyfonii" /></Link>
                                         </SwiperSlide>
                                     ))
                                 }

@@ -20,6 +20,18 @@
                 
             }
 
+            span.s1 {
+                &::after {
+                    content: '';
+                    width: 317.39px;
+                    height: 64.77px;
+                    position: absolute;
+                    bottom: -57px;
+                    left: -63px;
+
+                    background: url('../../assets/images/icon/Line.png') no-repeat;
+                }
+            }
         }
 
         .desc {

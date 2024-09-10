@@ -8,7 +8,7 @@ function Footer(props) {
 
     const [dataBlock] = useState(
         {
-            heading: 'Get Updates',
+            heading: 'Get Newsletter',
             desc: 'Get udpated with news, tips & tricks'
         }
     )
@@ -72,7 +72,7 @@ function Footer(props) {
                                         <li><Link to="/team">Team</Link></li>
                                         <li><Link to="/contact">Contact</Link></li>
                                     </ul>
-                                    <p>Copyright © 2022, Cyfonii. Designed by ChamudithaPerera.DEV</p>
+                                    <p>Copyright © 2022, Cyfonii. Designed by Themesflat</p>
                                 </div>
                                 <ul className="list-social">
                                     <li><Link to="#">
