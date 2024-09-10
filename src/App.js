@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <h1>
-        ChamXDev is Coming Soon!
+        ChamXdev is Coming Soon!
         </h1>
        
         <a
