@@ -12,25 +12,25 @@ function NavTop() {
           </div>
           <div className="col-md-4 valign">
             <div className="social text-center full-width">
-              <a href="#0">
-                <i className="fab fa-behance"></i>
-              </a>
-              <a href="#0">
-                <i className="fab fa-github"></i>
-              </a>
-              <a href="#0">
+              <a href="https://www.linkedin.com/in/chamudithaperera">
                 <i className="fab fa-linkedin-in"></i>
               </a>
-              <a href="#0">
-                <i className="fab fa-dribbble"></i>
+              <a href="https://github.com/chamudithaperera">
+                <i className="fab fa-github"></i>
+              </a>
+              <a href="https://www.facebook.com/chamuditha.kavishan.1">
+                <i className="fab fa-facebook"></i>
+              </a>
+              <a href="https://www.instagram.com/chamuditha_kavishan/">
+                <i className="fab fa-instagram"></i>
               </a>
             </div>
           </div>
           <div className="col-md-4 valign">
             <div className="full-width info">
               <div className="d-flex justify-content-end">
-                <a href="mailto:abc@example.com">
-                  <span className="sub-title fz-12">Gavi@website.com</span>
+                <a href="mailto:chamudithaperera.dev@gmail.com">
+                  <span className="sub-title fz-12">Drop an Email</span>
                 </a>
               </div>
             </div>
