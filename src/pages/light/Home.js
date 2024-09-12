@@ -20,7 +20,7 @@ function HomeLight() {
   return (
     <div>
       <Helmet>
-        <title>Gavi - Light</title>
+        <title>ChamXdev</title>
         <link rel="icon" href="/light/assets/imgs/favicon.ico" />
         <link rel="shortcut icon" href="/light/assets/imgs/favicon.ico" />
         <link
