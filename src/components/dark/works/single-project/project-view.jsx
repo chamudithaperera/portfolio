@@ -7,7 +7,7 @@ function ProjectView() {
         <div className="col-lg-11">
           <div className="img mb-80">
             <img
-              src="/assets/imgs/works/project/1.png"
+              src="/assets/imgs/works/project/smileMigrain.jpg"
               alt="Smile Migraine App UI Design"
               className="radius-5"
             />
@@ -114,7 +114,7 @@ function ProjectView() {
                     <span className="sub-title">
                       <i className="far fa-calendar-alt mr-10"></i> Date:
                     </span>
-                    <p>6, August 2022</p>
+                    <p>July 2024</p>
                   </li>
                   <li className="mb-30">
                     <span className="sub-title">
@@ -126,13 +126,13 @@ function ProjectView() {
                     <span className="sub-title">
                       <i className="far fa-user mr-10"></i> Client:
                     </span>
-                    <p>Australian Government</p>
+                    <p>Smile Migraine Foundation</p>
                   </li>
                   <li>
                     <span className="sub-title">
                       <i className="fas fa-globe mr-10"></i> Project URL:
                     </span>
-                    <p>Available on request</p>
+                    <p><a href='https://www.figma.com/design/MfxfXgU4zgHneD3nN7W6Pe/Smile_Migraine_Mobile?node-id=0-1&t=QKDKF2i5jmbrbeev-1'> Figma Project Link</a></p>
                   </li>
                 </ul>
               </div>
@@ -146,12 +146,12 @@ function ProjectView() {
             <div className="row md-marg">
               <div className="col-md-6">
                 <div className="img sm-mb30">
-                  <img src="/assets/imgs/works/project/2.png" alt="App Design Screen 1" />
+                  <img src="/assets/imgs/works/project/smileMigrain2.jpg" alt="App Design Screen 1" />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="img">
-                  <img src="/assets/imgs/works/project/3.png" alt="App Design Screen 2" />
+                  <img src="/assets/imgs/works/project/smileMigrain3.jpg" alt="App Design Screen 2" />
                 </div>
               </div>
             </div>
