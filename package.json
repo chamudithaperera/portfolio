@@ -1,22 +1,25 @@
 {
-  "name": "gavi-reactjs",
+  "name": "my-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "cra-template": "1.2.0",
-    "gsap": "^3.12.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "cra-template": "^1.2.0",
+    "gsap": "^3.12.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
-    "react-router-dom": "^6.20.1",
-    "react-scripts": "5.0.1",
+    "react-router-dom": "^6.26.2",
+    "react-scripts": "^5.0.1",
     "react-scroll": "^1.9.0",
-    "swiper": "^8.0.0"
+    "swiper": "^11.1.12",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -37,8 +40,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "react-snap": "^1.23.0"
   }
 }

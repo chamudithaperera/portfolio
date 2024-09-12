@@ -45,13 +45,14 @@ function LoadingScreen() {
 
       <div className="loader-wrap-heading">
         <div className="load-text">
-          <span>L</span>
-          <span>o</span>
+          <span>C</span>
+          <span>h</span>
           <span>a</span>
+          <span>m</span>
+          <span>X</span>
           <span>d</span>
-          <span>i</span>
-          <span>n</span>
-          <span>g</span>
+          <span>e</span>
+          <span>v</span>
         </div>
       </div>
     </div>

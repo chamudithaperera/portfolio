@@ -8,7 +8,7 @@ function Landing() {
           <div className="row justify-content-center">
             <div className="col-lg-9">
               <div className="text-center">
-                <h1 className="fz-70 mb-15">GAVI</h1>
+                <h1 className="fz-70 mb-15">ChamXdev</h1>
                 <h4>
                   Creative Personal
                   <span className="main-color ml-5">Portfolio</span> Template
