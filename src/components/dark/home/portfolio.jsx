@@ -7,7 +7,7 @@ function Portfolio() {
       <div className="sec-head mb-30">
         <div className="row">
           <div className="col-lg-6">
-            <h6 className="sub-title opacity-7 mb-15">Our Portfolio</h6>
+            <h6 className="sub-title opacity-7 mb-15">Our Projects</h6>
             <h3>
               Look at my work & <br /> give us{' '}
               <span className="main-color">your feedback</span>

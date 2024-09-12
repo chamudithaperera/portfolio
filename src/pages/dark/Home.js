@@ -10,10 +10,10 @@ import Footer from '../../components/dark/home/footer';
 import NavTop from '../../components/dark/home/nav-top';
 import Navbar from '../../components/dark/home/navbar';
 import Portfolio from '../../components/dark/home/portfolio';
-import Price from '../../components/dark/home/price';
+// import Price from '../../components/dark/home/price';
 import Profile from '../../components/dark/home/profile';
 import Services from '../../components/dark/home/services';
-import Skills from '../../components/dark/home/skills';
+// import Skills from '../../components/dark/home/skills';
 import Testimonials from '../../components/dark/home/testimonials';
 import Lines from '../../components/Common/Lines';
 function HomeDark() {
@@ -38,10 +38,10 @@ function HomeDark() {
           <Navbar />
           <section className="in-box">
             <Services />
-            <Skills />
+            {/* <Skills /> */}
             <Portfolio />
             <Testimonials />
-            <Price />
+            {/* <Price /> */}
             <Info />
             <Blog />
           </section>

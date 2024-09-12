@@ -23,12 +23,7 @@ function Navbar() {
             </li>
             <li className="nav-item">
               <Link to="portfolio" spy={true} smooth={true}>
-                <span>Portfolio</span>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="price" spy={true} smooth={true}>
-                <span>Price</span>
+                <span>Projects</span>
               </Link>
             </li>
             <li className="nav-item">
