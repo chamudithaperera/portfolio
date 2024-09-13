@@ -22,8 +22,6 @@ function Profile() {
               <div className="info text-center mt-30">
                 <h5>Chamuditha Perera</h5>
                 <p className="fz-13 text-u">
-                  {/* <span class="dot"></span> */}
-                  {/* <div className="green-circle"></div>  */}
                   Available for Hire &nbsp; <div className="green-circle"></div> </p> 
               </div>
               <div className="social text-center mt-20">
@@ -51,7 +49,7 @@ function Profile() {
             Chamuditha Perera <i></i>
             </span>{' '}, <br></br>
             <span className="main-color1">
-            UX / UI Designer
+            UI / UX Designer
             , <br></br>Mobile Application Developer <br></br>&
             Web Developer
             </span>

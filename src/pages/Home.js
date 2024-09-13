@@ -1,12 +1,22 @@
 import React from 'react';
-import Navbar from '../components/home/Navbar';
+//import Navbar from '../components/home/Navbar';
+import Navbar from '../components/dark/home/navbar';
 import { Helmet } from 'react-helmet';
-import Landing from '../components/home/Landing';
-import Footer from '../components/dark/home/footer';
+//import Landing from '../components/home/Landing';
+//import Footer from '../components/dark/home/footer';
 import ProgressScroll from '../components/Common/ProgressScroll';
 import LoadingScreen from '../components/Common/loader';
 import Lines from '../components/Common/Lines';
 import Cursor from '../components/Common/cusor';
+import Profile from '../components/dark/home/profile';
+import Blog from '../components/dark/home/blog';
+import ContactUs from '../components/dark/contact/ContactUs';
+import Info from '../components/dark/contact/info';
+import Footer from '../components/dark/home/footer';
+import NavTop from '../components/dark/home/nav-top';
+import Portfolio from '../components/dark/home/portfolio';
+import Services from '../components/dark/home/services';
+import Testimonials from '../components/dark/home/testimonials';
 
 function Home() {
   return (
@@ -19,14 +29,24 @@ function Home() {
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
       </Helmet>
       <Cursor />
-
+      <ContactUs />
       <Lines />
       <LoadingScreen />
       <ProgressScroll />
       <div>
-        <Navbar />
+        <NavTop />
         <main className="container">
-          <Landing />
+          <Profile />
+          <Navbar />
+          <section className="in-box">
+            <Services />
+            {/* <Skills /> */}
+            <Portfolio />
+            <Testimonials />
+            {/* <Price /> */}
+            <Info />
+            <Blog />
+          </section>
         </main>
         <Footer />
       </div>

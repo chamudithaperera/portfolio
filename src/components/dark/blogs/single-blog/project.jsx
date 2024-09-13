@@ -12,10 +12,10 @@ function Project() {
         <div className="col-lg-10">
           <div className="caption text-center">
             <div className="gat">
-              <a href="#0">
+              <a href="">
                 <span>UI Design</span>
               </a>
-              <a href="#0">
+              <a href="">
                 <span>UX Design</span>
               </a>
             </div>
