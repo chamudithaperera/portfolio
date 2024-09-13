@@ -41,19 +41,18 @@ function Blog() {
               <div className="box">
                 <div className="cont">
                   <span className="date">
-                    <i className="fas fa-calendar-alt mr-10 main-color"></i> 6 ,
-                    Aug 2022
+                    <i className="fas fa-calendar-alt mr-10 main-color"></i> {item.date}
                   </span>
                   <h5>
                     <a href={item.link}>{item.title}</a>
                   </h5>
                 </div>
                 <div className="info d-flex align-items-center">
-                  <div>
+                  {/* <div>
                     <span>
                       <i className="fas fa-comments fz-12 mr-5"></i> 2 Comments
                     </span>
-                  </div>
+                  </div> */}
                   <div className="ml-auto">
                     <a href="single-blog">
                       Read More{' '}

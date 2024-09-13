@@ -23,7 +23,8 @@ function Profile() {
                 <h5>Chamuditha Perera</h5>
                 <p className="fz-13 text-u">
                   {/* <span class="dot"></span> */}
-                  Available for Hire</p>
+                  {/* <div className="green-circle"></div>  */}
+                  Available for Hire &nbsp; <div className="green-circle"></div> </p> 
               </div>
               <div className="social text-center mt-20">
               <a href="https://www.linkedin.com/in/chamudithaperera">
@@ -49,15 +50,17 @@ function Profile() {
             <span className="bord">
             Chamuditha Perera <i></i>
             </span>{' '}, <br></br>
+            <span className="main-color1">
             UX / UI Designer
             , <br></br>Mobile Application Developer <br></br>&
             Web Developer
+            </span>
           </h1>
           <div className="stauts mt-80">
             <div className="d-flex align-items-center">
               <div className="mr-40">
                 <div className="d-flex align-items-center">
-                  <h2>2+</h2>
+                  <h2>2</h2>
                   <p>
                     Years <br /> of Experance
                   </p>

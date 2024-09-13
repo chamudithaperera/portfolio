@@ -7,34 +7,36 @@ function Info() {
         <div className="col-lg-5">
           <div className="sec-head md-mb80 wow fadeIn">
             <h6 className="sub-title mb-15 opacity-7">Get In Touch</h6>
-            <h2 className="fz-50">Let is make your brand brilliant!</h2>
+            <h2 className="fz-50">Let's bring your vision to life!</h2>
             <p className="fz-15 mt-10">
-              If you would like to work with us or just want to get in touch,
-              we’d love to hear from you!
+            Whether you’re looking to start a new project, enhance your digital presence, 
+            or just want to chat, I'm here for you. Reach out, and let’s make something great together!
+
+
             </p>
             <div className="phone fz-30 fw-600 mt-30 underline">
-              <a href="#0" className="main-color">
-                +1 840 841 25 69
+              <a href="https://wa.me/+94719153552" className="main-color">
+                +94 719 153 552
               </a>
             </div>
             <ul className="rest social-text d-flex mt-60">
               <li className="mr-30">
-                <a href="#0" className="hover-this">
-                  <span className="hover-anim">Facebook</span>
-                </a>
-              </li>
-              <li className="mr-30">
-                <a href="#0" className="hover-this">
-                  <span className="hover-anim">Twitter</span>
-                </a>
-              </li>
-              <li className="mr-30">
-                <a href="#0" className="hover-this">
+                <a href="https://www.linkedin.com/in/chamudithaperera" className="hover-this">
                   <span className="hover-anim">LinkedIn</span>
                 </a>
               </li>
+              <li className="mr-30">
+                <a href="https://github.com/chamudithaperera" className="hover-this">
+                  <span className="hover-anim">GitHub</span>
+                </a>
+              </li>
+              <li className="mr-30">
+                <a href="https://www.facebook.com/chamuditha.kavishan.1" className="hover-this">
+                  <span className="hover-anim">Facebook</span>
+                </a>
+              </li>
               <li>
-                <a href="#0" className="hover-this">
+                <a href="https://www.instagram.com/chamuditha_kavishan/" className="hover-this">
                   <span className="hover-anim">Instagram</span>
                 </a>
               </li>

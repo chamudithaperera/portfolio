@@ -90,6 +90,16 @@ body:before {
   z-index: -1;
 }
 
+.green-circle {
+  width: 10px; /* Smaller size */
+  height: 10px; /* Smaller size */
+  border-radius: 50%;
+  background-color: rgb(16, 255, 16); /* Circle color */
+  display: inline-block;
+  /* margin: 10px; Adjust spacing as needed */
+  box-shadow: 0 0 6px rgb(0, 255, 38); /* Add shadow */
+}
+
 .noise-bg {
   position: fixed;
   top: 0;
@@ -263,6 +273,11 @@ figure {
 
 .main-color {
   color: var(--maincolor) !important;
+}
+
+.main-color1 {
+  color: rgb(170, 170, 170);
+  font-size: 80%;
 }
 
 .main-colorbg {

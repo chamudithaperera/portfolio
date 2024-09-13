@@ -8,12 +8,12 @@ function Footer() {
           <div className="col-12">
             <div className="text-center">
               <p className="fz-13">
-                © 2024 ChamXdev is Proudly Powered by{' '}
+              © 2024{' '}
                 <span className="underline main-color">
                   <a href="https://chamxdev.vercel.app/" target="_self">
-                  ChamXdev
+                  ChamXdev 
                   </a>
-                </span>
+                </span> All Rights Reserved
               </p>
             </div>
           </div>

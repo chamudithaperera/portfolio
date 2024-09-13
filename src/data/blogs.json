@@ -1,32 +1,20 @@
 [
   {
-    "photo": "/assets/imgs/blog/1.jpg",
-    "title": "12 unique examples of portfolio websites.",
-    "link": "/single-blog"
+    "photo": "/assets/imgs/blog/uiux1.jpg",
+    "title": "What is UI/UX ?",
+    "link": "/single-blog",
+    "date": "05 Aug 2024"
   },
   {
     "photo": "/assets/imgs/blog/2.jpg",
     "title": "Dealing with spring allergy symptoms.",
-    "link": "/single-blog"
+    "link": "/single-blog1",
+    "date": "05 Aug 2024"
   },
   {
     "photo": "/assets/imgs/blog/3.jpg",
     "title": "Best wireframe tools for web designers.",
-    "link": "/single-blog"
-  },
-  {
-    "photo": "/assets/imgs/blog/1.jpg",
-    "title": "12 unique examples of portfolio websites.",
-    "link": "/single-blog"
-  },
-  {
-    "photo": "/assets/imgs/blog/2.jpg",
-    "title": "Dealing with spring allergy symptoms.",
-    "link": "/single-blog"
-  },
-  {
-    "photo": "/assets/imgs/blog/3.jpg",
-    "title": "Best wireframe tools for web designers.",
-    "link": "/single-blog"
+    "link": "/single-blog",
+    "date": "05 Aug 2024"
   }
 ]
