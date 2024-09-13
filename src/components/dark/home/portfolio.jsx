@@ -9,16 +9,16 @@ function Portfolio() {
           <div className="col-lg-6">
             <h6 className="sub-title opacity-7 mb-15">Our Projects</h6>
             <h3>
-              {/* Look at my work & <br /> give us{' '} */}
-              {/* <span className="main-color">your feedback</span> */}
-              <span className="main-color">Coming Soon</span>
+              Look at my work & <br /> give us{' '}
+              <span className="main-color">your feedback</span>
+              
             </h3>
           </div>
           <div className="col-lg-6 valign">
             <div className="go-more full-width d-flex justify-content-end">
               <a href="/works" className="d-flex">
                 <span>
-                  {/* View All Works{' '} */}
+                  View All Works{' '}
                   <svg
                     className="arrow-right"
                     xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +39,7 @@ function Portfolio() {
         <div className="row">
           {data?.slice(0, 4).map((item, index) => (
             <div key={index} className="col-lg-6 items">
-              {/* <div className="item mt-50 wow fadeInUp" data-wow-delay=".2s">
+              <div className="item mt-50 wow fadeInUp" data-wow-delay=".2s">
                 <div className="img">
                   <a href={item.link}>
                     <img src={item.photo} alt="" />
@@ -69,7 +69,7 @@ function Portfolio() {
                     </div>
                   </div>
                 </div>
-              </div> */}
+              </div>
             </div>
           ))}
         </div>
