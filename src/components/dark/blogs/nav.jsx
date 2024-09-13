@@ -32,12 +32,7 @@ function Nav() {
                     </li>
                     <li className="nav-item">
                       <a href="/dark">
-                        <span>Portfolio</span>
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a href="/dark">
-                        <span>Price</span>
+                        <span>Projects</span>
                       </a>
                     </li>
                     <li className="nav-item">

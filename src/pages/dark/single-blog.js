@@ -14,7 +14,7 @@ function SingleBlog() {
   return (
     <div>
       <Helmet>
-        <title>Gavi - Dark</title>
+        <title>ChamXdev</title>
         <link rel="icon" href="/assets/imgs/favicon.ico" />
         <link rel="shortcut icon" href="/assets/imgs/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="/assets/css/plugins.css" />

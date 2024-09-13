@@ -132,7 +132,7 @@ function ProjectView() {
                     <span className="sub-title">
                       <i className="fas fa-globe mr-10"></i> Project URL:
                     </span>
-                    <p><a href='https://www.figma.com/design/MfxfXgU4zgHneD3nN7W6Pe/Smile_Migraine_Mobile?node-id=0-1&t=QKDKF2i5jmbrbeev-1'> Figma Project Link</a></p>
+                    <p><a href='https://www.figma.com/design/MfxfXgU4zgHneD3nN7W6Pe/Smile_Migraine_Mobile?node-id=0-1&t=QKDKF2i5jmbrbeev-1'> Click Here</a></p>
                   </li>
                 </ul>
               </div>

@@ -20,13 +20,23 @@
     "link": "/single-project"
   },
   {
-    "photo": "/assets/imgs/works/3.jpg",
-    "title": "Partiner BPO",
+    "photo": "/assets/imgs/works/cal.jpg",
+    "title": "Android & iOS Calculator Apps Develop (Flutter & Swift)",
     "link": "/single-project"
   },
   {
-    "photo": "/assets/imgs/works/4.jpg",
-    "title": "From our gallery",
+    "photo": "/assets/imgs/works/radiomatrix.jpg",
+    "title": "radiometrix.com Website UI/UX Redesign",
+    "link": "/single-project"
+  },
+  {
+    "photo": "/assets/imgs/works/kumuduFlyer.png",
+    "title": "Kumudu Nishantha Class Flyer Design",
+    "link": "/single-project"
+  },
+  {
+    "photo": "/assets/imgs/works/stTeachSystem.jpg",
+    "title": "SL Teach Company Receipt System UI/UX Redesign",
     "link": "/single-project"
   }
 ]
