@@ -17,6 +17,7 @@ import NavTop from '../components/dark/home/nav-top';
 import Portfolio from '../components/dark/home/portfolio';
 import Services from '../components/dark/home/services';
 import Testimonials from '../components/dark/home/testimonials';
+import Experience from '../components/dark/home/experience';
 
 function Home() {
   return (
@@ -42,6 +43,7 @@ function Home() {
             <Services />
             {/* <Skills /> */}
             <Portfolio />
+            <Experience />
             <Testimonials />
             {/* <Price /> */}
             <Info />

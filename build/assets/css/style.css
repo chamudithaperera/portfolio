@@ -4203,6 +4203,88 @@ img.left {
   padding-left: 50px;
 }
 
+/* experience section ----------------------------------------------------*/
+.sec-box.experience {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.section-title h4 {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.timeline {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.timeline-item {
+  width: 100%;
+  padding: 20px;
+  background-color: #1c1f26;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.timeline-item.left {
+  float: left;
+  clear: left;
+}
+
+.timeline-item.right {
+  float: right;
+  clear: right;
+}
+
+.timeline-content {
+  color: white;
+}
+
+.title {
+  color: var(--maincolor);
+}
+
+.dates {
+  color: #aaa;
+}
+
+.vertical-line {
+  border-left: 2px solid var(--maincolor);
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* .timeline-item::after {ç
+  content: '';
+  position: absolute;
+  top: 20px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--maincolor);
+  border-radius: 50%;
+} */
+
+.timeline-item.left::after {
+  right: auto;
+  left: -10px;
+}
+
+.timeline-item.right::after {
+  left: auto;
+  right: -10px;
+}
+
+
 /* ====================== [ End Helper Classes  ] ====================== */
 /* ====================== [ Start Responsive ] ====================== */
 @media screen and (max-width: 992px) {

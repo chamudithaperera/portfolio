@@ -36,6 +36,11 @@ function Nav() {
                       </a>
                     </li>
                     <li className="nav-item">
+                    <a href="/dark">
+                <span>Journey</span>
+              </a>
+            </li>
+                    <li className="nav-item">
                       <a href="/dark">
                         <span>Contact</span>
                       </a>

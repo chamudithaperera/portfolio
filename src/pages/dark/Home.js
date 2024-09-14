@@ -16,6 +16,7 @@ import Services from '../../components/dark/home/services';
 // import Skills from '../../components/dark/home/skills';
 import Testimonials from '../../components/dark/home/testimonials';
 import Lines from '../../components/Common/Lines';
+import Experience from '../../components/dark/home/experience';
 function HomeDark() {
   return (
     <div>
@@ -40,6 +41,7 @@ function HomeDark() {
             <Services />
             {/* <Skills /> */}
             <Portfolio />
+            <Experience />
             <Testimonials />
             {/* <Price /> */}
             <Info />
