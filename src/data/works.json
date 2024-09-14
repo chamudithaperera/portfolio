@@ -11,7 +11,17 @@
   },
   {
     "photo": "/assets/imgs/works/stTeachSystem.jpg",
-    "title": "SL Teach Company Receipt System UI/UX Redesign",
+    "title": "SL Teach Company Receipt System UI/UX Design",
+    "link": "/single-project"
+  },
+  {
+    "photo": "/assets/imgs/works/shopMe.jpg",
+    "title": "Shop Me Company Website UI/UX Design",
+    "link": "/single-project"
+  },
+  {
+    "photo": "/assets/imgs/works/cal.jpg",
+    "title": "Calculator Mobile Apps for Android & iOS (Flutter & Swift)",
     "link": "/single-project"
   }
 ]
