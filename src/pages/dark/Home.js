@@ -17,6 +17,8 @@ import Services from '../../components/dark/home/services';
 import Testimonials from '../../components/dark/home/testimonials';
 import Lines from '../../components/Common/Lines';
 import Experience from '../../components/dark/home/experience';
+// import AddReview from '../../components/dark/home/addReview';
+
 function HomeDark() {
   return (
     <div>
@@ -43,6 +45,7 @@ function HomeDark() {
             <Portfolio />
             <Experience />
             <Testimonials />
+            {/* <AddReview /> */}
             {/* <Price /> */}
             <Info />
             <Blog />
