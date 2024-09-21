@@ -2,7 +2,7 @@
   {
     "photo": "/assets/imgs/works/coffee.jpg",
     "title": "Brew Mate SL Shop Mobile App UI/UX Design",
-    "link": "/single-project"
+    "link": "https://www.behance.net/gallery/208431307/A-sample-UIUX-design-for-RHODALIFE"
   },
   {
     "photo": "/assets/imgs/works/serandibTravel.jpg",
@@ -10,9 +10,9 @@
     "link": "/single-project"
   },
   {
-    "photo": "/assets/imgs/works/stTeachSystem.jpg",
-    "title": "SL Teach Company Receipt System UI/UX Design",
-    "link": "/single-project"
+    "photo": "/assets/imgs/works/rhoda.jpg",
+    "title": "Sample UI/UX Design for RHODA.LIFE",
+    "link": "https://www.behance.net/gallery/208432391/BrewMateSL-Coffee-Shop-Mobile-App"
   },
   {
     "photo": "/assets/imgs/works/shopMe.jpg",
@@ -22,6 +22,11 @@
   {
     "photo": "/assets/imgs/works/cal.jpg",
     "title": "Calculator Mobile Apps for Android & iOS (Flutter & Swift)",
+    "link": "/single-project"
+  },
+  {
+    "photo": "/assets/imgs/works/stTeachSystem.jpg",
+    "title": "SL Teach Company Receipt System UI/UX Design",
     "link": "/single-project"
   }
 ]
