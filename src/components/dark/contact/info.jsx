@@ -16,10 +16,39 @@ function Info() {
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear any existing status messages when user starts typing
+    if (status.message) {
+      setStatus({ type: '', message: '' });
+    }
+  };
+
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      setStatus({ type: 'error', message: 'Please enter your name' });
+      return false;
+    }
+    if (!formData.email.trim()) {
+      setStatus({ type: 'error', message: 'Please enter your email' });
+      return false;
+    }
+    if (!formData.message.trim()) {
+      setStatus({ type: 'error', message: 'Please enter your message' });
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setStatus({ type: 'error', message: 'Please enter a valid email address' });
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus({ type: '', message: '' });
 
@@ -35,13 +64,13 @@ function Info() {
       const data = await response.json();
 
       if (response.ok) {
-        setStatus({ type: 'success', message: 'Message sent successfully!' });
+        setStatus({ type: 'success', message: 'Message sent successfully! I will get back to you soon.' });
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        setStatus({ type: 'error', message: data.error || 'Failed to send message' });
+        setStatus({ type: 'error', message: data.error || 'Failed to send message. Please try again later.' });
       }
     } catch (error) {
-      setStatus({ type: 'error', message: 'Failed to send message. Please try again.' });
+      setStatus({ type: 'error', message: 'Network error. Please check your connection and try again.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -106,6 +135,7 @@ function Info() {
                       placeholder="Name"
                       value={formData.name}
                       onChange={handleChange}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
@@ -120,6 +150,7 @@ function Info() {
                       placeholder="Email"
                       value={formData.email}
                       onChange={handleChange}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
@@ -134,6 +165,7 @@ function Info() {
                       placeholder="Subject"
                       value={formData.subject}
                       onChange={handleChange}
+                      disabled={isSubmitting}
                     />
                   </div>
                 </div>
@@ -147,13 +179,20 @@ function Info() {
                       rows="4"
                       value={formData.message}
                       onChange={handleChange}
+                      disabled={isSubmitting}
                       required
                     ></textarea>
                   </div>
                   <div className="mt-30">
                     <button type="submit" disabled={isSubmitting}>
                       <span className="text">
-                        {isSubmitting ? 'Sending...' : 'Send A Message'}
+                        {isSubmitting ? (
+                          <>
+                            <span className="spinner"></span> Sending...
+                          </>
+                        ) : (
+                          'Send A Message'
+                        )}
                       </span>
                     </button>
                   </div>
