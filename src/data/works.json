@@ -2,36 +2,43 @@
   {
     "photo": "/assets/imgs/works/uberEats.jpg",
     "title": "Sample UI/UX Design for UberEats Mobile App",
-    "link": "https://www.behance.net/gallery/210269075/Sample-UIUX-Design-for-UberEats-Mobile-App"
+    "link": "https://www.behance.net/gallery/210269075/Sample-UIUX-Design-for-UberEats-Mobile-App",
+    "category": "UI/UX Design"
   },
   {
     "photo": "/assets/imgs/works/serandibTravel.jpg",
     "title": "Serandib Travel Website UI/UX Design",
-    "link": "https://www.behance.net/gallery/208502717/Serandib-Travel-Website-UIUX-Design"
+    "link": "https://www.behance.net/gallery/208502717/Serandib-Travel-Website-UIUX-Design",
+    "category": "UI/UX Design"
   },
   {
     "photo": "/assets/imgs/works/rhoda.jpg",
     "title": "Sample UI/UX Design for RHODA.LIFE",
-    "link": "https://www.behance.net/gallery/208431307/A-sample-UIUX-design-for-RHODALIFE"
+    "link": "https://www.behance.net/gallery/208431307/A-sample-UIUX-design-for-RHODALIFE",
+    "category": "UI/UX Design"
   },
   {
     "photo": "/assets/imgs/works/shopMe.jpg",
     "title": "Shop Me Company Website UI/UX Design",
-    "link": "https://www.behance.net/gallery/208503409/Shop-Me-Clothing-Shop-Website-UIUX-Design"
+    "link": "https://www.behance.net/gallery/208503409/Shop-Me-Clothing-Shop-Website-UIUX-Design",
+    "category": "UI/UX Design"
   },
   {
     "photo": "/assets/imgs/works/coffee.jpg",
     "title": "Brew Mate SL Shop Mobile App UI/UX Design",
-    "link": "https://www.behance.net/gallery/208432391/BrewMateSL-Coffee-Shop-Mobile-App"
+    "link": "https://www.behance.net/gallery/208432391/BrewMateSL-Coffee-Shop-Mobile-App",
+    "category": "UI/UX Design"
   },
   {
     "photo": "/assets/imgs/works/cal.jpg",
     "title": "Calculator Mobile Apps for Android & iOS (Flutter & Swift)",
-    "link": ""
+    "link": "",
+    "category": "Mobile Development"
   },
   {
     "photo": "/assets/imgs/works/stTeachSystem.jpg",
     "title": "SL Teach Company Receipt System UI/UX Design",
-    "link": ""
+    "link": "",
+    "category": "UI/UX Design"
   }
 ]

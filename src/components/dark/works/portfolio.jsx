@@ -1,5 +1,7 @@
 import React from 'react';
 import data from '../../../data/works.json';
+import './portfolio.css';
+
 function Portfolio() {
   return (
     <div className="sec-box portfolio main-bg section-padding radius-15">
@@ -12,40 +14,26 @@ function Portfolio() {
       <div className="gallery">
         <div className="row">
           {data.map((item, index) => (
-            <div key={index} className="col-lg-6 items">
+            <div key={index} className="col-lg-4 col-md-6 items">
               <div className="item mt-50">
                 <div className="img">
-                  <a href={item.link}>
-                    <img src={item.photo} alt="" />
-                  </a>
+                  <img src={item.photo} alt={item.title} />
+                  <div className="overlay">
+                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="view-project">
+                      View Project
+                    </a>
+                  </div>
                 </div>
-                <div className="cont mt-30 d-flex align-items-center">
-                  <div>
-                    <span className="tag">Branding</span>
-                    <h6 className="line-height-1">
-                      <a href={item.link}>{item.title}</a>
-                    </h6>
-                  </div>
-                  <div className="ml-auto">
-                    <div className="arrow">
-                      <a href={item.link}>
-                        <svg
-                          className="arrow-right"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlnsXlink="http://www.w3.org/1999/xlink"
-                          x="0px"
-                          y="0px"
-                          viewBox="0 0 34.2 32.3"
-                          xmlSpace="preserve"
-                          style={{ strokeWidth: 2 }}
-                        >
-                          <line x1="0" y1="16" x2="33" y2="16"></line>
-                          <line x1="17.3" y1="0.7" x2="33.2" y2="16.5"></line>
-                          <line x1="17.3" y1="31.6" x2="33.5" y2="15.4"></line>
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
+                <div className="cont mt-30">
+                  <span className="tag">{item.category}</span>
+                  <h6 className="line-height-1 mt-2">
+                    {item.title}
+                  </h6>
+                  {item.link && (
+                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="project-link">
+                      Visit Project
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
