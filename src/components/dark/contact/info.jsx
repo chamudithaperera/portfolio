@@ -1,6 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './info.css';
 
 function Info() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus({ type: 'success', message: 'Message sent successfully!' });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setStatus({ type: 'error', message: data.error || 'Failed to send message' });
+      }
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Failed to send message. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="sec-box contact section-padding bord-thin-top" id="info">
       <div className="row">
@@ -9,10 +55,8 @@ function Info() {
             <h6 className="sub-title mb-15 opacity-7">Get In Touch</h6>
             <h2 className="fz-50">Let's bring your vision to life!</h2>
             <p className="fz-15 mt-10">
-            Whether you’re looking to start a new project, enhance your digital presence, 
-            or just want to chat, I'm here for you. Reach out, and let’s make something great together!
-
-
+              Whether you're looking to start a new project, enhance your digital presence, 
+              or just want to chat, I'm here for you. Reach out, and let's make something great together!
             </p>
             <div className="phone fz-30 fw-600 mt-30 underline">
               <a href="https://wa.me/+94719153552" className="main-color">
@@ -45,8 +89,12 @@ function Info() {
         </div>
         <div className="col-lg-7 valign">
           <div className="full-width wow fadeIn">
-            <form id="contact-form" method="post" action="contact.php">
-              <div className="messages"></div>
+            <form id="contact-form" onSubmit={handleSubmit}>
+              {status.message && (
+                <div className={`alert ${status.type === 'success' ? 'alert-success' : 'alert-error'}`}>
+                  {status.message}
+                </div>
+              )}
 
               <div className="controls row">
                 <div className="col-lg-6">
@@ -56,7 +104,9 @@ function Info() {
                       type="text"
                       name="name"
                       placeholder="Name"
-                      required="required"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
@@ -68,7 +118,9 @@ function Info() {
                       type="email"
                       name="email"
                       placeholder="Email"
-                      required="required"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
@@ -80,6 +132,8 @@ function Info() {
                       type="text"
                       name="subject"
                       placeholder="Subject"
+                      value={formData.subject}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -91,12 +145,16 @@ function Info() {
                       name="message"
                       placeholder="Message"
                       rows="4"
-                      required="required"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
                     ></textarea>
                   </div>
                   <div className="mt-30">
-                    <button type="submit">
-                      <span className="text">Send A Message</span>
+                    <button type="submit" disabled={isSubmitting}>
+                      <span className="text">
+                        {isSubmitting ? 'Sending...' : 'Send A Message'}
+                      </span>
                     </button>
                   </div>
                 </div>
