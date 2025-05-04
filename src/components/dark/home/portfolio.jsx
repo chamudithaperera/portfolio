@@ -1,5 +1,6 @@
 import React from 'react';
 import data from '../../../data/works.json';
+import './portfolio.css';
 
 function Portfolio() {
   return (
@@ -11,7 +12,6 @@ function Portfolio() {
             <h3>
               Look at my work & <br /> give us{' '}
               <span className="main-color">your feedback</span>
-              
             </h3>
           </div>
           <div className="col-lg-6 valign">
@@ -41,33 +41,23 @@ function Portfolio() {
             <div key={index} className="col-lg-6 items">
               <div className="item mt-50 wow fadeInUp" data-wow-delay=".2s">
                 <div className="img">
-                  <a href={item.link}>
-                    <img src={item.photo} alt="" />
-                  </a>
+                  <img src={item.photo} alt={item.title} />
+                  <div className="overlay">
+                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="view-project">
+                      View Project
+                    </a>
+                  </div>
                 </div>
-                <div className="cont mt-30 d-flex align-items-center">
-                  <div>
-                    <span className="tag">Branding</span>
-                    <h6 className="line-height-1">
-                      <a href="single-project">{item.title}</a>
-                    </h6>
-                  </div>
-                  <div className="ml-auto">
-                    <div className="arrow">
-                      <a href="single-project">
-                        <svg
-                          className="arrow-right"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlnsXlink="http://www.w3.org/1999/xlink"
-                          x="0px"
-                          y="0px"
-                          viewBox="0 0 34.2 32.3"
-                          xmlSpace="preserve"
-                          style={{ strokeWidth: 2 }}
-                        />
-                      </a>
-                    </div>
-                  </div>
+                <div className="cont mt-30">
+                  <span className="tag">{item.category}</span>
+                  <h6 className="line-height-1 mt-2">
+                    {item.title}
+                  </h6>
+                  {item.link && (
+                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="project-link">
+                      Visit Project
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
