@@ -3,42 +3,56 @@
     "photo": "/assets/imgs/works/uberEats.jpg",
     "title": "Sample UI/UX Design for UberEats Mobile App",
     "link": "https://www.behance.net/gallery/210269075/Sample-UIUX-Design-for-UberEats-Mobile-App",
-    "category": "UI/UX Design"
+    "category": "UI/UX Design",
+    "description": "A modern and intuitive UI/UX design for the UberEats mobile app, focusing on seamless food ordering and delivery experience.",
+    "techStack": ["Figma", "Adobe XD", "UI/UX"]
   },
   {
     "photo": "/assets/imgs/works/serandibTravel.jpg",
     "title": "Serandib Travel Website UI/UX Design",
     "link": "https://www.behance.net/gallery/208502717/Serandib-Travel-Website-UIUX-Design",
-    "category": "UI/UX Design"
+    "category": "UI/UX Design",
+    "description": "A travel website UI/UX design for Serandib, providing a user-friendly interface for booking and exploring travel packages.",
+    "techStack": ["Figma", "UI/UX", "Web Design"]
   },
   {
     "photo": "/assets/imgs/works/rhoda.jpg",
     "title": "Sample UI/UX Design for RHODA.LIFE",
     "link": "https://www.behance.net/gallery/208431307/A-sample-UIUX-design-for-RHODALIFE",
-    "category": "UI/UX Design"
+    "category": "UI/UX Design",
+    "description": "A clean and elegant UI/UX design for RHODA.LIFE, focusing on lifestyle and wellness content.",
+    "techStack": ["Figma", "UI/UX", "Branding"]
   },
   {
     "photo": "/assets/imgs/works/shopMe.jpg",
     "title": "Shop Me Company Website UI/UX Design",
     "link": "https://www.behance.net/gallery/208503409/Shop-Me-Clothing-Shop-Website-UIUX-Design",
-    "category": "UI/UX Design"
+    "category": "UI/UX Design",
+    "description": "A responsive e-commerce website UI/UX design for Shop Me, enhancing the online shopping experience.",
+    "techStack": ["Figma", "UI/UX", "E-commerce"]
   },
   {
     "photo": "/assets/imgs/works/coffee.jpg",
     "title": "Brew Mate SL Shop Mobile App UI/UX Design",
     "link": "https://www.behance.net/gallery/208432391/BrewMateSL-Coffee-Shop-Mobile-App",
-    "category": "UI/UX Design"
+    "category": "UI/UX Design",
+    "description": "A mobile app UI/UX design for Brew Mate SL, making coffee ordering and delivery easy and enjoyable.",
+    "techStack": ["Figma", "UI/UX", "Mobile App"]
   },
   {
     "photo": "/assets/imgs/works/cal.jpg",
     "title": "Calculator Mobile Apps for Android & iOS (Flutter & Swift)",
     "link": "",
-    "category": "Mobile Development"
+    "category": "Mobile Development",
+    "description": "Cross-platform calculator apps built with Flutter and Swift for Android and iOS devices.",
+    "techStack": ["Flutter", "Swift", "Mobile App"]
   },
   {
     "photo": "/assets/imgs/works/stTeachSystem.jpg",
     "title": "SL Teach Company Receipt System UI/UX Design",
     "link": "",
-    "category": "UI/UX Design"
+    "category": "UI/UX Design",
+    "description": "A digital receipt system UI/UX design for SL Teach Company, streamlining business transactions.",
+    "techStack": ["Figma", "UI/UX", "Business"]
   }
 ]

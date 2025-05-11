@@ -15,25 +15,31 @@ function Portfolio() {
         <div className="row">
           {data.map((item, index) => (
             <div key={index} className="col-lg-4 col-md-6 items">
-              <div className="item mt-50">
-                <div className="img">
-                  <img src={item.photo} alt={item.title} />
-                  <div className="overlay">
-                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="view-project">
-                      View Project
-                    </a>
-                  </div>
+              <div className="project-card">
+                <div className="project-image-wrap">
+                  <img src={item.photo} alt={item.title} className="project-image" />
                 </div>
-                <div className="cont mt-30">
-                  <span className="tag">{item.category}</span>
-                  <h6 className="line-height-1 mt-2">
-                    {item.title}
-                  </h6>
-                  {item.link && (
-                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="project-link">
-                      Visit Project
-                    </a>
+                <div className="project-content">
+                  <h4 className="project-title">{item.title}</h4>
+                  {item.description && (
+                    <p className="project-desc">{item.description}</p>
                   )}
+                  {item.techStack && Array.isArray(item.techStack) && (
+                    <div className="project-tech-stack">
+                      {item.techStack.map((tech, i) => (
+                        <span className="project-tech-badge" key={i}>{tech}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="project-actions">
+                    {item.link ? (
+                      <a href={item.link} target="_blank" rel="noopener noreferrer" className="project-btn main-colorbg">
+                        Visit Project
+                      </a>
+                    ) : (
+                      <span className="project-btn disabled">No Demo</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
