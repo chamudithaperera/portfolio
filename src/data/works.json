@@ -24,7 +24,15 @@
     "techStack": ["Dart", "Flutter", "google_fonts", "path_provider", "image_picker", "pdf_generator"]
   },
   {
-    "photo": "/assets/imgs/works/uberEats.jpg",
+    "photo": "assets/imgs/works/edupro.jpeg",
+    "title": "EduLink – a peer tutoring platform",
+    "link": "https://www.linkedin.com/posts/chamudithaperera_edulink-finalyearproject-mernstack-activity-7313985622233255936-t0Iq?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
+    "category": "Web Development",
+    "description": "EDULINK is a group project web app that connects students and tutors for peer-to-peer learning. Students can enroll in courses and request classes, while tutors manage content and schedules. Admins oversee users and platform activity.",
+    "techStack": ["MERN Stack", "Tailwind CSS", "Framer Motion", "Axios", "JWT & js-cookie", "FullCalendar & React Big Calendar"]
+  },
+  {
+    "photo": "assets/imgs/works/uberEats.jpg",
     "title": "Sample UI/UX Design for UberEats Mobile App",
     "link": "https://www.behance.net/gallery/210269075/Sample-UIUX-Design-for-UberEats-Mobile-App",
     "category": "UI/UX Design",
