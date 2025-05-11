@@ -66,7 +66,7 @@ function Profile() {
               </div>
               <div className="mr-40">
                 <div className="d-flex align-items-center">
-                  <h2>9+</h2>
+                  <h2>15+</h2>
                   <p>
                     Projects <br /> Worldwide
                   </p>
