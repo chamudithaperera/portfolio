@@ -42,6 +42,9 @@ function Portfolio() {
               <div className="project-card">
                 <div className="project-image-wrap">
                   <img src={item.photo} alt={item.title} className="project-image" />
+                  {item.category && (
+                    <span className="project-category-badge">{item.category}</span>
+                  )}
                 </div>
                 <div className="project-content">
                   <h4 className="project-title">{item.title}</h4>
