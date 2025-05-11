@@ -18,6 +18,7 @@ import Portfolio from '../components/dark/home/portfolio';
 import Services from '../components/dark/home/services';
 import Testimonials from '../components/dark/home/testimonials';
 import Experience from '../components/dark/home/experience';
+import SkillsSection from '../components/dark/home/skillsSection';
 // import AddReview from '../components/dark/home/addReview';
 
 function Home() {
@@ -42,6 +43,7 @@ function Home() {
           <Navbar />
           <section className="in-box">
             <Services />
+            <SkillsSection />
             {/* <Skills /> */}
             <Portfolio />
             <Experience />

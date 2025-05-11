@@ -5,10 +5,12 @@ import './skillsSection.css';
 const SkillsSection = () => {
   return (
     <section className="skills-section section-padding bord-thin-bottom" id="skills">
-      <div className="sec-head mb-40 text-center">
-        <h2 className="skills-title">My Skills</h2>
-        <div className="skills-underline"></div>
-        <p className="skills-subtitle">Technologies I work with</p>
+      <div className="sec-head mb-40 text-left">
+        <h6 className="sub-title opacity-7 mb-15" style={{ letterSpacing: '2px', textTransform: 'uppercase', left: '50px' }}>My Skills</h6>
+        <h2 className="skills-title" style={{ fontSize: '2.5rem', fontWeight: 700, lineHeight: 1.15, marginBottom: '0.5rem' }}>
+          Technologies I work with &<br />
+          <span className="main-color" style={{ color: 'var(--maincolor)' }}>my expertise</span>
+        </h2>
       </div>
       <div className="skills-grid">
         {skills.map((skill, idx) => (
