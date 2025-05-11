@@ -12,19 +12,21 @@ const SkillsSection = () => {
           <span className="main-color" style={{ color: 'var(--maincolor)' }}>my expertise</span>
         </h2>
       </div>
-      <div className="skills-grid">
+      <div className="skills-grid simple-skills-grid">
         {skills.map((skill, idx) => (
-          <div className="skill-card" key={idx}>
-            <div className="skill-icon-wrap">
-              <img src={skill.icon} alt={skill.name} className="skill-icon" />
-            </div>
-            <div className="skill-name">{skill.name}</div>
-            <div className="skill-progress-bar">
-              <div
-                className="skill-progress-fill"
-                style={{ width: `${skill.progress}%` }}
-              ></div>
-            </div>
+          <div className="simple-skill-card" key={idx}>
+            <img
+              src={skill.icon}
+              alt={skill.name + ' icon'}
+              style={{
+                width: 32,
+                height: 32,
+                verticalAlign: 'middle',
+                marginRight: 8,
+                filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.10))'
+              }}
+            />
+            {skill.name}
           </div>
         ))}
       </div>

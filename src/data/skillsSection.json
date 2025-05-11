@@ -1,62 +1,20 @@
 [
-  {
-    "icon": "/assets/icons/react.svg",
-    "name": "React",
-    "progress": 90
-  },
-  {
-    "icon": "/assets/icons/nodejs.svg",
-    "name": "Node.js",
-    "progress": 85
-  },
-  {
-    "icon": "/assets/icons/javascript.svg",
-    "name": "JavaScript",
-    "progress": 92
-  },
-  {
-    "icon": "/assets/icons/html5.svg",
-    "name": "HTML5",
-    "progress": 95
-  },
-  {
-    "icon": "/assets/icons/css3.svg",
-    "name": "CSS3",
-    "progress": 90
-  },
-  {
-    "icon": "/assets/icons/tailwind.svg",
-    "name": "Tailwind CSS",
-    "progress": 85
-  },
-  {
-    "icon": "/assets/icons/nextjs.svg",
-    "name": "Next.js",
-    "progress": 80
-  },
-  {
-    "icon": "/assets/icons/mongodb.svg",
-    "name": "MongoDB",
-    "progress": 80
-  },
-  {
-    "icon": "/assets/icons/express.svg",
-    "name": "Express",
-    "progress": 78
-  },
-  {
-    "icon": "/assets/icons/redux.svg",
-    "name": "Redux",
-    "progress": 85
-  },
-  {
-    "icon": "/assets/icons/git.svg",
-    "name": "Git",
-    "progress": 88
-  },
-  {
-    "icon": "/assets/icons/springboot.svg",
-    "name": "Spring Boot",
-    "progress": 75
-  }
+  { "name": "Dart", "icon": "https://cdn.simpleicons.org/dart/0175C2" },
+  { "name": "Java", "icon": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-java.svg" },
+  { "name": "HTML", "icon": "https://cdn.simpleicons.org/html5/E34F26" },
+  { "name": "CSS", "icon": "https://cdn.simpleicons.org/css3/1572B6" },
+  { "name": "React", "icon": "https://cdn.simpleicons.org/react/61DAFB" },
+  { "name": "Javascript", "icon": "https://cdn.simpleicons.org/javascript/F7DF1E" },
+  { "name": "PHP", "icon": "https://cdn.simpleicons.org/php/777BB4" },
+  { "name": "Flutter", "icon": "https://cdn.simpleicons.org/flutter/02569B" },
+  { "name": "React-Native", "icon": "https://cdn.simpleicons.org/react/61DAFB" },
+  { "name": "Firebase", "icon": "https://cdn.simpleicons.org/firebase/FFCA28" },
+  { "name": "MongoDB", "icon": "https://cdn.simpleicons.org/mongodb/47A248" },
+  { "name": "MySQL", "icon": "https://cdn.simpleicons.org/mysql/4479A1" },
+  { "name": "Node JS", "icon": "https://cdn.simpleicons.org/nodedotjs/339933" },
+  { "name": "Spring Boot", "icon": "https://cdn.simpleicons.org/springboot/6DB33F" },
+  { "name": "Figma", "icon": "https://cdn.simpleicons.org/figma/F24E1E" },
+  { "name": "Photoshop", "icon": "https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg" },
+  { "name": "Git", "icon": "https://cdn.simpleicons.org/git/F05032" },
+  { "name": "GitHub", "icon": "https://cdn.simpleicons.org/github/181717" }
 ] 

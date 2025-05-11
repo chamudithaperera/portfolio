@@ -49,8 +49,8 @@ function Profile() {
             Chamuditha Perera <i></i>
             </span>{' '}, <br></br>
             <span className="main-color1">
-            UI / UX Designer
-            , <br></br>Mobile Application Developer <br></br>&
+            Mobile Application Developer
+            , <br></br>UI / UX Designer &
             Web Developer
             </span>
           </h1>
