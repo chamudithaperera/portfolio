@@ -37,8 +37,8 @@ function Portfolio() {
       </div>
       <div className="gallery">
         <div className="row">
-          {data?.slice(0, 4).map((item, index) => (
-            <div key={index} className="col-lg-6 items">
+          {data?.slice(0, 6).map((item, index) => (
+            <div key={index} className="col-lg-4 col-md-6 items">
               <div className="project-card">
                 <div className="project-image-wrap">
                   <img src={item.photo} alt={item.title} className="project-image" />
