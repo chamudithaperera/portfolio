@@ -1,5 +1,21 @@
 [
   {
+    "photo": "assets/imgs/works/weatherApp.jpeg",
+    "title": "Real-Time WEATHER APP",
+    "link": "https://www.linkedin.com/posts/chamudithaperera_flutter-mobileapp-weatherapp-activity-7325197536418238464-_Ua0?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
+    "category": "Mobile Applicaiton",
+    "description": "I built a sleek, responsive weather app using Flutter and Dart, featuring real-time updates, hourly/daily forecasts, and live city search, powered by the OpenWeatherMap API.",
+    "techStack": ["Dart", "Flutter", "OpenWeatherMap API", "Geolocator", "permission_handler"]
+  },
+  {
+    "photo": "assets/imgs/works/weatherApp.jpeg",
+    "title": "Real-Time WEATHER APP",
+    "link": "https://www.linkedin.com/posts/chamudithaperera_flutter-mobileapp-weatherapp-activity-7325197536418238464-_Ua0?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
+    "category": "Mobile Applicaiton",
+    "description": "I built a sleek, responsive weather app using Flutter and Dart, featuring real-time updates, hourly/daily forecasts, and live city search, powered by the OpenWeatherMap API.",
+    "techStack": ["Dart", "Flutter", "OpenWeatherMap API", "Geolocator", "permission_handler"]
+  },
+  {
     "photo": "/assets/imgs/works/uberEats.jpg",
     "title": "Sample UI/UX Design for UberEats Mobile App",
     "link": "https://www.behance.net/gallery/210269075/Sample-UIUX-Design-for-UberEats-Mobile-App",
