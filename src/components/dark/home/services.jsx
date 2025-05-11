@@ -17,16 +17,15 @@ function Services() {
           </div>
         </div>
       </div>
-      <div className="row">
-        {data.map((item, index) => (
-          <div key={index} className="col-md-6">
-            <div className="item mb-40 wow fadeIn" data-wow-delay=".2s">
-              <span className="icon-img-70 mb-30 opacity-7">
-                <img src={item.icon} alt="" />
-              </span>
-              <h6 className="text-u ls1 mb-15">{item.title}</h6>
-              <p>{item.description}</p>
-              <div className="bord-color"></div>
+      <div className="row modern-services-row">
+        {data.slice(0, 4).map((item, index) => (
+          <div key={index} className="col-lg-3 col-md-6">
+            <div className="modern-service-card">
+              <div className="modern-service-icon-wrap">
+                <img src={item.icon} alt={item.title} className="modern-service-icon" />
+              </div>
+              <h6 className="modern-service-title">{item.title}</h6>
+              <p className="modern-service-desc">{item.description}</p>
             </div>
           </div>
         ))}

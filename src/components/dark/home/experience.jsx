@@ -11,44 +11,46 @@ function Experience() {
           My <span className="main-color">Journey</span>
         </h3>
       </div>
-
-      {/* Timeline Row */}
-      <div className="row justify-content-center">
+      <div className="row justify-content-center modern-timeline-row">
         {/* Education Section */}
         <div className="col-lg-5 text-left">
           <div className="section-title">
             <h4>Education</h4>
           </div>
-          <div className="timeline">
+          <div className="modern-timeline">
             {academicData?.map((item, index) => (
-              <div key={index} className="timeline-item">
-                <div className="timeline-content">
-                  <p className="dates">{item.dates}</p>
-                  <h6 className="title">{item.degree}</h6>
-                  <p className="institution">{item.institution}</p>
+              <div key={index} className="modern-timeline-item">
+                <div className="modern-timeline-point">
+                  <span className="modern-timeline-circle" />
+                </div>
+                <div className="modern-timeline-card">
+                  <p className="modern-timeline-date">{item.dates}</p>
+                  <h6 className="modern-timeline-title">{item.degree}</h6>
+                  <p className="modern-timeline-inst">{item.institution}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
-
         {/* Vertical Line */}
         <div className="col-lg-1 d-flex justify-content-center align-items-center">
-          <div className="vertical-line"></div>
+          <div className="modern-vertical-line"></div>
         </div>
-
         {/* Experience Section */}
         <div className="col-lg-5 text-left">
           <div className="section-title">
             <h4>Experience</h4>
           </div>
-          <div className="timeline">
+          <div className="modern-timeline">
             {experienceData?.map((item, index) => (
-              <div key={index} className="timeline-item">
-                <div className="timeline-content">
-                  <p>{item.dates}</p>
-                  <h6 className="title">{item.position}</h6>
-                  <p>{item.description}</p>
+              <div key={index} className="modern-timeline-item">
+                <div className="modern-timeline-point">
+                  <span className="modern-timeline-circle" />
+                </div>
+                <div className="modern-timeline-card">
+                  <p className="modern-timeline-date">{item.dates}</p>
+                  <h6 className="modern-timeline-title">{item.position}</h6>
+                  <p className="modern-timeline-desc">{item.description}</p>
                 </div>
               </div>
             ))}
