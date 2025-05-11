@@ -13,6 +13,7 @@ import Portfolio from '../../components/dark/home/portfolio';
 // import Price from '../../components/dark/home/price';
 import Profile from '../../components/dark/home/profile';
 import Services from '../../components/dark/home/services';
+import SkillsSection from '../../components/dark/home/skillsSection';
 // import Skills from '../../components/dark/home/skills';
 import Testimonials from '../../components/dark/home/testimonials';
 import Lines from '../../components/Common/Lines';
@@ -41,7 +42,7 @@ function HomeDark() {
           <Navbar />
           <section className="in-box">
             <Services />
-            {/* <Skills /> */}
+            <SkillsSection />
             <Portfolio />
             <Experience />
             <Testimonials />

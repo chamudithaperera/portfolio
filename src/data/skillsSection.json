@@ -1,0 +1,62 @@
+[
+  {
+    "icon": "/assets/icons/react.svg",
+    "name": "React",
+    "progress": 90
+  },
+  {
+    "icon": "/assets/icons/nodejs.svg",
+    "name": "Node.js",
+    "progress": 85
+  },
+  {
+    "icon": "/assets/icons/javascript.svg",
+    "name": "JavaScript",
+    "progress": 92
+  },
+  {
+    "icon": "/assets/icons/html5.svg",
+    "name": "HTML5",
+    "progress": 95
+  },
+  {
+    "icon": "/assets/icons/css3.svg",
+    "name": "CSS3",
+    "progress": 90
+  },
+  {
+    "icon": "/assets/icons/tailwind.svg",
+    "name": "Tailwind CSS",
+    "progress": 85
+  },
+  {
+    "icon": "/assets/icons/nextjs.svg",
+    "name": "Next.js",
+    "progress": 80
+  },
+  {
+    "icon": "/assets/icons/mongodb.svg",
+    "name": "MongoDB",
+    "progress": 80
+  },
+  {
+    "icon": "/assets/icons/express.svg",
+    "name": "Express",
+    "progress": 78
+  },
+  {
+    "icon": "/assets/icons/redux.svg",
+    "name": "Redux",
+    "progress": 85
+  },
+  {
+    "icon": "/assets/icons/git.svg",
+    "name": "Git",
+    "progress": 88
+  },
+  {
+    "icon": "/assets/icons/springboot.svg",
+    "name": "Spring Boot",
+    "progress": 75
+  }
+] 

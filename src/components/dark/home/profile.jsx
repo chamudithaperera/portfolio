@@ -74,7 +74,7 @@ function Profile() {
               </div>
               <div>
                 <div className="butn-presv">
-                  <a href="/ChamudithaPereraCV1.pdf" download="ChamudithaPereraCV1.pdf" className="butn butn-md butn-bord radius-5 skew">
+                  <a href="/chamudithaperera_resume.pdf" download="ChamudithaPerera_Resume.pdf" className="butn butn-md butn-bord radius-5 skew">
                     <span>Dwonload CV</span>
                   </a>
                 </div>
