@@ -8,12 +8,12 @@
     "techStack": ["Dart", "Flutter", "OpenWeatherMap API", "Geolocator", "permission_handler"]
   },
   {
-    "photo": "assets/imgs/works/weatherApp.jpeg",
-    "title": "Real-Time WEATHER APP",
-    "link": "https://www.linkedin.com/posts/chamudithaperera_flutter-mobileapp-weatherapp-activity-7325197536418238464-_Ua0?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
+    "photo": "assets/imgs/works/avuruduApp.jpeg",
+    "title": "Avurudu Nakath (New Year Amulet) Mobile App",
+    "link": "https://www.linkedin.com/posts/chamudithaperera_avurudunakath2025-mobileapp-playstore-activity-7309530321211822080-RZB2?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
     "category": "Mobile Applicaiton",
-    "description": "I built a sleek, responsive weather app using Flutter and Dart, featuring real-time updates, hourly/daily forecasts, and live city search, powered by the OpenWeatherMap API.",
-    "techStack": ["Dart", "Flutter", "OpenWeatherMap API", "Geolocator", "permission_handler"]
+    "description": "Avurudu Nakath 2025 is a Sinhala & Tamil New Year app with all key Nakath times, ritual details, and push notifications to keep you updated on every important moment.",
+    "techStack": ["Dart", "Flutter", "flutter_timer_countdow", "flutter_local_notification", "cupertino_icons"]
   },
   {
     "photo": "/assets/imgs/works/uberEats.jpg",
