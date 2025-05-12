@@ -32,12 +32,20 @@
     "techStack": ["MERN Stack", "Tailwind CSS", "Framer Motion", "Axios", "JWT & js-cookie", "FullCalendar & React Big Calendar"]
   },
   {
+    "photo": "assets/imgs/works/bloodhopes.jpeg",
+    "title": "BloodHope Mobile App UI/UX Design",
+    "link": "https://www.linkedin.com/posts/chamudithaperera_uiux-figmadesign-mobileappdevelopment-activity-7275607589143388161-zUIw?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
+    "category": "UI/UX Design",
+    "description": "BloodHope—a mobile app UI/UX design built in Figma to simplify blood donations. It includes a splash screen, auth pages, home with stats, campaign map, donation history, add campaign, and profile with QR code",
+    "techStack": ["Figma", "Photoshop"]
+  },
+  {
     "photo": "assets/imgs/works/uberEats.jpg",
     "title": "Sample UI/UX Design for UberEats Mobile App",
     "link": "https://www.behance.net/gallery/210269075/Sample-UIUX-Design-for-UberEats-Mobile-App",
     "category": "UI/UX Design",
     "description": "A modern and intuitive UI/UX design for the UberEats mobile app, focusing on seamless food ordering and delivery experience.",
-    "techStack": ["Figma", "Adobe XD", "UI/UX"]
+    "techStack": ["Figma", "Photoshop"]
   },
   {
     "photo": "/assets/imgs/works/serandibTravel.jpg",
@@ -45,7 +53,7 @@
     "link": "https://www.behance.net/gallery/208502717/Serandib-Travel-Website-UIUX-Design",
     "category": "UI/UX Design",
     "description": "A travel website UI/UX design for Serandib, providing a user-friendly interface for booking and exploring travel packages.",
-    "techStack": ["Figma", "UI/UX", "Web Design"]
+    "techStack": ["Figma", "Photoshop"]
   },
   {
     "photo": "/assets/imgs/works/rhoda.jpg",
@@ -53,7 +61,7 @@
     "link": "https://www.behance.net/gallery/208431307/A-sample-UIUX-design-for-RHODALIFE",
     "category": "UI/UX Design",
     "description": "A clean and elegant UI/UX design for RHODA.LIFE, focusing on lifestyle and wellness content.",
-    "techStack": ["Figma", "UI/UX", "Branding"]
+    "techStack": ["Figma", "Photoshop"]
   },
   {
     "photo": "/assets/imgs/works/shopMe.jpg",
@@ -69,15 +77,15 @@
     "link": "https://www.behance.net/gallery/208432391/BrewMateSL-Coffee-Shop-Mobile-App",
     "category": "UI/UX Design",
     "description": "A mobile app UI/UX design for Brew Mate SL, making coffee ordering and delivery easy and enjoyable.",
-    "techStack": ["Figma", "UI/UX", "Mobile App"]
+    "techStack": ["Figma", "Photoshop"]
   },
   {
     "photo": "/assets/imgs/works/cal.jpg",
     "title": "Calculator Mobile Apps for Android & iOS (Flutter & Swift)",
     "link": "",
-    "category": "Mobile Development",
+    "category": "Mobile Applicaiton",
     "description": "Cross-platform calculator apps built with Flutter and Swift for Android and iOS devices.",
-    "techStack": ["Flutter", "Swift", "Mobile App"]
+    "techStack": ["Flutter", "Swift"]
   },
   {
     "photo": "/assets/imgs/works/stTeachSystem.jpg",
@@ -85,6 +93,6 @@
     "link": "",
     "category": "UI/UX Design",
     "description": "A digital receipt system UI/UX design for SL Teach Company, streamlining business transactions.",
-    "techStack": ["Figma", "UI/UX", "Business"]
+    "techStack": ["Figma", "Photoshop"]
   }
 ]
