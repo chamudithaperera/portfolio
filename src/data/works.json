@@ -40,6 +40,14 @@
     "techStack": ["Figma", "Photoshop"]
   },
   {
+    "photo": "/assets/imgs/works/uber.png",
+    "title": "UberEats Clone Mobile App (Frontend)",
+    "link": "https://www.linkedin.com/posts/chamudithaperera_flutter-dart-foodapp-activity-7263136757196439552-XYfG?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
+    "category": "Mobile Applicaiton",
+    "description": "The front-end of my UberEats-inspired food ordering app using Dart and Flutter!  It includes splash, register, and login pages, a feature-rich home with categories and popular items, real-time order tracking, in-app messaging, and a customizable profile with theme settings.",
+    "techStack": ["Dart", "Flutter"]
+  },
+  {
     "photo": "assets/imgs/works/uberEats.jpg",
     "title": "Sample UI/UX Design for UberEats Mobile App",
     "link": "https://www.behance.net/gallery/210269075/Sample-UIUX-Design-for-UberEats-Mobile-App",
