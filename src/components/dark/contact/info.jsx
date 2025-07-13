@@ -184,7 +184,7 @@ function Info() {
                     ></textarea>
                   </div>
                   <div className="mt-30">
-                    <button type="submit" disabled={isSubmitting}>
+                    <button type="submit" disabled={isSubmitting} href="mailto:chamudithaperera.dev@gmail.com">
                       <span className="text">
                         {isSubmitting ? (
                           <>
