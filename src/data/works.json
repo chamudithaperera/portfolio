@@ -1,5 +1,13 @@
 [
   {
+    "photo": "assets/imgs/works/moneymanager.png",
+    "title": "Money Manager APP",
+    "link": "https://www.linkedin.com/posts/chamudithaperera_flutter-nodejs-mongodb-activity-7355636008446554112-3I2I?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
+    "category": "Mobile Applicaiton",
+    "description": "Built with Flutter, Node.js, and MongoDB, this full-stack app offers a smooth cross-platform UI and robust backend. It enables secure management of income, expenses, and financial data with ease.",
+    "techStack": ["Dart", "Flutter", "Node.js", "Express.js", "MongoDB (Mongoose)"]
+  },
+  {
     "photo": "assets/imgs/works/weatherApp.jpeg",
     "title": "Real-Time WEATHER Mobile APP",
     "link": "https://www.linkedin.com/posts/chamudithaperera_flutter-mobileapp-weatherapp-activity-7325197536418238464-_Ua0?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ",
