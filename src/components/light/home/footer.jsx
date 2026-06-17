@@ -10,7 +10,11 @@ function Footer() {
               <p className="fz-13">
                 © 2024 Gavi is Proudly Powered by{' '}
                 <span className="underline main-color">
-                  <a href="https://themeforest.net/user/UICamp" target="_blank">
+                  <a
+                    href="https://themeforest.net/user/UICamp"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
                     UICamp
                   </a>
                 </span>
