@@ -3,10 +3,10 @@
   min-height: 100vh;
   overflow: hidden;
   background:
-    radial-gradient(circle at top left, rgba(45, 212, 191, 0.14), transparent 22%),
-    radial-gradient(circle at right center, rgba(244, 114, 182, 0.12), transparent 24%),
+    radial-gradient(circle at top left, rgba(45, 212, 191, 0.1), transparent 22%),
+    radial-gradient(circle at right center, rgba(163, 175, 255, 0.1), transparent 24%),
     radial-gradient(circle at 50% 0%, rgba(99, 243, 255, 0.06), transparent 34%),
-    linear-gradient(180deg, #050816 0%, #050816 38%, #060a1c 100%);
+    linear-gradient(180deg, #04070f 0%, #050816 42%, #060a1c 100%);
 }
 
 .background-layer {
@@ -88,7 +88,7 @@
   gap: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 22px;
-  background: linear-gradient(180deg, rgba(11, 15, 34, 0.82), rgba(8, 12, 28, 0.7));
+  background: linear-gradient(180deg, rgba(11, 15, 34, 0.88), rgba(8, 12, 28, 0.74));
   backdrop-filter: blur(18px);
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.35),
@@ -225,10 +225,10 @@
 .hero-copy h1 {
   margin: 0;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-size: clamp(3rem, 7vw, 5.35rem);
   line-height: 0.94;
   letter-spacing: -0.06em;
-  max-width: 11.5ch;
+  max-width: 11.7ch;
 }
 
 .hero-text {
@@ -283,6 +283,29 @@
   margin-top: 1.5rem;
 }
 
+.hero-feature-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.hero-feature-card {
+  padding: 0.95rem 1rem;
+  border-radius: 22px;
+}
+
+.hero-feature-card strong,
+.hero-metric-card strong,
+.samurai-badge strong {
+  display: block;
+  margin-top: 0.55rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.98rem;
+  line-height: 1.35;
+  color: rgba(245, 247, 251, 0.94);
+}
+
 .chip {
   display: inline-flex;
   align-items: center;
@@ -297,65 +320,109 @@
 
 .hero-visual {
   min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.profile-orbit {
+.hero-orbit {
   position: relative;
-  min-height: 680px;
+  min-height: auto;
   perspective: 1800px;
   transform-style: preserve-3d;
 }
 
-.profile-frame {
-  position: absolute;
-  inset: 5% 7% 12% 10%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding: 1rem;
-  border-radius: 34px;
+.samurai-stage {
+  position: relative;
+  min-height: 760px;
+  width: 100%;
   overflow: hidden;
+  border-radius: 36px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-    linear-gradient(145deg, rgba(16, 24, 48, 0.95), rgba(8, 10, 24, 0.76));
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    radial-gradient(circle at top, rgba(99, 243, 255, 0.1), transparent 28%),
+    linear-gradient(180deg, rgba(11, 15, 30, 0.95), rgba(6, 10, 22, 0.84));
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 45px 80px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transform: rotateY(-16deg) rotateX(8deg) translateZ(0);
+    0 50px 100px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform: rotateY(-16deg) rotateX(7deg);
 }
 
-.profile-frame::before {
+.samurai-stage::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at top left, rgba(99, 243, 255, 0.22), transparent 35%),
-    radial-gradient(circle at top right, rgba(255, 138, 61, 0.16), transparent 38%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 18%),
+    linear-gradient(120deg, rgba(99, 243, 255, 0.1), transparent 35%, rgba(163, 175, 255, 0.05));
+  pointer-events: none;
 }
 
-.profile-image {
+.samurai-plate {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  filter: saturate(1.05) contrast(1.02);
+  inset: 7% 10% 7% 10%;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(99, 243, 255, 0.03));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  pointer-events: none;
 }
 
-.profile-status {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  margin: 1rem 0 0.2rem;
-  padding: 0.72rem 1rem;
-  border-radius: 999px;
-  background: rgba(5, 8, 22, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(12px);
+.samurai-image {
+  position: absolute;
+  inset: 5% 8% 4%;
+  width: 84%;
+  height: 92%;
+  object-fit: contain;
+  object-position: center center;
+  filter: drop-shadow(0 40px 50px rgba(0, 0, 0, 0.35));
+}
+
+.samurai-scan {
+  position: absolute;
+  inset: auto 0 0;
+  height: 28%;
+  background: linear-gradient(180deg, transparent, rgba(99, 243, 255, 0.08), rgba(5, 8, 22, 0.35));
+  pointer-events: none;
+}
+
+.samurai-badge {
+  max-width: 15rem;
+}
+
+.badge-top {
+  top: 6%;
+  right: 6%;
+  transform: translateZ(90px);
+}
+
+.badge-left {
+  left: 4%;
+  top: 36%;
+  transform: translateZ(60px);
+}
+
+.badge-right {
+  right: 6%;
+  bottom: 14%;
+  transform: translateZ(110px);
+}
+
+.hero-metric-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.hero-metric-card {
+  padding: 1rem 1rem 1.1rem;
+  border-radius: 24px;
+}
+
+.hero-metric-card strong {
+  font-size: 1rem;
 }
 
 .pulse-dot {
@@ -806,8 +873,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .profile-orbit {
-    min-height: 620px;
+  .hero-orbit {
+    min-height: auto;
   }
 }
 
@@ -834,19 +901,15 @@
     max-width: 100%;
   }
 
-  .profile-orbit {
-    min-height: 560px;
-  }
-
-  .floating-left,
-  .floating-right,
-  .code-panel {
+  .badge-top,
+  .badge-left,
+  .badge-right {
     transform: none;
   }
 
-  .code-panel {
-    left: 8%;
-    width: 84%;
+  .samurai-stage {
+    transform: none;
+    min-height: 560px;
   }
 
   .contact-panel {
@@ -909,8 +972,13 @@
     left: 0.72rem;
   }
 
-  .profile-orbit {
-    min-height: 500px;
+  .hero-feature-strip,
+  .hero-metric-row {
+    grid-template-columns: 1fr;
+  }
+
+  .samurai-stage {
+    min-height: 480px;
   }
 }
 

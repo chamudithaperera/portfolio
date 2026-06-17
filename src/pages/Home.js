@@ -262,17 +262,14 @@ function Home() {
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
         >
           <motion.div className="hero-copy" variants={fadeUp}>
-            <p className="eyebrow">
-              Mobile-focused software engineer | Flutter | React | Spring Boot
-            </p>
+            <p className="eyebrow">AI samurai interface | Mobile | Web | Backend</p>
             <h1>
-              Modern software with a dark, robotic interface and a calm, high-performance
-              product feel.
+              Steel-forged software for modern mobile and web products.
             </h1>
             <p className="hero-text">
               I am Chamuditha Perera, a software engineer with a BSc in Information Technology
-              from the University of Jaffna. I build mobile, web, and backend systems with clean
-              UX, scalable architecture, and production-ready delivery.
+              from the University of Jaffna. I build polished mobile apps, web interfaces, and
+              scalable backend systems with a darker, more futuristic product language.
             </p>
 
             <div className="hero-actions">
@@ -292,37 +289,52 @@ function Home() {
               <Chip>AWS</Chip>
               <Chip>Figma</Chip>
             </div>
+
+            <div className="hero-feature-strip">
+              <article className="glass-card hero-feature-card">
+                <span className="panel-label">Mode</span>
+                <strong>Product engineering with a cinematic finish</strong>
+              </article>
+              <article className="glass-card hero-feature-card">
+                <span className="panel-label">Style</span>
+                <strong>Dark metal, cyan glow, precise spacing</strong>
+              </article>
+            </div>
           </motion.div>
 
           <motion.div className="hero-visual" variants={fadeUp}>
-            <div className="profile-orbit">
-              <div className="profile-frame">
+            <div className="hero-orbit">
+              <div className="samurai-stage glass-card">
+                <div className="samurai-plate" aria-hidden="true" />
                 <img
-                  src={withBase('/assets/imgs/header/profile.jpg')}
-                  alt="Chamuditha Perera"
-                  className="profile-image"
+                  src={withBase('/assets/imgs/hero/samurai-ai.png')}
+                  alt="Futuristic samurai AI artwork"
+                  className="samurai-image"
                 />
-                <div className="profile-status">
-                  <span className="pulse-dot" />
-                  Available for product work
+                <div className="samurai-scan" />
+                <div className="floating-panel samurai-badge badge-top">
+                  <span className="panel-label">Reference Mood</span>
+                  <strong>Samurai AI / Dark metal</strong>
+                </div>
+                <div className="floating-panel samurai-badge badge-left">
+                  <span className="panel-label">Design DNA</span>
+                  <strong>3D depth, clean panels, blue glow</strong>
+                </div>
+                <div className="floating-panel samurai-badge badge-right">
+                  <span className="panel-label">System</span>
+                  <strong>Focused, futuristic, premium</strong>
                 </div>
               </div>
 
-              <div className="floating-panel floating-metric floating-left">
-                <span className="panel-label">CORE SYSTEMS</span>
-                <strong>Mobile, Web, Backend</strong>
-                <p>Designed to move like one connected product surface.</p>
-              </div>
-
-              <div className="floating-panel floating-metric floating-right">
-                <span className="panel-label">SIGNAL</span>
-                <strong>UI + API + Cloud</strong>
-                <p>Clean interfaces backed by scalable services.</p>
-              </div>
-
-              <div className="floating-panel code-panel">
-                <span className="panel-label">ACTIVE PROFILE</span>
-                <pre>{`role: "Associate Software Engineer"\nmode: "build"\nstack: ["Flutter", "React", "Spring Boot"]\nfocus: "fast, polished delivery"`}</pre>
+              <div className="hero-metric-row">
+                <article className="glass-card hero-metric-card">
+                  <span className="panel-label">Stack</span>
+                  <strong>Flutter • React • Spring Boot</strong>
+                </article>
+                <article className="glass-card hero-metric-card">
+                  <span className="panel-label">Role</span>
+                  <strong>Associate Software Engineer</strong>
+                </article>
               </div>
             </div>
           </motion.div>
