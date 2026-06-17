@@ -334,7 +334,7 @@
 
 .samurai-stage {
   position: relative;
-  min-height: 760px;
+  min-height: 720px;
   width: 100%;
   overflow: hidden;
   border-radius: 36px;
@@ -358,6 +358,16 @@
   pointer-events: none;
 }
 
+.samurai-stage::after {
+  content: '';
+  position: absolute;
+  inset: 16% 18% 22%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(99, 243, 255, 0.16), transparent 68%);
+  filter: blur(24px);
+  pointer-events: none;
+}
+
 .samurai-plate {
   position: absolute;
   inset: 7% 10% 7% 10%;
@@ -372,12 +382,16 @@
 
 .samurai-image {
   position: absolute;
-  inset: 5% 8% 4%;
-  width: 84%;
-  height: 92%;
+  inset: 2% 6% 0;
+  width: 92%;
+  height: 100%;
   object-fit: contain;
   object-position: center center;
-  filter: drop-shadow(0 40px 50px rgba(0, 0, 0, 0.35));
+  filter:
+    drop-shadow(0 40px 50px rgba(0, 0, 0, 0.35))
+    saturate(1.05)
+    contrast(1.08);
+  transform: scale(1.12) translateY(-4%);
 }
 
 .samurai-scan {
@@ -393,20 +407,20 @@
 }
 
 .badge-top {
-  top: 6%;
-  right: 6%;
+  top: 5%;
+  right: 5%;
   transform: translateZ(90px);
 }
 
 .badge-left {
   left: 4%;
-  top: 36%;
+  top: 33%;
   transform: translateZ(60px);
 }
 
 .badge-right {
-  right: 6%;
-  bottom: 14%;
+  right: 5%;
+  bottom: 12%;
   transform: translateZ(110px);
 }
 
