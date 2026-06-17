@@ -53,24 +53,25 @@ function Info() {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const recipient = 'chamudithaperera.dev@gmail.com';
+      const subject = encodeURIComponent(
+        formData.subject || `Portfolio inquiry from ${formData.name}`
+      );
+      const body = encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+      );
+
+      window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+      setStatus({
+        type: 'success',
+        message: 'Your email app should open with the message prefilled.',
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setStatus({ type: 'success', message: 'Message sent successfully! I will get back to you soon.' });
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setStatus({ type: 'error', message: data.error || 'Failed to send message. Please try again later.' });
-      }
+      setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
-      setStatus({ type: 'error', message: 'Network error. Please check your connection and try again.' });
+      setStatus({
+        type: 'error',
+        message: 'Could not open your email app. Please email me directly.',
+      });
     } finally {
       setIsSubmitting(false);
     }

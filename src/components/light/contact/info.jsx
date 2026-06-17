@@ -1,6 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function Info() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+
+  const handleChange = (e) => {
+    setFormData((current) => ({
+      ...current,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const recipient = 'chamudithaperera.dev@gmail.com';
+    const subject = encodeURIComponent(
+      formData.subject || `Portfolio inquiry from ${formData.name || 'a visitor'}`
+    );
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+    );
+
+    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+  };
+
   return (
     <div className="sec-box contact section-padding bord-thin-top" id="info">
       <div className="row">
@@ -43,9 +71,7 @@ function Info() {
         </div>
         <div className="col-lg-7 valign">
           <div className="full-width wow fadeIn">
-            <form id="contact-form" method="post" action="contact.php">
-              <div className="messages"></div>
-
+            <form id="contact-form" onSubmit={handleSubmit}>
               <div className="controls row">
                 <div className="col-lg-6">
                   <div className="form-group mb-30">
@@ -54,7 +80,9 @@ function Info() {
                       type="text"
                       name="name"
                       placeholder="Name"
-                      required="required"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
@@ -66,7 +94,9 @@ function Info() {
                       type="email"
                       name="email"
                       placeholder="Email"
-                      required="required"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
@@ -78,6 +108,8 @@ function Info() {
                       type="text"
                       name="subject"
                       placeholder="Subject"
+                      value={formData.subject}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -89,7 +121,9 @@ function Info() {
                       name="message"
                       placeholder="Message"
                       rows="4"
-                      required="required"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
                     ></textarea>
                   </div>
                   <div className="mt-30">

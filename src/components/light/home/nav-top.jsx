@@ -29,7 +29,7 @@ function NavTop() {
           <div className="col-md-4 valign">
             <div className="full-width info">
               <div className="d-flex justify-content-end">
-                <a href="mailto:abc@example.com">
+                <a href="mailto:chamudithaperera.dev@gmail.com">
                   <span className="sub-title fz-12">Gavi@website.com</span>
                 </a>
               </div>

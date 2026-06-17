@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
 function Testimonials() {
-  const [reviews, setReviews] = useState([]);
-
-  useEffect(() => {
-    // Fetch reviews from the API
-    const fetchReviews = async () => {
-      const response = await fetch('/api/reviews');
-      const data = await response.json();
-      setReviews(data);
-    };
-
-    fetchReviews();
-  }, []);
+  const reviews = [
+    {
+      _id: '1',
+      rating: 5,
+      comment:
+        'A thoughtful, detail-driven collaborator who brings both design taste and engineering discipline to the table.',
+      name: 'Collaborator Review',
+      email: 'Design / Development',
+    },
+    {
+      _id: '2',
+      rating: 5,
+      comment:
+        'Great communication, fast turnaround, and a strong sense of product polish from concept through delivery.',
+      name: 'Project Feedback',
+      email: 'Client Perspective',
+    },
+  ];
 
   return (
     <div className="sec-box testimonials section-padding">
