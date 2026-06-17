@@ -44,7 +44,7 @@ function Testimonials() {
                   <SwiperSlide>
                     <div className="item ">
                       <div className="icon-img-60 mr-60">
-                        <img src="/assets/imgs/svg-assets/quote.png" alt="" />
+                        <img src={window.__withBase('/assets/imgs/svg-assets/quote.png')} alt="" />
                       </div>
                       <div>
                         <div className="cont mb-30">
@@ -73,7 +73,7 @@ function Testimonials() {
                         <div className="d-flex align-items-center">
                           <div>
                             <div className="img">
-                              <img src="/assets/imgs/testim/1.jpg" alt="" />
+                              <img src={window.__withBase('/assets/imgs/testim/1.jpg')} alt="" />
                             </div>
                           </div>
                           <div className="ml-30">

@@ -26,10 +26,10 @@ function Home() {
     <div>
       <Helmet>
         <title>ChamXdev</title>
-        <link rel="icon" href="/assets/imgs/favicon.ico" />
-        <link rel="shortcut icon" href="/assets/imgs/favicon.ico" />
-        <link rel="stylesheet" type="text/css" href="/assets/css/plugins.css" />
-        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <link rel="icon" href={window.__withBase('/assets/imgs/favicon.ico')} />
+        <link rel="shortcut icon" href={window.__withBase('/assets/imgs/favicon.ico')} />
+        <link rel="stylesheet" type="text/css" href={window.__withBase('/assets/css/plugins.css')} />
+        <link rel="stylesheet" type="text/css" href={window.__withBase('/assets/css/style.css')} />
       </Helmet>
       <Cursor />
       <ContactUs />
@@ -57,16 +57,16 @@ function Home() {
         <Footer />
       </div>
       <script
-        src="/assets/js/jquery-3.6.0.min.js"
+        src={window.__withBase('/assets/js/jquery-3.6.0.min.js')}
         strategy="beforeInteractive"
       />
       <script
-        src="/assets/js/jquery-migrate-3.4.0.min.js"
+        src={window.__withBase('/assets/js/jquery-migrate-3.4.0.min.js')}
         strategy="beforeInteractive"
       />
-      <script src="/assets/js/plugins.js" strategy="lazyOnload" />
-      <script src="/assets/js/scripts.js" strategy="beforeInteractive" />
-      <script src="/assets/js/three.min.js" strategy="lazyOnload" />
+      <script src={window.__withBase('/assets/js/plugins.js')} strategy="lazyOnload" />
+      <script src={window.__withBase('/assets/js/scripts.js')} strategy="beforeInteractive" />
+      <script src={window.__withBase('/assets/js/three.min.js')} strategy="lazyOnload" />
     </div>
   );
 }

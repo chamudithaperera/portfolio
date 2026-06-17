@@ -17,7 +17,7 @@ function Portfolio() {
             <div key={index} className="col-lg-4 col-md-6 items">
               <div className="project-card">
                 <div className="project-image-wrap">
-                  <img src={item.photo} alt={item.title} className="project-image" />
+                  <img src={window.__withBase(item.photo)} alt={item.title} className="project-image" />
                   {item.category && (
                     <span className="project-category-badge">{item.category}</span>
                   )}
@@ -36,7 +36,7 @@ function Portfolio() {
                   )}
                   <div className="project-actions">
                     {item.link ? (
-                      <a href={item.link} target="_blank" rel="noopener noreferrer" className="project-btn main-colorbg">
+                      <a href={window.__withBase(item.link)} target="_blank" rel="noopener noreferrer" className="project-btn main-colorbg">
                         Visit Project
                       </a>
                     ) : (

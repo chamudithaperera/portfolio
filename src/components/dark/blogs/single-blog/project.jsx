@@ -23,7 +23,7 @@ function Project() {
             <p className="sub-title mt-15">13, September 2024 - By Chamuditha Perera</p>
           </div>
           <div className="main-img mb-80 mt-40">
-            <img src="/assets/imgs/blog/uiux1.jpg" alt="UI/UX Design" className="radius-5" />
+            <img src={window.__withBase('/assets/imgs/blog/uiux1.jpg')} alt="UI/UX Design" className="radius-5" />
           </div>
         </div>
       </div>
@@ -66,12 +66,12 @@ function Project() {
               <div className="row">
                 <div className="col-sm-6">
                   <div className="iner-img sm-mb30">
-                    <img src="/assets/imgs/blog/ui1.jpg" alt="UI Design Example" />
+                    <img src={window.__withBase('/assets/imgs/blog/ui1.jpg')} alt="UI Design Example" />
                   </div>
                 </div>
                 <div className="col-sm-6">
                   <div className="iner-img">
-                    <img src="/assets/imgs/blog/ux1.jpg" alt="UX Design Example" />
+                    <img src={window.__withBase('/assets/imgs/blog/ux1.jpg')} alt="UX Design Example" />
                   </div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ function Project() {
                 <div className="author-img mr-30">
                   <div className="img">
                     <img
-                      src="/assets/imgs/blog/author.jpg"
+                      src={window.__withBase('/assets/imgs/blog/author.jpg')}
                       alt=""
                       className="circle-img"
                     />

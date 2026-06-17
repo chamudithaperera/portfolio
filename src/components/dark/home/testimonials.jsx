@@ -56,7 +56,7 @@ function Testimonials() {
                   <SwiperSlide key={review._id}>
                     <div className="item">
                       <div className="icon-img-60 mr-60">
-                        <img src="/assets/imgs/svg-assets/quote.png" alt="Quote" />
+                        <img src={window.__withBase('/assets/imgs/svg-assets/quote.png')} alt="Quote" />
                       </div>
                       <div>
                         <div className="cont mb-30">

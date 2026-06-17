@@ -20,7 +20,7 @@ function Project() {
             <p className="sub-title mt-15">6 , August 2022 - By Admin</p>
           </div>
           <div className="main-img mb-80 mt-40">
-            <img src="/assets/imgs/blog/m.jpg" alt="" className="radius-5" />
+            <img src={window.__withBase('/assets/imgs/blog/m.jpg')} alt="" className="radius-5" />
           </div>
         </div>
       </div>
@@ -82,12 +82,12 @@ function Project() {
               <div className="row">
                 <div className="col-sm-6">
                   <div className="iner-img sm-mb30">
-                    <img src="/assets/imgs/blog/b1.jpg" alt="" />
+                    <img src={window.__withBase('/assets/imgs/blog/b1.jpg')} alt="" />
                   </div>
                 </div>
                 <div className="col-sm-6">
                   <div className="iner-img">
-                    <img src="/assets/imgs/blog/b2.jpg" alt="" />
+                    <img src={window.__withBase('/assets/imgs/blog/b2.jpg')} alt="" />
                   </div>
                 </div>
               </div>
@@ -177,7 +177,7 @@ function Project() {
                 <div className="author-img mr-30">
                   <div className="img">
                     <img
-                      src="/assets/imgs/blog/author1.jpg"
+                      src={window.__withBase('/assets/imgs/blog/author1.jpg')}
                       alt=""
                       className="circle-img"
                     />
@@ -234,7 +234,7 @@ function Project() {
                   <div className="user-img mr-30">
                     <div className="img circle-60 line-height-1">
                       <img
-                        src="/assets/imgs/blog/author1.jpg"
+                        src={window.__withBase('/assets/imgs/blog/author1.jpg')}
                         alt=""
                         className="circle-img"
                       />
@@ -260,7 +260,7 @@ function Project() {
                   <div className="user-img mr-30">
                     <div className="img circle-60 line-height-1">
                       <img
-                        src="/assets/imgs/blog/author1.jpg"
+                        src={window.__withBase('/assets/imgs/blog/author1.jpg')}
                         alt=""
                         className="circle-img"
                       />

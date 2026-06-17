@@ -6,8 +6,8 @@ function Nav() {
       <div className="container">
         <div className="row">
           <div className="col-md-4 valign">
-            <a href="/light" className="logo icon-img-60">
-              <img src="/light/assets/imgs/logo-dark.png" alt="" />
+            <a href={window.__withBase('/light')} className="logo icon-img-60">
+              <img src={window.__withBase('/light/assets/imgs/logo-dark.png')} alt="" />
             </a>
           </div>
           <div className="col-md-8">
@@ -16,37 +16,37 @@ function Nav() {
                 <div className="col-lg-8 rest">
                   <ul className="navbar-nav main-bg d-flex justify-content-end">
                     <li className="nav-item">
-                      <a href="/light">
+                      <a href={window.__withBase('/light')}>
                         <span>Home</span>
                       </a>
                     </li>
                     <li className="nav-item">
-                      <a href="/light">
+                      <a href={window.__withBase('/light')}>
                         <span>Services</span>
                       </a>
                     </li>
                     <li className="nav-item">
-                      <a href="/light">
+                      <a href={window.__withBase('/light')}>
                         <span>About</span>
                       </a>
                     </li>
                     <li className="nav-item">
-                      <a href="/light">
+                      <a href={window.__withBase('/light')}>
                         <span>Portfolio</span>
                       </a>
                     </li>
                     <li className="nav-item">
-                      <a href="/light">
+                      <a href={window.__withBase('/light')}>
                         <span>Price</span>
                       </a>
                     </li>
                     <li className="nav-item">
-                      <a href="/light">
+                      <a href={window.__withBase('/light')}>
                         <span>Contact</span>
                       </a>
                     </li>
                     <li className="nav-item">
-                      <a href="/light">
+                      <a href={window.__withBase('/light')}>
                         <span>Blog</span>
                       </a>
                     </li>

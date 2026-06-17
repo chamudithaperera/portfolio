@@ -13,7 +13,7 @@ function Blog() {
           </div>
           <div className="col-lg-6 valign">
             <div className="go-more full-width d-flex justify-content-end">
-              <a href="/blogs" className="d-flex">
+              <a href={window.__withBase('/blogs')} className="d-flex">
                 <span>
                   View All Posts{' '}
                   <svg
@@ -36,7 +36,7 @@ function Blog() {
           <div key={index} className="col-lg-4">
             <div className="item md-mb30 wow fadeIn" data-wow-delay=".2s">
               <div className="img">
-                <img src={item.photo} alt="" />
+                <img src={window.__withBase(item.photo)} alt="" />
               </div>
               <div className="box">
                 <div className="cont">
@@ -44,7 +44,7 @@ function Blog() {
                     <i className="fas fa-calendar-alt mr-10 main-color"></i> {item.date}
                   </span>
                   <h5>
-                    <a href={item.link}>{item.title}</a>
+                    <a href={window.__withBase(item.link)}>{item.title}</a>
                   </h5>
                 </div>
                 <div className="info d-flex align-items-center">

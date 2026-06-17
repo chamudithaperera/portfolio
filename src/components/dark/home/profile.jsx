@@ -8,15 +8,15 @@ function Profile() {
           <div className="cont valign">
             <div className="full-width">
               <div className="img">
-                <img src="/assets/imgs/header/profile.jpg" alt="" />
+                <img src={window.__withBase('/assets/imgs/header/profile.jpg')} alt="" />
                 <span className="icon">
-                  <img src="/assets/imgs/header/icon1.png" alt="" />
+                  <img src={window.__withBase('/assets/imgs/header/icon1.png')} alt="" />
                 </span>
                 <span className="icon">
-                  <img src="/assets/imgs/header/icon2.png" alt="" />
+                  <img src={window.__withBase('/assets/imgs/header/icon2.png')} alt="" />
                 </span>
                 <span className="icon">
-                  <img src="/assets/imgs/header/icon4.png" alt="" />
+                  <img src={window.__withBase('/assets/imgs/header/icon4.png')} alt="" />
                 </span>
               </div>
               <div className="info text-center mt-30">
@@ -74,7 +74,7 @@ function Profile() {
               </div>
               <div>
                 <div className="butn-presv">
-                  <a href="/chamudithaperera_resume.pdf" download="ChamudithaPerera_Resume.pdf" className="butn butn-md butn-bord radius-5 skew">
+                  <a href={window.__withBase('/chamudithaperera_resume.pdf')} download="ChamudithaPerera_Resume.pdf" className="butn butn-md butn-bord radius-5 skew">
                     <span>Dwonload CV</span>
                   </a>
                 </div>

@@ -16,7 +16,7 @@ function Posts() {
           <div key={index} className="col-lg-4">
             <div className="item md-mb30 mb-30">
               <div className="img">
-                <img src={item.photo} alt="" />
+                <img src={window.__withBase(item.photo)} alt="" />
               </div>
               <div className="box">
                 <div className="cont">
@@ -25,7 +25,7 @@ function Posts() {
                     Aug 2022
                   </span>
                   <h5>
-                    <a href={item.link}>{item.title}</a>
+                    <a href={window.__withBase(item.link)}>{item.title}</a>
                   </h5>
                 </div>
                 <div className="info d-flex align-items-center">
@@ -35,7 +35,7 @@ function Posts() {
                     </span>
                   </div>
                   <div className="ml-auto">
-                    <a href={item.link}>
+                    <a href={window.__withBase(item.link)}>
                       Read More{' '}
                       <svg
                         className="ml-5"

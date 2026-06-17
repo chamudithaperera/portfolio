@@ -15,7 +15,7 @@ function Portfolio() {
           </div>
           <div className="col-lg-6 valign">
             <div className="go-more full-width d-flex justify-content-end">
-              <a href="/l-works" className="d-flex">
+              <a href={window.__withBase('/l-works')} className="d-flex">
                 <span>
                   View All Works
                   <svg
@@ -40,20 +40,20 @@ function Portfolio() {
             <div key={index} className="col-lg-6 items">
               <div className="item mt-50 wow fadeInUp" data-wow-delay=".2s">
                 <div className="img">
-                  <a href={item.link}>
-                    <img src={item.photo} alt="" />
+                  <a href={window.__withBase(item.link)}>
+                    <img src={window.__withBase(item.photo)} alt="" />
                   </a>
                 </div>
                 <div className="cont mt-30 d-flex align-items-center">
                   <div>
                     <span className="tag">Branding</span>
                     <h6 className="line-height-1">
-                      <a href={item.link}>{item.title}</a>
+                      <a href={window.__withBase(item.link)}>{item.title}</a>
                     </h6>
                   </div>
                   <div className="ml-auto">
                     <div className="arrow">
-                      <a href={item.link}>
+                      <a href={window.__withBase(item.link)}>
                         <svg
                           className="arrow-right"
                           xmlns="http://www.w3.org/2000/svg"

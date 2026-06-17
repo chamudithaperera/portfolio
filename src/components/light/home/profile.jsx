@@ -8,15 +8,15 @@ function Profile() {
           <div className="cont valign">
             <div className="full-width">
               <div className="img">
-                <img src="/light/assets/imgs/header/profile.jpg" alt="" />
+                <img src={window.__withBase('/light/assets/imgs/header/profile.jpg')} alt="" />
                 <span className="icon">
-                  <img src="/light/assets/imgs/header/icon1.png" alt="" />
+                  <img src={window.__withBase('/light/assets/imgs/header/icon1.png')} alt="" />
                 </span>
                 <span className="icon">
-                  <img src="/light/assets/imgs/header/icon2.png" alt="" />
+                  <img src={window.__withBase('/light/assets/imgs/header/icon2.png')} alt="" />
                 </span>
                 <span className="icon">
-                  <img src="/light/assets/imgs/header/icon4.png" alt="" />
+                  <img src={window.__withBase('/light/assets/imgs/header/icon4.png')} alt="" />
                 </span>
               </div>
               <div className="info text-center mt-30">

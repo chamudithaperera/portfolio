@@ -7,7 +7,7 @@ function Navbar() {
         <div className="col-lg-8 rest">
           <ul className="navbar-nav main-bg d-flex justify-content-end">
             <li className="nav-item">
-              <a href="/dark">
+              <a href={window.__withBase('/dark')}>
                 <span>Home</span>
               </a>
             </li>

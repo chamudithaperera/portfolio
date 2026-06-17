@@ -16,7 +16,7 @@ const SkillsSection = () => {
         {skills.map((skill, idx) => (
           <div className="simple-skill-card" key={idx}>
             <img
-              src={skill.icon}
+              src={window.__withBase(skill.icon)}
               alt={skill.name + ' icon'}
               style={{
                 width: 32,

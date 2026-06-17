@@ -22,7 +22,7 @@ function Landing() {
             <div className="item mt-40">
               <div className="img">
                 <div className="screen">
-                  <a href="/dark" target="_blank">
+                  <a href={window.__withBase('/dark')} target="_blank">
                     <img src="demos/1.png" alt="" />
                   </a>
                 </div>
@@ -37,7 +37,7 @@ function Landing() {
             <div className="item mt-40">
               <div className="img">
                 <div className="screen">
-                  <a href="/light-m" target="_blank">
+                  <a href={window.__withBase('/light-m')} target="_blank">
                     <img src="demos/2.png" alt="" />
                   </a>
                 </div>

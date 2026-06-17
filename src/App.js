@@ -13,7 +13,7 @@ import LightWorks from './pages/light/works';
 import SingleBlog from './pages/dark/single-blog';
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL || '/'}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dark" element={<HomeDark />} />

@@ -22,7 +22,7 @@ function Services() {
           <div key={index} className="col-lg-3 col-md-6">
             <div className="modern-service-card">
               <div className="modern-service-icon-wrap">
-                <img src={item.icon} alt={item.title} className="modern-service-icon" />
+                <img src={window.__withBase(item.icon)} alt={item.title} className="modern-service-icon" />
               </div>
               <h6 className="modern-service-title">{item.title}</h6>
               <p className="modern-service-desc">{item.description}</p>

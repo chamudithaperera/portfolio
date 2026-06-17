@@ -13,7 +13,7 @@ function Blog() {
         <div className="col-lg-10">
           <div className="item">
             <div className="img">
-              <img src="/assets/imgs/blog/m1.jpg" alt="" />
+              <img src={window.__withBase('/assets/imgs/blog/m1.jpg')} alt="" />
             </div>
             <div className="box">
               <div className="cont text-center">

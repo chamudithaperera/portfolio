@@ -24,7 +24,7 @@ function Skills() {
                   <div className="d-flex align-items-center mb-30">
                     <div className="mr-30">
                       <div className="img icon-img-40">
-                        <img src={item.photo} alt="" />
+                        <img src={window.__withBase(item.photo)} alt="" />
                       </div>
                     </div>
                     <div>
@@ -58,7 +58,7 @@ function Skills() {
                   </div>
                 </div>
                 <div className="img icon-img-100 mt-80 mb-30">
-                  <img src={item.photo} alt="" />
+                  <img src={window.__withBase(item.photo)} alt="" />
                 </div>
                 <h6>02x Designer Award</h6>
                 <span className="sub-title main-color mt-10">{item.title}</span>

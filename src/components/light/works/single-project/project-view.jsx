@@ -7,7 +7,7 @@ function ProjectView() {
         <div className="col-lg-11">
           <div className="img mb-80">
             <img
-              src="/light/assets/imgs/works/project/1.png"
+              src={window.__withBase('/light/assets/imgs/works/project/1.png')}
               alt=""
               className="radius-5"
             />
@@ -162,12 +162,12 @@ function ProjectView() {
             <div className="row md-marg">
               <div className="col-md-6">
                 <div className="img sm-mb30">
-                  <img src="/light/assets/imgs/works/project/2.png" alt="" />
+                  <img src={window.__withBase('/light/assets/imgs/works/project/2.png')} alt="" />
                 </div>
               </div>
               <div className="col-md-6">
                 <div className="img">
-                  <img src="/light/assets/imgs/works/project/3.png" alt="" />
+                  <img src={window.__withBase('/light/assets/imgs/works/project/3.png')} alt="" />
                 </div>
               </div>
             </div>

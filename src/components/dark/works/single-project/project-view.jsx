@@ -12,7 +12,7 @@ function ProjectView() {
           <div className="project-card">
             <div className="project-image-wrap">
               <img
-                src={project.photo}
+                src={window.__withBase(project.photo)}
                 alt={project.title}
                 className="project-image"
               />
@@ -29,7 +29,7 @@ function ProjectView() {
               )}
               <div className="project-actions mt-20">
                 {project.link ? (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="project-btn main-colorbg">
+                  <a href={window.__withBase(project.link)} target="_blank" rel="noopener noreferrer" className="project-btn main-colorbg">
                     Visit Project
                   </a>
                 ) : (

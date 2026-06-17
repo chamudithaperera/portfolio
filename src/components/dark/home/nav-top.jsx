@@ -7,7 +7,7 @@ function NavTop() {
         <div className="row">
           <div className="col-md-4 valign">
             <a href="#0" className="logo icon-img-60">
-              <img src="/assets/imgs/logo-light.png" alt="" />
+              <img src={window.__withBase('/assets/imgs/logo-light.png')} alt="" />
             </a>
           </div>
           <div className="col-md-4 valign">

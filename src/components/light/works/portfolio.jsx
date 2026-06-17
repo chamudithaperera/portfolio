@@ -15,8 +15,8 @@ function Portfolio() {
             <div key={index} className="col-lg-6 items">
               <div className="item mt-50">
                 <div className="img">
-                  <a href={item.link}>
-                    <img src={item.photo} alt="" />
+                  <a href={window.__withBase(item.link)}>
+                    <img src={window.__withBase(item.photo)} alt="" />
                   </a>
                 </div>
                 <div className="cont mt-30 d-flex align-items-center">
