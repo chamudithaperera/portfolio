@@ -1,157 +1,112 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { motion } from 'framer-motion';
 import withBase from '../utils/basePath';
 
 const navItems = [
-  { label: 'Systems', href: '#systems' },
-  { label: 'Stack', href: '#stack' },
+  { label: 'About', href: '#about' },
   { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Education', href: '#education' },
   { label: 'Contact', href: '#contact' },
 ];
 
 const stats = [
-  { value: 'Flutter + React', label: 'Mobile and web delivery' },
-  { value: 'Spring Boot + AWS', label: 'Scalable backend systems' },
-  { value: 'UI/UX + Figma', label: 'Product thinking and prototyping' },
-  { value: 'BSc IT', label: 'University of Jaffna' },
+  { value: '4+', label: 'Projects' },
+  { value: '2y+', label: 'Experience' },
+  { value: '20+', label: 'Tech' },
 ];
 
-const systems = [
-  {
-    title: 'Mobile intelligence',
-    text:
-      'Flutter-first product builds for Android and iOS with fast iteration, polished UI, and local-first experiences.',
-  },
-  {
-    title: 'Web control surfaces',
-    text:
-      'React and TypeScript interfaces for dashboards, admin portals, and customer-facing products with clean information hierarchy.',
-  },
-  {
-    title: 'Backend orchestration',
-    text:
-      'Spring Boot and Node.js services with JWT, REST APIs, caching, WebSockets, and database design for production workflows.',
-  },
-];
-
-const stackGroups = [
+const skills = [
   {
     title: 'Languages',
     items: ['Dart', 'Java', 'TypeScript', 'JavaScript', 'HTML', 'CSS', 'PHP'],
   },
   {
-    title: 'Frontend and Mobile',
+    title: 'Frontend & Mobile',
     items: ['Flutter', 'React', 'React Native', 'Tailwind CSS', 'Riverpod'],
   },
   {
-    title: 'Backend and Data',
+    title: 'Backend & Data',
     items: ['Spring Boot', 'Node.js', 'Express.js', 'Firebase', 'MongoDB', 'MySQL', 'PostgreSQL', 'SQLite', 'Redis', 'JWT', 'REST APIs'],
   },
   {
-    title: 'DevOps and Design',
+    title: 'DevOps & Design',
     items: ['Docker', 'Kubernetes', 'Helm', 'Nginx', 'AWS', 'GitHub Actions', 'Figma', 'Photoshop', 'Postman'],
   },
 ];
 
 const experience = [
   {
+    period: '2026 Mar - Present',
     role: 'Associate Software Engineer',
     org: 'W3Inventor',
-    period: '2026 Mar - Present',
     detail:
       'Building ride-hailing and pooling systems with Flutter, React/TypeScript, and Spring Boot microservices, including trip planning, live tracking, bookings, notifications, and deployment workflows.',
   },
   {
+    period: '2025 Sep - 2026 Mar',
     role: 'Intern Mobile Application Developer',
     org: 'W3Inventor',
-    period: '2025 Sep - 2026 Mar',
     detail:
       'Contributed to Flutter ride-hailing app development, API integration, authentication flows, and debugging in a microservices-based architecture.',
   },
   {
+    period: '2024 Dec - 2025 Sep',
     role: 'Intern UI/UX Designer',
     org: 'Kyranz IT',
-    period: '2024 Dec - 2025 Sep',
     detail:
       'Created user-friendly web and mobile interfaces, wireframes, and prototypes in Figma while supporting responsive product design.',
   },
   {
+    period: '2024 Jun - 2024 Dec',
     role: 'Intern UI/UX Designer',
     org: 'Web99x',
-    period: '2024 Jun - 2024 Dec',
     detail:
       'Crafted wireframes, mockups, and prototypes in Figma, collaborating with developers to ship cleaner user-focused interfaces.',
-  },
-  {
-    role: 'Bank Trainee',
-    org: 'Peoples\' Bank, International Banking Division',
-    period: '2021 Dec - 2022 Jun',
-    detail:
-      'Supported import bills processing, document verification, and daily operations in international trade finance.',
   },
 ];
 
 const projects = [
   {
     title: 'Money Manager App',
-    kind: 'Flutter mobile system',
+    category: 'Flutter mobile system',
     image: '/assets/imgs/works/moneymanager.png',
     summary:
       'A local-first personal finance app with wallet tracking, savings goals, wishlist planning, budgets, charts, CSV export, and PDF generation.',
-    tech: ['Flutter', 'Riverpod', 'SQLite', 'SharedPreferences', 'Charts'],
+    tags: ['Flutter', 'Riverpod', 'SQLite', 'SharedPreferences'],
     link:
       'https://www.linkedin.com/posts/chamudithaperera_flutter-nodejs-mongodb-activity-7355636008446554112-3I2I?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
   },
   {
     title: 'EduLink Peer Tutoring Platform',
-    kind: 'Web product',
+    category: 'Web product',
     image: '/assets/imgs/works/edupro.jpeg',
     summary:
-      'A full-stack student tutoring platform with authentication, course enrollment, scheduling, messaging, admin tools, and analytics.',
-    tech: ['React', 'Tailwind CSS', 'Node.js', 'Express', 'MongoDB'],
+      'A full-stack tutoring platform with authentication, course enrollment, scheduling, messaging, admin tools, and analytics.',
+    tags: ['React', 'Tailwind CSS', 'Node.js', 'Express', 'MongoDB'],
     link:
       'https://www.linkedin.com/posts/chamudithaperera_edulink-finalyearproject-mernstack-activity-7313985622233255936-t0Iq?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
   },
   {
     title: 'Weather App',
-    kind: 'Realtime mobile experience',
+    category: 'Realtime mobile experience',
     image: '/assets/imgs/works/weatherApp.jpeg',
     summary:
       'A responsive Flutter weather app with real-time updates, hourly and daily forecasts, geolocation, and live city search.',
-    tech: ['Flutter', 'Dart', 'OpenWeatherMap API', 'Geolocator'],
+    tags: ['Flutter', 'Dart', 'OpenWeatherMap API', 'Geolocator'],
     link:
       'https://www.linkedin.com/posts/chamudithaperera_flutter-mobileapp-weatherapp-activity-7325197536418238464-_Ua0?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
   },
   {
     title: 'Avurudu Nakath App',
-    kind: 'Cultural utility app',
+    category: 'Cultural utility app',
     image: '/assets/imgs/works/avuruduApp.jpeg',
     summary:
       'A Sinhala and Tamil New Year app with Nakath schedules, ritual details, and push notifications for timely reminders.',
-    tech: ['Flutter', 'Countdown Timer', 'Local Notifications'],
+    tags: ['Flutter', 'Countdown Timer', 'Local Notifications'],
     link:
       'https://www.linkedin.com/posts/chamudithaperera_avurudunakath2025-mobileapp-playstore-activity-7309530321211822080-RZB2?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
-  },
-  {
-    title: 'Resume Maker',
-    kind: 'Productivity tool',
-    image: '/assets/imgs/works/resumeMaker.jpeg',
-    summary:
-      'A modern resume builder with four templates, live previews, guided forms, social sharing, and high-quality PDF export.',
-    tech: ['Flutter', 'Google Fonts', 'Path Provider', 'Image Picker', 'PDF'],
-    link:
-      'https://www.linkedin.com/posts/chamudithaperera_flutter-dart-resumemaker-activity-7319021500181753856-K47X?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
-  },
-  {
-    title: 'Ride-hailing Platform',
-    kind: 'Current production work',
-    image: null,
-    summary:
-      'A live ride-hailing and pooling platform with passenger and driver apps, admin web panels, Spring Boot services, Redis, MQTT, Firebase, and AWS deployment.',
-    tech: ['Flutter', 'React', 'Spring Boot', 'PostgreSQL', 'Redis', 'MQTT', 'AWS'],
-    link: '',
   },
 ];
 
@@ -161,14 +116,14 @@ const education = [
     org: 'University of Jaffna',
     period: '2022 Oct - 2025 Jul',
     detail:
-      'Focused on programming, algorithms, web systems, database design, operating systems, networks, mobile computing, security, and project-based software delivery.',
+      'Programming, algorithms, web systems, database design, operating systems, networks, mobile computing, security, and project-based delivery.',
   },
   {
     title: 'Diploma in Information Technology',
     org: 'IMBS Green Campus',
     period: '2021 - 2022',
     detail:
-      'Completed a 30-credit diploma with a 3.73 GPA, covering hardware, networking, web engineering, software engineering, and a software development project.',
+      '30-credit diploma with a 3.73 GPA covering hardware, networking, web engineering, software engineering, and a software development project.',
   },
   {
     title: 'A/L Technology Stream',
@@ -186,400 +141,472 @@ const education = [
 ];
 
 const certifications = [
-  'AI/ML Engineer - Stage 1, SLIIT (2026)',
-  'Dart & Flutter Development Course, Udemy (2024)',
-  'IT for Business Success, HP (2021)',
+  { title: 'AI/ML Engineer - Stage 1', org: 'SLIIT', year: '2026' },
+  { title: 'Dart & Flutter Development Course', org: 'Udemy', year: '2024' },
+  { title: 'IT for Business Success', org: 'HP', year: '2021' },
 ];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: 'easeOut' } },
-};
-
-function SectionTitle({ kicker, title, description }) {
+function SectionTitle({ kicker, title, description, centered = false }) {
   return (
-    <div className="section-title">
+    <div className={`section-title ${centered ? 'centered' : ''}`}>
       <p className="section-kicker">{kicker}</p>
       <h2>{title}</h2>
-      <p className="section-description">{description}</p>
+      {description ? <p className="section-description">{description}</p> : null}
     </div>
   );
 }
 
-function Chip({ children }) {
-  return <span className="chip">{children}</span>;
+function ContactRow({ label, value, href }) {
+  const isLink = href && href !== '#';
+  const content = (
+    <>
+      <div className="contact-row-label">{label}</div>
+      <div className="contact-row-value">{value}</div>
+    </>
+  );
+
+  if (!isLink) {
+    return <div className="contact-row">{content}</div>;
+  }
+
+  return (
+    <a className="contact-row" href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
+      {content}
+    </a>
+  );
 }
 
 function Home() {
   return (
-    <div className="site-shell">
+    <div className="bolt-shell">
       <Helmet>
-        <title>ChamXdev | Software Engineer Portfolio</title>
+        <title>ChamXdev — Software Engineer Portfolio</title>
         <meta
           name="description"
-          content="Modern dark portfolio website for Chamuditha Perera, a software engineer focused on Flutter, React, Spring Boot, and production-ready mobile and web systems."
+          content="A modern dark portfolio for Chamuditha Perera, built with a Bolt-inspired 3D UI and CV-driven content."
         />
-        <meta name="theme-color" content="#050816" />
+        <meta name="theme-color" content="#080b14" />
         <link rel="icon" href={withBase('/assets/imgs/favicon.ico')} />
         <link rel="shortcut icon" href={withBase('/assets/imgs/favicon.ico')} />
       </Helmet>
 
-      <div className="background-layer" aria-hidden="true">
-        <span className="orb orb-cyan" />
-        <span className="orb orb-violet" />
-        <span className="orb orb-orange" />
-        <span className="grid-overlay" />
-        <span className="noise-overlay" />
-      </div>
+      <div className="noise" aria-hidden="true" />
+      <div className="orb orb-a" aria-hidden="true" />
+      <div className="orb orb-b" aria-hidden="true" />
 
-      <header className="topbar">
-        <a className="brand" href="#home" aria-label="ChamXdev home">
-          <span className="brand-mark">CX</span>
-          <span className="brand-text">
-            <strong>ChamXdev</strong>
-            <small>Software engineer portfolio</small>
+      <nav className="top-nav">
+        <a className="brand-link" href="#hero" aria-label="ChamXdev home">
+          <span className="brand-mark">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m18 16 4-4-4-4" />
+              <path d="m6 8-4 4 4 4" />
+              <path d="m14.5 4-5 16" />
+            </svg>
           </span>
+          <span className="brand-wordmark">chamxdev</span>
         </a>
 
-        <nav className="nav-links" aria-label="Primary">
+        <div className="nav-links">
           {navItems.map((item) => (
             <a key={item.label} href={item.href}>
               {item.label}
             </a>
           ))}
-        </nav>
+        </div>
 
-        <a className="nav-cta" href={withBase('/ChamudithaPereraCV1.pdf')} target="_blank" rel="noreferrer">
-          Download CV
+        <a className="nav-button" href="#contact">
+          Hire Me
         </a>
-      </header>
+      </nav>
 
-      <main className="page" id="home">
-        <motion.section
-          className="hero section-grid"
-          initial="hidden"
-          animate="visible"
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
-        >
-          <motion.div className="hero-copy" variants={fadeUp}>
-            <p className="eyebrow">AI samurai interface | Mobile | Web | Backend</p>
-            <h1>
-              Steel-forged software for modern mobile and web products.
-            </h1>
-            <p className="hero-text">
-              I am Chamuditha Perera, a software engineer with a BSc in Information Technology
-              from the University of Jaffna. I build polished mobile apps, web interfaces, and
-              scalable backend systems with a darker, more futuristic product language.
-            </p>
-
-            <div className="hero-actions">
-              <a className="btn btn-primary" href="#projects">
-                Explore Projects
-              </a>
-              <a className="btn btn-secondary" href="#contact">
-                Contact Me
-              </a>
-            </div>
-
-            <div className="hero-tags" aria-label="Core stack">
-              <Chip>Flutter</Chip>
-              <Chip>React</Chip>
-              <Chip>Spring Boot</Chip>
-              <Chip>TypeScript</Chip>
-              <Chip>AWS</Chip>
-              <Chip>Figma</Chip>
-            </div>
-
-            <div className="hero-feature-strip">
-              <article className="glass-card hero-feature-card">
-                <span className="panel-label">Mode</span>
-                <strong>Product engineering with a cinematic finish</strong>
-              </article>
-              <article className="glass-card hero-feature-card">
-                <span className="panel-label">Style</span>
-                <strong>Dark metal, cyan glow, precise spacing</strong>
-              </article>
-            </div>
-          </motion.div>
-
-          <motion.div className="hero-visual" variants={fadeUp}>
-            <div className="hero-orbit">
-              <div className="samurai-stage glass-card">
-                <div className="samurai-plate" aria-hidden="true" />
-                <img
-                  src={withBase('/assets/imgs/hero/samurai-ai.png')}
-                  alt="Futuristic samurai AI artwork"
-                  className="samurai-image"
-                />
-                <div className="samurai-scan" />
-                <div className="floating-panel samurai-badge badge-top">
-                  <span className="panel-label">Reference Mood</span>
-                  <strong>Samurai AI / Dark metal</strong>
-                </div>
-                <div className="floating-panel samurai-badge badge-left">
-                  <span className="panel-label">Design DNA</span>
-                  <strong>3D depth, clean panels, blue glow</strong>
-                </div>
-                <div className="floating-panel samurai-badge badge-right">
-                  <span className="panel-label">System</span>
-                  <strong>Focused, futuristic, premium</strong>
-                </div>
+      <main>
+        <section id="hero" className="hero-section dot-grid">
+          <div className="hero-inner">
+            <div className="hero-copy">
+              <div className="hero-pill">
+                <span className="pill-dot" />
+                Open to new opportunities
               </div>
 
-              <div className="hero-metric-row">
-                <article className="glass-card hero-metric-card">
-                  <span className="panel-label">Stack</span>
-                  <strong>Flutter • React • Spring Boot</strong>
-                </article>
-                <article className="glass-card hero-metric-card">
-                  <span className="panel-label">Role</span>
-                  <strong>Associate Software Engineer</strong>
-                </article>
+              <p className="eyebrow">HELLO, I'M</p>
+              <h1 className="hero-name">
+                <span className="hero-name-top">M. C. K.</span>
+                <span className="hero-name-bottom">Perera</span>
+              </h1>
+
+              <div className="role-line">
+                Full Stack Developer<span className="cursor-blink">|</span>
+              </div>
+
+              <p className="hero-text">
+                Mobile-focused engineer building <strong>end-to-end mobile, web & backend systems</strong>.
+                Proficient in <span>Flutter</span>, <span>React</span>, and <span>Spring Boot</span> with
+                production cloud experience.
+              </p>
+
+              <div className="hero-actions">
+                <a className="primary-btn" href="#projects">
+                  View My Work
+                </a>
+                <a className="secondary-btn" href="#contact">
+                  Get In Touch
+                </a>
+              </div>
+
+              <div className="social-links" aria-label="Social links">
+                <a href="https://github.com/chamudithaperera" target="_blank" rel="noreferrer" aria-label="GitHub">
+                  GH
+                </a>
+                <a href="https://linkedin.com/in/chamudithaperera" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                  IN
+                </a>
+                <a href="mailto:chamudithaperera.dev@gmail.com" aria-label="Email">
+                  @
+                </a>
+                <a href="https://chamxdev.vercel.app" target="_blank" rel="noreferrer" aria-label="Portfolio">
+                  ↗
+                </a>
               </div>
             </div>
-          </motion.div>
-        </motion.section>
 
-        <motion.section
-          className="stats-grid"
-          id="about"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          {stats.map((stat) => (
-            <motion.article className="stat-card" key={stat.label} variants={fadeUp}>
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </motion.article>
-          ))}
-        </motion.section>
+            <div className="hero-visual">
+              <div className="hero-orbit">
+                <div className="orb-ring orb-ring-a" />
+                <div className="orb-ring orb-ring-b" />
 
-        <motion.section
-          className="content-section"
-          id="systems"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.24 }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
-        >
-          <SectionTitle
-            kicker="Systems"
-            title="A portfolio built like a product surface"
-            description="The layout is organized around the kinds of systems I actually build: mobile apps, web control panels, and backend services that behave like one cohesive platform."
-          />
-
-          <div className="systems-grid">
-            {systems.map((item, index) => (
-              <article className="glass-card system-card" key={item.title}>
-                <div className="card-index">0{index + 1}</div>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section
-          className="content-section"
-          id="stack"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.24 }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-        >
-          <SectionTitle
-            kicker="Stack"
-            title="Capabilities shaped for mobile-first, full-stack delivery"
-            description="The skill system below reflects your CV and current work: Flutter and React at the front, Spring Boot and Node.js in the middle, and Docker, AWS, and Kubernetes around the edges."
-          />
-
-          <div className="stack-grid">
-            {stackGroups.map((group) => (
-              <article className="glass-card stack-card" key={group.title}>
-                <h3>{group.title}</h3>
-                <div className="stack-chips">
-                  {group.items.map((item) => (
-                    <Chip key={item}>{item}</Chip>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section
-          className="content-section"
-          id="experience"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-        >
-          <SectionTitle
-            kicker="Experience"
-            title="Built across product, design, and engineering roles"
-            description="This timeline uses your resume details and keeps the focus on progression: from UI/UX work into mobile development and now into full-stack systems."
-          />
-
-          <div className="timeline">
-            {experience.map((item) => (
-              <article className="timeline-item glass-card" key={`${item.role}-${item.period}`}>
-                <div className="timeline-meta">
-                  <span className="timeline-period">{item.period}</span>
-                  <span className="timeline-org">{item.org}</span>
-                </div>
-                <h3>{item.role}</h3>
-                <p>{item.detail}</p>
-              </article>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section
-          className="content-section"
-          id="projects"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.18 }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionTitle
-            kicker="Projects"
-            title="Selected work with strong visual presence"
-            description="These featured projects are pulled from the CV and your existing assets so the portfolio feels grounded in real work, not placeholder content."
-          />
-
-          <div className="projects-grid">
-            {projects.map((project) => (
-              <article className="project-card glass-card" key={project.title}>
-                <div className="project-media">
-                  {project.image ? (
-                    <img src={withBase(project.image)} alt={project.title} />
-                  ) : (
-                    <div className="project-placeholder">
-                      <span className="placeholder-mark">CX</span>
-                      <p>Architecture-first system design</p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="project-body">
-                  <div className="project-topline">
-                    <span>{project.kind}</span>
-                    {project.link ? (
-                      <a href={project.link} target="_blank" rel="noreferrer">
-                        Open
-                      </a>
-                    ) : (
-                      <span className="project-live">In progress</span>
-                    )}
+                <div className="profile-card card-3d">
+                  <div className="profile-hero-image">
+                    <img src={withBase('/assets/imgs/hero/samurai-ai.png')} alt="Samurai AI theme" />
+                    <div className="profile-hero-overlay" />
+                    <div className="avatar-badge">CK</div>
                   </div>
-                  <h3>{project.title}</h3>
-                  <p>{project.summary}</p>
-                  <div className="stack-chips project-chips">
-                    {project.tech.map((tech) => (
-                      <Chip key={tech}>{tech}</Chip>
+
+                  <div className="profile-body">
+                    <h3>M. C. K. Perera</h3>
+                    <p>Software Engineer · Sri Lanka</p>
+
+                    <div className="status-pill">
+                      <span className="pill-dot" />
+                      Available for work
+                    </div>
+
+                    <div className="mini-stats">
+                      {stats.map((item) => (
+                        <div key={item.label} className="mini-stat">
+                          <strong>{item.value}</strong>
+                          <span>{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <span className="float-chip float-chip-a">Flutter</span>
+                <span className="float-chip float-chip-b">Spring Boot</span>
+                <span className="float-chip float-chip-c">React</span>
+                <span className="float-chip float-chip-d">Docker</span>
+              </div>
+            </div>
+          </div>
+
+          <a className="scroll-hint" href="#about">
+            <span>Scroll</span>
+            <span>↓</span>
+          </a>
+        </section>
+
+        <section id="about" className="content-section">
+          <div className="section-divider" />
+          <div className="section-inner">
+            <div className="section-head">
+              <p className="section-index">01. Who I Am</p>
+              <h2>
+                About <span>Me</span>
+              </h2>
+            </div>
+
+            <div className="about-grid">
+              <div className="about-copy">
+                <p>
+                  I'm a <strong>mobile-focused software engineer</strong> with a BSc in Information Technology
+                  from the University of Jaffna. I specialise in building end-to-end mobile, web, and backend
+                  systems using full-stack and microservices architectures.
+                </p>
+                <p>
+                  My core strengths are <strong>Flutter (Dart)</strong> for Android/iOS and <strong>React + TypeScript</strong>{' '}
+                  for the web. On the backend I work with <strong>Java, Spring Boot</strong>, JWT auth, Redis,
+                  WebSocket, and relational/NoSQL databases.
+                </p>
+                <p>
+                  Skilled in Firebase, Google Maps APIs, MQTT, and AWS services including S3 and EKS. Hands-on with
+                  <strong> Docker, Kubernetes, Helm, NGINX</strong>, and GitHub Actions CI/CD for production-grade
+                  deployments.
+                </p>
+
+                <div className="metrics-grid">
+                  <div className="metric-card">
+                    <strong>4+</strong>
+                    <span>Projects</span>
+                  </div>
+                  <div className="metric-card">
+                    <strong>2+</strong>
+                    <span>Yrs Experience</span>
+                  </div>
+                  <div className="metric-card">
+                    <strong>20+</strong>
+                    <span>Technologies</span>
+                  </div>
+                  <div className="metric-card">
+                    <strong>BSc</strong>
+                    <span>IT Degree</span>
+                  </div>
+                </div>
+              </div>
+
+              <aside className="contact-panel card-3d">
+                <div className="contact-panel-header">Contact Information</div>
+                <div className="contact-list">
+                  <ContactRow label="Email" value="chamudithaperera.dev@gmail.com" href="mailto:chamudithaperera.dev@gmail.com" />
+                  <ContactRow label="Phone" value="+94719153552" href="tel:+94719153552" />
+                  <ContactRow label="Location" value="No 83, Galle Road, Kalutara North" href="#" />
+                  <ContactRow label="GitHub" value="github.com/chamudithaperera" href="https://github.com/chamudithaperera" />
+                  <ContactRow label="LinkedIn" value="linkedin.com/in/chamudithaperera" href="https://linkedin.com/in/chamudithaperera" />
+                  <ContactRow label="Portfolio" value="chamxdev.vercel.app" href="https://chamxdev.vercel.app" />
+                </div>
+                <div className="availability-card">
+                  <span className="pill-dot" />
+                  <div>
+                    <strong>Available Now</strong>
+                    <p>Open to full-time, freelance, and collaboration.</p>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section id="experience" className="content-section">
+          <div className="section-divider" />
+          <div className="section-inner">
+            <SectionTitle
+              kicker="02. Experience"
+              title="Professional Timeline"
+              description="A clean timeline of the engineering and design roles that shaped the portfolio."
+            />
+
+            <div className="timeline">
+              {experience.map((item) => (
+                <article key={`${item.role}-${item.period}`} className="timeline-card card-3d">
+                  <div className="timeline-meta">
+                    <span>{item.period}</span>
+                    <span>{item.org}</span>
+                  </div>
+                  <h3>{item.role}</h3>
+                  <p>{item.detail}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="projects" className="content-section">
+          <div className="section-divider" />
+          <div className="section-inner">
+            <SectionTitle
+              kicker="03. Projects"
+              title="Selected Work"
+              description="Featured projects pulled from your CV and existing assets."
+            />
+
+            <div className="projects-grid">
+              {projects.map((project) => (
+                <article key={project.title} className="project-card card-3d">
+                  <div className="project-media">
+                    <img src={withBase(project.image)} alt={project.title} />
+                    <div className="project-media-overlay" />
+                    <a className="project-open" href={project.link} target="_blank" rel="noreferrer">
+                      OPEN
+                    </a>
+                  </div>
+
+                  <div className="project-body">
+                    <div className="project-kicker">{project.category}</div>
+                    <h3>{project.title}</h3>
+                    <p>{project.summary}</p>
+                    <div className="chip-row">
+                      {project.tags.map((tag) => (
+                        <span key={tag} className="chip">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="skills" className="content-section">
+          <div className="section-divider" />
+          <div className="section-inner">
+            <SectionTitle
+              kicker="04. Skills"
+              title="Capabilities"
+              description="The stack is shaped around the actual technologies used in your resume."
+            />
+
+            <div className="skills-grid">
+              {skills.map((group) => (
+                <article key={group.title} className="skill-card card-3d">
+                  <h3>{group.title}</h3>
+                  <div className="chip-row">
+                    {group.items.map((item) => (
+                      <span key={item} className="chip">
+                        {item}
+                      </span>
                     ))}
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              ))}
+            </div>
           </div>
-        </motion.section>
+        </section>
 
-        <motion.section
-          className="content-section split-section"
-          id="education"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.18 }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionTitle
-            kicker="Education and Certifications"
-            title="The foundation behind the portfolio"
-            description="A compact view of the degrees, coursework, and certifications that back the engineering and product work."
-          />
+        <section id="education" className="content-section">
+          <div className="section-divider" />
+          <div className="section-inner">
+            <SectionTitle
+              kicker="05. Education"
+              title="Education and Certifications"
+              description="A polished summary of the academic path and credentials."
+            />
 
-          <div className="education-grid">
-            <div className="stack-card glass-card">
-              <h3>Education</h3>
-              <div className="vertical-list">
+            <div className="education-grid">
+              <div className="education-list">
                 {education.map((item) => (
-                  <article key={`${item.title}-${item.period}`} className="mini-entry">
-                    <div className="mini-entry-head">
-                      <strong>{item.title}</strong>
+                  <article key={`${item.title}-${item.period}`} className="education-card card-3d">
+                    <div className="education-head">
+                      <h3>{item.title}</h3>
                       <span>{item.period}</span>
                     </div>
-                    <p>
-                      {item.org}
-                      <br />
-                      {item.detail}
-                    </p>
+                    <p className="education-org">{item.org}</p>
+                    <p>{item.detail}</p>
                   </article>
                 ))}
               </div>
-            </div>
 
-            <div className="stack-card glass-card">
-              <h3>Certifications</h3>
-              <div className="vertical-list">
-                {certifications.map((item) => (
-                  <div className="mini-pill" key={item}>
-                    {item}
+              <div className="education-side">
+                <article className="cert-card card-3d">
+                  <div className="side-title">Certifications</div>
+                  <div className="cert-list">
+                    {certifications.map((cert) => (
+                      <div key={cert.title} className="cert-item">
+                        <strong>{cert.title}</strong>
+                        <span>
+                          {cert.org} · {cert.year}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </article>
+
+                <article className="refs-card card-3d">
+                  <div className="side-title">References</div>
+                  <div className="ref-item">
+                    <strong>Dr. T. Kartheeswaran</strong>
+                    <span>Senior Lecturer Gr. II, University of Vavuniya</span>
+                  </div>
+                  <div className="ref-item">
+                    <strong>Ms. H.A.I. Perera</strong>
+                    <span>Chief Internal Auditor, Ministry of Digital Economy</span>
+                  </div>
+                </article>
               </div>
             </div>
           </div>
-        </motion.section>
+        </section>
 
-        <motion.section
-          className="content-section contact-section"
-          id="contact"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.18 }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionTitle
-            kicker="Contact"
-            title="Ready to build the next interface"
-            description="If you want this site to become a product page, a hiring portfolio, or a personal brand landing page, this is the right place to start the conversation."
-          />
+        <section id="contact" className="content-section">
+          <div className="section-divider" />
+          <div className="section-inner">
+            <SectionTitle
+              kicker="06. Get In Touch"
+              title="Let's Connect"
+              description="Whether you have a project, want to collaborate, or just want to say hello — my inbox is always open."
+              centered
+            />
 
-          <div className="contact-panel glass-card">
-            <div>
-              <p className="contact-label">Email</p>
-              <a href="mailto:chamudithaperera.dev@gmail.com">chamudithaperera.dev@gmail.com</a>
-            </div>
-            <div>
-              <p className="contact-label">Portfolio</p>
-              <a href="https://chamxdev.vercel.app" target="_blank" rel="noreferrer">
-                chamxdev.vercel.app
-              </a>
-            </div>
-            <div>
-              <p className="contact-label">GitHub</p>
-              <a href="https://github.com/chamudithaperera" target="_blank" rel="noreferrer">
-                github.com/chamudithaperera
-              </a>
-            </div>
-            <div>
-              <p className="contact-label">LinkedIn</p>
-              <a href="https://www.linkedin.com/in/chamudithaperera/" target="_blank" rel="noreferrer">
-                linkedin.com/in/chamudithaperera
-              </a>
+            <div className="contact-grid">
+              <div className="contact-links card-3d">
+                <ContactRow label="Email" value="chamudithaperera.dev@gmail.com" href="mailto:chamudithaperera.dev@gmail.com" />
+                <ContactRow label="Phone" value="+94719153552" href="tel:+94719153552" />
+                <ContactRow label="Location" value="Kalutara, Sri Lanka" href="#" />
+                <ContactRow label="GitHub" value="github.com/chamudithaperera" href="https://github.com/chamudithaperera" />
+                <ContactRow label="LinkedIn" value="linkedin.com/in/chamudithaperera" href="https://linkedin.com/in/chamudithaperera" />
+                <ContactRow label="Portfolio" value="chamxdev.vercel.app" href="https://chamxdev.vercel.app" />
+
+                <div className="availability-card compact">
+                  <span className="pill-dot" />
+                  <div>
+                    <strong>Available Now</strong>
+                    <p>Open to full-time, freelance, and collaboration.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="message-card card-3d">
+                <div className="message-head">Send a Message</div>
+                <form className="message-form" onSubmit={(event) => event.preventDefault()}>
+                  <div className="form-row">
+                    <label>
+                      <span>Name</span>
+                      <input type="text" placeholder="Your name" name="name" />
+                    </label>
+                    <label>
+                      <span>Email</span>
+                      <input type="email" placeholder="your@email.com" name="email" />
+                    </label>
+                  </div>
+                  <label>
+                    <span>Subject</span>
+                    <input type="text" placeholder="What's this about?" name="subject" />
+                  </label>
+                  <label>
+                    <span>Message</span>
+                    <textarea rows="5" placeholder="Tell me about your project or opportunity..." name="message" />
+                  </label>
+                  <button type="submit" className="primary-btn submit-btn">
+                    Send Message
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
-        </motion.section>
+        </section>
       </main>
 
       <footer className="site-footer">
-        <span>ChamXdev</span>
-        <span>Dark portfolio system, rebuilt from your CV.</span>
+        <div className="footer-brand">
+          <span className="brand-mark small">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m18 16 4-4-4-4" />
+              <path d="m6 8-4 4 4 4" />
+              <path d="m14.5 4-5 16" />
+            </svg>
+          </span>
+          <span>chamxdev</span>
+        </div>
+        <p>© 2026 M. C. K. Perera · All rights reserved</p>
+        <div className="footer-socials">
+          <a href="https://github.com/chamudithaperera" target="_blank" rel="noreferrer">
+            GH
+          </a>
+          <a href="https://linkedin.com/in/chamudithaperera" target="_blank" rel="noreferrer">
+            IN
+          </a>
+          <a href="mailto:chamudithaperera.dev@gmail.com">@</a>
+        </div>
       </footer>
     </div>
   );

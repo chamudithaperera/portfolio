@@ -1,8 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap');
-
-:root {
-  color-scheme: dark;
-}
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -14,9 +10,9 @@ html {
 
 body {
   margin: 0;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  background: #050816;
-  color: #f5f7fb;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #080b14;
+  color: #e8eeff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -41,7 +37,7 @@ img {
 
 code,
 pre {
-  font-family: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 #root {
