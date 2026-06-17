@@ -174,7 +174,7 @@
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
-  gap: 3.5rem;
+  gap: 4.25rem;
   min-height: calc(100vh - 10rem);
 }
 
@@ -360,8 +360,8 @@
 
 .hero-orbit {
   position: relative;
-  width: min(100%, 430px);
-  min-height: 660px;
+  width: min(100%, 470px);
+  min-height: 700px;
   transform-style: preserve-3d;
 }
 
@@ -386,8 +386,8 @@
 
 .profile-card {
   position: relative;
-  margin: 5rem auto 0;
-  width: min(100%, 360px);
+  margin: 4.3rem auto 0;
+  width: min(100%, 400px);
   border-radius: 28px;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(7, 13, 31, 0.95), rgba(10, 18, 37, 0.86));
@@ -400,7 +400,7 @@
 
 .profile-hero-image {
   position: relative;
-  height: 14rem;
+  height: 16.5rem;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(37, 99, 235, 0.16), rgba(7, 13, 31, 0.96));
 }
@@ -426,8 +426,8 @@
   position: absolute;
   inset: 50% auto auto 50%;
   transform: translate(-50%, -50%);
-  width: 5rem;
-  height: 5rem;
+  width: 5.35rem;
+  height: 5.35rem;
   display: grid;
   place-items: center;
   border-radius: 1.2rem;
@@ -510,24 +510,24 @@
 }
 
 .float-chip-a {
-  left: -0.5rem;
-  top: 18%;
+  left: -0.9rem;
+  top: 16%;
 }
 
 .float-chip-b {
-  right: -0.8rem;
-  top: 26%;
+  right: -1rem;
+  top: 25%;
   color: #7ae2b0;
 }
 
 .float-chip-c {
-  left: -0.5rem;
-  bottom: 26%;
+  left: -0.9rem;
+  bottom: 24%;
 }
 
 .float-chip-d {
-  right: -0.5rem;
-  bottom: 14%;
+  right: -0.9rem;
+  bottom: 12%;
   color: #a78bfa;
 }
 
@@ -1182,7 +1182,7 @@
 
   .hero-orbit {
     width: 100%;
-    min-height: 600px;
+    min-height: 640px;
   }
 
   .float-chip-a,
@@ -1218,6 +1218,6 @@
   }
 
   .hero-orbit {
-    min-height: 520px;
+    min-height: 540px;
   }
 }
