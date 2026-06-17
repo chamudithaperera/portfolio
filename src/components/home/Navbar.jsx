@@ -7,7 +7,7 @@ function Navbar() {
         <div className="row">
           <div className="col-md-6 valign">
             <a href="https://chamxdev.vercel.app/" className="logo icon-img-60">
-              <img src="assets/imgs/logo-light.png" alt="" />
+              <img src={window.__withBase('assets/imgs/logo-light.png')} alt="" />
             </a>
           </div>
           <div className="col-md-6 valign">

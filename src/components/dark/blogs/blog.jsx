@@ -22,7 +22,7 @@ function Blog() {
                   Aug 2022
                 </span>
                 <h4>
-                  <a href="single-blog">
+                    <a href={window.__withBase('/single-blog')}>
                     12 unique examples of portfolio websites.
                   </a>
                 </h4>
@@ -43,7 +43,7 @@ function Blog() {
                   </span>
                 </div>
                 <div className="ml-auto">
-                  <a href="single-blog">
+                    <a href={window.__withBase('/single-blog')}>
                     Read More{' '}
                     <svg
                       className="ml-5"

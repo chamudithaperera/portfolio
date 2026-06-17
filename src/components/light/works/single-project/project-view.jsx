@@ -180,14 +180,14 @@ function ProjectView() {
             <div className="d-flex align-items-center mt-80 pt-80 bord-thin-top">
               <div className="prev">
                 <h6 className="sub-title">
-                  <a href="#">
+                  <a href="#0">
                     <i className="fas fa-long-arrow-alt-left"></i> Prev Project
                   </a>
                 </h6>
               </div>
               <div className="next ml-auto">
                 <h6 className="sub-title">
-                  <a href="#">
+                  <a href="#0">
                     next Project <i className="fas fa-long-arrow-alt-right"></i>
                   </a>
                 </h6>

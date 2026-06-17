@@ -1,4 +1,5 @@
 import './App.css';
+import './utils/basePath';
 import Home from './pages/Home';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomeDark from './pages/dark/Home';

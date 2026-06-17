@@ -147,8 +147,8 @@ function Project() {
                     <span>Tags :</span>
                   </div>
                   <div>
-                    <a href="#">Tech</a>
-                    <a href="#">Gavi</a>
+                    <a href="#0">Tech</a>
+                    <a href="#0">Gavi</a>
                   </div>
                 </div>
               </div>
@@ -198,9 +198,9 @@ function Project() {
             <div className="next-prv-post flex mt-50">
               <div
                 className="thumb-post bg-img"
-                data-background="assets/imgs/blog/1.jpg"
+                data-background={window.__withBase('assets/imgs/blog/1.jpg')}
               >
-                <a href="single-blog">
+                <a href={window.__withBase('/single-blog')}>
                   <span className="fz-12 text-u ls1 main-color mb-15">
                     <i className="pe-7s-angle-left"></i>
                     Prev Post
@@ -212,9 +212,9 @@ function Project() {
               </div>
               <div
                 className="thumb-post ml-auto text-right bg-img"
-                data-background="assets/imgs/blog/2.jpg"
+                data-background={window.__withBase('assets/imgs/blog/2.jpg')}
               >
-                <a href="single-blog">
+                <a href={window.__withBase('/single-blog')}>
                   <span className="fz-12 text-u ls1 main-color mb-15">
                     Next Post <i className="pe-7s-angle-right"></i>
                   </span>

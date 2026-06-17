@@ -54,7 +54,7 @@ function Blog() {
                     </span>
                   </div> */}
                   <div className="ml-auto">
-                    <a href="single-blog">
+                    <a href={window.__withBase('/single-blog')}>
                       Read More{' '}
                       <svg
                         className="ml-5"
