@@ -4,12 +4,20 @@
   "private": true,
   "homepage": "https://chamudithaperera.online",
   "dependencies": {
+    "@supabase/supabase-js": "^2.56.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "cra-template": "^1.2.0",
+    "compression": "^1.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
     "framer-motion": "^12.9.4",
     "gsap": "^3.12.5",
+    "helmet": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
@@ -20,11 +28,15 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server/index.js",
+    "server": "node server/index.js",
+    "client": "react-scripts start",
+    "dev": "concurrently \"npm:server\" \"npm:client\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "http://localhost:5000",
   "eslintConfig": {
     "extends": [
       "react-app",
