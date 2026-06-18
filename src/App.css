@@ -1027,6 +1027,8 @@ a.contact-item:hover {
   margin-bottom: 4rem;
 }
 
+.projects-more-button,
+.projects-back-button,
 .projects-heading>a {
   display: inline-flex;
   align-items: center;
@@ -1038,6 +1040,38 @@ a.contact-item:hover {
 
 .projects-heading>a:hover {
   color: #60a5fa;
+}
+
+.projects-more-button,
+.projects-back-button {
+  padding: 0.8rem 1.1rem;
+  border: 1px solid rgba(30, 58, 138, 0.24);
+  border-radius: 999px;
+  background: rgba(7, 13, 31, 0.92);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.08);
+}
+
+.projects-more-button:hover,
+.projects-back-button:hover {
+  border-color: rgba(59, 130, 246, 0.34);
+  color: #93c5fd;
+}
+
+.project-card-button {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.project-card-button:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 4px;
 }
 
 .featured-project {
@@ -1177,6 +1211,22 @@ a.contact-item:hover {
   gap: 0.75rem;
 }
 
+.project-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+  color: rgba(96, 165, 250, 0.8);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.project-card-cta svg {
+  color: #60a5fa;
+}
+
 .colorful-tag {
   color: #93c5fd;
 }
@@ -1209,6 +1259,10 @@ a.contact-item:hover {
   margin-top: 1rem;
 }
 
+.project-grid-page {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .project-card {
   display: flex;
   overflow: hidden;
@@ -1216,6 +1270,179 @@ a.contact-item:hover {
   border: 1px solid rgba(30, 58, 138, 0.2);
   border-radius: 1rem;
   background: #070d1f;
+}
+
+.project-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(2, 5, 16, 0.78);
+  backdrop-filter: blur(18px);
+}
+
+.project-modal {
+  position: relative;
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  width: min(72rem, 100%);
+  max-height: min(90vh, 62rem);
+  overflow: hidden;
+  border: 1px solid rgba(30, 58, 138, 0.28);
+  border-radius: 1.5rem;
+  background: linear-gradient(180deg, #0b1024, #050816);
+}
+
+.project-modal-visual {
+  position: relative;
+  min-height: 100%;
+  height: 100%;
+}
+
+.project-modal-visual img {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  object-fit: cover;
+}
+
+.project-modal-copy {
+  overflow: auto;
+  padding: 2rem;
+}
+
+.project-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border: 1px solid rgba(30, 58, 138, 0.22);
+  border-radius: 50%;
+  color: #c7d6ff;
+  background: rgba(7, 13, 31, 0.9);
+}
+
+.project-modal-close:hover {
+  color: #fff;
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.project-modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.project-modal-title-row h3 {
+  margin: 0;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.35rem);
+  line-height: 1.08;
+}
+
+.project-modal-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  border-radius: 999px;
+  color: #93c5fd;
+  background: rgba(23, 37, 84, 0.18);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-modal-summary {
+  margin: 0 0 1.25rem;
+  color: var(--slate-400);
+  font-size: 0.925rem;
+  line-height: 1.8;
+}
+
+.project-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.project-modal-block h4 {
+  margin: 0 0 0.75rem;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.project-modal-block ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--slate-500);
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.project-modal-block li::marker {
+  color: #60a5fa;
+}
+
+.project-modal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.project-modal-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.72rem 1rem;
+  border: 1px solid rgba(30, 58, 138, 0.24);
+  border-radius: 999px;
+  color: #c7d6ff;
+  background: rgba(7, 13, 31, 0.88);
+  font-size: 0.8rem;
+}
+
+.project-modal-links a:hover {
+  color: #fff;
+  border-color: rgba(59, 130, 246, 0.42);
+}
+
+.project-modal-links a svg {
+  color: #60a5fa;
+}
+
+.projects-page-shell .section-projects {
+  padding-top: 8.5rem;
+}
+
+.projects-page-grid {
+  padding-top: 0;
+}
+
+.projects-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+body.modal-open {
+  overflow: hidden;
 }
 
 .nebula {
@@ -2127,6 +2354,27 @@ textarea:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .project-grid-page {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .project-modal {
+    grid-template-columns: 1fr;
+  }
+
+  .project-modal-visual {
+    min-height: 18rem;
+  }
+
+  .project-modal-copy {
+    max-height: none;
+  }
+
+  .projects-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .solar-system {
     transform: none;
   }
@@ -2248,6 +2496,34 @@ textarea:focus-visible {
 
   .project-grid {
     grid-template-columns: 1fr;
+  }
+
+  .project-grid-page {
+    grid-template-columns: 1fr;
+  }
+
+  .project-modal-backdrop {
+    padding: 1rem;
+  }
+
+  .project-modal-copy {
+    padding: 1.5rem;
+  }
+
+  .project-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-modal-title-row {
+    flex-direction: column;
+  }
+
+  .project-modal-links {
+    flex-direction: column;
+  }
+
+  .projects-page-header {
+    margin-bottom: 2rem;
   }
 
   .solar-system {
@@ -4520,6 +4796,12 @@ textarea:focus-visible {
     height: 2.45rem;
   }
 
+  .projects-more-button,
+  .projects-back-button {
+    width: 100%;
+    justify-content: center;
+  }
+
   .slider-button {
     width: 2.5rem;
     height: 2.5rem;
@@ -4607,6 +4889,11 @@ textarea:focus-visible {
 
   .footer-cta>a {
     justify-content: center;
+  }
+
+  .project-modal-close {
+    top: 0.85rem;
+    right: 0.85rem;
   }
 }
 

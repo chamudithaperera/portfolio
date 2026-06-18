@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
 
@@ -98,6 +99,12 @@ const projects = [
     image: '/assets/imgs/works/moneymanager.png',
     summary:
       'A local-first personal finance app with wallet tracking, savings goals, wishlist planning, budgets, charts, CSV export, and PDF generation.',
+    highlights: [
+      'Offline-first finance tracking with clean wallet and balance views.',
+      'Savings goals, wishlist planning, budgeting, charts, CSV export, and PDF reporting.',
+      'Built to keep users in control of daily spending and long-term targets.',
+    ],
+    featuredNote: 'Personal finance companion',
     tags: ['Flutter', 'Riverpod', 'SQLite', 'SharedPreferences'],
     link:
       'https://www.linkedin.com/posts/chamudithaperera_flutter-nodejs-mongodb-activity-7355636008446554112-3I2I?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
@@ -108,6 +115,12 @@ const projects = [
     image: '/assets/imgs/works/edupro.jpeg',
     summary:
       'A full-stack tutoring platform with authentication, course enrollment, scheduling, messaging, admin tools, and analytics.',
+    highlights: [
+      'Full-stack tutoring workflow with authentication, course enrollment, and scheduling.',
+      'Messaging, admin tools, and analytics to support tutors and students in one place.',
+      'Designed for a clear, approachable learning experience across devices.',
+    ],
+    featuredNote: 'Learning platform case study',
     tags: ['React', 'Tailwind CSS', 'Node.js', 'Express', 'MongoDB'],
     link:
       'https://www.linkedin.com/posts/chamudithaperera_edulink-finalyearproject-mernstack-activity-7313985622233255936-t0Iq?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
@@ -118,6 +131,12 @@ const projects = [
     image: '/assets/imgs/works/weatherApp.jpeg',
     summary:
       'A responsive Flutter weather app with real-time updates, hourly and daily forecasts, geolocation, and live city search.',
+    highlights: [
+      'Responsive weather experience with live forecasts, hourly data, and geolocation.',
+      'City search and location-aware views make it quick to check current conditions.',
+      'Focuses on clarity, speed, and simple decision-making for users on the move.',
+    ],
+    featuredNote: 'Live weather companion',
     tags: ['Flutter', 'Dart', 'OpenWeatherMap API', 'Geolocator'],
     link:
       'https://www.linkedin.com/posts/chamudithaperera_flutter-mobileapp-weatherapp-activity-7325197536418238464-_Ua0?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
@@ -128,6 +147,12 @@ const projects = [
     image: '/assets/imgs/works/avuruduApp.jpeg',
     summary:
       'A Sinhala and Tamil New Year app with Nakath schedules, ritual details, and push notifications for timely reminders.',
+    highlights: [
+      'Nakath schedules, ritual details, and reminder-first timing for the New Year season.',
+      'Push notifications help users stay on time for culturally important moments.',
+      'Built to keep a traditional experience simple and accessible on mobile.',
+    ],
+    featuredNote: 'Festival planning app',
     tags: ['Flutter', 'Countdown Timer', 'Local Notifications'],
     link:
       'https://www.linkedin.com/posts/chamudithaperera_avurudunakath2025-mobileapp-playstore-activity-7309530321211822080-RZB2?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
@@ -843,22 +868,22 @@ function Experience() {
   );
 }
 
-function ProjectLinks({ project }) {
-  return (
-    <div className="project-links">
-      <a href={project.link} target="_blank" rel="noopener noreferrer">
-        <Icon name="external" size={13} /> View Project
-      </a>
-      <a href={`https://github.com/${profile.github}`} target="_blank" rel="noopener noreferrer">
-        <Icon name="github" size={13} /> GitHub
-      </a>
-    </div>
-  );
-}
+function ProjectCard({ project, featured = false, onOpen }) {
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onOpen(project);
+    }
+  };
 
-function ProjectCard({ project, featured = false }) {
   return (
-    <article className={`${featured ? 'featured-project' : 'project-card'} card-3d`}>
+    <button
+      type="button"
+      className={`${featured ? 'featured-project' : 'project-card'} project-card-button card-3d`}
+      aria-label={`Open details for ${project.title}`}
+      onClick={() => onOpen(project)}
+      onKeyDown={handleKeyDown}
+    >
       <div className="project-image">
         <img src={withBase(project.image)} alt={project.title} />
         <div className="project-image-wash" />
@@ -881,34 +906,182 @@ function ProjectCard({ project, featured = false }) {
               </span>
             ))}
           </div>
-          <ProjectLinks project={project} />
+          <div className="project-card-cta">
+            <Icon name="sparkles" size={12} />
+            <span>Click for details</span>
+          </div>
         </div>
       </div>
-    </article>
+    </button>
   );
 }
 
-function Projects() {
+function ProjectModal({ project, onClose }) {
+  useEffect(() => {
+    if (!project) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.body.classList.add('modal-open');
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose, project]);
+
+  if (!project) {
+    return null;
+  }
+
+  const modalId = `project-modal-title-${project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
   return (
-    <section id="projects" className="section section-projects">
+    <div className="project-modal-backdrop" role="presentation" onClick={onClose}>
+      <article
+        className="project-modal card-3d"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={modalId}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="project-modal-close" aria-label="Close project details" onClick={onClose}>
+          <Icon name="close" size={18} />
+        </button>
+
+        <div className="project-modal-visual">
+          <img src={withBase(project.image)} alt={project.title} />
+          <div className="project-image-wash" />
+          <span className="project-status">
+            <span /> Detailed preview
+          </span>
+        </div>
+
+        <div className="project-modal-copy">
+          <p className="project-overline">Project Detail</p>
+          <div className="project-modal-title-row">
+            <div>
+              <h3 id={modalId}>{project.title}</h3>
+              <p className="project-role">{project.category}</p>
+            </div>
+            <span className="project-modal-pill">{project.featuredNote}</span>
+          </div>
+
+          <p className="project-modal-summary">{project.summary}</p>
+
+          <div className="project-modal-grid">
+            <div className="project-modal-block">
+              <h4>Highlights</h4>
+              <ul>
+                {project.highlights.map((highlight) => (
+                  <li key={highlight}>{highlight}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="project-modal-block">
+              <h4>Stack</h4>
+              <div className="tag-row">
+                {project.tags.map((tag) => (
+                  <span key={tag} className="tech-tag colorful-tag">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <h4>Links</h4>
+              <div className="project-modal-links">
+                <a href={project.link} target="_blank" rel="noopener noreferrer">
+                  <Icon name="external" size={13} /> Open project post
+                </a>
+                <a href={`https://github.com/${profile.github}`} target="_blank" rel="noopener noreferrer">
+                  <Icon name="github" size={13} /> GitHub profile
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  );
+}
+
+function Projects({ mode = 'home' }) {
+  const [activeProject, setActiveProject] = useState(null);
+  const featuredProject = projects[0];
+  const projectItems = mode === 'page' ? projects : projects.slice(1);
+  const headingTitle = mode === 'page' ? 'All' : 'Featured';
+  const sectionClassName = `section section-projects ${mode === 'page' ? 'projects-page-grid' : ''}`.trim();
+
+  return (
+    <section id="projects" className={sectionClassName}>
       <div className="section-divider" />
       <Reveal className="section-inner">
-        <div className="projects-heading">
-          <SectionHeading index="03. What I've Built" title="Featured" accent="Projects" align="left" />
-          <a href={`https://github.com/${profile.github}`} target="_blank" rel="noopener noreferrer">
-            <Icon name="github" size={15} />
-            View all on GitHub
-            <Icon name="external" size={13} />
-          </a>
-        </div>
-        <ProjectCard project={projects[0]} featured />
-        <div className="project-grid">
-          {projects.slice(1).map((project) => (
-            <ProjectCard key={project.title} project={project} />
+        {mode === 'page' ? (
+          <div className="projects-page-header">
+            <SectionHeading
+              index="03. What I've Built"
+              title={headingTitle}
+              accent="Projects"
+              align="left"
+              description="Browse every project featured on the portfolio. Click any card to open a detailed preview."
+            />
+            <Link className="projects-back-button" to="/">
+              <Icon name="arrowLeft" size={14} />
+              Back to Home
+            </Link>
+          </div>
+        ) : (
+          <div className="projects-heading">
+            <SectionHeading index="03. What I've Built" title={headingTitle} accent="Projects" align="left" />
+            <Link className="projects-more-button" to="/projects">
+              More Projects
+              <Icon name="arrowRight" size={14} />
+            </Link>
+          </div>
+        )}
+        {mode === 'home' ? <ProjectCard project={featuredProject} featured onOpen={setActiveProject} /> : null}
+        <div className={`project-grid ${mode === 'page' ? 'project-grid-page' : ''}`}>
+          {projectItems.map((project) => (
+            <ProjectCard key={project.title} project={project} onOpen={setActiveProject} />
           ))}
         </div>
+        <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />
       </Reveal>
     </section>
+  );
+}
+
+function ProjectsPage() {
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') {
+      return;
+    }
+
+    try {
+      window.scrollTo(0, 0);
+    } catch (error) {
+      void error;
+    }
+  }, []);
+
+  return (
+    <div className="bolt-shell projects-page-shell">
+      <Helmet>
+        <title>ChamXdev by Chamuditha Perer | Projects</title>
+      </Helmet>
+      <Navigation />
+      <main>
+        <Projects mode="page" />
+      </main>
+    </div>
   );
 }
 
@@ -1622,4 +1795,5 @@ function Home() {
   );
 }
 
+export { ProjectsPage };
 export default Home;

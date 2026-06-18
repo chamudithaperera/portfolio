@@ -83,10 +83,27 @@ test('keeps local project content and safe external links', () => {
   expect(screen.getByRole('heading', { name: 'EduLink Peer Tutoring Platform' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Weather App' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Avurudu Nakath App' })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'More Projects' })).toHaveAttribute('href', '/projects');
 
   const githubLinks = screen.getAllByRole('link', { name: /github/i });
   const externalGithub = githubLinks.find((link) => link.getAttribute('target') === '_blank');
   expect(externalGithub).toHaveAttribute('rel', expect.stringContaining('noopener'));
+});
+
+test('opens a project detail modal and the projects page route', async () => {
+  render(<App />);
+
+  fireEvent.click(screen.getByRole('button', { name: 'Open details for Money Manager App' }));
+  const modal = await screen.findByRole('dialog', { name: 'Money Manager App' });
+  expect(modal).toBeInTheDocument();
+  expect(within(modal).getByRole('heading', { name: 'Money Manager App' })).toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole('button', { name: 'Close project details' }));
+  expect(screen.queryByRole('dialog', { name: 'Money Manager App' })).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole('link', { name: 'More Projects' }));
+  expect(await screen.findByRole('heading', { name: 'All Projects' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Open details for Money Manager App' })).toBeInTheDocument();
 });
 
 test('shows the simulated contact success state and can reset it', () => {
