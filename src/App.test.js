@@ -5,7 +5,7 @@ import App from './App';
 test('renders the full portfolio structure and navigation anchors', () => {
   render(<App />);
 
-  expect(screen.getByRole('heading', { level: 1, name: 'M. C. K. Perera' })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { level: 1, name: 'Chamuditha Perera' })).toBeInTheDocument();
   expect(screen.getByText('Open to new opportunities')).toBeInTheDocument();
   expect(screen.getAllByText('Kalutara, Sri Lanka').length).toBeGreaterThan(0);
   expect(screen.getByText('15+')).toBeInTheDocument();

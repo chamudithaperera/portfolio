@@ -34,7 +34,7 @@ const heroTechnologies = [
 ];
 
 const profile = {
-  name: 'M. C. K. Perera',
+  name: 'Chamuditha Perera',
   email: 'chamudithaperera.dev@gmail.com',
   phone: '+94719153552',
   address: 'No 83, Galle Road, Kalutara North',
@@ -413,7 +413,7 @@ function Brand({ small = false }) {
       <span className={`brand-icon ${small ? 'brand-icon-small' : ''}`}>
         <Icon name="code" size={small ? 13 : 15} />
       </span>
-      <span>chamxdev</span>
+      <span>ChamXdev</span>
     </span>
   );
 }
@@ -554,7 +554,7 @@ function Hero() {
           <div>
             <p className="hero-eyebrow">Hello, I'm</p>
             <h1>
-              <span>M. C. K.</span>
+              <span>Chamuditha</span>
               <span>Perera</span>
             </h1>
 
@@ -1363,7 +1363,7 @@ function Footer() {
               </span>
               <span>
                 <strong>
-                  chamx<span>.dev</span>
+                  ChamXdev
                 </strong>
                 <small>/ Software Engineer</small>
               </span>
@@ -1416,7 +1416,7 @@ function Footer() {
 
         <div className="footer-bottom">
           <p>
-            © 2026 {profile.name}. Built with <Icon name="heart" size={11} /> using React & CSS.
+            © 2026 ChamXdev by {profile.name}.
           </p>
           <div>
             <span>All rights reserved</span>
