@@ -2545,12 +2545,12 @@ textarea:focus-visible {
 .hero-orbit-photo {
   position: relative;
   z-index: 2;
-  width: 100%;
-  height: 100%;
+  width: 112%;
+  height: 122%;
   object-fit: contain;
   object-position: center center;
   filter: drop-shadow(0 16px 30px rgba(2, 6, 23, 0.45));
-  transform: translateY(2%);
+  transform: translateY(4%);
   pointer-events: none;
 }
 
