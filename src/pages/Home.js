@@ -222,6 +222,7 @@ const technologyIcons = {
 
 const education = [
   {
+    track: 'Degree',
     title: 'BSc in Information Technology',
     org: 'University of Jaffna',
     period: '2022 Oct — 2025 Jul',
@@ -229,6 +230,7 @@ const education = [
       'Programming, algorithms, web systems, database design, operating systems, networks, mobile computing, security, and project-based delivery.',
   },
   {
+    track: 'Diploma',
     title: 'Diploma in Information Technology',
     org: 'IMBS Green Campus',
     period: '2021 — 2022',
@@ -237,12 +239,14 @@ const education = [
       '30-credit diploma with a 3.73 GPA covering hardware, networking, web engineering, software engineering, and a software development project.',
   },
   {
+    track: 'School',
     title: 'A/L Technology Stream',
     org: 'Ananda Sastralaya, Matugama',
     period: '2020',
     detail: 'Science for Technology B, ICT C, Engineering Technology S.',
   },
   {
+    track: 'School',
     title: 'O/L',
     org: 'Tissa Central College, Kalutara',
     period: '2017',
@@ -255,6 +259,13 @@ const certifications = [
   { title: 'AI/ML Engineer — Stage 1', org: 'SLIIT', year: '2026' },
   { title: 'Dart & Flutter Development Course', org: 'Udemy', year: '2024' },
   { title: 'IT for Business Success', org: 'HP', year: '2021' },
+];
+
+const educationStats = [
+  { value: '4', label: 'Academic milestones' },
+  { value: '3', label: 'Certifications listed' },
+  { value: '2026', label: 'Latest credential' },
+  { value: 'IT', label: 'Core focus' },
 ];
 
 const iconPaths = {
@@ -1062,22 +1073,45 @@ function Education() {
       <div className="section-divider" />
       <Reveal className="section-inner">
         <SectionHeading index="05. Where I Studied" title="Education &" accent="Certifications" />
+        <div className="education-showcase card-3d">
+          <div className="education-showcase-copy">
+            <p className="column-label">
+              <Icon name="sparkles" size={13} /> Learning journey
+            </p>
+            <h3>Academic growth shaped around the software I build today.</h3>
+            <p>
+              My education path blends a university degree, a practical diploma, and ongoing
+              certifications so the section feels more like a polished story than a plain resume list.
+            </p>
+          </div>
+          <div className="education-stat-grid">
+            {educationStats.map((stat) => (
+              <div key={stat.label} className="education-stat">
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="education-layout">
-          <div>
+          <div className="education-column">
             <p className="column-label">
               <Icon name="graduation" size={13} /> Academic Background
             </p>
             <div className="education-list">
               {education.map((item) => (
                 <article key={`${item.title}-${item.period}`} className="education-card card-3d">
-                  <span className="education-icon">
-                    <Icon name="graduation" size={14} />
-                  </span>
-                  <div>
+                  <div className="education-card-marker">
+                    <span className="education-icon">
+                      <Icon name="graduation" size={14} />
+                    </span>
+                  </div>
+                  <div className="education-card-content">
                     <div className="education-title">
-                      <h3>{item.title}</h3>
-                      {item.badge ? <span>{item.badge}</span> : null}
+                      <span className="education-track">{item.track}</span>
+                      {item.badge ? <span className="education-badge">{item.badge}</span> : null}
                     </div>
+                    <h3>{item.title}</h3>
                     <p className="education-org">{item.org}</p>
                     <p className="education-period">
                       <Icon name="calendar" size={10} /> {item.period}
@@ -1089,7 +1123,7 @@ function Education() {
             </div>
           </div>
           <div className="education-side">
-            <div>
+            <div className="education-panel card-3d">
               <p className="column-label">
                 <Icon name="award" size={13} /> Certifications
               </p>
@@ -1109,7 +1143,7 @@ function Education() {
                 ))}
               </div>
             </div>
-            <div className="references-panel">
+            <div className="references-panel card-3d">
               <div className="panel-title">References</div>
               <div className="references-list">
                 <div>
