@@ -46,6 +46,12 @@ const profile = {
   portfolio: 'chamudithaperera.online',
 };
 
+const siteUrl = 'https://chamudithaperera.online';
+const siteTitle = 'Chamuditha Perera | Chamuditha Portfolio';
+const siteDescription =
+  "Chamuditha Perera's portfolio website showcasing Flutter, React, Spring Boot, UI/UX, and production-ready mobile and web projects from Sri Lanka.";
+const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`;
+
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
 
@@ -615,9 +621,10 @@ function Hero() {
           </div>
 
           <p className="hero-description">
-            Mobile-focused engineer crafting <strong>end-to-end mobile, web & backend systems</strong>. I turn ideas
-            into production-ready software with <span className="flutter-text">Flutter</span>,{' '}
-            <span className="react-text">React</span>, and <span className="spring-text">Spring Boot</span>.
+            Chamuditha Perera is a mobile-focused software engineer in Sri Lanka crafting{' '}
+            <strong>end-to-end mobile, web & backend systems</strong>. I turn ideas into production-ready software
+            with <span className="flutter-text">Flutter</span>, <span className="react-text">React</span>, and{' '}
+            <span className="spring-text">Spring Boot</span>, with a strong eye for UI/UX and performance.
           </p>
 
           <div className="hero-actions">
@@ -723,9 +730,9 @@ function About() {
           <div className="about-main">
             <div className="about-copy">
               <p>
-                I'm a <strong>Mobile-focused Software Engineer</strong> with a BSc in Information Technology from the
-                University of Jaffna. I specialise in building end-to-end mobile, web, and backend systems using
-                full-stack and microservices architectures.
+                I'm <strong>Chamuditha Perera</strong>, a mobile-focused Software Engineer with a BSc in Information
+                Technology from the University of Jaffna. I specialise in building end-to-end mobile, web, and
+                backend systems using full-stack and microservices architectures.
               </p>
               <p>
                 My core strengths are <span className="flutter-text">Flutter (Dart)</span> for Android/iOS and{' '}
@@ -1781,11 +1788,23 @@ function Home() {
   return (
     <div className="bolt-shell">
       <Helmet>
-        <title>Chamuditha Perera | Chamuditha Portfolio</title>
+        <title>{siteTitle}</title>
         <meta
           name="description"
-          content="Chamuditha Perera's portfolio website. Explore Chamuditha projects, mobile apps, UI/UX work, Flutter, React, and Spring Boot experience."
+          content={siteDescription}
         />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <link rel="canonical" href={siteUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={siteUrl} />
+        <meta property="og:title" content={siteTitle} />
+        <meta property="og:description" content={siteDescription} />
+        <meta property="og:image" content={socialImage} />
+        <meta property="og:site_name" content="Chamuditha Portfolio" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={siteTitle} />
+        <meta name="twitter:description" content={siteDescription} />
+        <meta name="twitter:image" content={socialImage} />
         <meta name="theme-color" content="#00020a" />
         <link rel="icon" href={withBase('/assets/imgs/favicon.ico')} />
       </Helmet>
