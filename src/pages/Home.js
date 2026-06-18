@@ -524,7 +524,11 @@ function OrbitIdentity() {
       <div className="hero-orbit-ring hero-orbit-ring-inner" />
       <div className="hero-orbit-core">
         <span className="hero-orbit-highlight" />
-        <strong>CK</strong>
+        <img
+          className="hero-orbit-photo"
+          src={withBase('/assets/imgs/header/edited-photo.png')}
+          alt=""
+        />
         <span className="hero-orbit-spark">
           <Icon name="sparkles" size={14} />
         </span>
