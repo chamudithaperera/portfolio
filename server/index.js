@@ -171,8 +171,8 @@ app.get('/api/admin/messages', requireAdmin, async (req, res) => {
 
 if (hasBuild) {
   app.use(express.static(buildDir));
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api/')) {
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api/')) {
       return next();
     }
 
