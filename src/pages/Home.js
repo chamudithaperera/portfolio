@@ -522,15 +522,21 @@ function OrbitIdentity() {
       <div className="hero-orbit-ring hero-orbit-ring-inner" />
       <div className="hero-orbit-core">
         <span className="hero-orbit-highlight" />
-        <img
-          className="hero-orbit-photo"
-          src={withBase('/assets/imgs/header/edited-photo-cropped-720.jpg')}
-          alt=""
-          loading="eager"
-          decoding="async"
-        />
+        <picture>
+          <source srcSet={withBase('/assets/imgs/header/edited-photo-cropped-720.webp')} type="image/webp" />
+          <img
+            className="hero-orbit-photo"
+            src={withBase('/assets/imgs/header/edited-photo-cropped-720.png')}
+            alt=""
+            loading="eager"
+            decoding="async"
+          />
+        </picture>
         <span className="hero-orbit-spark">
           <Icon name="sparkles" size={14} />
+        </span>
+        <span className="hero-loop-ring" aria-hidden="true">
+          <span />
         </span>
       </div>
       <span className="hero-orbit-dot hero-orbit-dot-a" />
@@ -594,9 +600,6 @@ function Hero() {
           </span>
           <span className="floating-label floating-label-b">
             <Icon name="sparkles" size={12} /> Available
-          </span>
-          <span className="floating-label hero-loop-label">
-            <Icon name="arrowRight" size={12} /> Creative Loop
           </span>
           <div className="hero-stats">
             {[
