@@ -7,15 +7,24 @@ test('renders the full portfolio structure and navigation anchors', () => {
 
   expect(screen.getByRole('heading', { level: 1, name: 'M. C. K. Perera' })).toBeInTheDocument();
   expect(screen.getByText('Open to new opportunities')).toBeInTheDocument();
+  expect(screen.getAllByText('Kalutara, Sri Lanka').length).toBeGreaterThan(0);
+  expect(screen.getByText('15+')).toBeInTheDocument();
+  expect(screen.getAllByText('Technologies').length).toBeGreaterThan(0);
   expect(screen.getByRole('heading', { name: 'About Me' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Work Experience' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Technical Skills' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Education & Certifications' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: "Let's Connect" })).toBeInTheDocument();
-  expect(screen.getByRole('heading', { name: 'Bank Trainee' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: "2021 Dec Peoples' Bank" })).toBeInTheDocument();
   expect(screen.getByText('MQTT')).toBeInTheDocument();
   expect(screen.getByText('Adobe Photoshop')).toBeInTheDocument();
+  expect(screen.getByLabelText('Dart')).toBeInTheDocument();
+  expect(screen.getByLabelText('Kubernetes')).toBeInTheDocument();
+  expect(screen.getByText('Replies within 24h')).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Have a project in mind?' })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Start a Conversation' })).toHaveAttribute('href', '#contact');
+  expect(screen.getByRole('link', { name: 'Back to top' })).toHaveAttribute('href', '#hero');
 
   const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
   expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '#about');
@@ -35,6 +44,25 @@ test('opens and closes the accessible mobile navigation', () => {
   expect(document.getElementById('mobile-navigation')).not.toBeInTheDocument();
 });
 
+test('navigates the interactive work experience carousel and wraps controls', () => {
+  render(<App />);
+
+  expect(screen.getByRole('heading', { name: 'Associate Software Engineer' })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: '2024 Dec Kyranz IT' }));
+  expect(screen.getByRole('heading', { name: 'Intern UI/UX Designer' })).toBeInTheDocument();
+  expect(screen.getAllByText('Kyranz IT').length).toBeGreaterThan(0);
+
+  fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
+  expect(screen.getByText('API Integration')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole('button', { name: '2026 Mar W3Inventor' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
+  expect(screen.getByRole('heading', { name: 'Bank Trainee' })).toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+  expect(screen.getByRole('heading', { name: 'Associate Software Engineer' })).toBeInTheDocument();
+});
+
 test('keeps local project content and safe external links', () => {
   render(<App />);
 
@@ -52,6 +80,8 @@ test('shows the simulated contact success state and can reset it', () => {
   jest.useFakeTimers();
   render(<App />);
 
+  expect(screen.getByRole('heading', { name: 'Available for new opportunities' })).toBeInTheDocument();
+  expect(screen.getByText("Let's build something together.")).toBeInTheDocument();
   fireEvent.change(screen.getByPlaceholderText('Your name'), { target: { value: 'Test User' } });
   fireEvent.change(screen.getByPlaceholderText('your@email.com'), { target: { value: 'test@example.com' } });
   fireEvent.change(screen.getByPlaceholderText("What's this about?"), { target: { value: 'Portfolio' } });

@@ -16,7 +16,21 @@ const roles = [
   'Flutter Developer',
   'Full Stack Developer',
   'Mobile App Developer',
-  'React Developer',
+];
+
+const heroTechnologies = [
+  'Flutter',
+  'Dart',
+  'React',
+  'TypeScript',
+  'Spring Boot',
+  'Node.js',
+  'PostgreSQL',
+  'Redis',
+  'Docker',
+  'Kubernetes',
+  'MongoDB',
+  'Tailwind',
 ];
 
 const profile = {
@@ -28,6 +42,9 @@ const profile = {
   linkedin: 'chamudithaperera',
   portfolio: 'chamxdev.vercel.app',
 };
+
+const locationUrl =
+  'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
 
 const experience = [
   {
@@ -142,23 +159,66 @@ const proficiencies = [
 ];
 
 const planets = [
-  { label: 'Dart', radius: 84, size: 42, speed: 14, color: '#0ea5e9', start: 0 },
-  { label: 'TypeScript', radius: 84, size: 42, speed: 14, color: '#3b82f6', start: 72 },
-  { label: 'Java', radius: 84, size: 42, speed: 14, color: '#2563eb', start: 144 },
-  { label: 'JS', radius: 84, size: 42, speed: 14, color: '#1d4ed8', start: 216 },
-  { label: 'PHP', radius: 84, size: 42, speed: 14, color: '#1e40af', start: 288 },
-  { label: 'Flutter', radius: 146, size: 48, speed: 20, color: '#0284c7', start: 30 },
-  { label: 'React', radius: 146, size: 48, speed: 20, color: '#0369a1', start: 102 },
-  { label: 'Spring', radius: 146, size: 48, speed: 20, color: '#075985', start: 174 },
-  { label: 'Node.js', radius: 146, size: 48, speed: 20, color: '#0c4a6e', start: 246 },
-  { label: 'Tailwind', radius: 146, size: 48, speed: 20, color: '#164e63', start: 318 },
-  { label: 'Docker', radius: 208, size: 52, speed: 32, color: '#1e3a5f', start: 10 },
-  { label: 'Kubernetes', radius: 208, size: 52, speed: 32, color: '#172554', start: 70 },
-  { label: 'PostgreSQL', radius: 208, size: 52, speed: 32, color: '#0c2340', start: 130 },
-  { label: 'Redis', radius: 208, size: 52, speed: 32, color: '#0f1f3d', start: 190 },
-  { label: 'Firebase', radius: 208, size: 52, speed: 32, color: '#0a1628', start: 250 },
-  { label: 'AWS', radius: 208, size: 52, speed: 32, color: '#060e1e', start: 310 },
+  { label: 'Dart', radius: 110, size: 44, speed: 14, color: '#0ea5e9', glow: '#0ea5e9', start: 0 },
+  { label: 'TypeScript', radius: 110, size: 44, speed: 14, color: '#3b82f6', glow: '#3b82f6', start: 72 },
+  { label: 'Java', radius: 110, size: 44, speed: 14, color: '#2563eb', glow: '#2563eb', start: 144 },
+  { label: 'JS', radius: 110, size: 44, speed: 14, color: '#1d4ed8', glow: '#1d4ed8', start: 216 },
+  { label: 'PHP', radius: 110, size: 44, speed: 14, color: '#1e40af', glow: '#1e40af', start: 288 },
+  { label: 'Flutter', radius: 190, size: 50, speed: 20, color: '#0284c7', glow: '#0284c7', start: 30 },
+  { label: 'React', radius: 190, size: 50, speed: 20, color: '#0369a1', glow: '#0369a1', start: 102 },
+  { label: 'Spring', radius: 190, size: 50, speed: 20, color: '#075985', glow: '#075985', start: 174 },
+  { label: 'Node.js', radius: 190, size: 50, speed: 20, color: '#0c4a6e', glow: '#0c4a6e', start: 246 },
+  { label: 'Tailwind', radius: 190, size: 50, speed: 20, color: '#164e63', glow: '#164e63', start: 318 },
+  { label: 'Docker', radius: 275, size: 54, speed: 32, color: '#1e3a5f', glow: '#2563eb', start: 10 },
+  { label: 'Kubernetes', radius: 275, size: 54, speed: 32, color: '#172554', glow: '#1d4ed8', start: 70 },
+  { label: 'PostgreSQL', radius: 275, size: 54, speed: 32, color: '#0c2340', glow: '#0284c7', start: 130 },
+  { label: 'Redis', radius: 275, size: 54, speed: 32, color: '#0f1f3d', glow: '#0369a1', start: 190 },
+  { label: 'Firebase', radius: 275, size: 54, speed: 32, color: '#0a1628', glow: '#0ea5e9', start: 250 },
+  { label: 'AWS', radius: 275, size: 54, speed: 32, color: '#060e1e', glow: '#60a5fa', start: 310 },
 ];
+
+const technologyIcons = {
+  Dart: {
+    path: 'M3.3 24l9.5-9.5 4.8 4.8L8.1 24H3.3zm0-24L20.7 17.4 24 14.1 8.3 0H3.3zM0 3.3L13.7 17 17 13.7 3.3 0H0v3.3z',
+    color: '#0175C2',
+  },
+  TypeScript: {
+    path: 'M3 3h18v18H3V3zm9.7 14.2c.3.6 1 1.1 2 1.1 1.6 0 2.6-.8 2.6-2.8v-5.4h-1.8v5.4c0 .9-.4 1.2-1 1.2s-1-.3-1.3-1l-1.5.9zm-4.2-.2c.3.5.7.9 1.4.9.7 0 1.1-.3 1.1-1.4V11h1.9v4.5c0 2-1.1 2.9-2.8 2.9-1.5 0-2.4-.8-2.9-1.8l1.5-.9z',
+    color: '#3178C6',
+  },
+  Java: {
+    path: 'M11.5 21l1.5-3s-5.5 1.8-8.5 1.3c1.7.7 7.5 1.7 7-1.5-.4-2.5-3-1.3-4.5-.5.6.3 1.2.6 1.7 1l-2 .9c-1.6-1.2-2-2.4.2-3.1 1.7-.5 3.5.2 3.5 2 0 1.6-1.4 3.1-2.9 3.1-.4 0-1-.3-1-.3l.5-1.1 4.3-4.8 3 1.5L9 21h2.5zM19 3s-3 1-3 3 2 2.5 2 2.5-.5-2-.5-2 1.5 1.8 1.5 3.5c0 1.8-2 2.5-2 2.5s2-1.2 4.5-1.2S25 11 25 11c0-4-2-7-6-8z',
+    color: '#ED8B00',
+  },
+  JS: {
+    path: 'M3 3h18v18H3V3zm9.7 14.2c.3.6 1 1.1 2 1.1 1.6 0 2.6-.8 2.6-2.8v-5.4h-1.8v5.4c0 .9-.4 1.2-1 1.2s-1-.3-1.3-1l-1.5.9zm-4.2-.2c.3.5.7.9 1.4.9.7 0 1.1-.3 1.1-1.4V11h1.9v4.5c0 2-1.1 2.9-2.8 2.9-1.5 0-2.4-.8-2.9-1.8l1.5-.9z',
+    color: '#F7DF1E',
+  },
+  PHP: {
+    path: 'M7.5 6.5h6.4c2.6 0 4.4 1.3 4.4 4 0 2.6-1.8 4-4.4 4h-2.4v3.5h-4V6.5zm3.9 2.4v3.4h1.7c1 0 1.6-.6 1.6-1.7s-.6-1.7-1.6-1.7h-1.7zM3 12c0 5 4 9 9 9s9-4 9-9-4-9-9-9-9 4-9 9z',
+    color: '#777BB4',
+  },
+  Flutter: { path: 'M14.5 2L4 12.5l3 3L20.5 2h-6zM4 19.5L9.5 14l3 3L9.5 22 4 19.5z', color: '#02569B' },
+  React: {
+    path: 'M12 9.8a2.2 2.2 0 100 4.4 2.2 2.2 0 000-4.4zM5 12c0 1.7-2.1 3.3-1.5 5 .8 2.2 4 .2 6.2 1 1.6.7 2.3 3 4.3 3s2.7-2.3 4.3-3c2.2-.8 5.4 1.2 6.2-1 .6-1.7-1.5-3.3-1.5-5s2.1-3.3 1.5-5c-.8-2.2-4-.2-6.2-1-1.6-.7-2.3-3-4.3-3s-2.7 2.3-4.3 3c-2.2.8-5.4-1.2-6.2 1-.6 1.7 1.5 3.3 1.5 5z',
+    color: '#61DAFB',
+  },
+  Spring: {
+    path: 'M12 2C8 2 4 6 4 10c0 3 2 5 5 5 2 0 3-1 3-3 0-1-1-1-1-2 0-1 1-2 2-2 1 0 1 0 1 1 0 2-1 3-1 4 0 1 1 2 2 2 2 0 3-2 3-4 0-3-3-7-6-7zm8 14c-1 2-3 3-5 3-3 0-5-2-5-5 0-2 1-3 2-4l-1-1c-2 1-3 3-3 5 0 4 3 7 7 7 3 0 5-2 6-4l-1-1z',
+    color: '#6DB33F',
+  },
+  'Node.js': { path: 'M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.3l6.7 3.7v7.5L12 19.3 5.3 15.5V8L12 4.3zM12 7c-2 0-3 2-3 5s1 5 3 5 3-2 3-5-1-5-3-5z', color: '#339933' },
+  Tailwind: {
+    path: 'M6.5 10c.8-3.2 2.6-4.8 5.5-4.8 4.3 0 4.8 3.2 7 3.7 1.5.4 2.8 0 4-1.2-.8 3.2-2.6 4.8-5.5 4.8-4.3 0-4.8-3.2-7-3.7-1.5-.4-2.8 0-4 1.2zm-4 7.5c.8-3.2 2.6-4.8 5.5-4.8 4.3 0 4.8 3.2 7 3.7 1.5.4 2.8 0 4-1.2-.8 3.2-2.6 4.8-5.5 4.8-4.3 0-4.8-3.2-7-3.7-1.5-.4-2.8 0-4 1.2z',
+    color: '#06B6D4',
+  },
+  Docker: { path: 'M3 13h2.2v2H3v-2zm2.8 0h2.2v2H5.8v-2zm2.8 0h2.2v2H8.6v-2zm0-2.7h2.2v2H8.6v-2zm2.8 0h2.2v2h-2.2v-2zm0 2.7h2.2v2h-2.2v-2zm2.8 0h2.2v2h-2.2v-2zm0-2.7h2.2v2h-2.2v-2zm2.8 0h2.2v2h-2.2v-2zm0 2.7h2.2v2h-2.2v-2zm2.8 0h2.2v2h-2.2v-2z', color: '#2496ED' },
+  Kubernetes: { path: 'M12 2L4 6v8l8 4 8-4V6l-8-4zm0 2.3l5.7 2.8v5.8L12 15.7 6.3 12.9V7.1L12 4.3zM12 7L9 12l3 5 3-5-3-5z', color: '#326CE5' },
+  PostgreSQL: { path: 'M21 11c.3 2-.4 4-2 5.3-.6.5-1.5.7-2.3.7-.3 1-.8 2-1.7 2.6-.7.5-1.6.6-2.4.5h-.5c-.4.4-1 .8-1.7.8-1.6.2-3.2-.6-4-2-.9-1.6-1-3.4-.7-5 .2-1 .5-1.8.5-2.5 0-.6-.3-1.2-.3-1.8 0-1 .5-1.8 1.3-2.5.7-.6 1.8-1 3-1 1 0 1.8.2 2.5.5.5-.2 1.2-.3 1.8-.3 1 0 2 .3 2.7 1 .4.3.7.7.8 1.2 1 .3 1.8 1 2.2 1.8.4.6.5 1.4.3 2.2-.5.3-.9.5-1.4.5z', color: '#4169E1' },
+  Redis: { path: 'M3 8.5l9-2.5 9 2.5-9 2.5-9-2.5zm0 4l9 2.5 9-2.5-9 2.5-9-2.5zm0 4l9 2.5 9-2.5-9 2.5-9-2.5z', color: '#DC382D' },
+  Firebase: { path: 'M5 19l3-14 4 8-3 6H5zm5.5 0L8 7l3 6 9-2-9.5 8z', color: '#FFCA28' },
+  AWS: { path: 'M12 4c-4.4 0-8.2 2.7-9.8 6.5C3.6 15.6 7.5 19 12 19V4zm.5 4.5L16 9v9l-3.5.5v-10zm-3 9L6 17V8l3.5-.5v10z', color: '#FF9900' },
+};
 
 const education = [
   {
@@ -214,6 +274,14 @@ const iconPaths = {
   send: ['m22 2-7 20-4-9-9-4z', 'M22 2 11 13'],
   check: ['m5 12 4 4L19 6'],
   arrow: ['M5 12h14', 'm13 6 6 6-6 6'],
+  arrowLeft: ['M19 12H5', 'm11 18-6-6 6-6'],
+  arrowRight: ['M5 12h14', 'm13 6 6 6-6 6'],
+  arrowDown: ['M12 5v14', 'm6 13 6 6 6-6'],
+  arrowUp: ['M12 19V5', 'm6 11 6-6 6 6'],
+  arrowUpRight: ['M7 17 17 7', 'M7 7h10v10'],
+  clock: ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 6v6l4 2'],
+  sparkles: ['m12 3-1.2 3.2L8 7.5l2.8 1.3L12 12l1.2-3.2L16 7.5l-2.8-1.3L12 3z', 'm19 13-.8 2.2L16 16l2.2.8L19 19l.8-2.2L22 16l-2.2-.8L19 13z'],
+  heart: ['M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.7-7.5 1.1-1.1a5.5 5.5 0 0 0 0-7.8z'],
 };
 
 function Icon({ name, size = 16, className = '' }) {
@@ -312,79 +380,6 @@ function useTypewriter(items, typingSpeed = 75, pause = 2200) {
   }, [characterIndex, deleting, itemIndex, items, pause, reducedMotion, typingSpeed]);
 
   return reducedMotion ? items[0] : items[itemIndex].slice(0, characterIndex);
-}
-
-function Starfield() {
-  const canvasRef = useRef(null);
-  const reducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext?.('2d');
-    if (!canvas || !context) return undefined;
-
-    let frame;
-    let particles = [];
-    const resize = () => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      particles = Array.from({ length: 55 }, () => ({
-        x: Math.random() * canvas.offsetWidth,
-        y: Math.random() * canvas.offsetHeight,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        radius: Math.random() * 1.2 + 0.4,
-        alpha: Math.random() * 0.45 + 0.1,
-      }));
-    };
-
-    const draw = () => {
-      const width = canvas.offsetWidth;
-      const height = canvas.offsetHeight;
-      context.clearRect(0, 0, width, height);
-
-      particles.forEach((particle) => {
-        if (!reducedMotion) {
-          particle.x += particle.vx;
-          particle.y += particle.vy;
-          if (particle.x < 0 || particle.x > width) particle.vx *= -1;
-          if (particle.y < 0 || particle.y > height) particle.vy *= -1;
-        }
-        context.beginPath();
-        context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        context.fillStyle = `rgba(37,99,235,${particle.alpha})`;
-        context.fill();
-      });
-
-      particles.forEach((particle, index) => {
-        particles.slice(index + 1).forEach((other) => {
-          const distance = Math.hypot(particle.x - other.x, particle.y - other.y);
-          if (distance < 110) {
-            context.beginPath();
-            context.moveTo(particle.x, particle.y);
-            context.lineTo(other.x, other.y);
-            context.strokeStyle = `rgba(37,99,235,${0.07 * (1 - distance / 110)})`;
-            context.lineWidth = 0.5;
-            context.stroke();
-          }
-        });
-      });
-
-      if (!reducedMotion) frame = window.requestAnimationFrame(draw);
-    };
-
-    resize();
-    draw();
-    window.addEventListener('resize', resize);
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener('resize', resize);
-    };
-  }, [reducedMotion]);
-
-  return <canvas ref={canvasRef} className="starfield" aria-hidden="true" />;
 }
 
 function Reveal({ as: Tag = 'div', className = '', children, threshold = 0.1 }) {
@@ -516,11 +511,32 @@ function SocialLink({ icon, label, href }) {
   );
 }
 
+function OrbitIdentity() {
+  return (
+    <div className="hero-orbit-identity" aria-hidden="true">
+      <div className="hero-orbit-nebula" />
+      <div className="hero-orbit-ring hero-orbit-ring-outer" />
+      <div className="hero-orbit-ring hero-orbit-ring-middle" />
+      <div className="hero-orbit-ring hero-orbit-ring-inner" />
+      <div className="hero-orbit-core">
+        <span className="hero-orbit-highlight" />
+        <strong>CK</strong>
+        <span className="hero-orbit-spark">
+          <Icon name="sparkles" size={14} />
+        </span>
+      </div>
+      <span className="hero-orbit-dot hero-orbit-dot-a" />
+      <span className="hero-orbit-dot hero-orbit-dot-b" />
+    </div>
+  );
+}
+
 function Hero() {
   const role = useTypewriter(roles);
+
   return (
-    <section id="hero" className="hero-section dot-grid">
-      <Starfield />
+    <section id="hero" className="hero-section hero-reference">
+      <div className="hero-grid-mask" aria-hidden="true" />
       <div className="hero-glow hero-glow-a" aria-hidden="true" />
       <div className="hero-glow hero-glow-b" aria-hidden="true" />
 
@@ -535,83 +551,82 @@ function Hero() {
             <p className="hero-eyebrow">Hello, I'm</p>
             <h1>
               <span>M. C. K.</span>
-              <span className="gradient-text">Perera</span>
+              <span>Perera</span>
             </h1>
-          </div>
 
-          <div className="role-line">
-            {role}
-            <span className="cursor-blink">|</span>
+            <div className="role-line" aria-live="polite">
+              {role}
+              <span className="cursor-blink">|</span>
+            </div>
           </div>
 
           <p className="hero-description">
-            Mobile-focused engineer building <strong>end-to-end mobile, web & backend systems</strong>. Proficient in{' '}
-            <span className="flutter-text">Flutter</span>, <span className="react-text">React</span>, and{' '}
-            <span className="spring-text">Spring Boot</span> with production cloud experience.
+            Mobile-focused engineer crafting <strong>end-to-end mobile, web & backend systems</strong>. I turn ideas
+            into production-ready software with <span className="flutter-text">Flutter</span>,{' '}
+            <span className="react-text">React</span>, and <span className="spring-text">Spring Boot</span>.
           </p>
 
           <div className="hero-actions">
             <a className="primary-button" href="#projects">
-              View My Work
+              View My Work <Icon name="arrowDown" size={15} />
             </a>
             <a className="secondary-button" href="#contact">
-              Get In Touch
+              Get In Touch <Icon name="arrowUpRight" size={15} />
             </a>
           </div>
 
-          <div className="social-row" aria-label="Social links">
-            <SocialLink icon="github" label="GitHub" href={`https://github.com/${profile.github}`} />
-            <SocialLink icon="linkedin" label="LinkedIn" href={`https://linkedin.com/in/${profile.linkedin}`} />
-            <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
-            <SocialLink icon="external" label="Portfolio" href={`https://${profile.portfolio}`} />
+          <div className="hero-meta-row">
+            <span className="hero-location">
+              <Icon name="pin" size={13} /> Kalutara, Sri Lanka
+            </span>
+            <span className="hero-meta-divider" aria-hidden="true" />
+            <div className="social-row" aria-label="Social links">
+              <SocialLink icon="github" label="GitHub" href={`https://github.com/${profile.github}`} />
+              <SocialLink icon="linkedin" label="LinkedIn" href={`https://linkedin.com/in/${profile.linkedin}`} />
+              <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
+            </div>
+          </div>
+
+          <div className="hero-stats">
+            {[
+              ['4+', 'Projects'],
+              ['2y+', 'Experience'],
+              ['15+', 'Technologies'],
+            ].map(([value, label]) => (
+              <div key={label}>
+                <strong>{value}</strong>
+                <span>{label}</span>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="hero-visual">
-          <div className="profile-orbit">
-            <div className="rotating-ring rotating-ring-a" aria-hidden="true" />
-            <div className="rotating-ring rotating-ring-b" aria-hidden="true" />
-            <div className="profile-card card-3d">
-              <div className="profile-image">
-                <img
-                  src="https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=600"
-                  alt="Workspace"
-                />
-                <div className="profile-image-overlay" />
-                <div className="avatar-badge">CK</div>
-              </div>
-              <div className="profile-content">
-                <h3>{profile.name}</h3>
-                <p>Software Engineer · Sri Lanka</p>
-                <div className="availability-pill">
-                  <span />
-                  Available for work
-                </div>
-                <div className="profile-stats">
-                  {[
-                    ['4+', 'Projects'],
-                    ['2y+', 'Experience'],
-                    ['20+', 'Tech'],
-                  ].map(([value, label]) => (
-                    <div key={label}>
-                      <strong>{value}</strong>
-                      <span>{label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <span className="floating-label floating-label-a">Flutter</span>
-            <span className="floating-label floating-label-b">Spring Boot</span>
-            <span className="floating-label floating-label-c">React</span>
-            <span className="floating-label floating-label-d">Docker</span>
-          </div>
+          <OrbitIdentity />
+          <span className="floating-label floating-label-a">
+            <Icon name="code" size={12} /> Full-Stack
+          </span>
+          <span className="floating-label floating-label-b">
+            <Icon name="sparkles" size={12} /> Available
+          </span>
+        </div>
+      </div>
+
+      <div className="hero-marquee" aria-label="Technology stack">
+        <div className="hero-marquee-track">
+          {[...heroTechnologies, ...heroTechnologies].map((technology, index) => (
+            <span key={`${technology}-${index}`}>
+              {technology} <i>/</i>
+            </span>
+          ))}
         </div>
       </div>
 
       <a className="scroll-hint" href="#about">
         <span>Scroll</span>
-        <span>↓</span>
+        <span className="scroll-mouse">
+          <i />
+        </span>
       </a>
     </section>
   );
@@ -706,43 +721,103 @@ function About() {
 }
 
 function Experience() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeJob = experience[activeIndex];
+  const showPrevious = () =>
+    setActiveIndex((current) => (current - 1 + experience.length) % experience.length);
+  const showNext = () => setActiveIndex((current) => (current + 1) % experience.length);
+
   return (
-    <section id="experience" className="section section-experience">
+    <section id="experience" className="section section-experience experience-reference">
       <div className="section-divider" />
       <Reveal className="section-inner">
         <SectionHeading index="02. Where I've Worked" title="Work" accent="Experience" />
-        <div className="timeline">
-          <div className="timeline-line" aria-hidden="true" />
-          {experience.map((job, index) => (
-            <article key={`${job.role}-${job.period}`} className={`timeline-row ${index % 2 ? 'timeline-row-right' : ''}`}>
-              <span className={`timeline-dot ${job.current ? 'current' : ''}`} aria-hidden="true" />
-              <div className="timeline-card card-3d">
-                <div className="timeline-heading">
-                  <span className="job-icon">
-                    <Icon name="briefcase" size={13} />
+        <div className="experience-shell">
+          <div className="experience-steps" aria-label="Work experience timeline">
+            <span className="experience-step-line" aria-hidden="true" />
+            {experience.map((job, index) => {
+              const selected = index === activeIndex;
+              const completed = index < activeIndex;
+              return (
+                <button
+                  key={`${job.role}-${job.period}`}
+                  type="button"
+                  className={`experience-step ${selected ? 'is-active' : ''} ${completed ? 'is-complete' : ''}`}
+                  aria-pressed={selected}
+                  aria-label={`${job.period.split('—')[0].trim()} ${job.org.split('—')[0].trim()}`}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  <span className="experience-step-dot">
+                    {selected ? <Icon name="briefcase" size={14} /> : index + 1}
                   </span>
-                  <div>
-                    <div className="job-title-line">
-                      <h3>{job.role}</h3>
-                      {job.current ? <span className="now-badge">Now</span> : null}
+                  <span className="experience-step-label">
+                    <strong>{job.period.split('—')[0].trim()}</strong>
+                    <small>{job.org.split('—')[0].trim()}</small>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="experience-card-glow">
+            <article key={activeIndex} className="experience-card card-3d" aria-live="polite">
+              <span className="experience-card-accent" />
+              <div className="experience-card-body">
+                <div className="experience-card-header">
+                  <div className="experience-role">
+                    <span className="experience-role-icon">
+                      <Icon name="briefcase" size={18} />
+                    </span>
+                    <div>
+                      <div className="experience-title-line">
+                        <h3>{activeJob.role}</h3>
+                        {activeJob.current ? (
+                          <span className="current-badge">
+                            <i /> Current
+                          </span>
+                        ) : null}
+                      </div>
+                      <p>{activeJob.org}</p>
                     </div>
-                    <p>{job.org}</p>
                   </div>
+                  <span className="experience-period">
+                    <Icon name="calendar" size={12} /> {activeJob.period}
+                  </span>
                 </div>
-                <div className="job-period">
-                  <Icon name="calendar" size={10} /> {job.period}
-                </div>
-                <p className="job-description">{job.detail}</p>
-                <div className="tag-row">
-                  {job.tags.map((tag) => (
+
+                <p className="experience-description">{activeJob.detail}</p>
+
+                <div className="tag-row experience-tags">
+                  {activeJob.tags.map((tag) => (
                     <span key={tag} className="tech-tag">
                       {tag}
                     </span>
                   ))}
                 </div>
+
+                <div className="experience-card-footer">
+                  <div className="experience-count">
+                    <strong>{String(activeIndex + 1).padStart(2, '0')}</strong>
+                    <span>/</span>
+                    <small>{String(experience.length).padStart(2, '0')}</small>
+                    <em>· {activeJob.org.split('—')[0].trim()}</em>
+                  </div>
+                  <div className="experience-controls">
+                    <button type="button" aria-label="Previous" onClick={showPrevious}>
+                      <Icon name="arrowLeft" size={15} />
+                    </button>
+                    <button type="button" aria-label="Next" onClick={showNext}>
+                      <Icon name="arrowRight" size={15} />
+                    </button>
+                  </div>
+                </div>
               </div>
             </article>
-          ))}
+          </div>
+
+          <p className="experience-help">
+            <Icon name="pin" size={11} /> Click any step above to navigate through roles
+          </p>
         </div>
       </Reveal>
     </section>
@@ -841,21 +916,31 @@ function Planet({ planet, running, reducedMotion }) {
   const radians = (angle * Math.PI) / 180;
   const x = Math.cos(radians) * planet.radius;
   const y = Math.sin(radians) * planet.radius;
+  const icon = technologyIcons[planet.label] || {
+    path: 'M12 2l9 5v10l-9 5-9-5V7l9-5z',
+    color: '#3b82f6',
+  };
+
   return (
-    <span
+    <div
       className="skill-planet"
       title={planet.label}
+      aria-label={planet.label}
       style={{
         width: planet.size,
         height: planet.size,
-        transform: `translate(${x - planet.size / 2}px, ${y - planet.size / 2}px)`,
+        top: `calc(50% + ${y}px - ${planet.size / 2}px)`,
+        left: `calc(50% + ${x}px - ${planet.size / 2}px)`,
         background: `radial-gradient(circle at 35% 35%, rgba(255,255,255,.18), ${planet.color})`,
-        boxShadow: `0 0 14px 3px ${planet.color}55, inset 0 0 8px rgba(255,255,255,.06)`,
-        borderColor: `${planet.color}66`,
+        boxShadow: `0 0 14px 3px ${planet.glow}55, inset 0 0 8px rgba(255,255,255,.06)`,
+        borderColor: `${planet.glow}66`,
       }}
     >
-      {planet.label}
-    </span>
+      <svg className="technology-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d={icon.path} fill={icon.color} />
+      </svg>
+      <span className="planet-tooltip">{planet.label}</span>
+    </div>
   );
 }
 
@@ -863,47 +948,51 @@ function SolarSystem({ running, setRunning }) {
   const reducedMotion = useReducedMotion();
   const stars = useMemo(
     () =>
-      Array.from({ length: 55 }, (_, index) => ({
+      Array.from({ length: 80 }, (_, index) => ({
         id: index,
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
-        animationDelay: `${Math.random() * 5}s`,
-        animationDuration: `${Math.random() * 3 + 2}s`,
+        left: `${(index * 37) % 100}%`,
+        top: `${(index * 61) % 100}%`,
+        animationDelay: `${(index % 10) * 0.43}s`,
+        animationDuration: `${2 + (index % 7) * 0.41}s`,
       })),
     [],
   );
 
   return (
-    <div
-      className="solar-system"
-      onMouseEnter={() => setRunning(false)}
-      onMouseLeave={() => setRunning(true)}
-      aria-label="Interactive solar system showing technical skills"
-    >
-      {stars.map((star) => (
-        <span key={star.id} className="solar-star" style={star} />
-      ))}
-      {[84, 146, 208].map((radius) => (
-        <span
-          key={radius}
-          className="orbit-line"
-          style={{ width: radius * 2 + 4, height: radius * 2 + 4 }}
-          aria-hidden="true"
-        />
-      ))}
-      <div className="solar-core">
-        <span className="pulse-ring pulse-ring-one" />
-        <span className="pulse-ring pulse-ring-two" />
-        <span className="pulse-ring pulse-ring-three" />
-        <strong>DEV</strong>
-      </div>
-      {planets.map((planet) => (
-        <Planet key={planet.label} planet={planet} running={running} reducedMotion={reducedMotion} />
-      ))}
-      <div className="orbit-legend">
-        <span>Languages</span>
-        <span>Frameworks</span>
-        <span>Backend / DevOps</span>
+    <div className="solar-stage">
+      <div
+        className="solar-system"
+        onMouseEnter={() => setRunning(false)}
+        onMouseLeave={() => setRunning(true)}
+        onFocus={() => setRunning(false)}
+        onBlur={() => setRunning(true)}
+        aria-label="Interactive solar system showing technical skills"
+      >
+        {stars.map((star) => (
+          <span key={star.id} className="solar-star" style={star} />
+        ))}
+        {[110, 190, 275].map((radius) => (
+          <span
+            key={radius}
+            className="orbit-line"
+            style={{ width: radius * 2 + 4, height: radius * 2 + 4 }}
+            aria-hidden="true"
+          />
+        ))}
+        <div className="solar-core">
+          <span className="pulse-ring pulse-ring-one" />
+          <span className="pulse-ring pulse-ring-two" />
+          <span className="pulse-ring pulse-ring-three" />
+          <strong>DEV</strong>
+        </div>
+        {planets.map((planet) => (
+          <Planet key={planet.label} planet={planet} running={running} reducedMotion={reducedMotion} />
+        ))}
+        <div className="orbit-legend">
+          <span>Languages</span>
+          <span>Frameworks</span>
+          <span>Backend / DevOps</span>
+        </div>
       </div>
     </div>
   );
@@ -918,7 +1007,7 @@ function Skills() {
   }, [visible]);
 
   return (
-    <section id="skills" className="section section-skills">
+    <section id="skills" className="section section-skills skills-reference">
       <div className="section-divider" />
       <div className="nebula nebula-a" aria-hidden="true" />
       <div className="nebula nebula-b" aria-hidden="true" />
@@ -1082,9 +1171,24 @@ function Contact() {
     setForm({ name: '', email: '', subject: '', message: '' });
   };
 
+  const directItems = [
+    { icon: 'mail', label: 'Email', value: profile.email, href: `mailto:${profile.email}` },
+    { icon: 'phone', label: 'Phone', value: profile.phone, href: `tel:${profile.phone}` },
+    { icon: 'pin', label: 'Location', value: profile.address, href: locationUrl },
+    { icon: 'external', label: 'Portfolio', value: profile.portfolio, href: `https://${profile.portfolio}` },
+  ];
+
+  const followItems = [
+    { icon: 'github', label: 'GitHub', href: `https://github.com/${profile.github}` },
+    { icon: 'linkedin', label: 'LinkedIn', href: `https://linkedin.com/in/${profile.linkedin}` },
+    { icon: 'external', label: 'Website', href: `https://${profile.portfolio}` },
+  ];
+
   return (
-    <section id="contact" className="section section-contact">
+    <section id="contact" className="section section-contact contact-reference">
       <div className="section-divider" />
+      <div className="contact-glow contact-glow-a" aria-hidden="true" />
+      <div className="contact-glow contact-glow-b" aria-hidden="true" />
       <Reveal className="section-inner">
         <SectionHeading
           index="06. Get In Touch"
@@ -1092,81 +1196,143 @@ function Contact() {
           accent="Connect"
           description="Whether you have a project, want to collaborate, or just want to say hello — my inbox is always open."
         />
+
+        <div className="availability-banner">
+          <div className="availability-copy">
+            <span className="availability-signal">
+              <i />
+            </span>
+            <div>
+              <h3>
+                Available for new opportunities <Icon name="sparkles" size={14} />
+              </h3>
+              <p>Open to full-time roles, freelance work, and collaborations.</p>
+            </div>
+          </div>
+          <span className="reply-pill">
+            <Icon name="clock" size={12} /> Replies within 24h
+          </span>
+        </div>
+
         <div className="contact-layout">
-          <div className="contact-column">
-            {contactItems.map((item) => (
-              <ContactItem key={item.label} item={item} />
-            ))}
-            <div className="available-card">
+          <div className="contact-side">
+            <div className="direct-panel card-3d">
+              <p className="contact-panel-label">Direct</p>
+              {directItems.map((item) => {
+                const external = item.href.startsWith('http');
+                return (
+                  <a
+                    key={item.label}
+                    className="direct-item"
+                    href={item.href}
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener noreferrer' : undefined}
+                    aria-label={`${item.label} ${item.value}`}
+                  >
+                    <span className="direct-icon">
+                      <Icon name={item.icon} size={14} />
+                    </span>
+                    <span className="direct-copy">
+                      <small>{item.label}</small>
+                      <strong>{item.value}</strong>
+                    </span>
+                    <Icon name="arrowUpRight" size={13} className="direct-arrow" />
+                  </a>
+                );
+              })}
+            </div>
+
+            <div className="follow-panel card-3d">
+              <p className="contact-panel-label">Follow</p>
               <div>
-                <span />
-                <strong>Available Now</strong>
+                {followItems.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={item.label}
+                  >
+                    <Icon name={item.icon} size={16} />
+                  </a>
+                ))}
               </div>
-              <p>Open to full-time, freelance, and collaboration.</p>
             </div>
           </div>
 
           <div className="message-panel">
-            <div className="panel-title">Send a Message</div>
-            {sent ? (
-              <div className="success-state" role="status">
-                <span className="success-icon">
-                  <Icon name="check" size={26} />
-                </span>
-                <div>
-                  <h3>Message Sent!</h3>
-                  <p>Thanks for reaching out. I'll get back to you shortly.</p>
-                </div>
-                <button type="button" onClick={reset}>
-                  Send Another
-                </button>
+            <span className="message-panel-accent" />
+            <div className="message-panel-header">
+              <div>
+                <h3>Send a Message</h3>
+                <p>Let's build something together.</p>
               </div>
-            ) : (
-              <form className="message-form" onSubmit={submit}>
-                <div className="form-row">
+              <span>
+                <Icon name="send" size={13} />
+              </span>
+            </div>
+            <div className="message-panel-body">
+              {sent ? (
+                <div className="success-state" role="status">
+                  <span className="success-icon">
+                    <i />
+                    <Icon name="check" size={26} />
+                  </span>
+                  <div>
+                    <h3>Message Sent!</h3>
+                    <p>Thanks for reaching out. I'll get back to you shortly.</p>
+                  </div>
+                  <button type="button" onClick={reset}>
+                    Send Another
+                  </button>
+                </div>
+              ) : (
+                <form className="message-form" onSubmit={submit}>
+                  <div className="form-row">
+                    <label>
+                      <span>Name</span>
+                      <input name="name" value={form.name} onChange={update} required placeholder="Your name" />
+                    </label>
+                    <label>
+                      <span>Email</span>
+                      <input
+                        name="email"
+                        type="email"
+                        value={form.email}
+                        onChange={update}
+                        required
+                        placeholder="your@email.com"
+                      />
+                    </label>
+                  </div>
                   <label>
-                    <span>Name</span>
-                    <input name="name" value={form.name} onChange={update} required placeholder="Your name" />
-                  </label>
-                  <label>
-                    <span>Email</span>
+                    <span>Subject</span>
                     <input
-                      name="email"
-                      type="email"
-                      value={form.email}
+                      name="subject"
+                      value={form.subject}
                       onChange={update}
                       required
-                      placeholder="your@email.com"
+                      placeholder="What's this about?"
                     />
                   </label>
-                </div>
-                <label>
-                  <span>Subject</span>
-                  <input
-                    name="subject"
-                    value={form.subject}
-                    onChange={update}
-                    required
-                    placeholder="What's this about?"
-                  />
-                </label>
-                <label>
-                  <span>Message</span>
-                  <textarea
-                    name="message"
-                    value={form.message}
-                    onChange={update}
-                    required
-                    rows="5"
-                    placeholder="Tell me about your project or opportunity..."
-                  />
-                </label>
-                <button className="submit-button" type="submit" disabled={sending}>
-                  {sending ? <span className="spinner" aria-label="Sending" /> : <Icon name="send" size={15} />}
-                  {sending ? 'Sending...' : 'Send Message'}
-                </button>
-              </form>
-            )}
+                  <label>
+                    <span>Message</span>
+                    <textarea
+                      name="message"
+                      value={form.message}
+                      onChange={update}
+                      required
+                      rows="5"
+                      placeholder="Tell me about your project or opportunity..."
+                    />
+                  </label>
+                  <button className="submit-button" type="submit" disabled={sending}>
+                    {sending ? <span className="spinner" aria-label="Sending" /> : <Icon name="send" size={15} />}
+                    {sending ? 'Sending...' : 'Send Message'}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </Reveal>
@@ -1175,16 +1341,113 @@ function Contact() {
 }
 
 function Footer() {
+  const footerGroups = [
+    {
+      title: 'Navigate',
+      links: [
+        ['About', '#about'],
+        ['Experience', '#experience'],
+        ['Projects', '#projects'],
+        ['Skills', '#skills'],
+      ],
+    },
+    {
+      title: 'More',
+      links: [
+        ['Education', '#education'],
+        ['Certifications', '#education'],
+        ['Contact', '#contact'],
+        ['Hire Me', '#contact'],
+      ],
+    },
+  ];
+
   return (
     <footer className="site-footer">
-      <a href="#hero" aria-label="Back to top">
-        <Brand small />
-      </a>
-      <p>© 2026 {profile.name} · All rights reserved</p>
-      <div className="footer-socials">
-        <SocialLink icon="github" label="GitHub" href={`https://github.com/${profile.github}`} />
-        <SocialLink icon="linkedin" label="LinkedIn" href={`https://linkedin.com/in/${profile.linkedin}`} />
-        <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
+      <div className="footer-top-line" aria-hidden="true" />
+      <div className="footer-glow" aria-hidden="true" />
+      <div className="footer-inner">
+        <div className="footer-cta">
+          <div>
+            <p>Let's build together</p>
+            <h3>Have a project in mind?</h3>
+            <span>Always open to discussing new opportunities, collaborations, or just a friendly chat.</span>
+          </div>
+          <a href="#contact">
+            Start a Conversation <Icon name="mail" size={15} />
+          </a>
+        </div>
+
+        <div className="footer-grid">
+          <div className="footer-brand-column">
+            <a href="#hero" className="footer-brand">
+              <span className="footer-brand-icon">
+                <Icon name="code" size={18} />
+              </span>
+              <span>
+                <strong>
+                  chamx<span>.dev</span>
+                </strong>
+                <small>/ Software Engineer</small>
+              </span>
+            </a>
+            <p>Building performant, end-to-end mobile and web applications with Flutter, React, and Spring Boot.</p>
+            <div className="footer-socials">
+              <SocialLink icon="github" label="GitHub" href={`https://github.com/${profile.github}`} />
+              <SocialLink icon="linkedin" label="LinkedIn" href={`https://linkedin.com/in/${profile.linkedin}`} />
+              <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
+              <SocialLink icon="external" label="Website" href={`https://${profile.portfolio}`} />
+            </div>
+          </div>
+
+          {footerGroups.map((group) => (
+            <div key={group.title} className="footer-link-column">
+              <h4>{group.title}</h4>
+              <ul>
+                {group.links.map(([label, href]) => (
+                  <li key={label}>
+                    <a href={href}>
+                      <i /> {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          <div className="footer-contact-column">
+            <h4>Get In Touch</h4>
+            <ul>
+              <li>
+                <a href={`mailto:${profile.email}`}>
+                  <Icon name="mail" size={14} /> <span>{profile.email}</span>
+                </a>
+              </li>
+              <li>
+                <a href={`tel:${profile.phone}`}>
+                  <Icon name="phone" size={14} /> <span>{profile.phone}</span>
+                </a>
+              </li>
+              <li>
+                <a href={locationUrl} target="_blank" rel="noopener noreferrer">
+                  <Icon name="pin" size={14} /> <span>Kalutara, Sri Lanka</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>
+            © 2026 {profile.name}. Built with <Icon name="heart" size={11} /> using React & CSS.
+          </p>
+          <div>
+            <span>All rights reserved</span>
+            <a href="#hero" aria-label="Back to top">
+              <Icon name="arrowUp" size={15} />
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );
