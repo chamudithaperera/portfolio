@@ -4653,11 +4653,15 @@ textarea:focus-visible {
 .section-education .education-carousel-card.experience-card {
   top: 0.15rem;
   width: min(31rem, 80vw);
+  height: 26.75rem;
   transform-origin: center center;
   animation: none;
 }
 
 .section-education .education-carousel-card.experience-card .experience-card-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   padding: 1.35rem;
 }
 
@@ -4679,21 +4683,29 @@ textarea:focus-visible {
 }
 
 .section-education .education-carousel-card.experience-card.is-prev {
-  transform: translate3d(calc(-50% - clamp(11rem, 16vw, 14rem)), 1.2rem, 0) scale(0.88) rotateY(11deg);
+  transform: translate3d(calc(-50% - clamp(11rem, 16vw, 14rem)), 1.2rem, 0) rotateY(11deg);
 }
 
 .section-education .education-carousel-card.experience-card.is-next {
-  transform: translate3d(calc(-50% + clamp(11rem, 16vw, 14rem)), 1.2rem, 0) scale(0.88) rotateY(-11deg);
+  transform: translate3d(calc(-50% + clamp(11rem, 16vw, 14rem)), 1.2rem, 0) rotateY(-11deg);
 }
 
 .section-education .education-carousel-card.experience-card.is-hidden {
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(-50%, 0, 0) scale(0.72);
+  transform: translate3d(-50%, 0, 0);
 }
 
 .section-education .education-carousel-card.experience-card:hover.is-active {
-  transform: translate3d(-50%, -2px, 0) scale(1.015);
+  transform: translate3d(-50%, -2px, 0);
+}
+
+.section-education .education-carousel-card.experience-card .experience-description {
+  flex: 1;
+}
+
+.section-education .education-carousel-card.experience-card .experience-card-footer {
+  margin-top: auto;
 }
 
 .section-education .education-carousel-dots {
@@ -4851,13 +4863,14 @@ textarea:focus-visible {
 
   .section-education .education-carousel-card.experience-card {
     width: min(92vw, 28rem);
+    height: 24.5rem;
   }
 
   .section-education .education-carousel-card.experience-card.is-prev,
   .section-education .education-carousel-card.experience-card.is-next {
     opacity: 0;
     pointer-events: none;
-    transform: translate3d(-50%, 0, 0) scale(0.95);
+    transform: translate3d(-50%, 0, 0);
   }
 
   .section-education .education-carousel-card.experience-card .experience-card-body {

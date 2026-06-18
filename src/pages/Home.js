@@ -228,7 +228,7 @@ const education = [
     org: 'University of Jaffna',
     period: '2022 Oct — 2025 Jul',
     detail:
-      'Programming, algorithms, web systems, database design, operating systems, networks, mobile computing, security, and project-based delivery.',
+      'Built a strong foundation in programming, algorithms, databases, operating systems, networking, mobile computing, and security. Focused on practical project delivery and clean technical problem-solving.',
   },
   {
     track: 'Diploma',
@@ -237,14 +237,15 @@ const education = [
     period: '2021 — 2022',
     badge: 'GPA 3.73',
     detail:
-      '30-credit diploma with a 3.73 GPA covering hardware, networking, web engineering, software engineering, and a software development project.',
+      'Completed a 30-credit diploma with a 3.73 GPA covering hardware, networking, web engineering, and software engineering. Finished with a software development project and hands-on team work.',
   },
   {
     track: 'School',
     title: 'A/L Technology Stream',
     org: 'Ananda Sastralaya, Matugama',
     period: '2020',
-    detail: 'Science for Technology B, ICT C, Engineering Technology S.',
+    detail:
+      'Studied Science for Technology, ICT, and Engineering Technology, which strengthened analytical thinking and technical discipline. It created the academic bridge into software and systems work.',
   },
   {
     track: 'School',
@@ -252,7 +253,7 @@ const education = [
     org: 'Tissa Central College, Kalutara',
     period: '2017',
     detail:
-      'Mathematics A, ICT A, Commerce A, Science B, Sinhala B, History B, Drama B, Buddhism B, English C.',
+      'Completed a broad academic base with strong results in Mathematics, ICT, Commerce, and Science. That foundation supported the later move into IT-focused study and career growth.',
   },
 ];
 
