@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
 
@@ -462,6 +462,9 @@ function Navigation() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('');
+  const location = useLocation();
+  const sectionHref = (href) => (location.pathname === '/' ? href : `/${href}`);
+  const homeHref = location.pathname === '/' ? '#hero' : '/#hero';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -491,7 +494,7 @@ function Navigation() {
   return (
     <nav className={`top-nav ${scrolled ? 'top-nav-scrolled' : ''}`} aria-label="Main navigation">
       <div className="nav-inner">
-        <a href="#hero" aria-label="ChamudithaPerera.Online home">
+        <a href={homeHref} aria-label="ChamudithaPerera.Online home">
           <Brand />
         </a>
 
@@ -500,7 +503,7 @@ function Navigation() {
             <a
               key={item.href}
               className={active === item.href ? 'active' : ''}
-              href={item.href}
+              href={sectionHref(item.href)}
               onClick={() => setActive(item.href)}
             >
               {item.label}
@@ -527,7 +530,7 @@ function Navigation() {
       {open ? (
         <div id="mobile-navigation" className="mobile-nav">
           {navItems.map((item) => (
-            <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
+            <a key={item.href} href={sectionHref(item.href)} onClick={() => setOpen(false)}>
               {item.label}
             </a>
           ))}

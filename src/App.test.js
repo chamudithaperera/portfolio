@@ -106,6 +106,18 @@ test('opens a project detail modal and the projects page route', async () => {
   expect(screen.getByRole('button', { name: 'Open details for Money Manager App' })).toBeInTheDocument();
 });
 
+test('routes project-page navigation links back to the home page anchors', async () => {
+  window.history.pushState({}, '', '/projects');
+  render(<App />);
+
+  const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
+  expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '/#about');
+  expect(within(navigation).getByRole('link', { name: 'ChamudithaPerera.Online home' })).toHaveAttribute(
+    'href',
+    '/#hero',
+  );
+});
+
 test('shows the simulated contact success state and can reset it', () => {
   const fetchMock = jest.fn().mockResolvedValue(mockJsonResponse({ ok: true, message: 'Saved' }, 201));
   global.fetch = fetchMock;
