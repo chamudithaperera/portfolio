@@ -235,6 +235,7 @@ function useReducedMotion() {
   useEffect(() => {
     if (!window.matchMedia) return undefined;
     const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!query) return undefined;
     const update = () => setReduced(query.matches);
     update();
     query.addEventListener?.('change', update);
@@ -855,8 +856,8 @@ function SolarSystem({ running, setRunning }) {
         id: index,
         left: `${Math.random() * 100}%`,
         top: `${Math.random() * 100}%`,
-        delay: `${Math.random() * 5}s`,
-        duration: `${Math.random() * 3 + 2}s`,
+        animationDelay: `${Math.random() * 5}s`,
+        animationDuration: `${Math.random() * 3 + 2}s`,
       })),
     [],
   );

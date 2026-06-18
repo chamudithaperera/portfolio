@@ -450,7 +450,7 @@ html {
 .profile-image {
   position: relative;
   height: 13rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .profile-image img {
@@ -1277,8 +1277,9 @@ a.contact-item:hover {
   border-radius: 50%;
   background: #b0c4ff;
   opacity: 0;
-  animation: twinkle var(--duration, 3s) ease-in-out var(--delay, 0s) infinite;
-  animation-duration: inherit;
+  animation-name: twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 .solar-core {
