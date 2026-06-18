@@ -2846,9 +2846,15 @@ textarea:focus-visible {
 .education-shell {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  max-width: 80rem;
+  gap: 1.75rem;
+  max-width: 64rem;
   margin: 0 auto;
+}
+
+.education-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .education-swap-list {

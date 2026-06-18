@@ -1066,51 +1066,65 @@ function Education() {
       <Reveal className="section-inner">
         <SectionHeading index="05. Where I Studied" title="Education &" accent="Certifications" />
         <div className="education-shell">
-          <div className="education-swap-list">
-            {education.map((item, index) => {
-              const reverse = index % 2 === 1;
-              return (
-                <article key={`${item.title}-${item.period}`} className={`education-swap-row ${reverse ? 'is-reverse' : ''}`}>
-                  <span className="education-swap-marker" aria-hidden="true">
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                  </span>
-
-                  <div className="education-swap-card card-3d">
-                    <span className="education-swap-accent" />
-                    <div className="education-swap-header">
-                      <div className="education-swap-heading">
-                        <span className="education-track">{item.track}</span>
-                        <h3>{item.title}</h3>
+          <div className="education-stack">
+            {education.map((item, index) => (
+              <article key={`${item.title}-${item.period}`} className="experience-card education-card card-3d" aria-label={`Education ${index + 1}`}>
+                <span className="experience-card-accent" />
+                <div className="experience-card-body">
+                  <div className="experience-card-header">
+                    <div className="experience-role">
+                      <span className="experience-role-icon">
+                        <Icon name="graduation" size={18} />
+                      </span>
+                      <div>
+                        <div className="experience-title-line">
+                          <h3>{item.title}</h3>
+                          {item.badge ? <span className="current-badge">{item.badge}</span> : null}
+                        </div>
                         <p>{item.org}</p>
                       </div>
-                      {item.badge ? <span className="education-badge">{item.badge}</span> : <span className="education-period">{item.period}</span>}
                     </div>
-                    <p className="education-description">{item.detail}</p>
-                    <div className="tag-row experience-tags">
-                      <span className="tech-tag">Education</span>
-                      <span className="tech-tag colorful-tag">{item.period}</span>
-                    </div>
+                    <span className="experience-period">
+                      <Icon name="calendar" size={12} /> {item.period}
+                    </span>
                   </div>
-                </article>
-              );
-            })}
+
+                  <p className="experience-description">{item.detail}</p>
+
+                  <div className="tag-row experience-tags">
+                    <span className="tech-tag">Education</span>
+                    <span className="tech-tag colorful-tag">{item.track}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
 
           <div className="education-certifications">
             <p className="column-label">
               <Icon name="award" size={13} /> Certifications
             </p>
-            <div className="certification-swap-list">
-              {certifications.map((cert, index) => (
-                <article key={cert.title} className={`certification-swap-card card-3d ${index % 2 === 1 ? 'is-reverse' : ''}`}>
-                  <span className="certification-swap-icon">
-                    <Icon name="award" size={13} />
-                  </span>
-                  <div>
-                    <h3>{cert.title}</h3>
-                    <p>
-                      {cert.org} <span>{cert.year}</span>
-                    </p>
+            <div className="education-stack">
+              {certifications.map((cert) => (
+                <article key={cert.title} className="experience-card certification-card card-3d">
+                  <span className="experience-card-accent" />
+                  <div className="experience-card-body">
+                    <div className="experience-card-header">
+                      <div className="experience-role">
+                        <span className="experience-role-icon">
+                          <Icon name="award" size={18} />
+                        </span>
+                        <div>
+                          <div className="experience-title-line">
+                            <h3>{cert.title}</h3>
+                          </div>
+                          <p>{cert.org}</p>
+                        </div>
+                      </div>
+                      <span className="experience-period">
+                        <Icon name="calendar" size={12} /> {cert.year}
+                      </span>
+                    </div>
                   </div>
                 </article>
               ))}
