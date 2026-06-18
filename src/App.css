@@ -1724,7 +1724,7 @@ a.contact-item:hover {
   text-transform: uppercase;
 }
 
-.message-form label > span small {
+.message-form label>span small {
   margin-left: 0.35rem;
   color: #64748b;
   font-size: 0.56rem;
@@ -4709,7 +4709,7 @@ textarea:focus-visible {
 }
 
 .section-education .education-carousel-dots {
-  margin-top: 1.65rem;
+  margin-top: 3rem;
 }
 
 .section-education .slider-viewport--certifications {
