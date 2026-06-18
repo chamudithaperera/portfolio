@@ -48,9 +48,191 @@
 }
 
 .admin-page {
-  max-width: 1360px;
+  width: min(100%, 1600px);
   margin: 0 auto;
-  padding: 2rem clamp(1rem, 3vw, 2rem) 2.5rem;
+  padding: 1.5rem;
+}
+
+.admin-dashboard-page {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.admin-sidebar {
+  position: sticky;
+  top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(51, 65, 85, 0.72);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(7, 13, 31, 0.96), rgba(3, 7, 18, 0.92)),
+    rgba(3, 7, 18, 0.7);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(24px);
+}
+
+.admin-sidebar-brand h1 {
+  margin: 0.9rem 0 0;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.7rem, 2vw, 2.2rem);
+  line-height: 1.05;
+}
+
+.admin-sidebar-brand p {
+  margin: 0.8rem 0 0;
+  color: #94a3b8;
+  line-height: 1.7;
+}
+
+.admin-sidebar-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 999px;
+  color: #86efac;
+  background: rgba(4, 120, 87, 0.14);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-sidebar-status > span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.14);
+}
+
+.admin-sidebar-section {
+  padding: 1rem;
+  border: 1px solid rgba(51, 65, 85, 0.65);
+  border-radius: 1.25rem;
+  background: rgba(2, 6, 23, 0.7);
+}
+
+.admin-sidebar-label {
+  margin: 0 0 0.8rem;
+  color: #7dd3fc;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-sidebar-nav {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.admin-sidebar-nav button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(51, 65, 85, 0.55);
+  border-radius: 0.95rem;
+  color: #dbeafe;
+  text-align: left;
+  background: rgba(3, 7, 18, 0.85);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.admin-sidebar-nav button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(125, 211, 252, 0.3);
+  background: rgba(8, 15, 34, 0.95);
+}
+
+.admin-sidebar-nav button svg {
+  color: #7dd3fc;
+}
+
+.admin-sidebar-metrics {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-sidebar-metric {
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 1rem;
+  background: rgba(3, 7, 18, 0.8);
+}
+
+.admin-sidebar-metric span {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.76rem;
+}
+
+.admin-sidebar-metric strong {
+  display: block;
+  margin-top: 0.3rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6rem;
+}
+
+.admin-sidebar-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 1rem;
+  color: #cbd5e1;
+  background: rgba(8, 15, 34, 0.72);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.admin-sidebar-note svg {
+  color: #7dd3fc;
+  flex: 0 0 auto;
+}
+
+.admin-sidebar-footer {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-sidebar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 0.95rem;
+  color: #7dd3fc;
+  background: rgba(3, 7, 18, 0.8);
+  text-decoration: none;
+}
+
+.admin-sidebar-link:hover {
+  color: #e0f2fe;
+}
+
+.admin-sidebar-logout {
+  width: 100%;
+  justify-content: center;
+}
+
+.admin-main {
+  display: grid;
+  gap: 1rem;
 }
 
 .admin-loading {
@@ -551,6 +733,15 @@
 }
 
 @media (max-width: 1100px) {
+  .admin-dashboard-page {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    position: relative;
+    top: 0;
+  }
+
   .admin-topbar,
   .admin-detail-header {
     align-items: stretch;
@@ -573,11 +764,15 @@
 
 @media (max-width: 760px) {
   .admin-page {
-    padding-inline: 0.85rem;
+    padding: 0.85rem;
   }
 
   .admin-auth-card {
     padding: 1.35rem;
+  }
+
+  .admin-sidebar {
+    padding: 1rem;
   }
 
   .admin-stats-grid,

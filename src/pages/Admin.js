@@ -81,6 +81,20 @@ function Admin() {
     };
   }, [messages]);
 
+  const latestMessageDate = selectedMessage?.created_at || messages[0]?.created_at || null;
+  const sidebarItems = [
+    { label: 'Overview', target: 'admin-overview', icon: 'spark' },
+    { label: 'Inbox', target: 'admin-inbox', icon: 'inbox' },
+    { label: 'Details', target: 'admin-detail', icon: 'mail' },
+  ];
+
+  const scrollToSection = (target) => {
+    const element = document.getElementById(target);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   async function loadMessages(query = search) {
     setMessagesLoading(true);
     setMessagesError('');
@@ -262,44 +276,101 @@ function Admin() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="admin-background" aria-hidden="true" />
-      <div className="admin-page">
-        <header className="admin-topbar">
-          <div>
-            <p className="admin-kicker">
-              <Icon name="inbox" size={13} />
-              Message Center
-            </p>
-            <h1>Portfolio Inbox</h1>
-            <p>Review submissions from the public contact form in one place.</p>
+      <div className="admin-page admin-dashboard-page">
+        <aside className="admin-sidebar">
+          <div className="admin-sidebar-brand">
+            <div className="admin-auth-badge">
+              <Icon name="lock" size={14} />
+              Secure Admin Access
+            </div>
+            <h1>Portfolio Dashboard</h1>
+            <p>Monitor incoming contact submissions with a focused inbox view and quick navigation.</p>
+            <div className="admin-sidebar-status">
+              <span />
+              Live inbox
+            </div>
           </div>
-          <div className="admin-topbar-actions">
-            <a href="/" className="admin-secondary-button">
+
+          <div className="admin-sidebar-section admin-sidebar-nav">
+            <p className="admin-sidebar-label">Dashboard</p>
+            {sidebarItems.map((item) => (
+              <button key={item.target} type="button" onClick={() => scrollToSection(item.target)}>
+                <Icon name={item.icon} size={14} />
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="admin-sidebar-section admin-sidebar-metrics">
+            <p className="admin-sidebar-label">Snapshot</p>
+            <div className="admin-sidebar-metric">
+              <span>Total messages</span>
+              <strong>{stats.total.toString().padStart(2, '0')}</strong>
+            </div>
+            <div className="admin-sidebar-metric">
+              <span>Unread</span>
+              <strong>{stats.unread.toString().padStart(2, '0')}</strong>
+            </div>
+            <div className="admin-sidebar-metric">
+              <span>With phone</span>
+              <strong>{stats.withPhone.toString().padStart(2, '0')}</strong>
+            </div>
+            <div className="admin-sidebar-note">
+              <Icon name="calendar" size={13} />
+              <span>{latestMessageDate ? formatDate(latestMessageDate) : 'Waiting for new messages'}</span>
+            </div>
+          </div>
+
+          <div className="admin-sidebar-section admin-sidebar-footer">
+            <a href="/" className="admin-sidebar-link">
               <Icon name="arrowLeft" size={14} />
-              Portfolio
+              Back to portfolio
             </a>
-            <button type="button" className="admin-secondary-button" onClick={handleLogout} disabled={logoutPending}>
+            <button type="button" className="admin-secondary-button admin-sidebar-logout" onClick={handleLogout} disabled={logoutPending}>
               <Icon name="logout" size={14} />
               {logoutPending ? 'Signing out...' : 'Logout'}
             </button>
           </div>
-        </header>
+        </aside>
 
-        <section className="admin-stats-grid">
-          <article className="admin-stat-card">
-            <span>Total messages</span>
-            <strong>{stats.total.toString().padStart(2, '0')}</strong>
-          </article>
-          <article className="admin-stat-card">
-            <span>New</span>
-            <strong>{stats.unread.toString().padStart(2, '0')}</strong>
-          </article>
-          <article className="admin-stat-card">
-            <span>With phone</span>
-            <strong>{stats.withPhone.toString().padStart(2, '0')}</strong>
-          </article>
-        </section>
+        <main className="admin-main">
+          <header className="admin-topbar">
+            <div>
+              <p className="admin-kicker">
+                <Icon name="inbox" size={13} />
+                Message Center
+              </p>
+              <h1>Portfolio Inbox</h1>
+              <p>Review submissions from the public contact form in one place.</p>
+            </div>
+            <div className="admin-topbar-actions">
+              <a href="/" className="admin-secondary-button">
+                <Icon name="arrowLeft" size={14} />
+                Portfolio
+              </a>
+              <button type="button" className="admin-secondary-button" onClick={() => loadMessages(search)} disabled={messagesLoading}>
+                <Icon name="search" size={14} />
+                {messagesLoading ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </div>
+          </header>
 
-        <section className="admin-inbox-grid">
+          <section className="admin-stats-grid" id="admin-overview">
+            <article className="admin-stat-card">
+              <span>Total messages</span>
+              <strong>{stats.total.toString().padStart(2, '0')}</strong>
+            </article>
+            <article className="admin-stat-card">
+              <span>New</span>
+              <strong>{stats.unread.toString().padStart(2, '0')}</strong>
+            </article>
+            <article className="admin-stat-card">
+              <span>With phone</span>
+              <strong>{stats.withPhone.toString().padStart(2, '0')}</strong>
+            </article>
+          </section>
+
+          <section className="admin-inbox-grid" id="admin-inbox">
           <aside className="admin-list-panel">
             <div className="admin-panel-header">
               <div>
@@ -363,7 +434,7 @@ function Admin() {
             </div>
           </aside>
 
-          <main className="admin-detail-panel">
+          <section className="admin-detail-panel" id="admin-detail">
             {selectedMessage ? (
               <article className="admin-detail-card">
                 <div className="admin-detail-header">
@@ -435,8 +506,9 @@ function Admin() {
                 <p>Choose a message from the list to read the full conversation details.</p>
               </div>
             )}
-          </main>
+          </section>
         </section>
+        </main>
       </div>
     </div>
   );
