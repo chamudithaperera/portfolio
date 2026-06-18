@@ -261,13 +261,6 @@ const certifications = [
   { title: 'IT for Business Success', org: 'HP', year: '2021' },
 ];
 
-const educationStats = [
-  { value: '4', label: 'Academic milestones' },
-  { value: '3', label: 'Certifications listed' },
-  { value: '2026', label: 'Latest credential' },
-  { value: 'IT', label: 'Core focus' },
-];
-
 const iconPaths = {
   code: ['M8 9l-4 3 4 3', 'M16 9l4 3-4 3', 'M14 5l-4 14'],
   menu: ['M4 7h16', 'M4 12h16', 'M4 17h16'],
@@ -1073,26 +1066,6 @@ function Education() {
       <div className="section-divider" />
       <Reveal className="section-inner">
         <SectionHeading index="05. Where I Studied" title="Education &" accent="Certifications" />
-        <div className="education-showcase card-3d">
-          <div className="education-showcase-copy">
-            <p className="column-label">
-              <Icon name="sparkles" size={13} /> Learning journey
-            </p>
-            <h3>Academic growth shaped around the software I build today.</h3>
-            <p>
-              My education path blends a university degree, a practical diploma, and ongoing
-              certifications so the section feels more like a polished story than a plain resume list.
-            </p>
-          </div>
-          <div className="education-stat-grid">
-            {educationStats.map((stat) => (
-              <div key={stat.label} className="education-stat">
-                <strong>{stat.value}</strong>
-                <span>{stat.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
         <div className="education-layout">
           <div className="education-column">
             <p className="column-label">
@@ -1101,11 +1074,9 @@ function Education() {
             <div className="education-list">
               {education.map((item) => (
                 <article key={`${item.title}-${item.period}`} className="education-card card-3d">
-                  <div className="education-card-marker">
-                    <span className="education-icon">
-                      <Icon name="graduation" size={14} />
-                    </span>
-                  </div>
+                  <span className="education-icon">
+                    <Icon name="graduation" size={14} />
+                  </span>
                   <div className="education-card-content">
                     <div className="education-title">
                       <span className="education-track">{item.track}</span>
@@ -1141,19 +1112,6 @@ function Education() {
                     </div>
                   </article>
                 ))}
-              </div>
-            </div>
-            <div className="references-panel card-3d">
-              <div className="panel-title">References</div>
-              <div className="references-list">
-                <div>
-                  <strong>Dr. T. Kartheeswaran</strong>
-                  <span>Senior Lecturer Gr. II · University of Vavuniya</span>
-                </div>
-                <div>
-                  <strong>Ms. H.A.I. Perera</strong>
-                  <span>Chief Internal Auditor · Ministry of Digital Economy</span>
-                </div>
               </div>
             </div>
           </div>
