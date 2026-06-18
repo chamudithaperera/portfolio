@@ -257,9 +257,24 @@ const education = [
 ];
 
 const certifications = [
-  { title: 'AI/ML Engineer — Stage 1', org: 'SLIIT', year: '2026' },
-  { title: 'Dart & Flutter Development Course', org: 'Udemy', year: '2024' },
-  { title: 'IT for Business Success', org: 'HP', year: '2021' },
+  {
+    title: 'AI/ML Engineer — Stage 1',
+    org: 'SLIIT',
+    year: '2026',
+    detail: 'Hands-on learning around model building, experimentation, and practical AI workflows.',
+  },
+  {
+    title: 'Dart & Flutter Development Course',
+    org: 'Udemy',
+    year: '2024',
+    detail: 'Focused on mobile UI systems, state management, and clean app structure.',
+  },
+  {
+    title: 'IT for Business Success',
+    org: 'HP',
+    year: '2021',
+    detail: 'Covered digital productivity, business workflows, and everyday office systems.',
+  },
 ];
 
 const iconPaths = {
@@ -1205,40 +1220,41 @@ function Education() {
               </div>
             </div>
 
-            <div className="slider-viewport slider-viewport--certifications" ref={certificationRailRef} aria-label="Certification cards slider">
-              {certifications.map((cert) => (
-                <article key={cert.title} className="experience-card certification-slider-card card-3d">
-                  <span className="experience-card-accent" />
-                  <div className="experience-card-body">
-                    <div className="experience-card-header">
-                      <div className="experience-role">
-                        <span className="experience-role-icon">
+              <div className="slider-viewport slider-viewport--certifications" ref={certificationRailRef} aria-label="Certification cards slider">
+                {certifications.map((cert) => (
+                  <article key={cert.title} className="experience-card certification-slider-card card-3d">
+                    <span className="experience-card-accent" />
+                    <div className="experience-card-body certification-card-body">
+                      <div className="certification-card-top">
+                        <span className="certification-badge">
+                          <Icon name="award" size={12} />
+                          Certification
+                        </span>
+                        <span className="experience-period certification-year">
+                          <Icon name="calendar" size={12} /> {cert.year}
+                        </span>
+                      </div>
+
+                      <div className="certification-card-main">
+                        <span className="experience-role-icon certification-role-icon">
                           <Icon name="award" size={18} />
                         </span>
-                        <div>
+                        <div className="certification-copy">
                           <div className="experience-title-line">
                             <h3>{cert.title}</h3>
                           </div>
-                          <p>{cert.org}</p>
+                          <p className="certification-org">{cert.org}</p>
+                          <p className="certification-detail">{cert.detail}</p>
                         </div>
                       </div>
-                      <span className="experience-period">
-                        <Icon name="calendar" size={12} /> {cert.year}
-                      </span>
-                    </div>
 
-                    <div className="experience-card-footer education-footer">
-                      <div className="experience-count">
-                        <strong>CR</strong>
-                        <span>/</span>
-                        <small>CERT</small>
-                        <em>· {cert.year}</em>
+                      <div className="certification-card-footer">
+                        <span className="certification-chip">Learning milestone</span>
+                        <div className="slider-pulse certification-pulse" aria-hidden="true" />
                       </div>
-                      <div className="slider-pulse certification-pulse" aria-hidden="true" />
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                ))}
             </div>
           </div>
         </div>

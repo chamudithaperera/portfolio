@@ -4747,6 +4747,98 @@ textarea:focus-visible {
   border-radius: 0.7rem;
 }
 
+.section-education .slider-viewport--certifications .certification-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  min-height: 100%;
+  padding: 1rem 1rem 0.9rem;
+}
+
+.section-education .slider-viewport--certifications .certification-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.section-education .slider-viewport--certifications .certification-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 999px;
+  background: rgba(23, 37, 84, 0.28);
+  color: #93c5fd;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-education .slider-viewport--certifications .certification-year {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.64rem;
+}
+
+.section-education .slider-viewport--certifications .certification-card-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  flex: 1;
+}
+
+.section-education .slider-viewport--certifications .certification-role-icon {
+  width: 2.35rem;
+  height: 2.35rem;
+  margin-top: 0.05rem;
+  border-radius: 0.7rem;
+}
+
+.section-education .slider-viewport--certifications .certification-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.section-education .slider-viewport--certifications .certification-org {
+  margin: 0;
+  color: rgba(96, 165, 250, 0.8);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.section-education .slider-viewport--certifications .certification-detail {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.74rem;
+  line-height: 1.7;
+}
+
+.section-education .slider-viewport--certifications .certification-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(30, 58, 138, 0.18);
+}
+
+.section-education .slider-viewport--certifications .certification-chip {
+  padding: 0.28rem 0.55rem;
+  border: 1px solid rgba(30, 58, 138, 0.22);
+  border-radius: 999px;
+  color: #cbd5e1;
+  background: rgba(7, 13, 31, 0.7);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 767px) {
   .section-education .education-shell {
     gap: 1rem;
@@ -4776,5 +4868,17 @@ textarea:focus-visible {
     flex-basis: min(84vw, 18rem);
     min-width: min(84vw, 18rem);
   }
-}
 
+  .section-education .slider-viewport--certifications .certification-card-body {
+    gap: 0.8rem;
+    padding: 0.9rem 0.85rem 0.8rem;
+  }
+
+  .section-education .slider-viewport--certifications .certification-detail {
+    font-size: 0.7rem;
+  }
+
+  .section-education .slider-viewport--certifications .certification-chip {
+    padding: 0.24rem 0.5rem;
+  }
+}
