@@ -1724,6 +1724,15 @@ a.contact-item:hover {
   text-transform: uppercase;
 }
 
+.message-form label > span small {
+  margin-left: 0.35rem;
+  color: #64748b;
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
 .message-form input,
 .message-form textarea {
   width: 100%;
@@ -2042,6 +2051,7 @@ textarea:focus-visible {
   }
 
   .hero-visual {
+    align-items: center;
     justify-content: center;
   }
 
@@ -2055,7 +2065,7 @@ textarea:focus-visible {
 
   .about-grid,
   .skills-layout,
-  .education-layout,
+  .education-content,
   .contact-layout {
     grid-template-columns: 1fr;
   }
@@ -2274,6 +2284,11 @@ textarea:focus-visible {
     font-size: 0.6rem;
   }
 
+  .hero-loop-label {
+    left: 0.5rem;
+    bottom: 0.5rem;
+  }
+
   .metric {
     padding: 1rem 0.5rem;
   }
@@ -2468,7 +2483,9 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  width: 100%;
+  align-self: stretch;
+  justify-content: flex-end;
+  width: min(100%, 27rem);
   padding-top: 1.25rem;
   border-top: 1px solid rgba(30, 41, 59, 0.5);
 }
@@ -2513,7 +2530,10 @@ textarea:focus-visible {
 
 .hero-reference .hero-visual {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.5rem;
   width: 100%;
   max-width: 448px;
   margin-left: auto;
@@ -2659,6 +2679,16 @@ textarea:focus-visible {
   animation: float-b 9s ease-in-out 1.5s infinite;
 }
 
+.hero-loop-label {
+  left: 1rem;
+  bottom: 0.75rem;
+  top: auto;
+  color: #f9a8d4;
+  border-color: rgba(244, 114, 182, 0.35);
+  background: rgba(7, 13, 31, 0.96);
+  animation: float-b 8.5s ease-in-out 0.8s infinite;
+}
+
 .hero-marquee {
   position: absolute;
   right: 0;
@@ -2733,6 +2763,20 @@ textarea:focus-visible {
 .experience-shell {
   max-width: 64rem;
   margin: 0 auto;
+}
+
+.education-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-width: 80rem;
+}
+
+.education-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 1.75rem;
+  align-items: start;
 }
 
 .experience-steps {
@@ -3582,19 +3626,7 @@ textarea:focus-visible {
 .footer-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.625rem;
-}
-
-.footer-brand-icon {
-  position: relative;
-  display: grid;
-  width: 2.5rem;
-  height: 2.5rem;
-  place-items: center;
-  overflow: hidden;
-  border-radius: 0.75rem;
-  color: #fff;
-  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  gap: 0;
 }
 
 .footer-brand>span:last-child,
