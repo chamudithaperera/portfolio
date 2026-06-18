@@ -2083,27 +2083,26 @@ textarea:focus-visible {
     min-height: 30rem;
   }
 
-  .education-carousel-card {
+  .education-carousel-card.experience-card {
     width: min(32rem, 86vw);
+  }
+
+  .education-carousel-card.experience-card.is-prev {
+    transform: translateX(calc(-50% - 16vw)) scale(0.84) translateY(1.2rem) rotateY(10deg);
+  }
+
+  .education-carousel-card.experience-card.is-next {
+    transform: translateX(calc(-50% + 16vw)) scale(0.84) translateY(1.2rem) rotateY(-10deg);
+  }
+
+  .education-carousel-card.experience-card.is-hidden {
+    opacity: 0;
   }
 
   .education-slider-card,
   .certification-slider-card {
     flex-basis: min(32rem, 86vw);
     min-width: min(32rem, 86vw);
-  }
-
-  .education-carousel-card.is-prev {
-    transform: translateX(calc(-50% - 16vw)) scale(0.84) translateY(1.2rem) rotateY(10deg);
-  }
-
-  .education-carousel-card.is-next {
-    transform: translateX(calc(-50% + 16vw)) scale(0.84) translateY(1.2rem) rotateY(-10deg);
-  }
-
-  .education-slider-card .experience-card-body,
-  .certification-slider-card .experience-card-body {
-    padding: 1.4rem;
   }
 
   .info-panel {
@@ -2920,17 +2919,19 @@ textarea:focus-visible {
 }
 
 .education-carousel {
-  padding: 1rem 0 0.25rem;
+  padding: 0.5rem 0 0.15rem;
 }
 
 .education-carousel-stage {
   position: relative;
-  min-height: 31rem;
+  width: min(100%, 72rem);
+  min-height: 28rem;
+  margin: 0 auto;
   perspective: 1400px;
   overflow: hidden;
 }
 
-.education-carousel-card {
+.education-carousel-card.experience-card {
   position: absolute;
   top: 0;
   left: 50%;
@@ -2945,11 +2946,11 @@ textarea:focus-visible {
     box-shadow 0.42s ease;
 }
 
-.education-carousel-card .experience-card-body {
+.education-carousel-card.experience-card .experience-card-body {
   padding: 1.75rem;
 }
 
-.education-carousel-card.is-active {
+.education-carousel-card.experience-card.is-active {
   z-index: 3;
   opacity: 1;
   transform: translateX(-50%) scale(1) translateY(0);
@@ -2959,28 +2960,28 @@ textarea:focus-visible {
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.education-carousel-card.is-prev,
-.education-carousel-card.is-next {
+.education-carousel-card.experience-card.is-prev,
+.education-carousel-card.experience-card.is-next {
   z-index: 2;
   opacity: 0.42;
   filter: blur(0.9px) saturate(0.88);
 }
 
-.education-carousel-card.is-prev {
+.education-carousel-card.experience-card.is-prev {
   transform: translateX(calc(-50% - clamp(13rem, 18vw, 16rem))) scale(0.86) translateY(1.55rem) rotateY(12deg);
 }
 
-.education-carousel-card.is-next {
+.education-carousel-card.experience-card.is-next {
   transform: translateX(calc(-50% + clamp(13rem, 18vw, 16rem))) scale(0.86) translateY(1.55rem) rotateY(-12deg);
 }
 
-.education-carousel-card.is-hidden {
+.education-carousel-card.experience-card.is-hidden {
   opacity: 0;
   pointer-events: none;
   transform: translateX(-50%) scale(0.72);
 }
 
-.education-carousel-card:hover.is-active {
+.education-carousel-card.experience-card:hover.is-active {
   transform: translateX(-50%) scale(1.01) translateY(-2px);
 }
 
@@ -4528,15 +4529,19 @@ textarea:focus-visible {
     min-height: 26rem;
   }
 
-  .education-carousel-card {
+  .education-carousel-card.experience-card {
     width: min(92vw, 28rem);
   }
 
-  .education-carousel-card.is-prev,
-  .education-carousel-card.is-next {
+  .education-carousel-card.experience-card.is-prev,
+  .education-carousel-card.experience-card.is-next {
     opacity: 0;
     pointer-events: none;
     transform: translateX(-50%) scale(0.95);
+  }
+
+  .education-carousel-card.experience-card .experience-card-body {
+    padding: 1.4rem;
   }
 
   .education-slider-card,
