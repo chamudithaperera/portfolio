@@ -21,11 +21,13 @@ afterEach(() => {
 
 test('renders the full portfolio structure and navigation anchors', () => {
   render(<App />);
+  const hero = document.getElementById('hero');
 
   expect(screen.getByRole('heading', { level: 1, name: 'Chamuditha Perera' })).toBeInTheDocument();
-  expect(screen.getByText('Open to new opportunities')).toBeInTheDocument();
-  expect(screen.getAllByText('Kalutara, Sri Lanka').length).toBeGreaterThan(0);
-  expect(screen.getByText('15+')).toBeInTheDocument();
+  expect(screen.queryByText('Open to new opportunities')).not.toBeInTheDocument();
+  expect(hero).not.toHaveTextContent('Kalutara, Sri Lanka');
+  expect(within(hero).getByText('35+')).toBeInTheDocument();
+  expect(within(hero).getByText('3y+')).toBeInTheDocument();
   expect(screen.getAllByText('Technologies').length).toBeGreaterThan(0);
   expect(screen.getByRole('heading', { name: 'About Me' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Work Experience' })).toBeInTheDocument();
@@ -102,6 +104,7 @@ test('shows the simulated contact success state and can reset it', () => {
   expect(screen.getByText("Let's build something together.")).toBeInTheDocument();
   fireEvent.change(screen.getByPlaceholderText('Your name'), { target: { value: 'Test User' } });
   fireEvent.change(screen.getByPlaceholderText('your@email.com'), { target: { value: 'test@example.com' } });
+  fireEvent.change(screen.getByPlaceholderText('+94 12 345 6789'), { target: { value: '+94771234567' } });
   fireEvent.change(screen.getByPlaceholderText("What's this about?"), { target: { value: 'Portfolio' } });
   fireEvent.change(screen.getByPlaceholderText('Tell me about your project or opportunity...'), {
     target: { value: 'Hello there' },

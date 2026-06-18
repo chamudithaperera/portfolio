@@ -41,7 +41,7 @@ const profile = {
   address: 'No 83, Galle Road, Kalutara North',
   github: 'chamudithaperera',
   linkedin: 'chamudithaperera',
-  portfolio: 'chamxdev.vercel.app',
+  portfolio: 'chamudithaperera.online',
 };
 
 const locationUrl =
@@ -408,13 +408,10 @@ function SectionHeading({ index, title, accent, description, align = 'center' })
   );
 }
 
-function Brand({ small = false }) {
+function Brand() {
   return (
     <span className="brand">
-      <span className={`brand-icon ${small ? 'brand-icon-small' : ''}`}>
-        <Icon name="code" size={small ? 13 : 15} />
-      </span>
-      <span>ChamXdev</span>
+      <span>ChamudithaPerera.Online</span>
     </span>
   );
 }
@@ -452,7 +449,7 @@ function Navigation() {
   return (
     <nav className={`top-nav ${scrolled ? 'top-nav-scrolled' : ''}`} aria-label="Main navigation">
       <div className="nav-inner">
-        <a href="#hero" aria-label="ChamXdev home">
+        <a href="#hero" aria-label="ChamudithaPerera.Online home">
           <Brand />
         </a>
 
@@ -527,8 +524,10 @@ function OrbitIdentity() {
         <span className="hero-orbit-highlight" />
         <img
           className="hero-orbit-photo"
-          src={withBase('/assets/imgs/header/edited-photo-cropped.png')}
+          src={withBase('/assets/imgs/header/edited-photo-cropped-720.jpg')}
           alt=""
+          loading="eager"
+          decoding="async"
         />
         <span className="hero-orbit-spark">
           <Icon name="sparkles" size={14} />
@@ -551,11 +550,6 @@ function Hero() {
 
       <div className="hero-inner">
         <div className="hero-copy">
-          <div className="hero-pill">
-            <span />
-            Open to new opportunities
-          </div>
-
           <div>
             <p className="hero-eyebrow">Hello, I'm</p>
             <h1>
@@ -585,28 +579,11 @@ function Hero() {
           </div>
 
           <div className="hero-meta-row">
-            <span className="hero-location">
-              <Icon name="pin" size={13} /> Kalutara, Sri Lanka
-            </span>
-            <span className="hero-meta-divider" aria-hidden="true" />
             <div className="social-row" aria-label="Social links">
               <SocialLink icon="github" label="GitHub" href={`https://github.com/${profile.github}`} />
               <SocialLink icon="linkedin" label="LinkedIn" href={`https://linkedin.com/in/${profile.linkedin}`} />
               <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
             </div>
-          </div>
-
-          <div className="hero-stats">
-            {[
-              ['4+', 'Projects'],
-              ['2y+', 'Experience'],
-              ['15+', 'Technologies'],
-            ].map(([value, label]) => (
-              <div key={label}>
-                <strong>{value}</strong>
-                <span>{label}</span>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -618,6 +595,21 @@ function Hero() {
           <span className="floating-label floating-label-b">
             <Icon name="sparkles" size={12} /> Available
           </span>
+          <span className="floating-label hero-loop-label">
+            <Icon name="arrowRight" size={12} /> Creative Loop
+          </span>
+          <div className="hero-stats">
+            {[
+              ['35+', 'Projects'],
+              ['3y+', 'Experience'],
+              ['20+', 'Technologies'],
+            ].map(([value, label]) => (
+              <div key={label}>
+                <strong>{value}</strong>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -647,7 +639,7 @@ const contactItems = [
   { icon: 'pin', label: profile.address },
   { icon: 'github', label: `github/${profile.github}`, href: `https://github.com/${profile.github}` },
   { icon: 'linkedin', label: `in/${profile.linkedin}`, href: `https://linkedin.com/in/${profile.linkedin}` },
-  { icon: 'external', label: profile.portfolio, href: `https://${profile.portfolio}` },
+  { icon: 'external', label: profile.portfolio, href: profile.portfolio },
 ];
 
 function ContactItem({ item }) {
@@ -702,10 +694,9 @@ function About() {
 
             <div className="metric-grid">
               {[
-                ['4+', 'Projects'],
-                ['2+', 'Yrs Experience'],
+                ['35+', 'Projects'],
+                ['3y+', 'Yrs Experience'],
                 ['20+', 'Technologies'],
-                ['BSc', 'IT Degree'],
               ].map(([value, label]) => (
                 <div key={label} className="metric card-3d">
                   <strong className="gradient-text">{value}</strong>
@@ -1066,57 +1057,114 @@ function Skills() {
 }
 
 function Education() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeEducation = education[activeIndex];
+  const showPrevious = () =>
+    setActiveIndex((current) => (current - 1 + education.length) % education.length);
+  const showNext = () => setActiveIndex((current) => (current + 1) % education.length);
+
   return (
     <section id="education" className="section section-education">
       <div className="section-divider" />
       <Reveal className="section-inner">
         <SectionHeading index="05. Where I Studied" title="Education &" accent="Certifications" />
-        <div className="education-layout">
-          <div className="education-column">
-            <p className="column-label">
-              <Icon name="graduation" size={13} /> Academic Background
-            </p>
-            <div className="education-list">
-              {education.map((item) => (
-                <article key={`${item.title}-${item.period}`} className="education-card card-3d">
-                  <span className="education-icon">
-                    <Icon name="graduation" size={14} />
+        <div className="experience-shell education-shell">
+          <div className="experience-steps education-steps" aria-label="Education timeline">
+            <span className="experience-step-line" aria-hidden="true" />
+            {education.map((item, index) => {
+              const selected = index === activeIndex;
+              const completed = index < activeIndex;
+              return (
+                <button
+                  key={`${item.title}-${item.period}`}
+                  type="button"
+                  className={`experience-step education-step ${selected ? 'is-active' : ''} ${completed ? 'is-complete' : ''}`}
+                  aria-pressed={selected}
+                  aria-label={`${item.period} ${item.org}`}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  <span className="experience-step-dot">
+                    {selected ? <Icon name="graduation" size={14} /> : index + 1}
                   </span>
-                  <div className="education-card-content">
-                    <div className="education-title">
-                      <span className="education-track">{item.track}</span>
-                      {item.badge ? <span className="education-badge">{item.badge}</span> : null}
-                    </div>
-                    <h3>{item.title}</h3>
-                    <p className="education-org">{item.org}</p>
-                    <p className="education-period">
-                      <Icon name="calendar" size={10} /> {item.period}
-                    </p>
-                    <p className="education-description">{item.detail}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
+                  <span className="experience-step-label">
+                    <strong>{item.period}</strong>
+                    <small>{item.org}</small>
+                  </span>
+                </button>
+              );
+            })}
           </div>
-          <div className="education-side">
-            <div className="education-panel card-3d">
-              <p className="column-label">
-                <Icon name="award" size={13} /> Certifications
-              </p>
-              <div className="certification-list">
-                {certifications.map((cert) => (
-                  <article key={cert.title} className="certification-card card-3d">
-                    <span className="certification-icon">
-                      <Icon name="award" size={13} />
-                    </span>
-                    <div>
-                      <h3>{cert.title}</h3>
-                      <p>
-                        {cert.org} <span>{cert.year}</span>
-                      </p>
+
+          <div className="education-content">
+            <div className="experience-card-glow">
+              <article key={activeIndex} className="experience-card education-active-card card-3d" aria-live="polite">
+                <span className="experience-card-accent" />
+                <div className="experience-card-body">
+                  <div className="experience-card-header">
+                    <div className="experience-role education-role">
+                      <span className="experience-role-icon">
+                        <Icon name="graduation" size={18} />
+                      </span>
+                      <div>
+                        <div className="experience-title-line">
+                          <h3>{activeEducation.title}</h3>
+                          {activeEducation.badge ? <span className="current-badge">{activeEducation.badge}</span> : null}
+                        </div>
+                        <p>{activeEducation.org}</p>
+                      </div>
                     </div>
-                  </article>
-                ))}
+                    <span className="experience-period">
+                      <Icon name="calendar" size={12} /> {activeEducation.period}
+                    </span>
+                  </div>
+
+                  <p className="experience-description">{activeEducation.detail}</p>
+
+                  <div className="tag-row experience-tags">
+                    <span className="tech-tag">Academic Background</span>
+                    <span className="tech-tag colorful-tag">{activeEducation.track}</span>
+                  </div>
+
+                  <div className="experience-card-footer">
+                    <div className="experience-count">
+                      <strong>{String(activeIndex + 1).padStart(2, '0')}</strong>
+                      <span>/</span>
+                      <small>{String(education.length).padStart(2, '0')}</small>
+                      <em>· {activeEducation.org}</em>
+                    </div>
+                    <div className="experience-controls">
+                      <button type="button" aria-label="Previous education" onClick={showPrevious}>
+                        <Icon name="arrowLeft" size={15} />
+                      </button>
+                      <button type="button" aria-label="Next education" onClick={showNext}>
+                        <Icon name="arrowRight" size={15} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div className="education-side">
+              <div className="education-panel card-3d">
+                <p className="column-label">
+                  <Icon name="award" size={13} /> Certifications
+                </p>
+                <div className="certification-list">
+                  {certifications.map((cert) => (
+                    <article key={cert.title} className="certification-card card-3d">
+                      <span className="certification-icon">
+                        <Icon name="award" size={13} />
+                      </span>
+                      <div>
+                        <h3>{cert.title}</h3>
+                        <p>
+                          {cert.org} <span>{cert.year}</span>
+                        </p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -1127,7 +1175,7 @@ function Education() {
 }
 
 function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
   const sending = status === 'sending';
@@ -1149,7 +1197,7 @@ function Contact() {
         body: form,
       });
       setStatus('success');
-      setForm({ name: '', email: '', subject: '', message: '' });
+      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
     } catch (submissionError) {
       setStatus('error');
       setError(submissionError.message || 'Something went wrong. Please try again.');
@@ -1159,20 +1207,20 @@ function Contact() {
   const reset = () => {
     setStatus('idle');
     setError('');
-    setForm({ name: '', email: '', subject: '', message: '' });
+    setForm({ name: '', email: '', phone: '', subject: '', message: '' });
   };
 
   const directItems = [
     { icon: 'mail', label: 'Email', value: profile.email, href: `mailto:${profile.email}` },
     { icon: 'phone', label: 'Phone', value: profile.phone, href: `tel:${profile.phone}` },
     { icon: 'pin', label: 'Location', value: profile.address, href: locationUrl },
-    { icon: 'external', label: 'Portfolio', value: profile.portfolio, href: `https://${profile.portfolio}` },
+    { icon: 'external', label: 'Portfolio', value: profile.portfolio, href: profile.portfolio },
   ];
 
   const followItems = [
     { icon: 'github', label: 'GitHub', href: `https://github.com/${profile.github}` },
     { icon: 'linkedin', label: 'LinkedIn', href: `https://linkedin.com/in/${profile.linkedin}` },
-    { icon: 'external', label: 'Website', href: `https://${profile.portfolio}` },
+    { icon: 'external', label: 'Website', href: profile.portfolio },
   ];
 
   return (
@@ -1297,6 +1345,16 @@ function Contact() {
                     </label>
                   </div>
                   <label>
+                    <span>Phone <small>(Optional)</small></span>
+                    <input
+                      name="phone"
+                      type="tel"
+                      value={form.phone}
+                      onChange={update}
+                      placeholder="+94 12 345 6789"
+                    />
+                  </label>
+                  <label>
                     <span>Subject</span>
                     <input
                       name="subject"
@@ -1377,12 +1435,9 @@ function Footer() {
         <div className="footer-grid">
           <div className="footer-brand-column">
             <a href="#hero" className="footer-brand">
-              <span className="footer-brand-icon">
-                <Icon name="code" size={18} />
-              </span>
               <span>
                 <strong>
-                  ChamXdev
+                  ChamudithaPerera.Online
                 </strong>
                 <small>/ Software Engineer</small>
               </span>
@@ -1392,7 +1447,7 @@ function Footer() {
               <SocialLink icon="github" label="GitHub" href={`https://github.com/${profile.github}`} />
               <SocialLink icon="linkedin" label="LinkedIn" href={`https://linkedin.com/in/${profile.linkedin}`} />
               <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
-              <SocialLink icon="external" label="Website" href={`https://${profile.portfolio}`} />
+              <SocialLink icon="external" label="Website" href={profile.portfolio} />
             </div>
           </div>
 
@@ -1435,7 +1490,7 @@ function Footer() {
 
         <div className="footer-bottom">
           <p>
-            © 2026 ChamXdev by {profile.name}.
+            © 2026 ChamudithaPerera.Online by {profile.name}.
           </p>
           <div>
             <span>All rights reserved</span>
@@ -1453,7 +1508,7 @@ function Home() {
   return (
     <div className="bolt-shell">
       <Helmet>
-        <title>ChamXdev — Software Engineer Portfolio</title>
+        <title>ChamXdev by Chamuditha Perer</title>
         <meta
           name="description"
           content="Portfolio of Chamuditha Perera, a mobile-focused software engineer building modern mobile, web, and backend systems."
