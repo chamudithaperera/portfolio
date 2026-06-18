@@ -14,7 +14,7 @@
 }
 
 html {
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 0;
 }
 
 .bolt-shell {
@@ -3799,7 +3799,8 @@ textarea:focus-visible {
   }
 
   .hero-reference .hero-visual {
-    display: none;
+    display: block;
+    margin-inline: auto;
   }
 
   .hero-reference .hero-copy {
@@ -3843,7 +3844,7 @@ textarea:focus-visible {
   }
 
   .hero-reference .hero-copy h1 {
-    font-size: clamp(3rem, 15vw, 4rem);
+    font-size: 3rem;
   }
 
   .hero-reference .role-line {
@@ -3878,14 +3879,17 @@ textarea:focus-visible {
     display: none;
   }
 
-  .experience-reference,
+  .experience-reference {
+    padding-block: 7rem;
+  }
+
   .skills-reference,
   .contact-reference {
-    padding-block: 6rem;
+    padding-block: 8rem;
   }
 
   .experience-reference .section-heading {
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
   }
 
   .experience-steps {
@@ -4096,7 +4100,6 @@ textarea:focus-visible {
   }
 
   .footer-cta > a {
-    width: 100%;
     justify-content: center;
   }
 }
