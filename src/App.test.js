@@ -6,12 +6,16 @@ test('renders the full portfolio structure and navigation anchors', () => {
   render(<App />);
 
   expect(screen.getByRole('heading', { level: 1, name: 'M. C. K. Perera' })).toBeInTheDocument();
+  expect(screen.getByText('Open to new opportunities')).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'About Me' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Work Experience' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Technical Skills' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Education & Certifications' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: "Let's Connect" })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Bank Trainee' })).toBeInTheDocument();
+  expect(screen.getByText('MQTT')).toBeInTheDocument();
+  expect(screen.getByText('Adobe Photoshop')).toBeInTheDocument();
 
   const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
   expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '#about');

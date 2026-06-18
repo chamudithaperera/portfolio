@@ -36,15 +36,15 @@ const experience = [
     org: 'W3Inventor',
     current: true,
     detail:
-      'Building ride-hailing and pooling systems with Flutter, React/TypeScript, and Spring Boot microservices, including trip planning, live tracking, bookings, notifications, and deployment workflows.',
-    tags: ['Flutter', 'React', 'Spring Boot', 'Microservices', 'Notifications'],
+      'Developing ride-hailing system using Flutter and Spring Boot, implementing real-time features, fare logic, JWT authentication, microservices integration, and optimizing performance, caching, and database consistency.',
+    tags: ['Flutter', 'Spring Boot', 'Microservices', 'JWT', 'Redis'],
   },
   {
     period: '2025 Sep — 2026 Mar',
     role: 'Intern Mobile Application Developer',
     org: 'W3Inventor',
     detail:
-      'Contributed to Flutter ride-hailing app development, API integration, authentication flows, and debugging in a microservices-based architecture.',
+      'Contributed to Flutter-based ride-hailing app development, implementing UI, API integration, authentication flows, and debugging features while collaborating with backend teams in a microservices-based architecture.',
     tags: ['Flutter', 'API Integration', 'Authentication', 'Microservices'],
   },
   {
@@ -52,16 +52,24 @@ const experience = [
     role: 'Intern UI/UX Designer',
     org: 'Kyranz IT',
     detail:
-      'Created user-friendly web and mobile interfaces, wireframes, and prototypes in Figma while supporting responsive product design.',
-    tags: ['Figma', 'UI/UX', 'Wireframing', 'Responsive Design'],
+      'Worked remotely creating user-friendly web and mobile interfaces. Created wireframes and prototypes in Figma, assisted with user research, and ensured responsiveness across devices.',
+    tags: ['Figma', 'UI/UX', 'Wireframing', 'Prototyping'],
   },
   {
     period: '2024 Jun — 2024 Dec',
     role: 'Intern UI/UX Designer',
     org: 'Web99x',
     detail:
-      'Crafted wireframes, mockups, and prototypes in Figma, collaborating with developers to ship cleaner user-focused interfaces.',
-    tags: ['Figma', 'Mockups', 'Prototyping', 'Collaboration'],
+      'Crafted wireframes, mockups, and prototypes in Figma. Collaborated with developers to deliver clean, user-focused designs for web and mobile products.',
+    tags: ['Figma', 'Mockups', 'UI Design', 'Collaboration'],
+  },
+  {
+    period: '2021 Dec — 2022 Jun',
+    role: 'Bank Trainee',
+    org: "Peoples' Bank — International Banking",
+    detail:
+      'Worked in the Import Bills section. Assisted in processing import documentation, verifying trade documents, and supporting daily operations related to international trade finance.',
+    tags: ['Trade Finance', 'Documentation', 'Banking'],
   },
 ];
 
@@ -116,11 +124,11 @@ const skillGroups = [
   },
   {
     label: 'Backend / DB',
-    items: ['Firebase', 'MongoDB', 'MySQL', 'PostgreSQL', 'SQLite', 'Redis', 'REST APIs', 'JWT Auth'],
+    items: ['Firebase', 'MongoDB', 'MySQL', 'PostgreSQL', 'SQLite', 'Redis', 'MQTT', 'RESTful APIs', 'JWT Auth'],
   },
   {
     label: 'DevOps',
-    items: ['Git', 'GitHub', 'Docker', 'Postman', 'Kubernetes', 'Nginx', 'AWS', 'Figma', 'Photoshop'],
+    items: ['Git', 'GitHub', 'Docker', 'Postman', 'Kubernetes', 'Nginx', 'Figma', 'Adobe Photoshop'],
   },
 ];
 
@@ -565,7 +573,10 @@ function Hero() {
             <div className="rotating-ring rotating-ring-b" aria-hidden="true" />
             <div className="profile-card card-3d">
               <div className="profile-image">
-                <img src={withBase('/assets/imgs/hero/samurai-ai.png')} alt="Samurai-inspired AI artwork" />
+                <img
+                  src="https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&w=600"
+                  alt="Workspace"
+                />
                 <div className="profile-image-overlay" />
                 <div className="avatar-badge">CK</div>
               </div>
