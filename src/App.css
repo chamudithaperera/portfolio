@@ -1754,6 +1754,16 @@ a.contact-item:hover {
   background: rgba(23, 37, 84, 0.2);
 }
 
+.contact-form-error {
+  padding: 0.875rem 1rem;
+  border: 1px solid rgba(248, 113, 113, 0.22);
+  border-radius: 0.75rem;
+  color: #fca5a5;
+  background: rgba(127, 29, 29, 0.16);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
 .submit-button {
   display: flex;
   width: 100%;
@@ -1771,6 +1781,11 @@ a.contact-item:hover {
   transition:
     transform 0.3s ease,
     opacity 0.3s ease;
+}
+
+.submit-button:disabled {
+  cursor: progress;
+  opacity: 0.82;
 }
 
 .submit-button:hover:not(:disabled) {

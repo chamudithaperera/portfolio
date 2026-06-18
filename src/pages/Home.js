@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import withBase from '../utils/basePath';
+import { apiRequest } from '../utils/api';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -1127,28 +1128,37 @@ function Education() {
 
 function Contact() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
-  const timerRef = useRef();
-
-  useEffect(() => () => window.clearTimeout(timerRef.current), []);
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
+  const sending = status === 'sending';
+  const sent = status === 'success';
 
   const update = (event) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
   };
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
-    setSending(true);
-    timerRef.current = window.setTimeout(() => {
-      setSending(false);
-      setSent(true);
-    }, 1200);
+    setStatus('sending');
+    setError('');
+
+    try {
+      await apiRequest('/api/contact/messages', {
+        method: 'POST',
+        body: form,
+      });
+      setStatus('success');
+      setForm({ name: '', email: '', subject: '', message: '' });
+    } catch (submissionError) {
+      setStatus('error');
+      setError(submissionError.message || 'Something went wrong. Please try again.');
+    }
   };
 
   const reset = () => {
-    setSent(false);
+    setStatus('idle');
+    setError('');
     setForm({ name: '', email: '', subject: '', message: '' });
   };
 
@@ -1307,6 +1317,11 @@ function Contact() {
                       placeholder="Tell me about your project or opportunity..."
                     />
                   </label>
+                  {error ? (
+                    <div className="contact-form-error" role="alert">
+                      {error}
+                    </div>
+                  ) : null}
                   <button className="submit-button" type="submit" disabled={sending}>
                     {sending ? <span className="spinner" aria-label="Sending" /> : <Icon name="send" size={15} />}
                     {sending ? 'Sending...' : 'Send Message'}

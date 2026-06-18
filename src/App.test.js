@@ -1,6 +1,23 @@
-import React, { act } from 'react';
+import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import App from './App';
+
+function mockJsonResponse(body, status = 200) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: {
+      get: () => 'application/json',
+    },
+    json: async () => body,
+    text: async () => JSON.stringify(body),
+  };
+}
+
+afterEach(() => {
+  delete global.fetch;
+  window.history.pushState({}, '', '/');
+});
 
 test('renders the full portfolio structure and navigation anchors', () => {
   render(<App />);
@@ -77,7 +94,8 @@ test('keeps local project content and safe external links', () => {
 });
 
 test('shows the simulated contact success state and can reset it', () => {
-  jest.useFakeTimers();
+  const fetchMock = jest.fn().mockResolvedValue(mockJsonResponse({ ok: true, message: 'Saved' }, 201));
+  global.fetch = fetchMock;
   render(<App />);
 
   expect(screen.getByRole('heading', { name: 'Available for new opportunities' })).toBeInTheDocument();
@@ -91,12 +109,28 @@ test('shows the simulated contact success state and can reset it', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Send Message' }));
   expect(screen.getByRole('button', { name: /Sending/i })).toBeDisabled();
 
-  act(() => {
-    jest.advanceTimersByTime(1200);
+  return screen.findByRole('status').then((successState) => {
+    expect(successState).toHaveTextContent('Message Sent!');
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/contact/messages',
+      expect.objectContaining({
+        method: 'POST',
+        credentials: 'include',
+      }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Send Another' }));
+    expect(screen.getByPlaceholderText('Your name')).toHaveValue('');
   });
+});
 
-  expect(screen.getByRole('status')).toHaveTextContent('Message Sent!');
-  fireEvent.click(screen.getByRole('button', { name: 'Send Another' }));
-  expect(screen.getByPlaceholderText('Your name')).toHaveValue('');
-  jest.useRealTimers();
+test('shows the admin login screen on the /admin route', async () => {
+  global.fetch = jest
+    .fn()
+    .mockResolvedValueOnce(mockJsonResponse({ ok: true, authenticated: false }));
+
+  window.history.pushState({}, '', '/admin');
+  render(<App />);
+
+  expect(await screen.findByRole('heading', { name: 'ChamXdev Admin' })).toBeInTheDocument();
+  expect(screen.getByPlaceholderText('admin.chamuditha')).toBeInTheDocument();
 });
