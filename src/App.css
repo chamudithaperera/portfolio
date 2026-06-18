@@ -2529,11 +2529,11 @@ textarea:focus-visible {
 
 .hero-orbit-core {
   position: absolute;
-  inset: 18%;
+  inset: 22%;
   overflow: hidden;
   display: grid;
   place-items: center;
-  padding: 6%;
+  padding: 8%;
   border: 1px solid rgba(29, 78, 216, 0.4);
   border-radius: 50%;
   background: radial-gradient(circle at 30% 25%, #1e3a8a 0%, #0a1330 60%, #040814 100%);
@@ -2545,12 +2545,12 @@ textarea:focus-visible {
 .hero-orbit-photo {
   position: relative;
   z-index: 2;
-  width: 128%;
-  height: 162%;
+  width: 108%;
+  height: 108%;
   object-fit: contain;
   object-position: center center;
   filter: drop-shadow(0 16px 30px rgba(2, 6, 23, 0.45));
-  transform: translateY(2%);
+  transform: translateY(0);
   pointer-events: none;
 }
 

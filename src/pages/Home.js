@@ -526,7 +526,7 @@ function OrbitIdentity() {
         <span className="hero-orbit-highlight" />
         <img
           className="hero-orbit-photo"
-          src={withBase('/assets/imgs/header/edited-photo.png')}
+          src={withBase('/assets/imgs/header/edited-photo-cropped.png')}
           alt=""
         />
         <span className="hero-orbit-spark">
