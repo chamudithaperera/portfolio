@@ -50,6 +50,9 @@ const siteUrl = 'https://chamudithaperera.online';
 const siteTitle = 'Chamuditha Perera | Chamuditha Portfolio';
 const siteDescription =
   "Chamuditha Perera's portfolio website showcasing Flutter, React, Spring Boot, UI/UX, and production-ready mobile and web projects from Sri Lanka.";
+const projectsPageTitle = 'Projects | Chamuditha Perera';
+const projectsPageDescription =
+  "Selected projects by Chamuditha Perera, including Flutter apps, React web experiences, and Spring Boot systems.";
 const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`;
 
 const locationUrl =
@@ -1092,7 +1095,20 @@ function ProjectsPage() {
   return (
     <div className="bolt-shell projects-page-shell">
       <Helmet>
-        <title>ChamXdev by Chamuditha Perer | Projects</title>
+        <title>{projectsPageTitle}</title>
+        <meta name="description" content={projectsPageDescription} />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <link rel="canonical" href={`${siteUrl}/projects`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${siteUrl}/projects`} />
+        <meta property="og:title" content={projectsPageTitle} />
+        <meta property="og:description" content={projectsPageDescription} />
+        <meta property="og:image" content={socialImage} />
+        <meta property="og:site_name" content="Chamuditha Portfolio" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={projectsPageTitle} />
+        <meta name="twitter:description" content={projectsPageDescription} />
+        <meta name="twitter:image" content={socialImage} />
       </Helmet>
       <Navigation />
       <main>
