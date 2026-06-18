@@ -2530,7 +2530,7 @@ textarea:focus-visible {
 .hero-orbit-core {
   position: absolute;
   inset: 22%;
-  overflow: hidden;
+  overflow: visible;
   display: grid;
   place-items: center;
   padding: 8%;
@@ -2545,12 +2545,12 @@ textarea:focus-visible {
 .hero-orbit-photo {
   position: relative;
   z-index: 2;
-  width: 108%;
-  height: 108%;
+  width: 138%;
+  height: 138%;
   object-fit: contain;
   object-position: center center;
   filter: drop-shadow(0 16px 30px rgba(2, 6, 23, 0.45));
-  transform: translateY(0);
+  transform: translateY(-1%);
   pointer-events: none;
 }
 
