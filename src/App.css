@@ -4709,7 +4709,7 @@ textarea:focus-visible {
 }
 
 .section-education .education-carousel-dots {
-  margin-top: 0.8rem;
+  margin-top: 1.65rem;
 }
 
 .section-education .slider-viewport--certifications {
@@ -4718,7 +4718,7 @@ textarea:focus-visible {
 }
 
 .section-education .slider-section--certifications {
-  margin-top: 0.9rem;
+  margin-top: 2.15rem;
 }
 
 .section-education .slider-viewport--certifications .certification-slider-card {
@@ -4858,6 +4858,14 @@ textarea:focus-visible {
 @media (max-width: 767px) {
   .section-education .education-shell {
     gap: 1.75rem;
+  }
+
+  .section-education .education-carousel-dots {
+    margin-top: 1.2rem;
+  }
+
+  .section-education .slider-section--certifications {
+    margin-top: 1.4rem;
   }
 
   .section-education .education-carousel-stage {
