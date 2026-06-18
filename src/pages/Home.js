@@ -1781,10 +1781,10 @@ function Home() {
   return (
     <div className="bolt-shell">
       <Helmet>
-        <title>ChamXdev by Chamuditha Perer</title>
+        <title>Chamuditha Perera | Chamuditha Portfolio</title>
         <meta
           name="description"
-          content="Portfolio of Chamuditha Perera, a mobile-focused software engineer building modern mobile, web, and backend systems."
+          content="Chamuditha Perera's portfolio website. Explore Chamuditha projects, mobile apps, UI/UX work, Flutter, React, and Spring Boot experience."
         />
         <meta name="theme-color" content="#00020a" />
         <link rel="icon" href={withBase('/assets/imgs/favicon.ico')} />
