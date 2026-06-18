@@ -4630,7 +4630,7 @@ textarea:focus-visible {
 }
 
 .section-education .education-shell {
-  gap: 1.35rem;
+  gap: 1.85rem;
 }
 
 .section-education .slider-heading-row h3 {
@@ -4715,6 +4715,10 @@ textarea:focus-visible {
 .section-education .slider-viewport--certifications {
   gap: 0.7rem;
   padding-bottom: 0.35rem;
+}
+
+.section-education .slider-section--certifications {
+  margin-top: 0.15rem;
 }
 
 .section-education .slider-viewport--certifications .certification-slider-card {
@@ -4853,7 +4857,7 @@ textarea:focus-visible {
 
 @media (max-width: 767px) {
   .section-education .education-shell {
-    gap: 1rem;
+    gap: 1.15rem;
   }
 
   .section-education .education-carousel-stage {
