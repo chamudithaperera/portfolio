@@ -894,43 +894,28 @@ function Projects() {
 }
 
 function Planet({ planet, running, reducedMotion }) {
-  const [angle, setAngle] = useState(planet.start);
-  const frameRef = useRef();
-  const previousRef = useRef();
-
-  useEffect(() => {
-    if (!running || reducedMotion) return undefined;
-    const animate = (time) => {
-      const elapsed = previousRef.current ? time - previousRef.current : 0;
-      previousRef.current = time;
-      setAngle((value) => (value + (360 / (planet.speed * 1000)) * elapsed) % 360);
-      frameRef.current = window.requestAnimationFrame(animate);
-    };
-    frameRef.current = window.requestAnimationFrame(animate);
-    return () => {
-      previousRef.current = undefined;
-      window.cancelAnimationFrame(frameRef.current);
-    };
-  }, [planet.speed, reducedMotion, running]);
-
-  const radians = (angle * Math.PI) / 180;
-  const x = Math.cos(radians) * planet.radius;
-  const y = Math.sin(radians) * planet.radius;
   const icon = technologyIcons[planet.label] || {
     path: 'M12 2l9 5v10l-9 5-9-5V7l9-5z',
     color: '#3b82f6',
   };
+  const endAngle = planet.start + 360;
 
   return (
     <div
-      className="skill-planet"
+      className={`skill-planet ${!running || reducedMotion ? 'is-paused' : ''}`}
       title={planet.label}
       aria-label={planet.label}
       style={{
         width: planet.size,
         height: planet.size,
-        top: `calc(50% + ${y}px - ${planet.size / 2}px)`,
-        left: `calc(50% + ${x}px - ${planet.size / 2}px)`,
+        marginTop: -planet.size / 2,
+        marginLeft: -planet.size / 2,
+        '--orbit-radius': `${planet.radius}px`,
+        '--orbit-start': `${planet.start}deg`,
+        '--orbit-start-reverse': `${-planet.start}deg`,
+        '--orbit-end': `${endAngle}deg`,
+        '--orbit-end-reverse': `${-endAngle}deg`,
+        animationDuration: `${planet.speed}s`,
         background: `radial-gradient(circle at 35% 35%, rgba(255,255,255,.18), ${planet.color})`,
         boxShadow: `0 0 14px 3px ${planet.glow}55, inset 0 0 8px rgba(255,255,255,.06)`,
         borderColor: `${planet.glow}66`,

@@ -3030,14 +3030,21 @@ textarea:focus-visible {
   border: 1px solid;
   border-radius: 50%;
   cursor: default;
+  animation-name: planet-orbit;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
   transition:
     box-shadow 0.3s ease,
-    transform 0.3s ease,
+    scale 0.3s ease,
     filter 0.3s ease;
 }
 
+.skills-reference .skill-planet.is-paused {
+  animation-play-state: paused;
+}
+
 .skills-reference .skill-planet:hover {
-  transform: scale(1.25);
+  scale: 1.25;
 }
 
 .technology-icon {
@@ -3737,6 +3744,15 @@ textarea:focus-visible {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes planet-orbit {
+  from {
+    transform: rotate(var(--orbit-start)) translateX(var(--orbit-radius)) rotate(var(--orbit-start-reverse));
+  }
+  to {
+    transform: rotate(var(--orbit-end)) translateX(var(--orbit-radius)) rotate(var(--orbit-end-reverse));
   }
 }
 
