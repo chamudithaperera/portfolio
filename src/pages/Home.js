@@ -1104,7 +1104,7 @@ function Education() {
                 <p className="column-label">
                   <Icon name="graduation" size={13} /> Education
                 </p>
-                <h3>Focused education carousel</h3>
+                <h3>Education timeline</h3>
               </div>
               <div className="slider-controls">
                 <button type="button" className="slider-button" aria-label="Previous education card" onClick={showPreviousEducation}>
@@ -1127,6 +1127,7 @@ function Education() {
                     <article
                       key={`${item.title}-${item.period}`}
                       className={`experience-card education-carousel-card card-3d ${positionClass}`}
+                      aria-hidden={positionClass === "is-hidden"}
                       onClick={() => activateEducation(index)}
                     >
                       <span className="experience-card-accent" />
@@ -1192,7 +1193,7 @@ function Education() {
                 <p className="column-label">
                   <Icon name="award" size={13} /> Certifications
                 </p>
-                <h3>Compact credential rail</h3>
+                <h3>Compact certifications</h3>
               </div>
               <div className="slider-controls">
                 <button type="button" className="slider-button" aria-label="Scroll certification cards left" onClick={() => slideRail(certificationRailRef, -1)}>

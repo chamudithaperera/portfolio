@@ -4620,3 +4620,161 @@ textarea:focus-visible {
     transform: none;
   }
 }
+
+.section-education .experience-card {
+  animation: none;
+}
+
+.section-education .slider-section {
+  gap: 0.85rem;
+}
+
+.section-education .education-shell {
+  gap: 1.35rem;
+}
+
+.section-education .slider-heading-row h3 {
+  font-size: 0.95rem;
+}
+
+.section-education .education-carousel {
+  padding: 0.25rem 0 0;
+}
+
+.section-education .education-carousel-stage {
+  width: min(100%, 68rem);
+  min-height: 24.5rem;
+  margin: 0 auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+  overflow: visible;
+  perspective: 1200px;
+}
+
+.section-education .education-carousel-card.experience-card {
+  top: 0.15rem;
+  width: min(31rem, 80vw);
+  transform-origin: center center;
+  animation: none;
+}
+
+.section-education .education-carousel-card.experience-card .experience-card-body {
+  padding: 1.35rem;
+}
+
+.section-education .education-carousel-card.experience-card.is-active {
+  z-index: 3;
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0) scale(1);
+  filter: none;
+  box-shadow:
+    0 30px 60px rgba(2, 6, 23, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.section-education .education-carousel-card.experience-card.is-prev,
+.section-education .education-carousel-card.experience-card.is-next {
+  z-index: 2;
+  opacity: 0.46;
+  filter: blur(0.7px) saturate(0.92);
+}
+
+.section-education .education-carousel-card.experience-card.is-prev {
+  transform: translate3d(calc(-50% - clamp(11rem, 16vw, 14rem)), 1.2rem, 0) scale(0.88) rotateY(11deg);
+}
+
+.section-education .education-carousel-card.experience-card.is-next {
+  transform: translate3d(calc(-50% + clamp(11rem, 16vw, 14rem)), 1.2rem, 0) scale(0.88) rotateY(-11deg);
+}
+
+.section-education .education-carousel-card.experience-card.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(-50%, 0, 0) scale(0.72);
+}
+
+.section-education .education-carousel-card.experience-card:hover.is-active {
+  transform: translate3d(-50%, -2px, 0) scale(1.015);
+}
+
+.section-education .education-carousel-dots {
+  margin-top: 0.8rem;
+}
+
+.section-education .slider-viewport--certifications {
+  gap: 0.7rem;
+  padding-bottom: 0.35rem;
+}
+
+.section-education .slider-viewport--certifications .certification-slider-card {
+  flex-basis: min(15.5rem, 66vw);
+  min-width: min(15.5rem, 66vw);
+}
+
+.section-education .slider-viewport--certifications .experience-card-body {
+  padding: 0.95rem 0.9rem 0.85rem;
+}
+
+.section-education .slider-viewport--certifications .experience-card-header {
+  min-height: 3.6rem;
+}
+
+.section-education .slider-viewport--certifications .experience-role-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.section-education .slider-viewport--certifications .experience-title-line h3 {
+  font-size: 0.9rem;
+}
+
+.section-education .slider-viewport--certifications .experience-period {
+  padding: 0.28rem 0.55rem;
+  font-size: 0.64rem;
+}
+
+.section-education .slider-viewport--certifications .education-footer {
+  margin-top: 0.9rem;
+}
+
+.section-education .slider-viewport--certifications .experience-count {
+  gap: 0.3rem;
+  font-size: 0.6rem;
+}
+
+.section-education .slider-section--certifications .slider-button {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.7rem;
+}
+
+@media (max-width: 767px) {
+  .section-education .education-shell {
+    gap: 1rem;
+  }
+
+  .section-education .education-carousel-stage {
+    min-height: 22rem;
+    padding-inline: 0;
+  }
+
+  .section-education .education-carousel-card.experience-card {
+    width: min(92vw, 28rem);
+  }
+
+  .section-education .education-carousel-card.experience-card.is-prev,
+  .section-education .education-carousel-card.experience-card.is-next {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(-50%, 0, 0) scale(0.95);
+  }
+
+  .section-education .education-carousel-card.experience-card .experience-card-body {
+    padding: 1.25rem;
+  }
+
+  .section-education .slider-viewport--certifications .certification-slider-card {
+    flex-basis: min(84vw, 18rem);
+    min-width: min(84vw, 18rem);
+  }
+}
+
