@@ -2070,39 +2070,24 @@ textarea:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .education-shell {
-    gap: 2rem;
+  .slider-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .education-swap-list::before {
-    left: 1.5rem;
-    transform: none;
+  .slider-controls {
+    align-self: flex-end;
   }
 
-  .education-swap-row {
-    grid-template-columns: 3rem minmax(0, 1fr);
-    gap: 1rem;
-    align-items: start;
+  .education-slider-card,
+  .certification-slider-card {
+    flex-basis: min(32rem, 86vw);
+    min-width: min(32rem, 86vw);
   }
 
-  .education-swap-row > .education-swap-card,
-  .education-swap-row.is-reverse > .education-swap-card {
-    grid-column: 2;
-    text-align: left;
-  }
-
-  .education-swap-row.is-reverse .education-swap-header,
-  .education-swap-row.is-reverse .tag-row {
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-
-  .certification-swap-card,
-  .certification-swap-card.is-reverse {
-    width: 100%;
-    margin-left: 0;
-    flex-direction: row;
-    text-align: left;
+  .education-slider-card .experience-card-body,
+  .certification-slider-card .experience-card-body {
+    padding: 1.4rem;
   }
 
   .info-panel {
@@ -2846,219 +2831,144 @@ textarea:focus-visible {
 .education-shell {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
-  max-width: 64rem;
+  gap: 2rem;
+  max-width: 100%;
   margin: 0 auto;
 }
 
-.education-stack {
+.slider-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.education-swap-list {
-  position: relative;
+.slider-heading-row {
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.education-swap-list::before {
-  position: absolute;
-  top: 1.2rem;
-  bottom: 1.2rem;
-  left: 50%;
-  width: 1px;
-  content: '';
-  transform: translateX(-50%);
-  background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.38), transparent);
-}
-
-.education-swap-row {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 4.5rem minmax(0, 1fr);
-  gap: 1rem;
-  align-items: center;
-}
-
-.education-swap-marker {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 4rem;
-  height: 4rem;
-  margin: 0 auto;
-  border: 1px solid rgba(59, 130, 246, 0.22);
-  border-radius: 50%;
-  color: #bfdbfe;
-  background: radial-gradient(circle, rgba(30, 58, 138, 0.72), rgba(5, 10, 25, 0.92));
-  box-shadow:
-    0 0 0 0.45rem rgba(15, 23, 42, 0.88),
-    0 0 30px rgba(59, 130, 246, 0.12);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.education-swap-marker span {
-  display: block;
-  transform: translateY(1px);
-}
-
-.education-swap-card {
-  position: relative;
-  overflow: hidden;
-  padding: 1.4rem 1.45rem;
-  border: 1px solid rgba(30, 58, 138, 0.24);
-  border-radius: 1.25rem;
-  background:
-    linear-gradient(180deg, rgba(7, 13, 31, 0.95), rgba(6, 11, 27, 0.9));
-  box-shadow:
-    0 20px 42px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
-
-.education-swap-row > .education-swap-card {
-  grid-column: 1;
-}
-
-.education-swap-row.is-reverse > .education-swap-card {
-  grid-column: 3;
-}
-
-.education-swap-accent {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 0.25rem;
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(96, 165, 250, 0.7), rgba(34, 211, 238, 0.2));
-}
-
-.education-swap-header {
-  display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 0.9rem;
 }
 
-.education-swap-heading {
-  min-width: 0;
-}
-
-.education-swap-heading h3 {
-  margin: 0.35rem 0 0.3rem;
-  color: #fff;
+.slider-heading-row h3 {
+  margin: 0.15rem 0 0;
+  color: #dbeafe;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  line-height: 1.3;
 }
 
-.education-swap-heading p {
-  margin: 0;
-  color: rgba(191, 219, 254, 0.82);
-  font-size: 0.8rem;
-  line-height: 1.5;
-}
-
-.education-swap-row.is-reverse .education-swap-card {
-  text-align: right;
-}
-
-.education-swap-row.is-reverse .education-swap-header {
-  flex-direction: row-reverse;
-}
-
-.education-swap-row.is-reverse .tag-row {
-  justify-content: flex-end;
-}
-
-.education-swap-row.is-reverse .education-track,
-.education-swap-row.is-reverse .education-badge,
-.education-swap-row.is-reverse .education-period {
-  justify-content: flex-end;
-}
-
-.education-swap-row .education-description {
-  max-width: 40rem;
-}
-
-.education-certifications {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.certification-swap-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.certification-swap-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.1rem 1.2rem;
-  border: 1px solid rgba(30, 58, 138, 0.22);
-  border-radius: 1rem;
-  background: linear-gradient(180deg, rgba(5, 10, 25, 0.9), rgba(7, 13, 31, 0.82));
-  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.18);
-}
-
-.certification-swap-card.is-reverse {
-  margin-left: auto;
-  width: min(100%, 36rem);
-  flex-direction: row-reverse;
-  text-align: right;
-}
-
-.certification-swap-icon {
+.slider-controls {
   display: grid;
-  flex: 0 0 auto;
+  grid-auto-flow: column;
+  gap: 0.625rem;
+}
+
+.slider-button {
+  display: grid;
   place-items: center;
-  width: 2.35rem;
-  height: 2.35rem;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 0.8rem;
-  color: #60a5fa;
-  background: rgba(23, 37, 84, 0.2);
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  border-radius: 0.85rem;
+  color: #93c5fd;
+  background: linear-gradient(180deg, rgba(7, 13, 31, 0.96), rgba(3, 7, 18, 0.92));
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
-.certification-swap-card h3 {
-  margin: 0;
-  color: #fff;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  line-height: 1.3;
+.slider-button:hover {
+  color: #dbeafe;
+  border-color: rgba(96, 165, 250, 0.45);
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(12, 18, 38, 0.95));
+  transform: translateY(-1px);
 }
 
-.certification-swap-card p {
+.slider-viewport {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0.35rem 0 0;
-  color: var(--slate-500);
-  font-size: 0.72rem;
-  line-height: 1.5;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.35rem 0 0.75rem;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
-.certification-swap-card p span {
-  padding: 0.125rem 0.4rem;
-  border: 1px solid rgba(30, 58, 138, 0.3);
+.slider-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.education-slider-card,
+.certification-slider-card {
+  position: relative;
+  flex: 0 0 min(34rem, 84vw);
+  min-width: min(34rem, 84vw);
+  scroll-snap-align: start;
+}
+
+.education-slider-card .experience-card-body,
+.certification-slider-card .experience-card-body {
+  padding: 1.6rem;
+}
+
+.education-slider-card .experience-description {
+  min-height: 6rem;
+}
+
+.education-footer {
+  margin-top: 1.5rem;
+}
+
+.slider-pulse {
+  width: 3rem;
+  height: 0.45rem;
   border-radius: 999px;
-  color: rgba(96, 165, 250, 0.8);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.5625rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0), rgba(96, 165, 250, 0.85), rgba(34, 211, 238, 0));
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.28);
+  animation: pulse 2.6s ease-in-out infinite;
+}
+
+.certification-pulse {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0), rgba(110, 231, 183, 0.8), rgba(16, 185, 129, 0));
+}
+
+.education-slider-card {
+  overflow: hidden;
+  box-shadow:
+    0 22px 44px rgba(2, 6, 23, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.education-slider-card:hover,
+.certification-slider-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(96, 165, 250, 0.36);
+  box-shadow:
+    0 28px 52px rgba(2, 6, 23, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.certification-slider-card {
+  display: flex;
+  align-items: stretch;
+}
+
+.slider-viewport .experience-card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.slider-viewport .experience-card-header {
+  min-height: 5rem;
 }
 
 .experience-steps {
@@ -4423,18 +4333,15 @@ textarea:focus-visible {
     height: 2.45rem;
   }
 
-  .education-swap-marker {
-    width: 3.25rem;
-    height: 3.25rem;
-    font-size: 0.64rem;
+  .slider-button {
+    width: 2.5rem;
+    height: 2.5rem;
   }
 
-  .education-swap-card {
-    padding: 1.1rem 1.1rem 1rem;
-  }
-
-  .certification-swap-card {
-    padding: 1rem;
+  .education-slider-card,
+  .certification-slider-card {
+    flex-basis: min(88vw, 30rem);
+    min-width: min(88vw, 30rem);
   }
 
   .experience-reference .section-inner,

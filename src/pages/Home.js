@@ -1060,53 +1060,108 @@ function Skills() {
 }
 
 function Education() {
+  const educationRailRef = useRef(null);
+  const certificationRailRef = useRef(null);
+
+  const slideRail = (railRef, direction) => {
+    if (!railRef.current) {
+      return;
+    }
+
+    const distance = Math.max(320, Math.round(railRef.current.clientWidth * 0.84));
+    railRef.current.scrollBy({ left: direction * distance, behavior: 'smooth' });
+  };
+
   return (
     <section id="education" className="section section-education">
       <div className="section-divider" />
       <Reveal className="section-inner">
         <SectionHeading index="05. Where I Studied" title="Education &" accent="Certifications" />
         <div className="education-shell">
-          <div className="education-stack">
-            {education.map((item, index) => (
-              <article key={`${item.title}-${item.period}`} className="experience-card education-card card-3d" aria-label={`Education ${index + 1}`}>
-                <span className="experience-card-accent" />
-                <div className="experience-card-body">
-                  <div className="experience-card-header">
-                    <div className="experience-role">
-                      <span className="experience-role-icon">
-                        <Icon name="graduation" size={18} />
-                      </span>
-                      <div>
-                        <div className="experience-title-line">
-                          <h3>{item.title}</h3>
-                          {item.badge ? <span className="current-badge">{item.badge}</span> : null}
+          <div className="slider-section">
+            <div className="slider-heading-row">
+              <div>
+                <p className="column-label">
+                  <Icon name="graduation" size={13} /> Education
+                </p>
+                <h3>Sliding education cards</h3>
+              </div>
+              <div className="slider-controls">
+                <button type="button" className="slider-button" aria-label="Scroll education cards left" onClick={() => slideRail(educationRailRef, -1)}>
+                  <Icon name="arrowLeft" size={15} />
+                </button>
+                <button type="button" className="slider-button" aria-label="Scroll education cards right" onClick={() => slideRail(educationRailRef, 1)}>
+                  <Icon name="arrowRight" size={15} />
+                </button>
+              </div>
+            </div>
+
+            <div className="slider-viewport" ref={educationRailRef} aria-label="Education cards slider">
+              {education.map((item, index) => (
+                <article key={`${item.title}-${item.period}`} className="experience-card education-slider-card card-3d">
+                  <span className="experience-card-accent" />
+                  <div className="experience-card-body">
+                    <div className="experience-card-header">
+                      <div className="experience-role">
+                        <span className="experience-role-icon">
+                          <Icon name="graduation" size={18} />
+                        </span>
+                        <div>
+                          <div className="experience-title-line">
+                            <h3>{item.title}</h3>
+                            {item.badge ? <span className="current-badge">{item.badge}</span> : null}
+                          </div>
+                          <p>{item.org}</p>
                         </div>
-                        <p>{item.org}</p>
                       </div>
+                      <span className="experience-period">
+                        <Icon name="calendar" size={12} /> {item.period}
+                      </span>
                     </div>
-                    <span className="experience-period">
-                      <Icon name="calendar" size={12} /> {item.period}
-                    </span>
-                  </div>
 
-                  <p className="experience-description">{item.detail}</p>
+                    <p className="experience-description">{item.detail}</p>
 
-                  <div className="tag-row experience-tags">
-                    <span className="tech-tag">Education</span>
-                    <span className="tech-tag colorful-tag">{item.track}</span>
+                    <div className="tag-row experience-tags">
+                      <span className="tech-tag">Education</span>
+                      <span className="tech-tag colorful-tag">{item.track}</span>
+                    </div>
+
+                    <div className="experience-card-footer education-footer">
+                      <div className="experience-count">
+                        <strong>{String(index + 1).padStart(2, '0')}</strong>
+                        <span>/</span>
+                        <small>{String(education.length).padStart(2, '0')}</small>
+                        <em>· {item.org.split('—')[0].trim()}</em>
+                      </div>
+                      <div className="slider-pulse" aria-hidden="true" />
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              ))}
+            </div>
           </div>
 
-          <div className="education-certifications">
-            <p className="column-label">
-              <Icon name="award" size={13} /> Certifications
-            </p>
-            <div className="education-stack">
+          <div className="slider-section">
+            <div className="slider-heading-row">
+              <div>
+                <p className="column-label">
+                  <Icon name="award" size={13} /> Certifications
+                </p>
+                <h3>Credential cards with motion</h3>
+              </div>
+              <div className="slider-controls">
+                <button type="button" className="slider-button" aria-label="Scroll certification cards left" onClick={() => slideRail(certificationRailRef, -1)}>
+                  <Icon name="arrowLeft" size={15} />
+                </button>
+                <button type="button" className="slider-button" aria-label="Scroll certification cards right" onClick={() => slideRail(certificationRailRef, 1)}>
+                  <Icon name="arrowRight" size={15} />
+                </button>
+              </div>
+            </div>
+
+            <div className="slider-viewport" ref={certificationRailRef} aria-label="Certification cards slider">
               {certifications.map((cert) => (
-                <article key={cert.title} className="experience-card certification-card card-3d">
+                <article key={cert.title} className="experience-card certification-slider-card card-3d">
                   <span className="experience-card-accent" />
                   <div className="experience-card-body">
                     <div className="experience-card-header">
@@ -1124,6 +1179,16 @@ function Education() {
                       <span className="experience-period">
                         <Icon name="calendar" size={12} /> {cert.year}
                       </span>
+                    </div>
+
+                    <div className="experience-card-footer education-footer">
+                      <div className="experience-count">
+                        <strong>CR</strong>
+                        <span>/</span>
+                        <small>CERT</small>
+                        <em>· {cert.year}</em>
+                      </div>
+                      <div className="slider-pulse certification-pulse" aria-hidden="true" />
                     </div>
                   </div>
                 </article>
