@@ -1060,115 +1060,60 @@ function Skills() {
 }
 
 function Education() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeEducation = education[activeIndex];
-  const showPrevious = () =>
-    setActiveIndex((current) => (current - 1 + education.length) % education.length);
-  const showNext = () => setActiveIndex((current) => (current + 1) % education.length);
-
   return (
     <section id="education" className="section section-education">
       <div className="section-divider" />
       <Reveal className="section-inner">
         <SectionHeading index="05. Where I Studied" title="Education &" accent="Certifications" />
-        <div className="experience-shell education-shell">
-          <div className="experience-steps education-steps" aria-label="Education timeline">
-            <span className="experience-step-line" aria-hidden="true" />
+        <div className="education-shell">
+          <div className="education-swap-list">
             {education.map((item, index) => {
-              const selected = index === activeIndex;
-              const completed = index < activeIndex;
+              const reverse = index % 2 === 1;
               return (
-                <button
-                  key={`${item.title}-${item.period}`}
-                  type="button"
-                  className={`experience-step education-step ${selected ? 'is-active' : ''} ${completed ? 'is-complete' : ''}`}
-                  aria-pressed={selected}
-                  aria-label={`${item.period} ${item.org}`}
-                  onClick={() => setActiveIndex(index)}
-                >
-                  <span className="experience-step-dot">
-                    {selected ? <Icon name="graduation" size={14} /> : index + 1}
+                <article key={`${item.title}-${item.period}`} className={`education-swap-row ${reverse ? 'is-reverse' : ''}`}>
+                  <span className="education-swap-marker" aria-hidden="true">
+                    <span>{String(index + 1).padStart(2, '0')}</span>
                   </span>
-                  <span className="experience-step-label">
-                    <strong>{item.period}</strong>
-                    <small>{item.org}</small>
-                  </span>
-                </button>
+
+                  <div className="education-swap-card card-3d">
+                    <span className="education-swap-accent" />
+                    <div className="education-swap-header">
+                      <div className="education-swap-heading">
+                        <span className="education-track">{item.track}</span>
+                        <h3>{item.title}</h3>
+                        <p>{item.org}</p>
+                      </div>
+                      {item.badge ? <span className="education-badge">{item.badge}</span> : <span className="education-period">{item.period}</span>}
+                    </div>
+                    <p className="education-description">{item.detail}</p>
+                    <div className="tag-row experience-tags">
+                      <span className="tech-tag">Education</span>
+                      <span className="tech-tag colorful-tag">{item.period}</span>
+                    </div>
+                  </div>
+                </article>
               );
             })}
           </div>
 
-          <div className="education-content">
-            <div className="experience-card-glow">
-              <article key={activeIndex} className="experience-card education-active-card card-3d" aria-live="polite">
-                <span className="experience-card-accent" />
-                <div className="experience-card-body">
-                  <div className="experience-card-header">
-                    <div className="experience-role education-role">
-                      <span className="experience-role-icon">
-                        <Icon name="graduation" size={18} />
-                      </span>
-                      <div>
-                        <div className="experience-title-line">
-                          <h3>{activeEducation.title}</h3>
-                          {activeEducation.badge ? <span className="current-badge">{activeEducation.badge}</span> : null}
-                        </div>
-                        <p>{activeEducation.org}</p>
-                      </div>
-                    </div>
-                    <span className="experience-period">
-                      <Icon name="calendar" size={12} /> {activeEducation.period}
-                    </span>
+          <div className="education-certifications">
+            <p className="column-label">
+              <Icon name="award" size={13} /> Certifications
+            </p>
+            <div className="certification-swap-list">
+              {certifications.map((cert, index) => (
+                <article key={cert.title} className={`certification-swap-card card-3d ${index % 2 === 1 ? 'is-reverse' : ''}`}>
+                  <span className="certification-swap-icon">
+                    <Icon name="award" size={13} />
+                  </span>
+                  <div>
+                    <h3>{cert.title}</h3>
+                    <p>
+                      {cert.org} <span>{cert.year}</span>
+                    </p>
                   </div>
-
-                  <p className="experience-description">{activeEducation.detail}</p>
-
-                  <div className="tag-row experience-tags">
-                    <span className="tech-tag">Academic Background</span>
-                    <span className="tech-tag colorful-tag">{activeEducation.track}</span>
-                  </div>
-
-                  <div className="experience-card-footer">
-                    <div className="experience-count">
-                      <strong>{String(activeIndex + 1).padStart(2, '0')}</strong>
-                      <span>/</span>
-                      <small>{String(education.length).padStart(2, '0')}</small>
-                      <em>· {activeEducation.org}</em>
-                    </div>
-                    <div className="experience-controls">
-                      <button type="button" aria-label="Previous education" onClick={showPrevious}>
-                        <Icon name="arrowLeft" size={15} />
-                      </button>
-                      <button type="button" aria-label="Next education" onClick={showNext}>
-                        <Icon name="arrowRight" size={15} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </div>
-
-            <div className="education-side">
-              <div className="education-panel card-3d">
-                <p className="column-label">
-                  <Icon name="award" size={13} /> Certifications
-                </p>
-                <div className="certification-list">
-                  {certifications.map((cert) => (
-                    <article key={cert.title} className="certification-card card-3d">
-                      <span className="certification-icon">
-                        <Icon name="award" size={13} />
-                      </span>
-                      <div>
-                        <h3>{cert.title}</h3>
-                        <p>
-                          {cert.org} <span>{cert.year}</span>
-                        </p>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
+                </article>
+              ))}
             </div>
           </div>
         </div>

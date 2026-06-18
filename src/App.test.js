@@ -34,8 +34,9 @@ test('renders the full portfolio structure and navigation anchors', () => {
   expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Technical Skills' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Education & Certifications' })).toBeInTheDocument();
+  expect(screen.getByText('BSc in Information Technology')).toBeInTheDocument();
+  expect(screen.getByText('AI/ML Engineer — Stage 1')).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: "Let's Connect" })).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: "2021 Dec Peoples' Bank" })).toBeInTheDocument();
   expect(screen.getByText('MQTT')).toBeInTheDocument();
   expect(screen.getByText('Adobe Photoshop')).toBeInTheDocument();
   expect(screen.getByLabelText('Dart')).toBeInTheDocument();
@@ -63,23 +64,16 @@ test('opens and closes the accessible mobile navigation', () => {
   expect(document.getElementById('mobile-navigation')).not.toBeInTheDocument();
 });
 
-test('navigates the interactive work experience carousel and wraps controls', () => {
+test('renders the alternating education cards and certification stack', () => {
   render(<App />);
 
-  expect(screen.getByRole('heading', { name: 'Associate Software Engineer' })).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: '2024 Dec Kyranz IT' }));
-  expect(screen.getByRole('heading', { name: 'Intern UI/UX Designer' })).toBeInTheDocument();
-  expect(screen.getAllByText('Kyranz IT').length).toBeGreaterThan(0);
-
-  fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
-  expect(screen.getByText('API Integration')).toBeInTheDocument();
-
-  fireEvent.click(screen.getByRole('button', { name: '2026 Mar W3Inventor' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
-  expect(screen.getByRole('heading', { name: 'Bank Trainee' })).toBeInTheDocument();
-
-  fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-  expect(screen.getByRole('heading', { name: 'Associate Software Engineer' })).toBeInTheDocument();
+  expect(screen.getByText('BSc in Information Technology')).toBeInTheDocument();
+  expect(screen.getByText('Diploma in Information Technology')).toBeInTheDocument();
+  expect(screen.getByText('A/L Technology Stream')).toBeInTheDocument();
+  expect(screen.getByText('O/L')).toBeInTheDocument();
+  expect(screen.getByText('AI/ML Engineer — Stage 1')).toBeInTheDocument();
+  expect(screen.getByText('Dart & Flutter Development Course')).toBeInTheDocument();
+  expect(screen.getByText('IT for Business Success')).toBeInTheDocument();
 });
 
 test('keeps local project content and safe external links', () => {
