@@ -18,11 +18,22 @@ function requireEnv(name) {
   return value;
 }
 
+function deriveSupabaseUrl(key) {
+  if (typeof key !== 'string') return '';
+  const match = key.match(/^sb_(?:publishable|secret)_([^_]+)/);
+  if (!match?.[1]) return '';
+  return `https://${match[1]}.supabase.co`;
+}
+
 const config = {
   env: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT || 5000),
-  supabaseUrl: requireEnv('SUPABASE_URL'),
-  supabaseServiceRoleKey: requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
+  supabaseUrl: process.env.SUPABASE_URL || deriveSupabaseUrl(process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_SECRET_KEY) || requireEnv('SUPABASE_URL'),
+  supabaseServiceRoleKey:
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SECRET_KEY ||
+    requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
+  supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY || '',
   adminUsername: requireEnv('ADMIN_USERNAME'),
   adminPassword: requireEnv('ADMIN_PASSWORD'),
   sessionSecret: requireEnv('ADMIN_SESSION_SECRET'),

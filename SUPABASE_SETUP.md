@@ -8,7 +8,8 @@ Use this with the Node backend in this repo.
 2. Wait for the database to finish provisioning.
 3. In **Project Settings > API**, copy:
    - `Project URL`
-   - `service_role` key
+   - `publishable` key
+   - `secret` key
 
 ## 2. Create the table
 
@@ -37,7 +38,7 @@ create index if not exists contact_messages_status_idx
 
 1. Keep **Row Level Security** enabled on the table.
 2. Do not create any public `anon` policies for this table.
-3. The Node backend uses the `service_role` key, so it can read and write the table securely.
+3. The Node backend uses the `SUPABASE_SECRET_KEY` value, so it can read and write the table securely.
 
 ## 4. Add environment variables
 
@@ -47,13 +48,16 @@ Create a `.env` file in the project root with:
 PORT=5000
 NODE_ENV=development
 SUPABASE_URL=your-project-url
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+SUPABASE_SECRET_KEY=your-secret-key
 ADMIN_USERNAME=admin.chamuditha
 ADMIN_PASSWORD=Admin@chamu123
 ADMIN_SESSION_SECRET=use-a-long-random-secret
 CORS_ORIGIN=https://chamudithaperera.online
 PUBLIC_SITE_ORIGIN=https://chamudithaperera.online
 ```
+
+If you only have the `sb_publishable_...` or `sb_secret_...` key strings, the server will try to infer `SUPABASE_URL` from the project ref inside the key. You can still set `SUPABASE_URL` explicitly if you prefer.
 
 Recommended secret command:
 
