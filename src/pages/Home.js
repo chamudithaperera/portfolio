@@ -1078,7 +1078,7 @@ function Education() {
       <Reveal className="section-inner">
         <SectionHeading index="05. Where I Studied" title="Education &" accent="Certifications" />
         <div className="education-shell">
-          <div className="slider-section">
+          <div className="slider-section slider-section--education">
             <div className="slider-heading-row">
               <div>
                 <p className="column-label">
@@ -1096,7 +1096,7 @@ function Education() {
               </div>
             </div>
 
-            <div className="slider-viewport" ref={educationRailRef} aria-label="Education cards slider">
+            <div className="slider-viewport slider-viewport--education" ref={educationRailRef} aria-label="Education cards slider">
               {education.map((item, index) => (
                 <article key={`${item.title}-${item.period}`} className="experience-card education-slider-card card-3d">
                   <span className="experience-card-accent" />
@@ -1141,7 +1141,7 @@ function Education() {
             </div>
           </div>
 
-          <div className="slider-section">
+          <div className="slider-section slider-section--certifications">
             <div className="slider-heading-row">
               <div>
                 <p className="column-label">
@@ -1159,7 +1159,7 @@ function Education() {
               </div>
             </div>
 
-            <div className="slider-viewport" ref={certificationRailRef} aria-label="Certification cards slider">
+            <div className="slider-viewport slider-viewport--certifications" ref={certificationRailRef} aria-label="Certification cards slider">
               {certifications.map((cert) => (
                 <article key={cert.title} className="experience-card certification-slider-card card-3d">
                   <span className="experience-card-accent" />

@@ -2911,6 +2911,21 @@ textarea:focus-visible {
   scroll-snap-align: start;
 }
 
+.slider-viewport--education {
+  gap: 1.15rem;
+  padding-bottom: 0.9rem;
+  scroll-snap-type: x mandatory;
+}
+
+.slider-viewport--education .education-slider-card {
+  flex-basis: min(36rem, 86vw);
+  min-width: min(36rem, 86vw);
+}
+
+.slider-viewport--education .experience-card-body {
+  padding: 1.7rem;
+}
+
 .education-slider-card .experience-card-body,
 .certification-slider-card .experience-card-body {
   padding: 1.6rem;
@@ -2957,9 +2972,66 @@ textarea:focus-visible {
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+.slider-viewport--certifications {
+  gap: 0.8rem;
+  padding-bottom: 0.55rem;
+  scroll-snap-type: x proximity;
+}
+
+.slider-viewport--certifications .certification-slider-card {
+  flex-basis: min(18rem, 72vw);
+  min-width: min(18rem, 72vw);
+}
+
+.slider-viewport--certifications .experience-card-body {
+  padding: 1.05rem 1rem 0.95rem;
+}
+
+.slider-viewport--certifications .experience-card-header {
+  min-height: 4rem;
+}
+
+.slider-viewport--certifications .experience-role-icon {
+  width: 2.45rem;
+  height: 2.45rem;
+}
+
+.slider-viewport--certifications .experience-title-line h3 {
+  font-size: 0.95rem;
+}
+
+.slider-viewport--certifications .experience-period {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.675rem;
+}
+
+.slider-viewport--certifications .education-footer {
+  margin-top: 1rem;
+}
+
+.slider-viewport--certifications .experience-count {
+  gap: 0.35rem;
+  font-size: 0.64rem;
+}
+
+.slider-viewport--certifications .experience-count strong {
+  font-size: 0.75rem;
+}
+
 .certification-slider-card {
   display: flex;
   align-items: stretch;
+}
+
+.slider-section--certifications .slider-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+}
+
+.slider-section--certifications .slider-heading-row h3 {
+  font-size: 0.95rem;
+  color: #cbd5e1;
 }
 
 .slider-viewport .experience-card-body {
