@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import withBase from '../utils/basePath';
@@ -943,7 +944,11 @@ function ProjectModal({ project, onClose }) {
 
   const modalId = `project-modal-title-${project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
-  return (
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(
     <div className="project-modal-backdrop" role="presentation" onClick={onClose}>
       <article
         className="project-modal card-3d"
@@ -1010,6 +1015,8 @@ function ProjectModal({ project, onClose }) {
         </div>
       </article>
     </div>
+    ,
+    document.body,
   );
 }
 
