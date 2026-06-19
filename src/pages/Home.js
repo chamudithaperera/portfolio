@@ -102,72 +102,11 @@ const experience = [
   },
 ];
 
-const defaultProjects = [
-  {
-    title: 'Money Manager App',
-    category: 'Flutter mobile system',
-    image: '/assets/imgs/works/moneymanager.png',
-    summary:
-      'A local-first personal finance app with wallet tracking, savings goals, wishlist planning, budgets, charts, CSV export, and PDF generation.',
-    highlights: [
-      'Offline-first finance tracking with clean wallet and balance views.',
-      'Savings goals, wishlist planning, budgeting, charts, CSV export, and PDF reporting.',
-      'Built to keep users in control of daily spending and long-term targets.',
-    ],
-    featuredNote: 'Personal finance companion',
-    tags: ['Flutter', 'Riverpod', 'SQLite', 'SharedPreferences'],
-    link:
-      'https://www.linkedin.com/posts/chamudithaperera_flutter-nodejs-mongodb-activity-7355636008446554112-3I2I?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
-  },
-  {
-    title: 'EduLink Peer Tutoring Platform',
-    category: 'Web product',
-    image: '/assets/imgs/works/edupro.jpeg',
-    summary:
-      'A full-stack tutoring platform with authentication, course enrollment, scheduling, messaging, admin tools, and analytics.',
-    highlights: [
-      'Full-stack tutoring workflow with authentication, course enrollment, and scheduling.',
-      'Messaging, admin tools, and analytics to support tutors and students in one place.',
-      'Designed for a clear, approachable learning experience across devices.',
-    ],
-    featuredNote: 'Learning platform case study',
-    tags: ['React', 'Tailwind CSS', 'Node.js', 'Express', 'MongoDB'],
-    link:
-      'https://www.linkedin.com/posts/chamudithaperera_edulink-finalyearproject-mernstack-activity-7313985622233255936-t0Iq?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
-  },
-  {
-    title: 'Weather App',
-    category: 'Realtime mobile experience',
-    image: '/assets/imgs/works/weatherApp.jpeg',
-    summary:
-      'A responsive Flutter weather app with real-time updates, hourly and daily forecasts, geolocation, and live city search.',
-    highlights: [
-      'Responsive weather experience with live forecasts, hourly data, and geolocation.',
-      'City search and location-aware views make it quick to check current conditions.',
-      'Focuses on clarity, speed, and simple decision-making for users on the move.',
-    ],
-    featuredNote: 'Live weather companion',
-    tags: ['Flutter', 'Dart', 'OpenWeatherMap API', 'Geolocator'],
-    link:
-      'https://www.linkedin.com/posts/chamudithaperera_flutter-mobileapp-weatherapp-activity-7325197536418238464-_Ua0?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
-  },
-  {
-    title: 'Avurudu Nakath App',
-    category: 'Cultural utility app',
-    image: '/assets/imgs/works/avuruduApp.jpeg',
-    summary:
-      'A Sinhala and Tamil New Year app with Nakath schedules, ritual details, and push notifications for timely reminders.',
-    highlights: [
-      'Nakath schedules, ritual details, and reminder-first timing for the New Year season.',
-      'Push notifications help users stay on time for culturally important moments.',
-      'Built to keep a traditional experience simple and accessible on mobile.',
-    ],
-    featuredNote: 'Festival planning app',
-    tags: ['Flutter', 'Countdown Timer', 'Local Notifications'],
-    link:
-      'https://www.linkedin.com/posts/chamudithaperera_avurudunakath2025-mobileapp-playstore-activity-7309530321211822080-RZB2?utm_source=share&utm_medium=member_desktop&rcm=ACoAADv_p4oBFtTlgvKKEnBZFbOOZSYkv0AiyxQ',
-  },
-];
+const emptyPortfolioContent = {
+  projects: [],
+  education: [],
+  certificates: [],
+};
 
 const skillGroups = [
   { label: 'Languages', items: ['Dart', 'Java', 'TypeScript', 'JavaScript', 'HTML', 'CSS', 'PHP'] },
@@ -254,69 +193,6 @@ const technologyIcons = {
   Redis: { path: 'M3 8.5l9-2.5 9 2.5-9 2.5-9-2.5zm0 4l9 2.5 9-2.5-9 2.5-9-2.5zm0 4l9 2.5 9-2.5-9 2.5-9-2.5z', color: '#DC382D' },
   Firebase: { path: 'M5 19l3-14 4 8-3 6H5zm5.5 0L8 7l3 6 9-2-9.5 8z', color: '#FFCA28' },
   AWS: { path: 'M12 4c-4.4 0-8.2 2.7-9.8 6.5C3.6 15.6 7.5 19 12 19V4zm.5 4.5L16 9v9l-3.5.5v-10zm-3 9L6 17V8l3.5-.5v10z', color: '#FF9900' },
-};
-
-const defaultEducation = [
-  {
-    track: 'Degree',
-    title: 'BSc in Information Technology',
-    org: 'University of Jaffna',
-    period: '2022 Oct — 2025 Jul',
-    detail:
-      'Built a strong foundation in programming, algorithms, databases, operating systems, networking, mobile computing, and security. Focused on practical project delivery and clean technical problem-solving.',
-  },
-  {
-    track: 'Diploma',
-    title: 'Diploma in Information Technology',
-    org: 'IMBS Green Campus',
-    period: '2021 — 2022',
-    badge: 'GPA 3.73',
-    detail:
-      'Completed a 30-credit diploma with a 3.73 GPA covering hardware, networking, web engineering, and software engineering. Finished with a software development project and hands-on team work.',
-  },
-  {
-    track: 'School',
-    title: 'A/L Technology Stream',
-    org: 'Ananda Sastralaya, Matugama',
-    period: '2020',
-    detail:
-      'Studied Science for Technology, ICT, and Engineering Technology, which strengthened analytical thinking and technical discipline. It created the academic bridge into software and systems work.',
-  },
-  {
-    track: 'School',
-    title: 'O/L',
-    org: 'Tissa Central College, Kalutara',
-    period: '2017',
-    detail:
-      'Completed a broad academic base with strong results in Mathematics, ICT, Commerce, and Science. That foundation supported the later move into IT-focused study and career growth.',
-  },
-];
-
-const defaultCertificates = [
-  {
-    title: 'AI/ML Engineer — Stage 1',
-    org: 'SLIIT',
-    year: '2026',
-    detail: 'Hands-on learning around model building, experimentation, and practical AI workflows.',
-  },
-  {
-    title: 'Dart & Flutter Development Course',
-    org: 'Udemy',
-    year: '2024',
-    detail: 'Focused on mobile UI systems, state management, and clean app structure.',
-  },
-  {
-    title: 'IT for Business Success',
-    org: 'HP',
-    year: '2021',
-    detail: 'Covered digital productivity, business workflows, and everyday office systems.',
-  },
-];
-
-const initialPortfolioContent = {
-  projects: defaultProjects,
-  education: defaultEducation,
-  certificates: defaultCertificates,
 };
 
 const iconPaths = {
@@ -453,8 +329,8 @@ function Reveal({ as: Tag = 'div', className = '', children, threshold = 0.1 }) 
   );
 }
 
-function usePortfolioContent(initialContent = initialPortfolioContent) {
-  const [content, setContent] = useState(initialContent);
+function usePortfolioContent() {
+  const [content, setContent] = useState(emptyPortfolioContent);
 
   useEffect(() => {
     let active = true;
@@ -464,9 +340,9 @@ function usePortfolioContent(initialContent = initialPortfolioContent) {
         const response = await apiRequest('/api/content/portfolio');
         if (!active || !response?.ok) return;
         setContent({
-          projects: response.projects ?? initialContent.projects,
-          education: response.education ?? initialContent.education,
-          certificates: response.certificates ?? initialContent.certificates,
+          projects: response.projects ?? [],
+          education: response.education ?? [],
+          certificates: response.certificates ?? [],
         });
       } catch (error) {
         void error;
@@ -477,7 +353,7 @@ function usePortfolioContent(initialContent = initialPortfolioContent) {
     return () => {
       active = false;
     };
-  }, [initialContent]);
+  }, []);
 
   return content;
 }
@@ -1068,7 +944,7 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
-function Projects({ mode = 'home', projectsData = initialPortfolioContent.projects }) {
+function Projects({ mode = 'home', projectsData = [] }) {
   const [activeProject, setActiveProject] = useState(null);
   const safeProjects = Array.isArray(projectsData) ? projectsData : [];
   const featuredProject = safeProjects[0];
@@ -1326,10 +1202,7 @@ function Skills() {
   );
 }
 
-function Education({
-  educationItems = initialPortfolioContent.education,
-  certificateItems = initialPortfolioContent.certificates,
-}) {
+function Education({ educationItems = [], certificateItems = [] }) {
   const [activeEducationIndex, setActiveEducationIndex] = useState(0);
   const certificationRailRef = useRef(null);
 

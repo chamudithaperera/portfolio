@@ -1,5 +1,4 @@
 const { supabase } = require('./supabase');
-const { defaultCertificates, defaultEducation, defaultProjects } = require('./portfolioData');
 
 const TABLES = {
   certificates: 'portfolio_certificates',
@@ -178,19 +177,6 @@ async function listPortfolioContent() {
   return { projects, education, certificates };
 }
 
-async function listPortfolioContentOrFallback() {
-  try {
-    return await listPortfolioContent();
-  } catch (error) {
-    console.error('Portfolio content lookup failed, using fallback content:', error.message || error);
-    return {
-      projects: defaultProjects.map((item, index) => ({ ...item, id: `fallback-project-${index + 1}` })),
-      education: defaultEducation.map((item, index) => ({ ...item, id: `fallback-education-${index + 1}` })),
-      certificates: defaultCertificates.map((item, index) => ({ ...item, id: `fallback-certificate-${index + 1}` })),
-    };
-  }
-}
-
 async function getDashboardSummary() {
   const [messages, projects, education, certificates] = await Promise.all([
     safeCountRows(TABLES.messages),
@@ -244,40 +230,14 @@ async function deleteRow(table, id) {
   }
 }
 
-async function ensureSeededContent() {
-  const seeds = [
-    [TABLES.projects, defaultProjects, projectPayload],
-    [TABLES.education, defaultEducation, educationPayload],
-    [TABLES.certificates, defaultCertificates, certificatePayload],
-  ];
-
-  for (const [table, items, toPayload] of seeds) {
-    try {
-      const count = await countRows(table);
-      if (count > 0) continue;
-      const rows = items.map((item) => toPayload(item));
-      if (rows.length) {
-        const { error } = await supabase.from(table).insert(rows);
-        if (error) {
-          throw error;
-        }
-      }
-    } catch (error) {
-      console.error(`Unable to seed ${table}:`, error.message || error);
-    }
-  }
-}
-
 module.exports = {
   TABLES,
   certificatePayload,
   deleteRow,
   educationPayload,
-  ensureSeededContent,
   getDashboardSummary,
   insertRow,
   listPortfolioContent,
-  listPortfolioContentOrFallback,
   mapCertificate,
   mapEducation,
   mapProject,

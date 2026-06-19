@@ -27,11 +27,9 @@ const {
   certificatePayload,
   deleteRow,
   educationPayload,
-  ensureSeededContent,
   getDashboardSummary,
   insertRow,
   listPortfolioContent,
-  listPortfolioContentOrFallback,
   mapCertificate,
   mapEducation,
   mapProject,
@@ -94,11 +92,16 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.get('/api/content/portfolio', async (_req, res) => {
-  const content = await listPortfolioContentOrFallback();
-  return res.json({
-    ok: true,
-    ...content,
-  });
+  try {
+    const content = await listPortfolioContent();
+    return res.json({
+      ok: true,
+      ...content,
+    });
+  } catch (error) {
+    console.error('Portfolio content lookup failed:', error);
+    return fail(res, 500, 'We could not load portfolio content right now.');
+  }
 });
 
 app.post('/api/contact/messages', contactLimiter, async (req, res) => {
@@ -402,10 +405,6 @@ app.delete('/api/admin/certificates/:id', requireAdmin, async (req, res) => {
     console.error('Certificate delete failed:', error);
     return fail(res, 500, 'We could not delete that certificate right now.');
   }
-});
-
-ensureSeededContent().catch((error) => {
-  console.error('Portfolio content seeding failed:', error);
 });
 
 if (hasBuild) {
