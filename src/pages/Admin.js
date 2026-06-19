@@ -433,7 +433,13 @@ function Admin() {
   }
 
   async function refreshDashboardTab() {
-    await Promise.allSettled([loadDashboard(), loadMessages(messageSearch)]);
+    await Promise.allSettled([
+      loadDashboard(),
+      loadMessages(messageSearch),
+      loadProjects(),
+      loadEducation(),
+      loadCertificates(),
+    ]);
   }
 
   async function refreshContentTab() {
@@ -449,7 +455,7 @@ function Admin() {
         if (!active) return;
         if (response.authenticated) {
           setAuthenticated(true);
-          await Promise.allSettled([refreshDashboardTab(), refreshContentTab()]);
+          await refreshDashboardTab();
         } else {
           setAuthenticated(false);
         }
@@ -524,7 +530,7 @@ function Admin() {
       setAuthenticated(true);
       setActiveTab('dashboard');
       setMessageSearch('');
-      await Promise.allSettled([refreshDashboardTab(), refreshContentTab()]);
+      await refreshDashboardTab();
     } catch (error) {
       setLoginError(error.message || 'Login failed.');
     } finally {
@@ -1158,7 +1164,7 @@ function Admin() {
                     </div>
                   ) : projects.length ? (
                     projects.map((project) => {
-                      const active = String(project.id) === String(selectedProjectId || projects[0]?.id);
+                      const active = String(project.id) === String(selectedProjectId);
                       return (
                         <button
                           key={project.id}
@@ -1337,7 +1343,7 @@ function Admin() {
                         </div>
                       ) : education.length ? (
                         education.map((item) => {
-                          const active = String(item.id) === String(selectedEducationId || education[0]?.id);
+                          const active = String(item.id) === String(selectedEducationId);
                           return (
                             <button
                               key={item.id}
@@ -1470,7 +1476,7 @@ function Admin() {
                         </div>
                       ) : certificates.length ? (
                         certificates.map((item) => {
-                          const active = String(item.id) === String(selectedCertificateId || certificates[0]?.id);
+                          const active = String(item.id) === String(selectedCertificateId);
                           return (
                             <button
                               key={item.id}

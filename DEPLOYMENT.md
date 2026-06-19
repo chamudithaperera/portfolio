@@ -17,6 +17,7 @@ Recommended path:
    - `PUBLIC_SITE_ORIGIN`
 4. Let Render build and start the app.
 5. Point `chamudithaperera.online` to the Render service using a custom domain.
+6. Create the portfolio content tables from `SUPABASE_SETUP.md` so the admin CRUD sections can persist projects, education, and certificates.
 
 For Supabase, keep using the same `contact_messages` table and the same SQL setup from `SUPABASE_SETUP.md`.
 

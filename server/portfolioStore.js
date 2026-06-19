@@ -159,6 +159,15 @@ async function countRows(table) {
   return count || 0;
 }
 
+async function safeCountRows(table) {
+  try {
+    return await countRows(table);
+  } catch (error) {
+    console.error(`Unable to count rows for ${table}:`, error.message || error);
+    return 0;
+  }
+}
+
 async function listPortfolioContent() {
   const [projects, education, certificates] = await Promise.all([
     listRows(TABLES.projects, mapProject),
@@ -184,10 +193,10 @@ async function listPortfolioContentOrFallback() {
 
 async function getDashboardSummary() {
   const [messages, projects, education, certificates] = await Promise.all([
-    countRows(TABLES.messages),
-    countRows(TABLES.projects),
-    countRows(TABLES.education),
-    countRows(TABLES.certificates),
+    safeCountRows(TABLES.messages),
+    safeCountRows(TABLES.projects),
+    safeCountRows(TABLES.education),
+    safeCountRows(TABLES.certificates),
   ]);
 
   const { data: latestMessage } = await supabase
@@ -268,4 +277,5 @@ module.exports = {
   mapProject,
   projectPayload,
   updateRow,
+  safeCountRows,
 };
