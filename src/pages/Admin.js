@@ -221,6 +221,15 @@ function certificateFormToBody(form) {
   };
 }
 
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () => reject(new Error('Unable to read the selected file.'));
+    reader.readAsDataURL(file);
+  });
+}
+
 function EmptyState({ icon, title, description, action }) {
   return (
     <div className="admin-empty-state">
@@ -286,6 +295,12 @@ function Admin() {
   const [projectSaving, setProjectSaving] = useState(false);
   const [projectError, setProjectError] = useState('');
   const [projectStatus, setProjectStatus] = useState('');
+  const [projectImageFile, setProjectImageFile] = useState(null);
+  const [projectImageUploading, setProjectImageUploading] = useState(false);
+  const [projectImageActionPending, setProjectImageActionPending] = useState(false);
+  const [projectImageStatus, setProjectImageStatus] = useState('');
+  const [projectImageError, setProjectImageError] = useState('');
+  const [projectImagePreview, setProjectImagePreview] = useState('');
 
   const [contentMode, setContentMode] = useState('education');
 
@@ -490,7 +505,21 @@ function Admin() {
     } else {
       setProjectForm(emptyProjectForm);
     }
+    setProjectImageFile(null);
+    setProjectImageStatus('');
+    setProjectImageError('');
   }, [selectedProject]);
+
+  useEffect(() => {
+    if (!projectImageFile) {
+      setProjectImagePreview('');
+      return undefined;
+    }
+
+    const objectUrl = URL.createObjectURL(projectImageFile);
+    setProjectImagePreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [projectImageFile]);
 
   useEffect(() => {
     if (selectedEducation) {
@@ -551,6 +580,11 @@ function Admin() {
       setProjectForm(emptyProjectForm);
       setEducationForm(emptyEducationForm);
       setCertificateForm(emptyCertificateForm);
+      setProjectImageFile(null);
+      setProjectImageStatus('');
+      setProjectImageError('');
+      setProjectImagePreview('');
+      setProjectImageActionPending(false);
       setMessageSearch('');
       setLoginForm((current) => ({ ...current, password: '' }));
     } catch (error) {
@@ -580,6 +614,88 @@ function Admin() {
     setProjectError('');
     setProjectStatus('');
     setProjectForm(emptyProjectForm);
+    setProjectImageFile(null);
+    setProjectImageStatus('');
+    setProjectImageError('');
+    setProjectImagePreview('');
+    setProjectImageActionPending(false);
+  };
+
+  const handleProjectImageChange = (event) => {
+    const [file] = event.target.files || [];
+    setProjectImageFile(file || null);
+    setProjectImageError('');
+    setProjectImageStatus('');
+  };
+
+  const handleProjectImageUpload = async () => {
+    if (!projectImageFile) {
+      setProjectImageError('Choose an image file first.');
+      return;
+    }
+
+    setProjectImageUploading(true);
+    setProjectImageError('');
+    setProjectImageStatus('');
+
+    try {
+      const dataUrl = await fileToDataUrl(projectImageFile);
+      const response = await apiRequest('/api/admin/project-images/upload', {
+        method: 'POST',
+        body: {
+          fileName: projectImageFile.name,
+          mimeType: projectImageFile.type,
+          dataUrl,
+          projectId: selectedProjectId,
+          projectTitle: projectForm.title,
+        },
+      });
+
+      setProjectForm((current) => ({ ...current, image: response.imageUrl }));
+      setProjectImageFile(null);
+      setProjectImagePreview('');
+      setProjectImageStatus('Image uploaded to Supabase Storage.');
+    } catch (error) {
+      setProjectImageError(error.message || 'Unable to upload this image.');
+    } finally {
+      setProjectImageUploading(false);
+    }
+  };
+
+  const handleProjectImageDelete = async () => {
+    if (!projectForm.image) {
+      setProjectImageError('There is no image to delete.');
+      return;
+    }
+
+    if (!projectForm.image.includes('/storage/v1/object/public/')) {
+      setProjectImageError('Only images stored in Supabase Storage can be deleted from here.');
+      return;
+    }
+
+    if (!window.confirm('Delete this stored image from Supabase?')) {
+      return;
+    }
+
+    setProjectImageActionPending(true);
+    setProjectImageError('');
+    setProjectImageStatus('');
+
+    try {
+      await apiRequest('/api/admin/project-images', {
+        method: 'DELETE',
+        body: { imageUrl: projectForm.image },
+      });
+
+      setProjectForm((current) => ({ ...current, image: '' }));
+      setProjectImageFile(null);
+      setProjectImagePreview('');
+      setProjectImageStatus('Image deleted from Supabase Storage.');
+    } catch (error) {
+      setProjectImageError(error.message || 'Unable to delete this image.');
+    } finally {
+      setProjectImageActionPending(false);
+    }
   };
 
   const handleProjectSave = async (event) => {
@@ -602,6 +718,9 @@ function Admin() {
 
       setProjectStatus(selectedProjectId ? 'Project updated successfully.' : 'Project created successfully.');
       setSelectedProjectId(String(response.project.id));
+      setProjectImageFile(null);
+      setProjectImagePreview('');
+      setProjectImageActionPending(false);
       await Promise.allSettled([loadProjects(), loadDashboard()]);
     } catch (error) {
       setProjectError(error.message || 'Unable to save this project.');
@@ -623,6 +742,9 @@ function Admin() {
       setProjectStatus('Project removed.');
       setSelectedProjectId('');
       setProjectForm(emptyProjectForm);
+      setProjectImageFile(null);
+      setProjectImagePreview('');
+      setProjectImageActionPending(false);
       await Promise.allSettled([loadProjects(), loadDashboard()]);
     } catch (error) {
       setProjectError(error.message || 'Unable to delete this project.');
@@ -1210,8 +1332,61 @@ function Admin() {
 
                   <label>
                     <span>Image path or URL</span>
-                    <input name="image" value={projectForm.image} onChange={updateProjectForm} placeholder="/assets/imgs/works/example.png" required />
+                    <input
+                      name="image"
+                      value={projectForm.image}
+                      onChange={updateProjectForm}
+                      placeholder="Supabase Storage URL or /assets/imgs/works/example.png"
+                      required
+                    />
                   </label>
+
+                  <div className="admin-image-panel">
+                    <div className="admin-image-preview">
+                      {projectImagePreview || projectForm.image ? (
+                        <img src={projectImagePreview || projectForm.image} alt={projectForm.title || 'Project preview'} />
+                      ) : (
+                        <div className="admin-image-empty">
+                          <Icon name="project" size={18} />
+                          <span>No image selected yet</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="admin-image-tools">
+                      <label className="admin-file-picker">
+                        <span>Choose an image file</span>
+                        <input type="file" accept="image/*" onChange={handleProjectImageChange} />
+                      </label>
+
+                      <div className="admin-action-row">
+                        <button
+                          type="button"
+                          className="admin-primary-button"
+                          onClick={handleProjectImageUpload}
+                          disabled={!projectImageFile || projectImageUploading}
+                        >
+                          {projectImageUploading ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                          {projectImageUploading ? 'Uploading...' : 'Upload to Supabase'}
+                        </button>
+                        <button
+                          type="button"
+                          className="admin-danger-button"
+                          onClick={handleProjectImageDelete}
+                          disabled={!projectForm.image || projectImageActionPending}
+                        >
+                          <Icon name="trash" size={14} />
+                          {projectImageActionPending ? 'Deleting...' : 'Delete image'}
+                        </button>
+                      </div>
+
+                      <p className="admin-image-note">
+                        Uploaded images are stored in Supabase Storage. When you save a project with a new image, the old storage file is cleaned up automatically.
+                      </p>
+                      {projectImageError ? <div className="admin-inline-error">{projectImageError}</div> : null}
+                      {projectImageStatus ? <div className="admin-inline-success">{projectImageStatus}</div> : null}
+                    </div>
+                  </div>
 
                   <label>
                     <span>Summary</span>

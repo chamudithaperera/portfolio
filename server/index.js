@@ -9,6 +9,7 @@ const rateLimit = require('express-rate-limit');
 
 const config = require('./config');
 const { supabase } = require('./supabase');
+const { deleteProjectImage, isProjectImageUrl, uploadProjectImage } = require('./storage');
 const {
   clearSessionCookie,
   createSessionToken,
@@ -59,7 +60,7 @@ const allowedOrigins = new Set(config.allowedOrigins.filter(Boolean));
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(compression());
-app.use(express.json({ limit: '25kb' }));
+app.use(express.json({ limit: '15mb' }));
 app.use(cookieParser());
 app.use(
   cors({
@@ -87,6 +88,14 @@ function parseNumericId(value) {
   return Number.isFinite(id) && id > 0 ? id : null;
 }
 
+async function getProjectImageRecord(id) {
+  const { data, error } = await supabase.from(TABLES.projects).select('id, image').eq('id', id).maybeSingle();
+  if (error) {
+    throw error;
+  }
+  return data || null;
+}
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, status: 'healthy' });
 });
@@ -101,6 +110,58 @@ app.get('/api/content/portfolio', async (_req, res) => {
   } catch (error) {
     console.error('Portfolio content lookup failed:', error);
     return fail(res, 500, 'We could not load portfolio content right now.');
+  }
+});
+
+app.post('/api/admin/project-images/upload', requireAdmin, async (req, res) => {
+  const fileName = String(req.body?.fileName || '').trim();
+  const dataUrl = String(req.body?.dataUrl || '').trim();
+  const mimeType = String(req.body?.mimeType || '').trim();
+  const projectId = req.body?.projectId ? String(req.body.projectId).trim() : '';
+  const projectTitle = String(req.body?.projectTitle || '').trim();
+
+  if (!fileName || !dataUrl) {
+    return fail(res, 400, 'Image file and data are required.');
+  }
+
+  const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+  if (!match) {
+    return fail(res, 400, 'The uploaded image data is invalid.');
+  }
+
+  try {
+    const uploaded = await uploadProjectImage({
+      bytes: Buffer.from(match[2], 'base64'),
+      contentType: mimeType || match[1],
+      fileName,
+      projectId,
+      projectTitle,
+    });
+
+    return res.status(201).json({
+      ok: true,
+      imageUrl: uploaded.publicUrl,
+      objectPath: uploaded.objectPath,
+    });
+  } catch (error) {
+    console.error('Project image upload failed:', error);
+    return fail(res, 500, 'We could not upload that image right now.');
+  }
+});
+
+app.delete('/api/admin/project-images', requireAdmin, async (req, res) => {
+  const imageUrl = String(req.body?.imageUrl || '').trim();
+
+  if (!imageUrl) {
+    return fail(res, 400, 'Image URL is required.');
+  }
+
+  try {
+    const deleted = await deleteProjectImage(imageUrl);
+    return res.json({ ok: true, deleted: deleted.deleted });
+  } catch (error) {
+    console.error('Project image delete failed:', error);
+    return fail(res, 500, 'We could not delete that image right now.');
   }
 });
 
@@ -264,7 +325,15 @@ app.put('/api/admin/projects/:id', requireAdmin, async (req, res) => {
   }
 
   try {
+    const existing = await getProjectImageRecord(id);
     const updated = await updateRow(TABLES.projects, id, projectPayload(result.values), mapProject);
+
+    if (existing?.image && existing.image !== updated.image && isProjectImageUrl(existing.image)) {
+      deleteProjectImage(existing.image).catch((cleanupError) => {
+        console.error('Project image cleanup failed:', cleanupError);
+      });
+    }
+
     return res.json({ ok: true, project: updated });
   } catch (error) {
     console.error('Project update failed:', error);
@@ -279,7 +348,15 @@ app.delete('/api/admin/projects/:id', requireAdmin, async (req, res) => {
   }
 
   try {
+    const existing = await getProjectImageRecord(id);
     await deleteRow(TABLES.projects, id);
+
+    if (existing?.image && isProjectImageUrl(existing.image)) {
+      deleteProjectImage(existing.image).catch((cleanupError) => {
+        console.error('Project image cleanup failed:', cleanupError);
+      });
+    }
+
     return res.json({ ok: true });
   } catch (error) {
     console.error('Project delete failed:', error);
