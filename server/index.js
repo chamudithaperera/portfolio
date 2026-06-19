@@ -204,6 +204,210 @@ app.get('/api/admin/messages', requireAdmin, async (req, res) => {
   });
 });
 
+app.get('/api/admin/dashboard', requireAdmin, async (_req, res) => {
+  try {
+    const summary = await getDashboardSummary();
+    return res.json({ ok: true, summary });
+  } catch (error) {
+    console.error('Dashboard summary failed:', error);
+    return fail(res, 500, 'We could not load the dashboard summary right now.');
+  }
+});
+
+app.get('/api/admin/content', requireAdmin, async (_req, res) => {
+  try {
+    const content = await listPortfolioContent();
+    return res.json({ ok: true, ...content });
+  } catch (error) {
+    console.error('Admin content load failed:', error);
+    return fail(res, 500, 'We could not load the portfolio content right now.');
+  }
+});
+
+app.get('/api/admin/projects', requireAdmin, async (_req, res) => {
+  try {
+    const content = await listPortfolioContent();
+    return res.json({ ok: true, projects: content.projects });
+  } catch (error) {
+    console.error('Project load failed:', error);
+    return fail(res, 500, 'We could not load projects right now.');
+  }
+});
+
+app.post('/api/admin/projects', requireAdmin, async (req, res) => {
+  const result = validateProjectPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the project form fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(TABLES.projects, projectPayload(result.values), mapProject);
+    return res.status(201).json({ ok: true, project: created });
+  } catch (error) {
+    console.error('Project create failed:', error);
+    return fail(res, 500, 'We could not save that project right now.');
+  }
+});
+
+app.put('/api/admin/projects/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid project id.');
+  }
+
+  const result = validateProjectPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the project form fields.', result.errors);
+  }
+
+  try {
+    const updated = await updateRow(TABLES.projects, id, projectPayload(result.values), mapProject);
+    return res.json({ ok: true, project: updated });
+  } catch (error) {
+    console.error('Project update failed:', error);
+    return fail(res, 500, 'We could not update that project right now.');
+  }
+});
+
+app.delete('/api/admin/projects/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid project id.');
+  }
+
+  try {
+    await deleteRow(TABLES.projects, id);
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('Project delete failed:', error);
+    return fail(res, 500, 'We could not delete that project right now.');
+  }
+});
+
+app.get('/api/admin/education', requireAdmin, async (_req, res) => {
+  try {
+    const content = await listPortfolioContent();
+    return res.json({ ok: true, education: content.education });
+  } catch (error) {
+    console.error('Education load failed:', error);
+    return fail(res, 500, 'We could not load education entries right now.');
+  }
+});
+
+app.post('/api/admin/education', requireAdmin, async (req, res) => {
+  const result = validateEducationPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the education form fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(TABLES.education, educationPayload(result.values), mapEducation);
+    return res.status(201).json({ ok: true, education: created });
+  } catch (error) {
+    console.error('Education create failed:', error);
+    return fail(res, 500, 'We could not save that education entry right now.');
+  }
+});
+
+app.put('/api/admin/education/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid education id.');
+  }
+
+  const result = validateEducationPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the education form fields.', result.errors);
+  }
+
+  try {
+    const updated = await updateRow(TABLES.education, id, educationPayload(result.values), mapEducation);
+    return res.json({ ok: true, education: updated });
+  } catch (error) {
+    console.error('Education update failed:', error);
+    return fail(res, 500, 'We could not update that education entry right now.');
+  }
+});
+
+app.delete('/api/admin/education/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid education id.');
+  }
+
+  try {
+    await deleteRow(TABLES.education, id);
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('Education delete failed:', error);
+    return fail(res, 500, 'We could not delete that education entry right now.');
+  }
+});
+
+app.get('/api/admin/certificates', requireAdmin, async (_req, res) => {
+  try {
+    const content = await listPortfolioContent();
+    return res.json({ ok: true, certificates: content.certificates });
+  } catch (error) {
+    console.error('Certificate load failed:', error);
+    return fail(res, 500, 'We could not load certificates right now.');
+  }
+});
+
+app.post('/api/admin/certificates', requireAdmin, async (req, res) => {
+  const result = validateCertificatePayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the certificate form fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(TABLES.certificates, certificatePayload(result.values), mapCertificate);
+    return res.status(201).json({ ok: true, certificate: created });
+  } catch (error) {
+    console.error('Certificate create failed:', error);
+    return fail(res, 500, 'We could not save that certificate right now.');
+  }
+});
+
+app.put('/api/admin/certificates/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid certificate id.');
+  }
+
+  const result = validateCertificatePayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the certificate form fields.', result.errors);
+  }
+
+  try {
+    const updated = await updateRow(TABLES.certificates, id, certificatePayload(result.values), mapCertificate);
+    return res.json({ ok: true, certificate: updated });
+  } catch (error) {
+    console.error('Certificate update failed:', error);
+    return fail(res, 500, 'We could not update that certificate right now.');
+  }
+});
+
+app.delete('/api/admin/certificates/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid certificate id.');
+  }
+
+  try {
+    await deleteRow(TABLES.certificates, id);
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('Certificate delete failed:', error);
+    return fail(res, 500, 'We could not delete that certificate right now.');
+  }
+});
+
+ensureSeededContent().catch((error) => {
+  console.error('Portfolio content seeding failed:', error);
+});
+
 if (hasBuild) {
   app.use(express.static(buildDir));
   app.use((req, res, next) => {

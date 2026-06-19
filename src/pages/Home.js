@@ -102,7 +102,7 @@ const experience = [
   },
 ];
 
-const projects = [
+const defaultProjects = [
   {
     title: 'Money Manager App',
     category: 'Flutter mobile system',
@@ -256,7 +256,7 @@ const technologyIcons = {
   AWS: { path: 'M12 4c-4.4 0-8.2 2.7-9.8 6.5C3.6 15.6 7.5 19 12 19V4zm.5 4.5L16 9v9l-3.5.5v-10zm-3 9L6 17V8l3.5-.5v10z', color: '#FF9900' },
 };
 
-const education = [
+const defaultEducation = [
   {
     track: 'Degree',
     title: 'BSc in Information Technology',
@@ -292,7 +292,7 @@ const education = [
   },
 ];
 
-const certifications = [
+const defaultCertificates = [
   {
     title: 'AI/ML Engineer — Stage 1',
     org: 'SLIIT',
@@ -312,6 +312,12 @@ const certifications = [
     detail: 'Covered digital productivity, business workflows, and everyday office systems.',
   },
 ];
+
+const initialPortfolioContent = {
+  projects: defaultProjects,
+  education: defaultEducation,
+  certificates: defaultCertificates,
+};
 
 const iconPaths = {
   code: ['M8 9l-4 3 4 3', 'M16 9l4 3-4 3', 'M14 5l-4 14'],
@@ -445,6 +451,35 @@ function Reveal({ as: Tag = 'div', className = '', children, threshold = 0.1 }) 
       {children}
     </Tag>
   );
+}
+
+function usePortfolioContent(initialContent = initialPortfolioContent) {
+  const [content, setContent] = useState(initialContent);
+
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      try {
+        const response = await apiRequest('/api/content/portfolio');
+        if (!active || !response?.ok) return;
+        setContent({
+          projects: response.projects ?? initialContent.projects,
+          education: response.education ?? initialContent.education,
+          certificates: response.certificates ?? initialContent.certificates,
+        });
+      } catch (error) {
+        void error;
+      }
+    }
+
+    load();
+    return () => {
+      active = false;
+    };
+  }, [initialContent]);
+
+  return content;
 }
 
 function SectionHeading({ index, title, accent, description, align = 'center' }) {
@@ -1033,10 +1068,11 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
-function Projects({ mode = 'home' }) {
+function Projects({ mode = 'home', projectsData = initialPortfolioContent.projects }) {
   const [activeProject, setActiveProject] = useState(null);
-  const featuredProject = projects[0];
-  const projectItems = mode === 'page' ? projects : projects.slice(1);
+  const safeProjects = Array.isArray(projectsData) ? projectsData : [];
+  const featuredProject = safeProjects[0];
+  const projectItems = mode === 'page' ? safeProjects : safeProjects.slice(1);
   const headingTitle = mode === 'page' ? 'All' : 'Featured';
   const sectionClassName = `section section-projects ${mode === 'page' ? 'projects-page-grid' : ''}`.trim();
 
@@ -1067,12 +1103,19 @@ function Projects({ mode = 'home' }) {
             </Link>
           </div>
         )}
-        {mode === 'home' ? <ProjectCard project={featuredProject} featured onOpen={setActiveProject} /> : null}
-        <div className={`project-grid ${mode === 'page' ? 'project-grid-page' : ''}`}>
-          {projectItems.map((project) => (
-            <ProjectCard key={project.title} project={project} onOpen={setActiveProject} />
-          ))}
-        </div>
+        {mode === 'home' && featuredProject ? <ProjectCard project={featuredProject} featured onOpen={setActiveProject} /> : null}
+        {projectItems.length ? (
+          <div className={`project-grid ${mode === 'page' ? 'project-grid-page' : ''}`}>
+            {projectItems.map((project) => (
+              <ProjectCard key={project.id || project.title} project={project} onOpen={setActiveProject} />
+            ))}
+          </div>
+        ) : (
+          <div className="empty-content-state">
+            <h3>No projects yet</h3>
+            <p>Add a project in the admin panel to populate this section.</p>
+          </div>
+        )}
         <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />
       </Reveal>
     </section>
@@ -1080,6 +1123,8 @@ function Projects({ mode = 'home' }) {
 }
 
 function ProjectsPage() {
+  const portfolioContent = usePortfolioContent();
+
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
       return;
@@ -1112,7 +1157,7 @@ function ProjectsPage() {
       </Helmet>
       <Navigation />
       <main>
-        <Projects mode="page" />
+        <Projects mode="page" projectsData={portfolioContent.projects} />
       </main>
     </div>
   );
@@ -1281,7 +1326,10 @@ function Skills() {
   );
 }
 
-function Education() {
+function Education({
+  educationItems = initialPortfolioContent.education,
+  certificateItems = initialPortfolioContent.certificates,
+}) {
   const [activeEducationIndex, setActiveEducationIndex] = useState(0);
   const certificationRailRef = useRef(null);
 
@@ -1294,16 +1342,24 @@ function Education() {
     railRef.current.scrollBy({ left: direction * distance, behavior: 'smooth' });
   };
 
-  const educationCount = education.length;
+  const safeEducation = Array.isArray(educationItems) ? educationItems : [];
+  const safeCertificates = Array.isArray(certificateItems) ? certificateItems : [];
+  const educationCount = safeEducation.length;
 
-  const showPreviousEducation = () =>
+  const showPreviousEducation = () => {
+    if (!educationCount) return;
     setActiveEducationIndex((current) => (current - 1 + educationCount) % educationCount);
+  };
 
-  const showNextEducation = () => setActiveEducationIndex((current) => (current + 1) % educationCount);
+  const showNextEducation = () => {
+    if (!educationCount) return;
+    setActiveEducationIndex((current) => (current + 1) % educationCount);
+  };
 
   const activateEducation = (index) => setActiveEducationIndex(index);
 
   const getEducationOffset = (index) => {
+    if (!educationCount) return 0;
     const rawOffset = index - activeEducationIndex;
     if (rawOffset > educationCount / 2) {
       return rawOffset - educationCount;
@@ -1340,7 +1396,7 @@ function Education() {
 
             <div className="education-carousel" aria-label="Education cards slider">
               <div className="education-carousel-stage">
-                {education.map((item, index) => {
+                {safeEducation.map((item, index) => {
                   const offset = getEducationOffset(index);
                   const positionClass =
                     offset === 0 ? 'is-active' : offset === -1 ? 'is-prev' : offset === 1 ? 'is-next' : 'is-hidden';
@@ -1349,7 +1405,7 @@ function Education() {
                     <article
                       key={`${item.title}-${item.period}`}
                       className={`experience-card education-carousel-card card-3d ${positionClass}`}
-                      aria-hidden={positionClass === "is-hidden"}
+                      aria-hidden={positionClass === 'is-hidden'}
                       onClick={() => activateEducation(index)}
                     >
                       <span className="experience-card-accent" />
@@ -1383,7 +1439,7 @@ function Education() {
                           <div className="experience-count">
                             <strong>{String(index + 1).padStart(2, '0')}</strong>
                             <span>/</span>
-                            <small>{String(education.length).padStart(2, '0')}</small>
+                            <small>{String(safeEducation.length).padStart(2, '0')}</small>
                             <em>· {item.org.split('—')[0].trim()}</em>
                           </div>
                           <div className="slider-pulse" aria-hidden="true" />
@@ -1396,7 +1452,7 @@ function Education() {
             </div>
 
             <div className="education-carousel-dots" aria-label="Education carousel pagination">
-              {education.map((item, index) => (
+              {safeEducation.map((item, index) => (
                 <button
                   key={`${item.title}-dot`}
                   type="button"
@@ -1428,7 +1484,7 @@ function Education() {
             </div>
 
               <div className="slider-viewport slider-viewport--certifications" ref={certificationRailRef} aria-label="Certification cards slider">
-                {certifications.map((cert) => (
+                {safeCertificates.map((cert) => (
                   <article key={cert.title} className="experience-card certification-slider-card card-3d">
                     <span className="experience-card-accent" />
                     <div className="experience-card-body certification-card-body">
@@ -1801,6 +1857,8 @@ function Footer() {
 }
 
 function Home() {
+  const portfolioContent = usePortfolioContent();
+
   return (
     <div className="bolt-shell">
       <Helmet>
@@ -1830,9 +1888,9 @@ function Home() {
         <Hero />
         <About />
         <Experience />
-        <Projects />
+        <Projects projectsData={portfolioContent.projects} />
         <Skills />
-        <Education />
+        <Education educationItems={portfolioContent.education} certificateItems={portfolioContent.certificates} />
         <Contact />
       </main>
       <Footer />
