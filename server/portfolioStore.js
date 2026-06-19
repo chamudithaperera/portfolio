@@ -199,12 +199,18 @@ async function getDashboardSummary() {
     safeCountRows(TABLES.certificates),
   ]);
 
-  const { data: latestMessage } = await supabase
-    .from(TABLES.messages)
-    .select('id, name, subject, created_at')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  let latestMessage = null;
+  try {
+    const { data } = await supabase
+      .from(TABLES.messages)
+      .select('id, name, subject, created_at')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    latestMessage = data || null;
+  } catch (error) {
+    console.error(`Unable to load latest message:`, error.message || error);
+  }
 
   return {
     messages,
