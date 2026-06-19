@@ -93,6 +93,7 @@
   color: #f8fbff;
   font-size: 1rem;
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .admin-brand span {
@@ -100,6 +101,7 @@
   margin-top: 0.2rem;
   color: #93a4bf;
   font-size: 0.82rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-sidebar-note {
@@ -169,6 +171,7 @@
   display: block;
   font-size: 0.96rem;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .admin-tab-copy small {
@@ -176,6 +179,7 @@
   margin-top: 0.18rem;
   color: #94a3b8;
   font-size: 0.8rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-sidebar-footer {
@@ -228,6 +232,7 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(1.55rem, 2vw, 2.15rem);
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .admin-header p {
@@ -235,6 +240,7 @@
   margin: 0.5rem 0 0;
   color: #93a4bf;
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .admin-header-actions {
@@ -277,6 +283,7 @@
   color: #f8fbff;
   font-size: 1.05rem;
   line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .admin-pill {
@@ -306,6 +313,8 @@
   border: 1px solid transparent;
   border-radius: 0.95rem;
   font-weight: 600;
+  text-align: center;
+  white-space: normal;
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
@@ -365,6 +374,7 @@
   color: #cbd5e1;
   font-size: 0.85rem;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .admin-form input,
@@ -471,6 +481,7 @@
   color: #93a4bf;
   font-size: 0.84rem;
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .admin-checkbox {
@@ -496,6 +507,7 @@
 .admin-checkbox span {
   color: #cbd5e1;
   font-size: 0.85rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-summary-grid {
@@ -515,6 +527,7 @@
   display: block;
   color: #94a3b8;
   font-size: 0.78rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-stat-card strong {
@@ -689,6 +702,7 @@
 .admin-message-top strong {
   color: #f8fbff;
   font-size: 0.95rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-message-top span,
@@ -696,6 +710,7 @@
 .admin-item-card small {
   color: #94a3b8;
   font-size: 0.8rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-message-copy p,
@@ -704,6 +719,7 @@
   margin: 0;
   color: #dbe7ff;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .admin-message-copy p {
@@ -750,6 +766,7 @@
   color: #cbd5e1;
   background: rgba(7, 13, 24, 0.96);
   font-size: 0.8rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-chat-thread {
@@ -789,6 +806,7 @@
   margin: 0;
   color: #eff6ff;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .admin-chat-note small {
@@ -828,6 +846,7 @@
   color: #dbe7ff;
   line-height: 1.5;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .admin-action-row {
@@ -846,10 +865,12 @@
 .admin-item-card strong {
   color: #f8fbff;
   font-size: 0.95rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-item-card p {
   font-size: 0.88rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-subtabs {
@@ -902,12 +923,14 @@
   margin: 0;
   color: #f8fbff;
   font-size: 0.98rem;
+  overflow-wrap: anywhere;
 }
 
 .admin-empty-state p {
   margin: 0.25rem 0 0;
   color: #94a3b8;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .admin-empty-icon {
@@ -1016,12 +1039,14 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.8rem;
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .admin-auth-card p {
   margin: 0.75rem 0 0;
   color: #94a3b8;
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .admin-login-form {
@@ -1161,5 +1186,20 @@
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-secondary-button,
+  .admin-primary-button,
+  .admin-danger-button {
+    width: 100%;
+  }
+
+  .admin-header-actions .admin-secondary-button,
+  .admin-action-row .admin-secondary-button,
+  .admin-action-row .admin-primary-button,
+  .admin-action-row .admin-danger-button,
+  .admin-list-actions .admin-secondary-button,
+  .admin-sidebar-footer .admin-secondary-button {
+    width: auto;
   }
 }
