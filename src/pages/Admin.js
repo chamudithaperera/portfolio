@@ -584,6 +584,7 @@ function Admin() {
       setProjectImageStatus('');
       setProjectImageError('');
       setProjectImagePreview('');
+      setProjectImageUploading(false);
       setProjectImageActionPending(false);
       setMessageSearch('');
       setLoginForm((current) => ({ ...current, password: '' }));
@@ -618,6 +619,7 @@ function Admin() {
     setProjectImageStatus('');
     setProjectImageError('');
     setProjectImagePreview('');
+    setProjectImageUploading(false);
     setProjectImageActionPending(false);
   };
 
@@ -720,6 +722,7 @@ function Admin() {
       setSelectedProjectId(String(response.project.id));
       setProjectImageFile(null);
       setProjectImagePreview('');
+      setProjectImageUploading(false);
       setProjectImageActionPending(false);
       await Promise.allSettled([loadProjects(), loadDashboard()]);
     } catch (error) {
@@ -744,6 +747,7 @@ function Admin() {
       setProjectForm(emptyProjectForm);
       setProjectImageFile(null);
       setProjectImagePreview('');
+      setProjectImageUploading(false);
       setProjectImageActionPending(false);
       await Promise.allSettled([loadProjects(), loadDashboard()]);
     } catch (error) {
