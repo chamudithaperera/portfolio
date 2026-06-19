@@ -442,10 +442,6 @@ function Admin() {
     ]);
   }
 
-  async function refreshContentTab() {
-    await Promise.allSettled([loadProjects(), loadEducation(), loadCertificates()]);
-  }
-
   useEffect(() => {
     let active = true;
 
