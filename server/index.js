@@ -16,7 +16,29 @@ const {
   requireAdmin,
   setSessionCookie,
 } = require('./auth');
-const { validateAdminCredentials, validateContactMessage } = require('./validation');
+const {
+  validateAdminCredentials,
+  validateCertificatePayload,
+  validateContactMessage,
+  validateEducationPayload,
+  validateProjectPayload,
+} = require('./validation');
+const {
+  certificatePayload,
+  deleteRow,
+  educationPayload,
+  ensureSeededContent,
+  getDashboardSummary,
+  insertRow,
+  listPortfolioContent,
+  listPortfolioContentOrFallback,
+  mapCertificate,
+  mapEducation,
+  mapProject,
+  projectPayload,
+  updateRow,
+  TABLES,
+} = require('./portfolioStore');
 
 const app = express();
 const buildDir = path.join(__dirname, '..', 'build');
@@ -62,8 +84,21 @@ function fail(res, status, message, details) {
   });
 }
 
+function parseNumericId(value) {
+  const id = Number.parseInt(String(value ?? ''), 10);
+  return Number.isFinite(id) && id > 0 ? id : null;
+}
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, status: 'healthy' });
+});
+
+app.get('/api/content/portfolio', async (_req, res) => {
+  const content = await listPortfolioContentOrFallback();
+  return res.json({
+    ok: true,
+    ...content,
+  });
 });
 
 app.post('/api/contact/messages', contactLimiter, async (req, res) => {
