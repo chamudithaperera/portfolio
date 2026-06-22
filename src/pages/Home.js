@@ -47,7 +47,7 @@ const profile = {
 };
 
 const siteUrl = 'https://chamudithaperera.online';
-const siteTitle = 'Chamuditha Perera | Chamuditha Portfolio';
+const siteTitle = 'Chamuditha Perera | Software Engineer';
 const siteDescription =
   "Chamuditha Perera's portfolio website showcasing Flutter, React, Spring Boot, UI/UX, and production-ready mobile and web projects from Sri Lanka.";
 const projectsPageTitle = 'Projects | Chamuditha Perera';
