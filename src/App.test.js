@@ -131,6 +131,7 @@ const portfolioContent = {
       title: 'AI/ML Engineer — Stage 1',
       org: 'SLIIT',
       year: '2026',
+      image: '/assets/imgs/works/moneymanager.png',
       detail: 'Hands-on learning around model building, experimentation, and practical AI workflows.',
     },
     {
@@ -138,6 +139,7 @@ const portfolioContent = {
       title: 'Dart & Flutter Development Course',
       org: 'Udemy',
       year: '2024',
+      image: '/assets/imgs/works/edupro.jpeg',
       detail: 'Focused on mobile UI systems, state management, and clean app structure.',
     },
     {
@@ -145,6 +147,7 @@ const portfolioContent = {
       title: 'IT for Business Success',
       org: 'HP',
       year: '2021',
+      image: '/assets/imgs/works/weatherApp.jpeg',
       detail: 'Covered digital productivity, business workflows, and everyday office systems.',
     },
   ],
@@ -187,6 +190,7 @@ test('renders the full portfolio structure and navigation anchors', async () => 
   expect(screen.getByRole('heading', { name: 'Education & Certifications' })).toBeInTheDocument();
   expect(screen.getByText('BSc in Information Technology')).toBeInTheDocument();
   expect(screen.getByText('AI/ML Engineer — Stage 1')).toBeInTheDocument();
+  expect(screen.getByAltText('AI/ML Engineer — Stage 1')).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: "Let's Connect" })).toBeInTheDocument();
   expect(screen.getByText('MQTT')).toBeInTheDocument();
   expect(screen.getByText('Adobe Photoshop')).toBeInTheDocument();

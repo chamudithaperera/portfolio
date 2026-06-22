@@ -73,11 +73,15 @@ create table if not exists public.portfolio_certificates (
   title text not null,
   org text not null,
   year text not null,
+  image text not null default '',
   detail text not null,
   display_order integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.portfolio_certificates
+  add column if not exists image text not null default '';
 
 create index if not exists portfolio_certificates_display_order_idx
   on public.portfolio_certificates (display_order asc);
@@ -132,3 +136,4 @@ openssl rand -base64 48
    - Password: `Admin@chamu123`
 5. Confirm submitted messages appear in the inbox.
 6. Confirm projects, education, and certificates can be created, edited, and deleted from the admin dashboard.
+7. Confirm certificate images can be uploaded, replaced, and removed from the admin dashboard.

@@ -1358,7 +1358,7 @@ function Education({ educationItems = [], certificateItems = [] }) {
 
               <div className="slider-viewport slider-viewport--certifications" ref={certificationRailRef} aria-label="Certification cards slider">
                 {safeCertificates.map((cert) => (
-                  <article key={cert.title} className="experience-card certification-slider-card certification-card card-3d">
+                  <article key={cert.title} className="experience-card certification-slider-card card-3d">
                     <div className="certification-card-media">
                       {cert.image ? (
                         <img src={withBase(cert.image)} alt={cert.title} loading="lazy" decoding="async" />
