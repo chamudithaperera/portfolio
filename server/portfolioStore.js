@@ -92,6 +92,7 @@ function mapCertificate(row) {
     title: row.title,
     org: row.org,
     year: row.year,
+    image: row.image || '',
     detail: row.detail,
     displayOrder: row.display_order ?? 0,
     createdAt: row.created_at,
@@ -131,6 +132,7 @@ function certificatePayload(input = {}) {
     title: normalizeString(input.title),
     org: normalizeString(input.org),
     year: normalizeString(input.year),
+    image: normalizeString(input.image),
     detail: normalizeString(input.detail),
     display_order: toInteger(input.displayOrder, 0),
   };

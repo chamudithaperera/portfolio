@@ -211,6 +211,7 @@ function validateCertificatePayload(body = {}) {
   const title = normalizeText(body.title);
   const org = normalizeText(body.org);
   const year = normalizeText(body.year);
+  const image = normalizeText(body.image);
   const detail = normalizeText(body.detail);
   const displayOrder = validateCollectionOrder(body.displayOrder);
 
@@ -218,6 +219,9 @@ function validateCertificatePayload(body = {}) {
   if (!org) errors.org = 'Issuer is required.';
   if (!year) errors.year = 'Year is required.';
   if (!detail) errors.detail = 'Detail is required.';
+  if (image && image.length > 500) {
+    errors.image = 'Image path or URL is too long.';
+  }
 
   return {
     ok: Object.keys(errors).length === 0,
@@ -226,6 +230,7 @@ function validateCertificatePayload(body = {}) {
       title,
       org,
       year,
+      image,
       detail,
       displayOrder,
     },

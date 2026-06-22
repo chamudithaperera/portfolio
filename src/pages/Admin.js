@@ -37,6 +37,7 @@ const emptyCertificateForm = {
   title: '',
   org: '',
   year: '',
+  image: '',
   detail: '',
   displayOrder: '',
 };
@@ -179,6 +180,7 @@ function certificateToForm(item) {
     title: item.title || '',
     org: item.org || '',
     year: item.year || '',
+    image: item.image || '',
     detail: item.detail || '',
     displayOrder: item.displayOrder ?? '',
   };
@@ -216,6 +218,7 @@ function certificateFormToBody(form) {
     title: form.title,
     org: form.org,
     year: form.year,
+    image: form.image,
     detail: form.detail,
     displayOrder: form.displayOrder,
   };
@@ -319,6 +322,12 @@ function Admin() {
   const [certificateForm, setCertificateForm] = useState(emptyCertificateForm);
   const [certificateSaving, setCertificateSaving] = useState(false);
   const [certificateStatus, setCertificateStatus] = useState('');
+  const [certificateImageFile, setCertificateImageFile] = useState(null);
+  const [certificateImageUploading, setCertificateImageUploading] = useState(false);
+  const [certificateImageActionPending, setCertificateImageActionPending] = useState(false);
+  const [certificateImageStatus, setCertificateImageStatus] = useState('');
+  const [certificateImageError, setCertificateImageError] = useState('');
+  const [certificateImagePreview, setCertificateImagePreview] = useState('');
 
   const selectedMessage = useMemo(
     () => messages.find((message) => String(message.id) === String(selectedMessageId)) || messages[0] || null,
@@ -535,7 +544,24 @@ function Admin() {
     } else {
       setCertificateForm(emptyCertificateForm);
     }
+    setCertificateImageFile(null);
+    setCertificateImageStatus('');
+    setCertificateImageError('');
+    setCertificateImagePreview('');
+    setCertificateImageUploading(false);
+    setCertificateImageActionPending(false);
   }, [selectedCertificate]);
+
+  useEffect(() => {
+    if (!certificateImageFile) {
+      setCertificateImagePreview('');
+      return undefined;
+    }
+
+    const objectUrl = URL.createObjectURL(certificateImageFile);
+    setCertificateImagePreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [certificateImageFile]);
 
   const handleLoginChange = (event) => {
     const { name, value } = event.target;
@@ -586,6 +612,12 @@ function Admin() {
       setProjectImagePreview('');
       setProjectImageUploading(false);
       setProjectImageActionPending(false);
+      setCertificateImageFile(null);
+      setCertificateImageStatus('');
+      setCertificateImageError('');
+      setCertificateImagePreview('');
+      setCertificateImageUploading(false);
+      setCertificateImageActionPending(false);
       setMessageSearch('');
       setLoginForm((current) => ({ ...current, password: '' }));
     } catch (error) {
@@ -818,6 +850,89 @@ function Admin() {
     setCertificateStatus('');
     setCertificatesError('');
     setCertificateForm(emptyCertificateForm);
+    setCertificateImageFile(null);
+    setCertificateImageStatus('');
+    setCertificateImageError('');
+    setCertificateImagePreview('');
+    setCertificateImageUploading(false);
+    setCertificateImageActionPending(false);
+  };
+
+  const handleCertificateImageChange = (event) => {
+    const [file] = event.target.files || [];
+    setCertificateImageFile(file || null);
+    setCertificateImageError('');
+    setCertificateImageStatus('');
+  };
+
+  const handleCertificateImageUpload = async () => {
+    if (!certificateImageFile) {
+      setCertificateImageError('Choose an image file first.');
+      return;
+    }
+
+    setCertificateImageUploading(true);
+    setCertificateImageError('');
+    setCertificateImageStatus('');
+
+    try {
+      const dataUrl = await fileToDataUrl(certificateImageFile);
+      const response = await apiRequest('/api/admin/certificate-images/upload', {
+        method: 'POST',
+        body: {
+          fileName: certificateImageFile.name,
+          mimeType: certificateImageFile.type,
+          dataUrl,
+          certificateId: selectedCertificateId,
+          certificateTitle: certificateForm.title,
+        },
+      });
+
+      setCertificateForm((current) => ({ ...current, image: response.imageUrl }));
+      setCertificateImageFile(null);
+      setCertificateImagePreview('');
+      setCertificateImageStatus('Image uploaded to Supabase Storage.');
+    } catch (error) {
+      setCertificateImageError(error.message || 'Unable to upload this image.');
+    } finally {
+      setCertificateImageUploading(false);
+    }
+  };
+
+  const handleCertificateImageDelete = async () => {
+    if (!certificateForm.image) {
+      setCertificateImageError('There is no image to delete.');
+      return;
+    }
+
+    if (!certificateForm.image.includes('/storage/v1/object/public/')) {
+      setCertificateImageError('Only images stored in Supabase Storage can be deleted from here.');
+      return;
+    }
+
+    if (!window.confirm('Delete this stored image from Supabase?')) {
+      return;
+    }
+
+    setCertificateImageActionPending(true);
+    setCertificateImageError('');
+    setCertificateImageStatus('');
+
+    try {
+      await apiRequest('/api/admin/certificate-images', {
+        method: 'DELETE',
+        body: { imageUrl: certificateForm.image },
+      });
+
+      setCertificateForm((current) => ({ ...current, image: '' }));
+      setCertificateImageFile(null);
+      setCertificateImagePreview('');
+      setCertificateImageStatus('Image deleted from Supabase Storage.');
+    } catch (error) {
+      setCertificateImageError(error.message || 'Unable to delete this image.');
+    } finally {
+      setCertificateImageActionPending(false);
+    }
   };
 
   const handleCertificateSave = async (event) => {
@@ -840,6 +955,10 @@ function Admin() {
 
       setCertificateStatus(selectedCertificateId ? 'Certificate updated.' : 'Certificate created.');
       setSelectedCertificateId(String(response.certificate.id));
+      setCertificateImageFile(null);
+      setCertificateImagePreview('');
+      setCertificateImageUploading(false);
+      setCertificateImageActionPending(false);
       await Promise.allSettled([loadCertificates(), loadDashboard()]);
     } catch (error) {
       setCertificatesError(error.message || 'Unable to save this certificate.');
@@ -861,6 +980,10 @@ function Admin() {
       setCertificateStatus('Certificate removed.');
       setSelectedCertificateId('');
       setCertificateForm(emptyCertificateForm);
+      setCertificateImageFile(null);
+      setCertificateImagePreview('');
+      setCertificateImageUploading(false);
+      setCertificateImageActionPending(false);
       await Promise.allSettled([loadCertificates(), loadDashboard()]);
     } catch (error) {
       setCertificatesError(error.message || 'Unable to delete this certificate.');
@@ -1708,6 +1831,70 @@ function Admin() {
                           <span>Year</span>
                           <input name="year" value={certificateForm.year} onChange={updateCertificateForm} placeholder="2026" required />
                         </label>
+                      </div>
+
+                      <label>
+                        <span>Image path or URL</span>
+                        <input
+                          name="image"
+                          value={certificateForm.image}
+                          onChange={updateCertificateForm}
+                          placeholder="Supabase Storage URL or /assets/imgs/certificates/example.png"
+                        />
+                      </label>
+
+                      <div className="admin-image-panel">
+                        <div className="admin-image-preview">
+                          {certificateImagePreview || certificateForm.image ? (
+                            <img
+                              src={certificateImagePreview || certificateForm.image}
+                              alt={certificateForm.title || 'Certificate preview'}
+                            />
+                          ) : (
+                            <div className="admin-image-empty">
+                              <Icon name="certificate" size={18} />
+                              <span>No image selected yet</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="admin-image-tools">
+                          <label className="admin-file-picker">
+                            <span>Choose an image file</span>
+                            <input type="file" accept="image/*" onChange={handleCertificateImageChange} />
+                          </label>
+
+                          <div className="admin-action-row">
+                            <button
+                              type="button"
+                              className="admin-primary-button"
+                              onClick={handleCertificateImageUpload}
+                              disabled={!certificateImageFile || certificateImageUploading}
+                            >
+                              {certificateImageUploading ? (
+                                <span className="admin-spinner" aria-hidden="true" />
+                              ) : (
+                                <Icon name="save" size={14} />
+                              )}
+                              {certificateImageUploading ? 'Uploading...' : 'Upload to Supabase'}
+                            </button>
+                            <button
+                              type="button"
+                              className="admin-danger-button"
+                              onClick={handleCertificateImageDelete}
+                              disabled={!certificateForm.image || certificateImageActionPending}
+                            >
+                              <Icon name="trash" size={14} />
+                              {certificateImageActionPending ? 'Deleting...' : 'Delete image'}
+                            </button>
+                          </div>
+
+                          <p className="admin-image-note">
+                            Uploaded images are stored in Supabase Storage. The certificate image is kept in sync with the saved record.
+                          </p>
+                          {certificateImageError ? <div className="admin-inline-error">{certificateImageError}</div> : null}
+                          {certificateImageStatus ? <div className="admin-inline-success">{certificateImageStatus}</div> : null}
+                        </div>
                       </div>
 
                       <label>

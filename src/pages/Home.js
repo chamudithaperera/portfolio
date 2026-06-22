@@ -1358,8 +1358,22 @@ function Education({ educationItems = [], certificateItems = [] }) {
 
               <div className="slider-viewport slider-viewport--certifications" ref={certificationRailRef} aria-label="Certification cards slider">
                 {safeCertificates.map((cert) => (
-                  <article key={cert.title} className="experience-card certification-slider-card card-3d">
-                    <span className="experience-card-accent" />
+                  <article key={cert.title} className="experience-card certification-slider-card certification-card card-3d">
+                    <div className="certification-card-media">
+                      {cert.image ? (
+                        <img src={withBase(cert.image)} alt={cert.title} loading="lazy" decoding="async" />
+                      ) : (
+                        <div className="certification-card-media-empty">
+                          <Icon name="certificate" size={18} />
+                          <span>No certificate image yet</span>
+                        </div>
+                      )}
+                      <div className="certification-card-media-wash" />
+                      <span className="certification-badge certification-badge-overlay">
+                        <Icon name="award" size={12} />
+                        Certification
+                      </span>
+                    </div>
                     <div className="experience-card-body certification-card-body">
                       <div className="certification-card-top">
                         <span className="certification-badge">

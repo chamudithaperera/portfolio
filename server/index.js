@@ -9,7 +9,14 @@ const rateLimit = require('express-rate-limit');
 
 const config = require('./config');
 const { supabase } = require('./supabase');
-const { deleteProjectImage, isProjectImageUrl, uploadProjectImage } = require('./storage');
+const {
+  deleteCertificateImage,
+  deleteProjectImage,
+  isCertificateImageUrl,
+  isProjectImageUrl,
+  uploadCertificateImage,
+  uploadProjectImage,
+} = require('./storage');
 const {
   clearSessionCookie,
   createSessionToken,
@@ -96,6 +103,14 @@ async function getProjectImageRecord(id) {
   return data || null;
 }
 
+async function getCertificateImageRecord(id) {
+  const { data, error } = await supabase.from(TABLES.certificates).select('id, image').eq('id', id).maybeSingle();
+  if (error) {
+    throw error;
+  }
+  return data || null;
+}
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, status: 'healthy' });
 });
@@ -161,6 +176,58 @@ app.delete('/api/admin/project-images', requireAdmin, async (req, res) => {
     return res.json({ ok: true, deleted: deleted.deleted });
   } catch (error) {
     console.error('Project image delete failed:', error);
+    return fail(res, 500, 'We could not delete that image right now.');
+  }
+});
+
+app.post('/api/admin/certificate-images/upload', requireAdmin, async (req, res) => {
+  const fileName = String(req.body?.fileName || '').trim();
+  const dataUrl = String(req.body?.dataUrl || '').trim();
+  const mimeType = String(req.body?.mimeType || '').trim();
+  const certificateId = req.body?.certificateId ? String(req.body.certificateId).trim() : '';
+  const certificateTitle = String(req.body?.certificateTitle || '').trim();
+
+  if (!fileName || !dataUrl) {
+    return fail(res, 400, 'Image file and data are required.');
+  }
+
+  const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+  if (!match) {
+    return fail(res, 400, 'The uploaded image data is invalid.');
+  }
+
+  try {
+    const uploaded = await uploadCertificateImage({
+      bytes: Buffer.from(match[2], 'base64'),
+      contentType: mimeType || match[1],
+      fileName,
+      certificateId,
+      certificateTitle,
+    });
+
+    return res.status(201).json({
+      ok: true,
+      imageUrl: uploaded.publicUrl,
+      objectPath: uploaded.objectPath,
+    });
+  } catch (error) {
+    console.error('Certificate image upload failed:', error);
+    return fail(res, 500, 'We could not upload that image right now.');
+  }
+});
+
+app.delete('/api/admin/certificate-images', requireAdmin, async (req, res) => {
+  const imageUrl = String(req.body?.imageUrl || '').trim();
+
+  if (!imageUrl) {
+    return fail(res, 400, 'Image URL is required.');
+  }
+
+  try {
+    const deleted = await deleteCertificateImage(imageUrl);
+    return res.json({ ok: true, deleted: deleted.deleted });
+  } catch (error) {
+    console.error('Certificate image delete failed:', error);
     return fail(res, 500, 'We could not delete that image right now.');
   }
 });
@@ -461,7 +528,15 @@ app.put('/api/admin/certificates/:id', requireAdmin, async (req, res) => {
   }
 
   try {
+    const existing = await getCertificateImageRecord(id);
     const updated = await updateRow(TABLES.certificates, id, certificatePayload(result.values), mapCertificate);
+
+    if (existing?.image && existing.image !== updated.image && isCertificateImageUrl(existing.image)) {
+      deleteCertificateImage(existing.image).catch((cleanupError) => {
+        console.error('Certificate image cleanup failed:', cleanupError);
+      });
+    }
+
     return res.json({ ok: true, certificate: updated });
   } catch (error) {
     console.error('Certificate update failed:', error);
@@ -476,7 +551,15 @@ app.delete('/api/admin/certificates/:id', requireAdmin, async (req, res) => {
   }
 
   try {
+    const existing = await getCertificateImageRecord(id);
     await deleteRow(TABLES.certificates, id);
+
+    if (existing?.image && isCertificateImageUrl(existing.image)) {
+      deleteCertificateImage(existing.image).catch((cleanupError) => {
+        console.error('Certificate image cleanup failed:', cleanupError);
+      });
+    }
+
     return res.json({ ok: true });
   } catch (error) {
     console.error('Certificate delete failed:', error);
