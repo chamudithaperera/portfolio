@@ -1097,7 +1097,7 @@ a.contact-item:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.45;
+  opacity: 1;
   transition:
     opacity 0.7s ease,
     transform 0.7s ease;
@@ -1106,21 +1106,19 @@ a.contact-item:hover {
 .project-card:hover .project-image img,
 .featured-project:hover .project-image img {
   transform: scale(1.05);
-  opacity: 0.6;
+  opacity: 1;
 }
 
 .project-image-wash {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to top, #070d1f, transparent 55%),
-    linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(2, 5, 16, 0.4));
+    linear-gradient(to top, #070d1f, transparent 55%);
 }
 
 .featured-project .project-image-wash {
   background:
-    linear-gradient(to right, transparent 45%, #070d1f 100%),
-    linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(2, 5, 16, 0.4));
+    linear-gradient(to right, transparent 45%, #070d1f 100%);
 }
 
 .project-status {
@@ -2346,8 +2344,7 @@ textarea:focus-visible {
 
   .featured-project .project-image-wash {
     background:
-      linear-gradient(to top, #070d1f 0%, transparent 55%),
-      linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(2, 5, 16, 0.4));
+      linear-gradient(to top, #070d1f 0%, transparent 55%);
   }
 
   .project-grid {
@@ -3420,9 +3417,6 @@ textarea:focus-visible {
   position: relative;
   min-height: 10.25rem;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(2, 5, 16, 0.04), rgba(2, 5, 16, 0.65)),
-    linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(2, 5, 16, 0.45));
 }
 
 .slider-viewport--certifications .certification-card-media img {
@@ -3430,7 +3424,7 @@ textarea:focus-visible {
   height: 100%;
   min-height: 10.25rem;
   object-fit: cover;
-  opacity: 0.56;
+  opacity: 1;
   transition:
     opacity 0.7s ease,
     transform 0.7s ease;
@@ -3438,15 +3432,14 @@ textarea:focus-visible {
 
 .slider-viewport--certifications .certification-slider-card:hover .certification-card-media img {
   transform: scale(1.05);
-  opacity: 0.7;
+  opacity: 1;
 }
 
 .slider-viewport--certifications .certification-card-media-wash {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to top, #070d1f, transparent 58%),
-    linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(2, 5, 16, 0.28));
+    linear-gradient(to top, #070d1f, transparent 58%);
 }
 
 .slider-viewport--certifications .certification-card-media-empty {

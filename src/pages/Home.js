@@ -1369,26 +1369,15 @@ function Education({ educationItems = [], certificateItems = [] }) {
                         </div>
                       )}
                       <div className="certification-card-media-wash" />
-                      <span className="certification-badge certification-badge-overlay">
-                        <Icon name="award" size={12} />
-                        Certification
-                      </span>
                     </div>
                     <div className="experience-card-body certification-card-body">
                       <div className="certification-card-top">
-                        <span className="certification-badge">
-                          <Icon name="award" size={12} />
-                          Certification
-                        </span>
                         <span className="experience-period certification-year">
                           <Icon name="calendar" size={12} /> {cert.year}
                         </span>
                       </div>
 
                       <div className="certification-card-main">
-                        <span className="experience-role-icon certification-role-icon">
-                          <Icon name="award" size={18} />
-                        </span>
                         <div className="certification-copy">
                           <div className="experience-title-line">
                             <h3>{cert.title}</h3>
