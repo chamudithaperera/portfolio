@@ -944,6 +944,84 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
+function CertificationModal({ certificate, onClose }) {
+  useEffect(() => {
+    if (!certificate) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.body.classList.add('modal-open');
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose, certificate]);
+
+  if (!certificate) {
+    return null;
+  }
+
+  const modalId = `cert-modal-title-${certificate.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(
+    <div className="project-modal-backdrop" role="presentation" onClick={onClose}>
+      <article
+        className="project-modal card-3d certification-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={modalId}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="project-modal-close" aria-label="Close certification details" onClick={onClose}>
+          <Icon name="close" size={18} />
+        </button>
+
+        <div className="project-modal-visual certification-modal-visual">
+          {certificate.image ? (
+            <img src={withBase(certificate.image)} alt={certificate.title} />
+          ) : (
+            <div className="certification-card-media-empty">
+              <Icon name="certificate" size={24} />
+              <span>No certificate image yet</span>
+            </div>
+          )}
+          <div className="project-image-wash" />
+        </div>
+
+        <div className="project-modal-copy">
+          <p className="project-overline">Certification Detail</p>
+          <div className="project-modal-title-row">
+            <div>
+              <h3 id={modalId}>{certificate.title}</h3>
+              <p className="project-role">{certificate.org}</p>
+            </div>
+            <span className="project-modal-pill">{certificate.year}</span>
+          </div>
+
+          <p className="project-modal-summary">{certificate.detail}</p>
+
+          <div className="project-modal-links">
+            <span className="certification-chip">Learning milestone</span>
+          </div>
+        </div>
+      </article>
+    </div>,
+    document.body,
+  );
+}
+
 function Projects({ mode = 'home', projectsData = [] }) {
   const [activeProject, setActiveProject] = useState(null);
   const safeProjects = Array.isArray(projectsData) ? projectsData : [];
@@ -1204,6 +1282,14 @@ function Skills() {
 
 function Education({ educationItems = [], certificateItems = [] }) {
   const [activeEducationIndex, setActiveEducationIndex] = useState(0);
+  const [activeCertificate, setActiveCertificate] = useState(null);
+
+  const handleCertKeyDown = (event, cert) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      setActiveCertificate(cert);
+    }
+  };
   const certificationRailRef = useRef(null);
 
   const slideRail = (railRef, direction) => {
@@ -1358,7 +1444,14 @@ function Education({ educationItems = [], certificateItems = [] }) {
 
               <div className="slider-viewport slider-viewport--certifications" ref={certificationRailRef} aria-label="Certification cards slider">
                 {safeCertificates.map((cert) => (
-                  <article key={cert.title} className="experience-card certification-slider-card card-3d">
+                  <article
+                    key={cert.title}
+                    className="experience-card certification-slider-card card-3d"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setActiveCertificate(cert)}
+                    onKeyDown={(e) => handleCertKeyDown(e, cert)}
+                  >
                     <div className="certification-card-media">
                       {cert.image ? (
                         <img src={withBase(cert.image)} alt={cert.title} loading="lazy" decoding="async" />
@@ -1397,6 +1490,7 @@ function Education({ educationItems = [], certificateItems = [] }) {
             </div>
           </div>
         </div>
+        <CertificationModal certificate={activeCertificate} onClose={() => setActiveCertificate(null)} />
       </Reveal>
     </section>
   );

@@ -3411,6 +3411,14 @@ textarea:focus-visible {
   flex-direction: column;
   align-items: stretch;
   overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.slider-viewport--certifications .certification-slider-card:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 4px;
 }
 
 .slider-viewport--certifications .certification-card-media {
