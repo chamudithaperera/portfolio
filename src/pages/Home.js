@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
 
@@ -946,10 +947,6 @@ function ProjectModal({ project, onClose }) {
 
 function CertificationModal({ certificate, onClose }) {
   useEffect(() => {
-    if (!certificate) {
-      return undefined;
-    }
-
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         onClose();
@@ -963,11 +960,7 @@ function CertificationModal({ certificate, onClose }) {
       document.body.classList.remove('modal-open');
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onClose, certificate]);
-
-  if (!certificate) {
-    return null;
-  }
+  }, [onClose]);
 
   const modalId = `cert-modal-title-${certificate.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
@@ -976,48 +969,70 @@ function CertificationModal({ certificate, onClose }) {
   }
 
   return createPortal(
-    <div className="project-modal-backdrop" role="presentation" onClick={onClose}>
-      <article
-        className="project-modal card-3d certification-modal"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[60] grid place-items-center p-6 bg-black/80 backdrop-blur-md"
+      role="presentation"
+      onClick={onClose}
+    >
+      <motion.article
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className="relative w-full max-w-md overflow-hidden bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col max-h-[85vh] card-3d"
         role="dialog"
         aria-modal="true"
         aria-labelledby={modalId}
         onClick={(event) => event.stopPropagation()}
       >
-        <button type="button" className="project-modal-close" aria-label="Close certification details" onClick={onClose}>
+        <button
+          type="button"
+          className="absolute top-3 right-3 z-10 p-2 text-slate-400 hover:text-white bg-slate-950/60 rounded-full border border-slate-800 transition-colors"
+          aria-label="Close certification details"
+          onClick={onClose}
+        >
           <Icon name="close" size={18} />
         </button>
 
-        <div className="project-modal-visual certification-modal-visual">
+        <div className="relative h-56 w-full overflow-hidden bg-slate-950 flex items-center justify-center">
           {certificate.image ? (
-            <img src={withBase(certificate.image)} alt={certificate.title} />
+            <img src={withBase(certificate.image)} alt={certificate.title} className="w-full h-full object-cover" />
           ) : (
-            <div className="certification-card-media-empty">
+            <div className="flex flex-col items-center gap-2 text-slate-500">
               <Icon name="certificate" size={24} />
-              <span>No certificate image yet</span>
+              <span className="text-sm">No certificate image yet</span>
             </div>
           )}
-          <div className="project-image-wash" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
         </div>
 
-        <div className="project-modal-copy">
-          <p className="project-overline">Certification Detail</p>
-          <div className="project-modal-title-row">
-            <div>
-              <h3 id={modalId}>{certificate.title}</h3>
-              <p className="project-role">{certificate.org}</p>
+        <div className="p-6 flex flex-col gap-4 overflow-y-auto">
+          <div>
+            <p className="text-[10px] font-mono tracking-widest text-blue-400 uppercase">Certification Detail</p>
+            <div className="flex items-start justify-between gap-4 mt-1">
+              <div>
+                <h3 id={modalId} className="text-lg font-bold text-white leading-snug">{certificate.title}</h3>
+                <p className="text-sm text-slate-400 mt-0.5">{certificate.org}</p>
+              </div>
+              <span className="flex-shrink-0 px-2.5 py-1 text-[10px] font-mono text-blue-300 bg-blue-950/40 border border-blue-900/30 rounded-full">
+                {certificate.year}
+              </span>
             </div>
-            <span className="project-modal-pill">{certificate.year}</span>
           </div>
 
-          <p className="project-modal-summary">{certificate.detail}</p>
+          <p className="text-sm text-slate-300 leading-relaxed">{certificate.detail}</p>
 
-          <div className="project-modal-links">
-            <span className="certification-chip">Learning milestone</span>
+          <div className="pt-2 border-t border-slate-800/60">
+            <span className="inline-block px-3 py-1 text-xs font-medium text-blue-400 bg-blue-950/20 border border-blue-900/20 rounded-full">
+              Learning milestone
+            </span>
           </div>
         </div>
-      </article>
-    </div>,
+      </motion.article>
+    </motion.div>,
     document.body,
   );
 }
@@ -1490,7 +1505,11 @@ function Education({ educationItems = [], certificateItems = [] }) {
             </div>
           </div>
         </div>
-        <CertificationModal certificate={activeCertificate} onClose={() => setActiveCertificate(null)} />
+        <AnimatePresence>
+          {activeCertificate && (
+            <CertificationModal certificate={activeCertificate} onClose={() => setActiveCertificate(null)} />
+          )}
+        </AnimatePresence>
       </Reveal>
     </section>
   );

@@ -5265,3 +5265,27 @@ textarea:focus-visible {
     padding: 0.24rem 0.5rem;
   }
 }
+
+/* Certification Modal Popup Styles */
+.certification-modal {
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  width: min(30rem, 92vw) !important;
+  max-height: min(90vh, 34rem) !important;
+  height: auto !important;
+}
+
+.certification-modal .certification-modal-visual {
+  min-height: 14rem !important;
+  height: 14rem !important;
+  width: 100% !important;
+}
+
+.certification-modal .project-modal-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.5rem !important;
+  overflow-y: auto;
+}
