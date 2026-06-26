@@ -283,7 +283,7 @@ function EmptyState({ icon, title, description, action }) {
   );
 }
 
-function TabButton({ active, icon, label, description, onClick }) {
+function TabButton({ active, badge, icon, label, description, onClick }) {
   return (
     <button type="button" className={`admin-tab-button ${active ? 'is-active' : ''}`} onClick={onClick}>
       <span className="admin-tab-icon">
@@ -293,6 +293,7 @@ function TabButton({ active, icon, label, description, onClick }) {
         <strong>{label}</strong>
         <small>{description}</small>
       </span>
+      {badge ? <span className="admin-tab-badge">{badge}</span> : null}
     </button>
   );
 }
@@ -1225,26 +1226,41 @@ function Admin() {
 
       <div className="admin-layout">
         <aside className="admin-sidebar">
-          <div className="admin-brand">
-            <div className="admin-brand-mark">
-              <Icon name="dashboard" size={16} />
+            <div className="admin-brand">
+              <div className="admin-brand-mark">
+                <Icon name="dashboard" size={16} />
+              </div>
+              <div>
+                <strong>Portfolio Admin</strong>
+                <span>Light workspace</span>
+              </div>
             </div>
-            <div>
-              <strong>Portfolio Admin</strong>
-              <span>Dark workspace</span>
-            </div>
-          </div>
 
           <div className="admin-sidebar-note">
             <Icon name="circle" size={12} />
-            Live dashboard connected to your content collections.
+            Fast, clean workspace connected to your Supabase collections.
           </div>
+
+          <label className="admin-sidebar-search">
+            <Icon name="search" size={14} />
+            <input type="search" placeholder="Search..." aria-label="Search admin sections" />
+            <span className="admin-search-shortcut">⌘F</span>
+          </label>
 
           <nav className="admin-tabs" aria-label="Admin sections">
             {tabItems.map((tab) => (
               <TabButton
                 key={tab.id}
                 active={activeTab === tab.id}
+                badge={
+                  tab.id === 'projects'
+                    ? String(stats.projects).padStart(2, '0')
+                    : tab.id === 'messages'
+                      ? String(stats.unread).padStart(2, '0')
+                      : tab.id === 'content'
+                        ? String(stats.experience + stats.education + stats.certificates).padStart(2, '0')
+                        : null
+                }
                 icon={tab.icon}
                 label={tab.label}
                 description={tab.description}
@@ -1254,6 +1270,20 @@ function Admin() {
           </nav>
 
           <div className="admin-sidebar-footer">
+            <div className="admin-sidebar-widget">
+              <div className="admin-sidebar-widget-top">
+                <div>
+                  <p>Portfolio snapshot</p>
+                  <strong>{String(stats.projects + stats.experience + stats.education + stats.certificates).padStart(2, '0')} records</strong>
+                </div>
+                <span className="admin-pill">Live</span>
+              </div>
+              <p>Projects, work experience, education, and certificates are synced from Supabase.</p>
+              <a href="/" className="admin-primary-button admin-widget-button">
+                <Icon name="arrowLeft" size={14} />
+                Open public site
+              </a>
+            </div>
             <button type="button" className="admin-secondary-button" onClick={refreshDashboardTab} disabled={dashboardLoading || messagesLoading}>
               <Icon name="refresh" size={14} />
               Refresh
