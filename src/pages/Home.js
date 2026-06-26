@@ -59,52 +59,9 @@ const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
 
-const experience = [
-  {
-    period: '2026 Mar — Present',
-    role: 'Associate Software Engineer',
-    org: 'W3Inventor',
-    current: true,
-    detail:
-      'Developing ride-hailing system using Flutter and Spring Boot, implementing real-time features, fare logic, JWT authentication, microservices integration, and optimizing performance, caching, and database consistency.',
-    tags: ['Flutter', 'Spring Boot', 'Microservices', 'JWT', 'Redis'],
-  },
-  {
-    period: '2025 Sep — 2026 Mar',
-    role: 'Intern Mobile Application Developer',
-    org: 'W3Inventor',
-    detail:
-      'Contributed to Flutter-based ride-hailing app development, implementing UI, API integration, authentication flows, and debugging features while collaborating with backend teams in a microservices-based architecture.',
-    tags: ['Flutter', 'API Integration', 'Authentication', 'Microservices'],
-  },
-  {
-    period: '2024 Dec — 2025 Sep',
-    role: 'Intern UI/UX Designer',
-    org: 'Kyranz IT',
-    detail:
-      'Worked remotely creating user-friendly web and mobile interfaces. Created wireframes and prototypes in Figma, assisted with user research, and ensured responsiveness across devices.',
-    tags: ['Figma', 'UI/UX', 'Wireframing', 'Prototyping'],
-  },
-  {
-    period: '2024 Jun — 2024 Dec',
-    role: 'Intern UI/UX Designer',
-    org: 'Web99x',
-    detail:
-      'Crafted wireframes, mockups, and prototypes in Figma. Collaborated with developers to deliver clean, user-focused designs for web and mobile products.',
-    tags: ['Figma', 'Mockups', 'UI Design', 'Collaboration'],
-  },
-  {
-    period: '2021 Dec — 2022 Jun',
-    role: 'Bank Trainee',
-    org: "Peoples' Bank — International Banking",
-    detail:
-      'Worked in the Import Bills section. Assisted in processing import documentation, verifying trade documents, and supporting daily operations related to international trade finance.',
-    tags: ['Trade Finance', 'Documentation', 'Banking'],
-  },
-];
-
 const emptyPortfolioContent = {
   projects: [],
+  experience: [],
   education: [],
   certificates: [],
 };
@@ -342,6 +299,7 @@ function usePortfolioContent() {
         if (!active || !response?.ok) return;
         setContent({
           projects: response.projects ?? [],
+          experience: response.experience ?? [],
           education: response.education ?? [],
           certificates: response.certificates ?? [],
         });
@@ -690,12 +648,33 @@ function About() {
   );
 }
 
-function Experience() {
+function Experience({ experienceItems = [] }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeJob = experience[activeIndex];
-  const showPrevious = () =>
-    setActiveIndex((current) => (current - 1 + experience.length) % experience.length);
-  const showNext = () => setActiveIndex((current) => (current + 1) % experience.length);
+  const safeExperience = Array.isArray(experienceItems) ? experienceItems : [];
+  const hasExperience = safeExperience.length > 0;
+
+  useEffect(() => {
+    if (!hasExperience) {
+      if (activeIndex !== 0) {
+        setActiveIndex(0);
+      }
+      return;
+    }
+
+    if (activeIndex >= safeExperience.length) {
+      setActiveIndex(0);
+    }
+  }, [activeIndex, hasExperience, safeExperience.length]);
+
+  const activeJob = hasExperience ? safeExperience[activeIndex] : null;
+  const showPrevious = () => {
+    if (!hasExperience) return;
+    setActiveIndex((current) => (current - 1 + safeExperience.length) % safeExperience.length);
+  };
+  const showNext = () => {
+    if (!hasExperience) return;
+    setActiveIndex((current) => (current + 1) % safeExperience.length);
+  };
 
   return (
     <section id="experience" className="section section-experience experience-reference">
@@ -703,91 +682,120 @@ function Experience() {
       <Reveal className="section-inner">
         <SectionHeading index="02. Where I've Worked" title="Work" accent="Experience" />
         <div className="experience-shell">
-          <div className="experience-steps" aria-label="Work experience timeline">
-            <span className="experience-step-line" aria-hidden="true" />
-            {experience.map((job, index) => {
-              const selected = index === activeIndex;
-              const completed = index < activeIndex;
-              return (
-                <button
-                  key={`${job.role}-${job.period}`}
-                  type="button"
-                  className={`experience-step ${selected ? 'is-active' : ''} ${completed ? 'is-complete' : ''}`}
-                  aria-pressed={selected}
-                  aria-label={`${job.period.split('—')[0].trim()} ${job.org.split('—')[0].trim()}`}
-                  onClick={() => setActiveIndex(index)}
-                >
-                  <span className="experience-step-dot">
-                    {selected ? <Icon name="briefcase" size={14} /> : index + 1}
-                  </span>
-                  <span className="experience-step-label">
-                    <strong>{job.period.split('—')[0].trim()}</strong>
-                    <small>{job.org.split('—')[0].trim()}</small>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          {hasExperience ? (
+            <>
+              <div className="experience-steps" aria-label="Work experience timeline">
+                <span className="experience-step-line" aria-hidden="true" />
+                {safeExperience.map((job, index) => {
+                  const selected = index === activeIndex;
+                  const completed = index < activeIndex;
+                  return (
+                    <button
+                      key={`${job.role}-${job.period}`}
+                      type="button"
+                      className={`experience-step ${selected ? 'is-active' : ''} ${completed ? 'is-complete' : ''}`}
+                      aria-pressed={selected}
+                      aria-label={`${String(job.period || '').split('—')[0].trim()} ${String(job.org || '').split('—')[0].trim()}`}
+                      onClick={() => setActiveIndex(index)}
+                    >
+                      <span className="experience-step-dot">
+                        {selected ? <Icon name="briefcase" size={14} /> : index + 1}
+                      </span>
+                      <span className="experience-step-label">
+                        <strong>{String(job.period || '').split('—')[0].trim()}</strong>
+                        <small>{String(job.org || '').split('—')[0].trim()}</small>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
-          <div className="experience-card-glow">
-            <article key={activeIndex} className="experience-card card-3d" aria-live="polite">
-              <span className="experience-card-accent" />
-              <div className="experience-card-body">
-                <div className="experience-card-header">
-                  <div className="experience-role">
-                    <span className="experience-role-icon">
-                      <Icon name="briefcase" size={18} />
-                    </span>
-                    <div>
-                      <div className="experience-title-line">
-                        <h3>{activeJob.role}</h3>
-                        {activeJob.current ? (
-                          <span className="current-badge">
-                            <i /> Current
-                          </span>
-                        ) : null}
+              <div className="experience-card-glow">
+                <article key={activeIndex} className="experience-card card-3d" aria-live="polite">
+                  <span className="experience-card-accent" />
+                  <div className="experience-card-body">
+                    <div className="experience-card-header">
+                      <div className="experience-role">
+                        <span className="experience-role-icon">
+                          <Icon name="briefcase" size={18} />
+                        </span>
+                        <div>
+                          <div className="experience-title-line">
+                            <h3>{activeJob.role}</h3>
+                            {activeJob.current ? (
+                              <span className="current-badge">
+                                <i /> Current
+                              </span>
+                            ) : null}
+                          </div>
+                          <p>{activeJob.org}</p>
+                        </div>
                       </div>
-                      <p>{activeJob.org}</p>
+                      <span className="experience-period">
+                        <Icon name="calendar" size={12} /> {activeJob.period}
+                      </span>
+                    </div>
+
+                    <p className="experience-description">{activeJob.detail}</p>
+
+                    <div className="tag-row experience-tags">
+                      {(Array.isArray(activeJob.tags) ? activeJob.tags : []).map((tag) => (
+                        <span key={tag} className="tech-tag">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="experience-card-footer">
+                      <div className="experience-count">
+                        <strong>{String(activeIndex + 1).padStart(2, '0')}</strong>
+                        <span>/</span>
+                        <small>{String(safeExperience.length).padStart(2, '0')}</small>
+                        <em>· {String(activeJob.org || '').split('—')[0].trim()}</em>
+                      </div>
+                      <div className="experience-controls">
+                        <button type="button" aria-label="Previous" onClick={showPrevious}>
+                          <Icon name="arrowLeft" size={15} />
+                        </button>
+                        <button type="button" aria-label="Next" onClick={showNext}>
+                          <Icon name="arrowRight" size={15} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <span className="experience-period">
-                    <Icon name="calendar" size={12} /> {activeJob.period}
-                  </span>
-                </div>
-
-                <p className="experience-description">{activeJob.detail}</p>
-
-                <div className="tag-row experience-tags">
-                  {activeJob.tags.map((tag) => (
-                    <span key={tag} className="tech-tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="experience-card-footer">
-                  <div className="experience-count">
-                    <strong>{String(activeIndex + 1).padStart(2, '0')}</strong>
-                    <span>/</span>
-                    <small>{String(experience.length).padStart(2, '0')}</small>
-                    <em>· {activeJob.org.split('—')[0].trim()}</em>
-                  </div>
-                  <div className="experience-controls">
-                    <button type="button" aria-label="Previous" onClick={showPrevious}>
-                      <Icon name="arrowLeft" size={15} />
-                    </button>
-                    <button type="button" aria-label="Next" onClick={showNext}>
-                      <Icon name="arrowRight" size={15} />
-                    </button>
-                  </div>
-                </div>
+                </article>
               </div>
-            </article>
-          </div>
 
-          <p className="experience-help">
-            <Icon name="pin" size={11} /> Click any step above to navigate through roles
-          </p>
+              <p className="experience-help">
+                <Icon name="pin" size={11} /> Click any step above to navigate through roles
+              </p>
+            </>
+          ) : (
+            <div className="experience-card-glow">
+              <article className="experience-card card-3d" aria-live="polite">
+                <span className="experience-card-accent" />
+                <div className="experience-card-body">
+                  <div className="experience-card-header">
+                    <div className="experience-role">
+                      <span className="experience-role-icon">
+                        <Icon name="briefcase" size={18} />
+                      </span>
+                      <div>
+                        <div className="experience-title-line">
+                          <h3>Work experience will appear here</h3>
+                        </div>
+                        <p>Add your roles from the admin dashboard.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="experience-description">
+                    The timeline is now powered by Supabase. Once you add your experience rows in the admin UI, they will show up here automatically.
+                  </p>
+                </div>
+              </article>
+            </div>
+          )}
         </div>
       </Reveal>
     </section>
@@ -1876,7 +1884,7 @@ function Home() {
       <main>
         <Hero />
         <About />
-        <Experience />
+        <Experience experienceItems={portfolioContent.experience} />
         <Projects projectsData={portfolioContent.projects} />
         <Skills />
         <Education educationItems={portfolioContent.education} certificateItems={portfolioContent.certificates} />

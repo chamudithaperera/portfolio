@@ -512,7 +512,7 @@
 
 .admin-summary-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
@@ -544,6 +544,10 @@
 
 .tone-cyan strong {
   color: #67e8f9;
+}
+
+.tone-sky strong {
+  color: #7dd3fc;
 }
 
 .tone-indigo strong {
@@ -658,6 +662,19 @@
     background 0.2s ease;
 }
 
+.admin-item-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.admin-item-card-top strong {
+  color: #f8fbff;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
 .admin-message-item:hover,
 .admin-item-card:hover {
   transform: translateY(-1px);
@@ -742,6 +759,31 @@
 .admin-status-dot.is-read {
   background: #34d399;
   box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.12);
+}
+
+.admin-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.8rem;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid rgba(96, 165, 250, 0.26);
+  border-radius: 999px;
+  color: #bfdbfe;
+  background: rgba(30, 41, 59, 0.7);
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-status-badge.is-new {
+  border-color: rgba(56, 189, 248, 0.24);
+  color: #a5f3fc;
+}
+
+.admin-status-badge.is-read {
+  border-color: rgba(52, 211, 153, 0.22);
+  color: #bbf7d0;
 }
 
 .admin-chat-panel {

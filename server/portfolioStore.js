@@ -4,6 +4,7 @@ const TABLES = {
   certificates: 'portfolio_certificates',
   education: 'portfolio_education',
   messages: 'contact_messages',
+  experience: 'portfolio_experience',
   projects: 'portfolio_projects',
 };
 
@@ -86,6 +87,21 @@ function mapEducation(row) {
   };
 }
 
+function mapExperience(row) {
+  return {
+    id: row.id,
+    period: row.period,
+    role: row.role,
+    org: row.org,
+    current: Boolean(row.current),
+    detail: row.detail,
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    displayOrder: row.display_order ?? 0,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 function mapCertificate(row) {
   return {
     id: row.id,
@@ -127,6 +143,18 @@ function educationPayload(input = {}) {
   };
 }
 
+function experiencePayload(input = {}) {
+  return {
+    period: normalizeString(input.period),
+    role: normalizeString(input.role),
+    org: normalizeString(input.org),
+    current: toBoolean(input.current),
+    detail: normalizeString(input.detail),
+    tags: normalizeTextArray(input.tags),
+    display_order: toInteger(input.displayOrder, 0),
+  };
+}
+
 function certificatePayload(input = {}) {
   return {
     title: normalizeString(input.title),
@@ -152,6 +180,15 @@ async function listRows(table, mapper) {
   return (data || []).map(mapper);
 }
 
+async function safeListRows(table, mapper) {
+  try {
+    return await listRows(table, mapper);
+  } catch (error) {
+    console.error(`Unable to list rows for ${table}:`, error.message || error);
+    return [];
+  }
+}
+
 async function countRows(table) {
   const { count, error } = await supabase.from(table).select('id', { count: 'exact', head: true });
   if (error) {
@@ -170,19 +207,21 @@ async function safeCountRows(table) {
 }
 
 async function listPortfolioContent() {
-  const [projects, education, certificates] = await Promise.all([
+  const [projects, experience, education, certificates] = await Promise.all([
     listRows(TABLES.projects, mapProject),
+    safeListRows(TABLES.experience, mapExperience),
     listRows(TABLES.education, mapEducation),
     listRows(TABLES.certificates, mapCertificate),
   ]);
 
-  return { projects, education, certificates };
+  return { projects, experience, education, certificates };
 }
 
 async function getDashboardSummary() {
-  const [messages, projects, education, certificates] = await Promise.all([
+  const [messages, projects, experience, education, certificates] = await Promise.all([
     safeCountRows(TABLES.messages),
     safeCountRows(TABLES.projects),
+    safeCountRows(TABLES.experience),
     safeCountRows(TABLES.education),
     safeCountRows(TABLES.certificates),
   ]);
@@ -203,6 +242,7 @@ async function getDashboardSummary() {
   return {
     messages,
     projects,
+    experience,
     education,
     certificates,
     latestMessage: latestMessage || null,
@@ -237,13 +277,16 @@ module.exports = {
   certificatePayload,
   deleteRow,
   educationPayload,
+  experiencePayload,
   getDashboardSummary,
   insertRow,
   listPortfolioContent,
   mapCertificate,
   mapEducation,
+  mapExperience,
   mapProject,
   projectPayload,
   updateRow,
   safeCountRows,
+  safeListRows,
 };

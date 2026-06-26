@@ -7,7 +7,7 @@ const tabItems = [
   { id: 'dashboard', label: 'Dashboard', description: 'Overview of the site', icon: 'grid' },
   { id: 'messages', label: 'Messages', description: 'User inquiries', icon: 'messages' },
   { id: 'projects', label: 'Projects', description: 'CRUD portfolio projects', icon: 'project' },
-  { id: 'content', label: 'Edu & Certificates', description: 'Manage education content', icon: 'education' },
+  { id: 'content', label: 'Content', description: 'Manage experience and education', icon: 'education' },
 ];
 
 const emptyProjectForm = {
@@ -30,6 +30,16 @@ const emptyEducationForm = {
   period: '',
   detail: '',
   badge: '',
+  displayOrder: '',
+};
+
+const emptyExperienceForm = {
+  period: '',
+  role: '',
+  org: '',
+  current: false,
+  detail: '',
+  tags: '',
   displayOrder: '',
 };
 
@@ -174,6 +184,19 @@ function educationToForm(item) {
   };
 }
 
+function experienceToForm(item) {
+  if (!item) return emptyExperienceForm;
+  return {
+    period: item.period || '',
+    role: item.role || '',
+    org: item.org || '',
+    current: Boolean(item.current),
+    detail: item.detail || '',
+    tags: joinCommaList(item.tags),
+    displayOrder: item.displayOrder ?? '',
+  };
+}
+
 function certificateToForm(item) {
   if (!item) return emptyCertificateForm;
   return {
@@ -209,6 +232,18 @@ function educationFormToBody(form) {
     period: form.period,
     detail: form.detail,
     badge: form.badge,
+    displayOrder: form.displayOrder,
+  };
+}
+
+function experienceFormToBody(form) {
+  return {
+    period: form.period,
+    role: form.role,
+    org: form.org,
+    current: Boolean(form.current),
+    detail: form.detail,
+    tags: splitCommaList(form.tags),
     displayOrder: form.displayOrder,
   };
 }
@@ -305,7 +340,15 @@ function Admin() {
   const [projectImageError, setProjectImageError] = useState('');
   const [projectImagePreview, setProjectImagePreview] = useState('');
 
-  const [contentMode, setContentMode] = useState('education');
+  const [experience, setExperience] = useState([]);
+  const [experienceLoading, setExperienceLoading] = useState(false);
+  const [experienceError, setExperienceError] = useState('');
+  const [selectedExperienceId, setSelectedExperienceId] = useState('');
+  const [experienceForm, setExperienceForm] = useState(emptyExperienceForm);
+  const [experienceSaving, setExperienceSaving] = useState(false);
+  const [experienceStatus, setExperienceStatus] = useState('');
+
+  const [contentMode, setContentMode] = useState('experience');
 
   const [education, setEducation] = useState([]);
   const [educationLoading, setEducationLoading] = useState(false);
@@ -339,6 +382,11 @@ function Admin() {
     [projects, selectedProjectId],
   );
 
+  const selectedExperience = useMemo(
+    () => experience.find((item) => String(item.id) === String(selectedExperienceId)) || null,
+    [experience, selectedExperienceId],
+  );
+
   const selectedEducation = useMemo(
     () => education.find((item) => String(item.id) === String(selectedEducationId)) || null,
     [education, selectedEducationId],
@@ -354,11 +402,12 @@ function Admin() {
     return {
       messages: counts.messages ?? messages.length,
       projects: counts.projects ?? projects.length,
+      experience: counts.experience ?? experience.length,
       education: counts.education ?? education.length,
       certificates: counts.certificates ?? certificates.length,
       unread: messages.filter((item) => (item.status || 'new') === 'new').length,
     };
-  }, [certificates.length, dashboard, education.length, messages, projects.length]);
+  }, [certificates.length, dashboard, education.length, experience.length, messages, projects.length]);
 
   async function loadDashboard() {
     setDashboardLoading(true);
@@ -414,6 +463,27 @@ function Admin() {
     }
   }
 
+  async function loadExperience() {
+    setExperienceLoading(true);
+    setExperienceError('');
+    try {
+      const response = await apiRequest('/api/admin/experience');
+      const loaded = response.experience || [];
+      setExperience(loaded);
+      setSelectedExperienceId((current) => {
+        if (current && loaded.some((item) => String(item.id) === String(current))) {
+          return current;
+        }
+        return loaded[0] ? String(loaded[0].id) : '';
+      });
+    } catch (error) {
+      setExperienceError(error.message || 'Unable to load work experience entries.');
+      setExperience([]);
+    } finally {
+      setExperienceLoading(false);
+    }
+  }
+
   async function loadEducation() {
     setEducationLoading(true);
     setEducationError('');
@@ -461,6 +531,7 @@ function Admin() {
       loadDashboard(),
       loadMessages(messageSearch),
       loadProjects(),
+      loadExperience(),
       loadEducation(),
       loadCertificates(),
     ]);
@@ -531,6 +602,14 @@ function Admin() {
   }, [projectImageFile]);
 
   useEffect(() => {
+    if (selectedExperience) {
+      setExperienceForm(experienceToForm(selectedExperience));
+    } else {
+      setExperienceForm(emptyExperienceForm);
+    }
+  }, [selectedExperience]);
+
+  useEffect(() => {
     if (selectedEducation) {
       setEducationForm(educationToForm(selectedEducation));
     } else {
@@ -597,13 +676,16 @@ function Admin() {
       setDashboard(null);
       setMessages([]);
       setProjects([]);
+      setExperience([]);
       setEducation([]);
       setCertificates([]);
       setSelectedMessageId('');
       setSelectedProjectId('');
+      setSelectedExperienceId('');
       setSelectedEducationId('');
       setSelectedCertificateId('');
       setProjectForm(emptyProjectForm);
+      setExperienceForm(emptyExperienceForm);
       setEducationForm(emptyEducationForm);
       setCertificateForm(emptyCertificateForm);
       setProjectImageFile(null);
@@ -612,6 +694,10 @@ function Admin() {
       setProjectImagePreview('');
       setProjectImageUploading(false);
       setProjectImageActionPending(false);
+      setExperienceLoading(false);
+      setExperienceSaving(false);
+      setExperienceStatus('');
+      setExperienceError('');
       setCertificateImageFile(null);
       setCertificateImageStatus('');
       setCertificateImageError('');
@@ -619,6 +705,7 @@ function Admin() {
       setCertificateImageUploading(false);
       setCertificateImageActionPending(false);
       setMessageSearch('');
+      setContentMode('experience');
       setLoginForm((current) => ({ ...current, password: '' }));
     } catch (error) {
       setDashboardError(error.message || 'Logout failed.');
@@ -637,6 +724,11 @@ function Admin() {
     setEducationForm((current) => ({ ...current, [name]: value }));
   };
 
+  const updateExperienceForm = (event) => {
+    const { name, type, value, checked } = event.target;
+    setExperienceForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+  };
+
   const updateCertificateForm = (event) => {
     const { name, value } = event.target;
     setCertificateForm((current) => ({ ...current, [name]: value }));
@@ -653,6 +745,62 @@ function Admin() {
     setProjectImagePreview('');
     setProjectImageUploading(false);
     setProjectImageActionPending(false);
+  };
+
+  const handleExperienceNew = () => {
+    setSelectedExperienceId('');
+    setExperienceError('');
+    setExperienceStatus('');
+    setExperienceForm(emptyExperienceForm);
+  };
+
+  const handleExperienceSave = async (event) => {
+    event.preventDefault();
+    setExperienceSaving(true);
+    setExperienceError('');
+    setExperienceStatus('');
+
+    try {
+      const body = experienceFormToBody(experienceForm);
+      const response = selectedExperienceId
+        ? await apiRequest(`/api/admin/experience/${selectedExperienceId}`, {
+            method: 'PUT',
+            body,
+          })
+        : await apiRequest('/api/admin/experience', {
+            method: 'POST',
+            body,
+          });
+
+      setExperienceStatus(selectedExperienceId ? 'Work experience updated.' : 'Work experience created.');
+      setSelectedExperienceId(String(response.experience.id));
+      await Promise.allSettled([loadExperience(), loadDashboard()]);
+    } catch (error) {
+      setExperienceError(error.message || 'Unable to save this work experience entry.');
+    } finally {
+      setExperienceSaving(false);
+    }
+  };
+
+  const handleExperienceDelete = async () => {
+    if (!selectedExperienceId) return;
+    if (!window.confirm('Delete this work experience entry? This cannot be undone.')) return;
+
+    setExperienceSaving(true);
+    setExperienceError('');
+    setExperienceStatus('');
+
+    try {
+      await apiRequest(`/api/admin/experience/${selectedExperienceId}`, { method: 'DELETE' });
+      setExperienceStatus('Work experience removed.');
+      setSelectedExperienceId('');
+      setExperienceForm(emptyExperienceForm);
+      await Promise.allSettled([loadExperience(), loadDashboard()]);
+    } catch (error) {
+      setExperienceError(error.message || 'Unable to delete this work experience entry.');
+    } finally {
+      setExperienceSaving(false);
+    }
   };
 
   const handleProjectImageChange = (event) => {
@@ -1063,6 +1211,7 @@ function Admin() {
     { label: 'Messages', value: stats.messages, tone: 'blue' },
     { label: 'Unread', value: stats.unread, tone: 'cyan' },
     { label: 'Projects', value: stats.projects, tone: 'indigo' },
+    { label: 'Experience', value: stats.experience, tone: 'sky' },
     { label: 'Education', value: stats.education, tone: 'slate' },
     { label: 'Certificates', value: stats.certificates, tone: 'teal' },
   ];
@@ -1132,13 +1281,13 @@ function Admin() {
                 {activeTab === 'dashboard' && 'Dashboard'}
                 {activeTab === 'messages' && 'Messages'}
                 {activeTab === 'projects' && 'Projects'}
-                {activeTab === 'content' && 'Education & Certificates'}
+                {activeTab === 'content' && 'Work Experience & Content'}
               </h1>
               <p>
                 {activeTab === 'dashboard' && 'Summary of the website content and incoming activity.'}
                 {activeTab === 'messages' && 'WhatsApp-style inbox for user submissions.'}
                 {activeTab === 'projects' && 'Create, edit, and remove portfolio projects.'}
-                {activeTab === 'content' && 'Manage education and certificate entries from one place.'}
+                {activeTab === 'content' && 'Manage work experience, education, and certificate entries from one place.'}
               </p>
             </div>
 
@@ -1593,6 +1742,14 @@ function Admin() {
               <div className="admin-subtabs">
                 <button
                   type="button"
+                  className={contentMode === 'experience' ? 'is-active' : ''}
+                  onClick={() => setContentMode('experience')}
+                >
+                  <Icon name="briefcase" size={14} />
+                  Experience
+                </button>
+                <button
+                  type="button"
                   className={contentMode === 'education' ? 'is-active' : ''}
                   onClick={() => setContentMode('education')}
                 >
@@ -1608,6 +1765,152 @@ function Admin() {
                   Certificates
                 </button>
               </div>
+
+              {contentMode === 'experience' ? (
+                <section className="admin-dual-column">
+                  <aside className="admin-card admin-list-panel">
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Experience</p>
+                        <h2>Work timeline</h2>
+                      </div>
+                      <span className="admin-pill">{experience.length}</span>
+                    </div>
+
+                    <div className="admin-list-actions">
+                      <button type="button" className="admin-secondary-button" onClick={handleExperienceNew}>
+                        <Icon name="plus" size={14} />
+                        New role
+                      </button>
+                      <button type="button" className="admin-secondary-button" onClick={loadExperience} disabled={experienceLoading}>
+                        <Icon name="refresh" size={14} />
+                        Refresh
+                      </button>
+                    </div>
+
+                    {experienceError ? <div className="admin-inline-error">{experienceError}</div> : null}
+
+                    <div className="admin-item-list">
+                      {experienceLoading ? (
+                        <div className="admin-loading-panel">
+                          <span className="admin-spinner" aria-hidden="true" />
+                          Loading work experience...
+                        </div>
+                      ) : experience.length ? (
+                        experience.map((item) => {
+                          const active = String(item.id) === String(selectedExperienceId);
+                          return (
+                            <button
+                              key={item.id}
+                              type="button"
+                              className={`admin-item-card ${active ? 'is-active' : ''}`}
+                              onClick={() => setSelectedExperienceId(String(item.id))}
+                            >
+                              <div className="admin-item-card-top">
+                                <strong>{item.role}</strong>
+                                {item.current ? <span className="admin-pill">Current</span> : null}
+                              </div>
+                              <p>{item.org}</p>
+                              <small>
+                                {item.period}
+                              </small>
+                            </button>
+                          );
+                        })
+                      ) : (
+                        <EmptyState
+                          icon="briefcase"
+                          title="No work experience yet"
+                          description="Add your roles from the editor to populate the public timeline."
+                        />
+                      )}
+                    </div>
+                  </aside>
+
+                  <article className="admin-card admin-editor-panel">
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Editor</p>
+                        <h2>{selectedExperienceId ? 'Edit work experience' : 'Create work experience'}</h2>
+                      </div>
+                      <span className="admin-pill">{selectedExperienceId ? 'Edit mode' : 'New item'}</span>
+                    </div>
+
+                    <form className="admin-form" onSubmit={handleExperienceSave}>
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Role</span>
+                          <input name="role" value={experienceForm.role} onChange={updateExperienceForm} placeholder="Associate Software Engineer" required />
+                        </label>
+                        <label>
+                          <span>Display order</span>
+                          <input name="displayOrder" type="number" value={experienceForm.displayOrder} onChange={updateExperienceForm} placeholder="1" />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Organization</span>
+                          <input name="org" value={experienceForm.org} onChange={updateExperienceForm} placeholder="W3Inventor" required />
+                        </label>
+                        <label>
+                          <span>Period</span>
+                          <input name="period" value={experienceForm.period} onChange={updateExperienceForm} placeholder="2026 Mar — Present" required />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label className="admin-checkbox">
+                          <input name="current" type="checkbox" checked={experienceForm.current} onChange={updateExperienceForm} />
+                          <span>Current role</span>
+                        </label>
+                        <label>
+                          <span>Tags</span>
+                          <textarea
+                            name="tags"
+                            rows="2"
+                            value={experienceForm.tags}
+                            onChange={updateExperienceForm}
+                            placeholder="Flutter, Spring Boot, Redis"
+                          />
+                        </label>
+                      </div>
+
+                      <label>
+                        <span>Detail</span>
+                        <textarea
+                          name="detail"
+                          rows="5"
+                          value={experienceForm.detail}
+                          onChange={updateExperienceForm}
+                          placeholder="Describe the role and your responsibilities"
+                          required
+                        />
+                      </label>
+
+                      {experienceStatus ? <div className="admin-inline-success">{experienceStatus}</div> : null}
+                      {experienceError ? <div className="admin-inline-error">{experienceError}</div> : null}
+
+                      <div className="admin-action-row">
+                        <button className="admin-primary-button" type="submit" disabled={experienceSaving}>
+                          {experienceSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                          {selectedExperienceId ? 'Save changes' : 'Create role'}
+                        </button>
+                        <button type="button" className="admin-secondary-button" onClick={handleExperienceNew}>
+                          <Icon name="plus" size={14} />
+                          Reset
+                        </button>
+                        {selectedExperienceId ? (
+                          <button type="button" className="admin-danger-button" onClick={handleExperienceDelete} disabled={experienceSaving}>
+                            <Icon name="trash" size={14} />
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </form>
+                  </article>
+                </section>
+              ) : null}
 
               {contentMode === 'education' ? (
                 <section className="admin-dual-column">

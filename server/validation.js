@@ -205,6 +205,53 @@ function validateEducationPayload(body = {}) {
   };
 }
 
+function validateExperiencePayload(body = {}) {
+  const errors = {};
+
+  const period = normalizeText(body.period);
+  const role = normalizeText(body.role);
+  const org = normalizeText(body.org);
+  const detail = normalizeText(body.detail);
+  const tags = normalizeList(body.tags);
+  const displayOrder = validateCollectionOrder(body.displayOrder);
+  const current = Boolean(body.current);
+
+  if (!period) errors.period = 'Period is required.';
+  if (!role) errors.role = 'Role is required.';
+  if (!org) errors.org = 'Organization is required.';
+  if (!detail) errors.detail = 'Detail is required.';
+
+  if (period && (period.length < 3 || period.length > 80)) {
+    errors.period = 'Period must be between 3 and 80 characters.';
+  }
+
+  if (role && (role.length < 2 || role.length > 140)) {
+    errors.role = 'Role must be between 2 and 140 characters.';
+  }
+
+  if (org && (org.length < 2 || org.length > 140)) {
+    errors.org = 'Organization must be between 2 and 140 characters.';
+  }
+
+  if (detail && (detail.length < 10 || detail.length > 4000)) {
+    errors.detail = 'Detail must be between 10 and 4000 characters.';
+  }
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors,
+    values: {
+      period,
+      role,
+      org,
+      current,
+      detail,
+      tags,
+      displayOrder,
+    },
+  };
+}
+
 function validateCertificatePayload(body = {}) {
   const errors = {};
 
@@ -243,5 +290,6 @@ module.exports = {
   validateCertificatePayload,
   validateCollectionOrder,
   validateEducationPayload,
+  validateExperiencePayload,
   validateProjectPayload,
 };

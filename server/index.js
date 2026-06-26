@@ -29,17 +29,20 @@ const {
   validateCertificatePayload,
   validateContactMessage,
   validateEducationPayload,
+  validateExperiencePayload,
   validateProjectPayload,
 } = require('./validation');
 const {
   certificatePayload,
   deleteRow,
   educationPayload,
+  experiencePayload,
   getDashboardSummary,
   insertRow,
   listPortfolioContent,
   mapCertificate,
   mapEducation,
+  mapExperience,
   mapProject,
   projectPayload,
   updateRow,
@@ -355,6 +358,16 @@ app.get('/api/admin/content', requireAdmin, async (_req, res) => {
   }
 });
 
+app.get('/api/admin/experience', requireAdmin, async (_req, res) => {
+  try {
+    const content = await listPortfolioContent();
+    return res.json({ ok: true, experience: content.experience });
+  } catch (error) {
+    console.error('Experience load failed:', error);
+    return fail(res, 500, 'We could not load work experience right now.');
+  }
+});
+
 app.get('/api/admin/projects', requireAdmin, async (_req, res) => {
   try {
     const content = await listPortfolioContent();
@@ -362,6 +375,56 @@ app.get('/api/admin/projects', requireAdmin, async (_req, res) => {
   } catch (error) {
     console.error('Project load failed:', error);
     return fail(res, 500, 'We could not load projects right now.');
+  }
+});
+
+app.post('/api/admin/experience', requireAdmin, async (req, res) => {
+  const result = validateExperiencePayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the work experience form fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(TABLES.experience, experiencePayload(result.values), mapExperience);
+    return res.status(201).json({ ok: true, experience: created });
+  } catch (error) {
+    console.error('Experience create failed:', error);
+    return fail(res, 500, 'We could not save that work experience right now.');
+  }
+});
+
+app.put('/api/admin/experience/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid experience id.');
+  }
+
+  const result = validateExperiencePayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the work experience form fields.', result.errors);
+  }
+
+  try {
+    const updated = await updateRow(TABLES.experience, id, experiencePayload(result.values), mapExperience);
+    return res.json({ ok: true, experience: updated });
+  } catch (error) {
+    console.error('Experience update failed:', error);
+    return fail(res, 500, 'We could not update that work experience right now.');
+  }
+});
+
+app.delete('/api/admin/experience/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid experience id.');
+  }
+
+  try {
+    await deleteRow(TABLES.experience, id);
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('Experience delete failed:', error);
+    return fail(res, 500, 'We could not delete that work experience right now.');
   }
 });
 
