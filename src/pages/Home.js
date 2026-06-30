@@ -405,6 +405,24 @@ function useReducedMotion() {
   return reduced;
 }
 
+function useViewportWidth() {
+  const [viewportWidth, setViewportWidth] = useState(() => (typeof window === 'undefined' ? 1280 : window.innerWidth));
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const update = () => setViewportWidth(window.innerWidth);
+    update();
+    window.addEventListener('resize', update);
+
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  return viewportWidth;
+}
+
 function useInView(threshold = 0.1) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -1328,47 +1346,156 @@ function ProjectsPage() {
   );
 }
 
-function Planet({ planet, running, reducedMotion }) {
-  const icon = technologyIcons[planet.label] || {
-    path: 'M12 2l9 5v10l-9 5-9-5V7l9-5z',
-    color: '#3b82f6',
-  };
-  const endAngle = planet.start + 360;
+function StackGlyph({ stack, size = 24, decorative = false, className = '' }) {
+  const ariaProps = decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': `${stack.label} logo` };
 
   return (
-    <div
-      className={`skill-planet ${!running || reducedMotion ? 'is-paused' : ''}`}
-      title={planet.label}
-      aria-label={planet.label}
+    <span
+      className={`stack-glyph ${stack.icon ? 'has-icon' : 'has-monogram'} ${className}`.trim()}
       style={{
-        width: planet.size,
-        height: planet.size,
-        marginTop: -planet.size / 2,
-        marginLeft: -planet.size / 2,
-        '--orbit-radius': `${planet.radius}px`,
-        '--orbit-start': `${planet.start}deg`,
-        '--orbit-start-reverse': `${-planet.start}deg`,
-        '--orbit-end': `${endAngle}deg`,
-        '--orbit-end-reverse': `${-endAngle}deg`,
-        animationDuration: `${planet.speed}s`,
-        background: `radial-gradient(circle at 35% 35%, rgba(255,255,255,.18), ${planet.color})`,
-        boxShadow: `0 0 14px 3px ${planet.glow}55, inset 0 0 8px rgba(255,255,255,.06)`,
-        borderColor: `${planet.glow}66`,
+        width: size,
+        height: size,
+        color: stack.glyphColor,
+        '--stack-surface': stack.surface,
+        boxShadow: `0 0 0 1px ${stack.glyphColor}22, 0 0 18px 3px ${stack.glyphColor}18`,
       }}
+      {...ariaProps}
     >
-      <svg className="technology-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d={icon.path} fill={icon.color} />
-      </svg>
-      <span className="planet-tooltip">{planet.label}</span>
-    </div>
+      {stack.icon ? (
+        <svg className="stack-glyph-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d={stack.icon.path} fill="currentColor" />
+        </svg>
+      ) : (
+        <span className="stack-monogram" aria-hidden="true">
+          {stack.monogram}
+        </span>
+      )}
+    </span>
   );
 }
 
-function SolarSystem({ running, setRunning }) {
+function TechPlanet({ stack, running, reducedMotion, selected, onSelect }) {
+  const endAngle = stack.start + 360;
+
+  return (
+    <button
+      type="button"
+      className={`skill-planet ${!running || reducedMotion ? 'is-paused' : ''} ${selected ? 'is-selected' : ''}`}
+      title={stack.label}
+      aria-label={stack.label}
+      aria-pressed={selected}
+      onClick={() => onSelect(stack)}
+      style={{
+        width: stack.size,
+        height: stack.size,
+        marginTop: -stack.size / 2,
+        marginLeft: -stack.size / 2,
+        '--orbit-radius': `${stack.orbitRadius}px`,
+        '--orbit-start': `${stack.start}deg`,
+        '--orbit-start-reverse': `${-stack.start}deg`,
+        '--orbit-end': `${endAngle}deg`,
+        '--orbit-end-reverse': `${-endAngle}deg`,
+        animationDuration: `${stack.speed}s`,
+        background: `radial-gradient(circle at 35% 35%, rgba(255,255,255,.22), ${stack.surface})`,
+        boxShadow: `0 0 18px 3px ${stack.glyphColor}44, inset 0 0 8px rgba(255,255,255,.08)`,
+        borderColor: selected ? stack.glyphColor : stack.ringColor,
+      }}
+    >
+      <StackGlyph stack={stack} size={Math.max(16, Math.round(stack.size * 0.6))} decorative className="stack-glyph--planet" />
+      <span className="planet-tooltip" aria-hidden="true">
+        {stack.label}
+      </span>
+    </button>
+  );
+}
+
+function SelectedStackCard({ stack }) {
+  if (!stack) {
+    return (
+      <article className="selected-stack-card card-3d">
+        <p className="selected-stack-empty">Select a planet to see the stack detail.</p>
+      </article>
+    );
+  }
+
+  return (
+    <motion.article
+      key={stack.id}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.24, ease: 'easeOut' }}
+      className="selected-stack-card card-3d"
+      style={{
+        '--stack-accent': stack.glyphColor,
+        borderColor: stack.glyphColor,
+      }}
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <div className="selected-stack-header">
+        <div className="selected-stack-copy">
+          <p className="selected-stack-label">Selected planet</p>
+          <h3>{stack.label}</h3>
+          <p className="selected-stack-category">{stack.category}</p>
+        </div>
+        <StackGlyph stack={stack} size={72} className="stack-glyph--card" />
+      </div>
+      <p className="selected-stack-summary">{stack.summary}</p>
+    </motion.article>
+  );
+}
+
+function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
   const reducedMotion = useReducedMotion();
+  const viewportWidth = useViewportWidth();
+  const canvasSize = Math.max(260, Math.min(TECH_SYSTEM_BASE_SIZE, viewportWidth - 64));
+  const scale = canvasSize / TECH_SYSTEM_BASE_SIZE;
+
+  const orbitGroups = useMemo(
+    () =>
+      TECH_STACK_ORBITS.map((group) => ({
+        ...group,
+        orbitRadius: Math.round(group.orbitRadius * scale),
+        size: Math.round(group.planetSize * scale),
+      })),
+    [scale],
+  );
+
+  const planets = useMemo(
+    () =>
+      orbitGroups.flatMap((group, orbitIndex) => {
+        const step = 360 / group.items.length;
+
+        return group.items.map((item, itemIndex) => {
+          const start = group.startOffset + itemIndex * step;
+          const iconHex = item.icon?.hex ? `#${item.icon.hex}` : null;
+          const glyphColor = iconHex || group.accent;
+
+          return {
+            ...item,
+            id: `${slugify(group.label)}-${slugify(item.label)}`,
+            category: group.label,
+            orbitLabel: group.legendLabel,
+            orbitIndex,
+            orbitRadius: group.orbitRadius,
+            size: group.size,
+            speed: group.speed,
+            start,
+            surface: group.surface,
+            ringColor: group.ringColor,
+            accent: group.accent,
+            iconHex,
+            glyphColor,
+          };
+        });
+      }),
+    [orbitGroups],
+  );
+
   const stars = useMemo(
     () =>
-      Array.from({ length: 80 }, (_, index) => ({
+      Array.from({ length: 96 }, (_, index) => ({
         id: index,
         left: `${(index * 37) % 100}%`,
         top: `${(index * 61) % 100}%`,
@@ -1387,15 +1514,20 @@ function SolarSystem({ running, setRunning }) {
         onFocus={() => setRunning(false)}
         onBlur={() => setRunning(true)}
         aria-label="Interactive solar system showing technical skills"
+        style={{ width: canvasSize, height: canvasSize }}
       >
         {stars.map((star) => (
           <span key={star.id} className="solar-star" style={star} />
         ))}
-        {[110, 190, 275].map((radius) => (
+        {orbitGroups.map((group) => (
           <span
-            key={radius}
+            key={group.label}
             className="orbit-line"
-            style={{ width: radius * 2 + 4, height: radius * 2 + 4 }}
+            style={{
+              width: group.orbitRadius * 2 + 4,
+              height: group.orbitRadius * 2 + 4,
+              borderColor: group.ringColor,
+            }}
             aria-hidden="true"
           />
         ))}
@@ -1403,15 +1535,24 @@ function SolarSystem({ running, setRunning }) {
           <span className="pulse-ring pulse-ring-one" />
           <span className="pulse-ring pulse-ring-two" />
           <span className="pulse-ring pulse-ring-three" />
-          <strong>DEV</strong>
+          <strong>STACK</strong>
         </div>
         {planets.map((planet) => (
-          <Planet key={planet.label} planet={planet} running={running} reducedMotion={reducedMotion} />
+          <TechPlanet
+            key={planet.id}
+            stack={planet}
+            running={running}
+            reducedMotion={reducedMotion}
+            selected={selectedStack?.id === planet.id}
+            onSelect={onSelectStack}
+          />
         ))}
-        <div className="orbit-legend">
-          <span>Languages</span>
-          <span>Frameworks</span>
-          <span>Backend / DevOps</span>
+        <div className="orbit-legend" aria-hidden="true">
+          {orbitGroups.map((group) => (
+            <span key={group.label} style={{ '--orbit-accent': group.ringColor }}>
+              {group.legendLabel}
+            </span>
+          ))}
         </div>
       </div>
     </div>
@@ -1421,6 +1562,7 @@ function SolarSystem({ running, setRunning }) {
 function Skills() {
   const [revealRef, visible] = useInView(0.1);
   const [running, setRunning] = useState(false);
+  const [selectedStack, setSelectedStack] = useState(() => TECH_STACK_PLANETS[0] ?? null);
 
   useEffect(() => {
     if (visible) setRunning(true);
@@ -1436,54 +1578,19 @@ function Skills() {
           index="04. What I Know"
           title="Technical"
           accent="Skills"
-          description="An interactive solar system of my tech stack — hover any planet to explore."
+          description="A full solar system of my CV stack. Click any planet to open its detail card."
         />
         <div className="skills-layout">
-          <SolarSystem running={running} setRunning={setRunning} />
+          <SolarSystem
+            running={running}
+            setRunning={setRunning}
+            selectedStack={selectedStack}
+            onSelectStack={setSelectedStack}
+          />
           <div className="skills-details">
-            <div>
-              <h3 className="subheading">
-                <span /> Core Proficiencies
-              </h3>
-              <div className="proficiency-list">
-                {proficiencies.map((item, index) => (
-                  <div key={item.label}>
-                    <div className="proficiency-label">
-                      <span>{item.label}</span>
-                      <span>{item.value}%</span>
-                    </div>
-                    <div className="progress-track">
-                      <span
-                        className="progress-fill"
-                        style={{
-                          width: visible ? `${item.value}%` : 0,
-                          transitionDelay: `${index * 100 + 200}ms`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="subheading">
-                <span /> Full Stack
-              </h3>
-              <div className="stack-groups">
-                {skillGroups.map((group) => (
-                  <div key={group.label} className="stack-group">
-                    <strong>{group.label}</strong>
-                    <div className="tag-row">
-                      {group.items.map((item) => (
-                        <span key={item} className="tech-tag">
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <SelectedStackCard key={selectedStack?.id || 'empty'} stack={selectedStack} />
+            </AnimatePresence>
           </div>
         </div>
       </div>
