@@ -2316,9 +2316,6 @@ textarea:focus-visible {
     gap: 2.5rem;
   }
 
-  .solar-system {
-    transform: scale(0.9);
-  }
 }
 
 @media (max-width: 1023px) {
@@ -2431,10 +2428,6 @@ textarea:focus-visible {
   .projects-page-header {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .solar-system {
-    transform: none;
   }
 
   .contact-layout {
@@ -2582,23 +2575,6 @@ textarea:focus-visible {
 
   .projects-page-header {
     margin-bottom: 2rem;
-  }
-
-  .solar-system {
-    width: 460px;
-    height: 460px;
-    transform: scale(0.82);
-    margin-block: -2rem;
-    margin-left: calc(50% - 230px);
-  }
-
-  .stack-group {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .stack-group>strong {
-    width: auto;
   }
 
   .contact-column {

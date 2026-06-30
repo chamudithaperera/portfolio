@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from './App';
 
 function mockJsonResponse(body, status = 200) {
@@ -240,6 +240,8 @@ test('renders the full portfolio structure and navigation anchors', async () => 
   expect(screen.getByRole('heading', { name: 'Associate Software Engineer' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Featured Projects' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Technical Skills' })).toBeInTheDocument();
+  expect(screen.queryByText('Core Proficiencies')).not.toBeInTheDocument();
+  expect(screen.queryByText('Full Stack')).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Education & Certifications' })).toBeInTheDocument();
   expect(screen.getByText('BSc in Information Technology')).toBeInTheDocument();
   expect(screen.getByText('AI/ML Engineer — Stage 1')).toBeInTheDocument();
@@ -247,8 +249,8 @@ test('renders the full portfolio structure and navigation anchors', async () => 
   expect(screen.getByRole('heading', { name: "Let's Connect" })).toBeInTheDocument();
   expect(screen.getByText('MQTT')).toBeInTheDocument();
   expect(screen.getByText('Adobe Photoshop')).toBeInTheDocument();
-  expect(screen.getByLabelText('Dart')).toBeInTheDocument();
-  expect(screen.getByLabelText('Kubernetes')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Dart' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Kubernetes' })).toBeInTheDocument();
   expect(screen.getByText('Replies within 24h')).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Have a project in mind?' })).toBeInTheDocument();
   expect(screen.getByRole('link', { name: 'Start a Conversation' })).toHaveAttribute('href', '#contact');
@@ -258,6 +260,20 @@ test('renders the full portfolio structure and navigation anchors', async () => 
   expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '#about');
   expect(within(navigation).getByRole('link', { name: 'Projects' })).toHaveAttribute('href', '#projects');
   expect(within(navigation).getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '#contact');
+});
+
+test('clicking a skill planet updates the selected detail card', async () => {
+  render(<App />);
+  await screen.findByText('BSc in Information Technology');
+
+  fireEvent.click(screen.getByRole('button', { name: 'React' }));
+
+  await waitFor(() => {
+    expect(screen.getByRole('heading', { name: 'React' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'React logo' })).toBeInTheDocument();
+    expect(screen.getByText('Frameworks & Libraries')).toBeInTheDocument();
+    expect(screen.getByText('Frontend library for web interfaces and admin panels.')).toBeInTheDocument();
+  });
 });
 
 test('opens and closes the accessible mobile navigation', async () => {

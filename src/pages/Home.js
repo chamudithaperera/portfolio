@@ -12,7 +12,6 @@ import {
   siGit,
   siGithub,
   siHtml5,
-  siJava,
   siJavascript,
   siJsonwebtokens,
   siKubernetes,
@@ -27,6 +26,7 @@ import {
   siReact,
   siRedis,
   siSqlite,
+  siOpenjdk,
   siSpringboot,
   siTailwindcss,
   siTypescript,
@@ -98,6 +98,24 @@ const emptyPortfolioContent = {
 
 const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+function getReadableIconColor(hex, fallback) {
+  if (!hex) {
+    return fallback;
+  }
+
+  const normalized = hex.replace('#', '');
+  if (normalized.length !== 6) {
+    return fallback;
+  }
+
+  const red = Number.parseInt(normalized.slice(0, 2), 16) / 255;
+  const green = Number.parseInt(normalized.slice(2, 4), 16) / 255;
+  const blue = Number.parseInt(normalized.slice(4, 6), 16) / 255;
+  const luminance = red * 0.2126 + green * 0.7152 + blue * 0.0722;
+
+  return luminance < 0.42 ? '#f8fafc' : hex;
+}
+
 const TECH_STACK_ORBITS = [
   {
     label: 'Languages',
@@ -118,7 +136,7 @@ const TECH_STACK_ORBITS = [
       {
         label: 'Java',
         summary: 'Backend language for Spring Boot services and system work.',
-        icon: siJava,
+        icon: siOpenjdk,
       },
       {
         label: 'TypeScript',
@@ -321,6 +339,7 @@ const TECH_STACK_PLANETS = TECH_STACK_ORBITS.flatMap((group, orbitIndex) => {
   return group.items.map((item, itemIndex) => {
     const start = group.startOffset + itemIndex * step;
     const iconHex = item.icon?.hex ? `#${item.icon.hex}` : null;
+    const glyphColor = getReadableIconColor(iconHex, group.accent);
 
     return {
       ...item,
@@ -336,7 +355,7 @@ const TECH_STACK_PLANETS = TECH_STACK_ORBITS.flatMap((group, orbitIndex) => {
       ringColor: group.ringColor,
       accent: group.accent,
       iconHex,
-      glyphColor: iconHex || group.accent,
+      glyphColor,
     };
   });
 });
@@ -1470,7 +1489,7 @@ function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
         return group.items.map((item, itemIndex) => {
           const start = group.startOffset + itemIndex * step;
           const iconHex = item.icon?.hex ? `#${item.icon.hex}` : null;
-          const glyphColor = iconHex || group.accent;
+          const glyphColor = getReadableIconColor(iconHex, group.accent);
 
           return {
             ...item,
@@ -1588,7 +1607,7 @@ function Skills() {
             onSelectStack={setSelectedStack}
           />
           <div className="skills-details">
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence initial={false}>
               <SelectedStackCard key={selectedStack?.id || 'empty'} stack={selectedStack} />
             </AnimatePresence>
           </div>
