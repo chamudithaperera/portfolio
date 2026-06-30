@@ -3,6 +3,36 @@ import { createPortal } from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  siDart,
+  siDocker,
+  siExpress,
+  siFirebase,
+  siFigma,
+  siGit,
+  siGithub,
+  siHtml5,
+  siJava,
+  siJavascript,
+  siJsonwebtokens,
+  siKubernetes,
+  siMongodb,
+  siMqtt,
+  siMysql,
+  siNginx,
+  siNodedotjs,
+  siPhp,
+  siPostgresql,
+  siPostman,
+  siReact,
+  siRedis,
+  siSqlite,
+  siSpringboot,
+  siTailwindcss,
+  siTypescript,
+  siFlutter,
+  siCss,
+} from 'simple-icons';
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
 
@@ -66,92 +96,250 @@ const emptyPortfolioContent = {
   certificates: [],
 };
 
-const skillGroups = [
-  { label: 'Languages', items: ['Dart', 'Java', 'TypeScript', 'JavaScript', 'HTML', 'CSS', 'PHP'] },
+const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+const TECH_STACK_ORBITS = [
   {
-    label: 'Frameworks',
-    items: ['Flutter', 'React', 'Spring Boot', 'Express.js', 'Tailwind CSS', 'Node.js', 'React Native', 'Riverpod'],
+    label: 'Languages',
+    legendLabel: 'Languages',
+    orbitRadius: 96,
+    planetSize: 38,
+    speed: 16,
+    startOffset: 10,
+    surface: '#09182e',
+    ringColor: 'rgba(56, 189, 248, 0.24)',
+    accent: '#38bdf8',
+    items: [
+      {
+        label: 'Dart',
+        summary: 'Primary language for Flutter app logic and UI flows.',
+        icon: siDart,
+      },
+      {
+        label: 'Java',
+        summary: 'Backend language for Spring Boot services and system work.',
+        icon: siJava,
+      },
+      {
+        label: 'TypeScript',
+        summary: 'Typed frontend language for React dashboards and admin tools.',
+        icon: siTypescript,
+      },
+      {
+        label: 'JavaScript',
+        summary: 'Used across React UI work and full-stack web projects.',
+        icon: siJavascript,
+      },
+      {
+        label: 'HTML',
+        summary: 'Structure layer for responsive web layouts and content.',
+        icon: siHtml5,
+      },
+      {
+        label: 'CSS',
+        summary: 'Styling layer for polished, responsive interfaces.',
+        icon: siCss,
+      },
+      {
+        label: 'PHP',
+        summary: 'Legacy web scripting language from earlier project work.',
+        icon: siPhp,
+      },
+    ],
   },
   {
-    label: 'Backend / DB',
-    items: ['Firebase', 'MongoDB', 'MySQL', 'PostgreSQL', 'SQLite', 'Redis', 'MQTT', 'RESTful APIs', 'JWT Auth'],
+    label: 'Frameworks & Libraries',
+    legendLabel: 'Frameworks',
+    orbitRadius: 166,
+    planetSize: 42,
+    speed: 20,
+    startOffset: 24,
+    surface: '#0a1427',
+    ringColor: 'rgba(96, 165, 250, 0.24)',
+    accent: '#60a5fa',
+    items: [
+      {
+        label: 'Flutter',
+        summary: 'Primary framework for Android and iOS app delivery.',
+        icon: siFlutter,
+      },
+      {
+        label: 'React',
+        summary: 'Frontend library for web interfaces and admin panels.',
+        icon: siReact,
+      },
+      {
+        label: 'Spring Boot',
+        summary: 'Backend framework for APIs and microservices.',
+        icon: siSpringboot,
+      },
+      {
+        label: 'Express.js',
+        summary: 'Lightweight Node.js server layer for REST APIs.',
+        icon: siExpress,
+      },
+      {
+        label: 'Tailwind CSS',
+        summary: 'Utility-first styling system for rapid UI work.',
+        icon: siTailwindcss,
+      },
+      {
+        label: 'Node.js',
+        summary: 'JavaScript runtime for servers, APIs, and tooling.',
+        icon: siNodedotjs,
+      },
+      {
+        label: 'React Native',
+        summary: 'Cross-platform mobile framework listed in the CV stack.',
+        monogram: 'RN',
+      },
+      {
+        label: 'Riverpod',
+        summary: 'Flutter state management for predictable app flows.',
+        monogram: 'RP',
+      },
+    ],
   },
   {
-    label: 'DevOps',
-    items: ['Git', 'GitHub', 'Docker', 'Postman', 'Kubernetes', 'Nginx', 'Figma', 'Adobe Photoshop'],
+    label: 'Backend & Database',
+    legendLabel: 'Backend',
+    orbitRadius: 236,
+    planetSize: 46,
+    speed: 24,
+    startOffset: 18,
+    surface: '#102238',
+    ringColor: 'rgba(34, 211, 238, 0.22)',
+    accent: '#22d3ee',
+    items: [
+      {
+        label: 'Firebase',
+        summary: 'Backend services for auth, storage, and mobile support.',
+        icon: siFirebase,
+      },
+      {
+        label: 'MongoDB',
+        summary: 'Document database for MERN-style web projects.',
+        icon: siMongodb,
+      },
+      {
+        label: 'MySQL',
+        summary: 'Relational database for structured application data.',
+        icon: siMysql,
+      },
+      {
+        label: 'PostgreSQL',
+        summary: 'Primary SQL store for scalable backend systems.',
+        icon: siPostgresql,
+      },
+      {
+        label: 'SQLite',
+        summary: 'Local-first storage for offline mobile app data.',
+        icon: siSqlite,
+      },
+      {
+        label: 'Redis',
+        summary: 'In-memory cache for low-latency app workflows.',
+        icon: siRedis,
+      },
+      {
+        label: 'MQTT',
+        summary: 'Messaging protocol for real-time device and service updates.',
+        icon: siMqtt,
+      },
+      {
+        label: 'RESTful APIs',
+        summary: 'Interface style used to connect clients and services.',
+        monogram: 'API',
+      },
+      {
+        label: 'JWT Auth',
+        summary: 'Token-based authentication for secure role-aware access.',
+        icon: siJsonwebtokens,
+      },
+    ],
+  },
+  {
+    label: 'DevOps & Other Tools',
+    legendLabel: 'DevOps',
+    orbitRadius: 306,
+    planetSize: 50,
+    speed: 28,
+    startOffset: 32,
+    surface: '#111b33',
+    ringColor: 'rgba(167, 139, 250, 0.22)',
+    accent: '#a78bfa',
+    items: [
+      {
+        label: 'Git',
+        summary: 'Source control for branching and collaboration.',
+        icon: siGit,
+      },
+      {
+        label: 'GitHub',
+        summary: 'Repository hosting and collaborative versioning.',
+        icon: siGithub,
+      },
+      {
+        label: 'Docker',
+        summary: 'Containerization for consistent local and production builds.',
+        icon: siDocker,
+      },
+      {
+        label: 'Postman',
+        summary: 'API testing and workflow validation tool.',
+        icon: siPostman,
+      },
+      {
+        label: 'Kubernetes',
+        summary: 'Container orchestration for scalable deployments.',
+        icon: siKubernetes,
+      },
+      {
+        label: 'Nginx',
+        summary: 'Web server and reverse proxy for production delivery.',
+        icon: siNginx,
+      },
+      {
+        label: 'Figma',
+        summary: 'Interface design, wireframing, and prototyping tool.',
+        icon: siFigma,
+      },
+      {
+        label: 'Adobe Photoshop',
+        summary: 'Visual editing and asset preparation tool.',
+        monogram: 'PS',
+      },
+    ],
   },
 ];
 
-const proficiencies = [
-  { label: 'Flutter / Dart', value: 90 },
-  { label: 'React / TypeScript', value: 85 },
-  { label: 'Spring Boot / Java', value: 80 },
-  { label: 'PostgreSQL / MySQL', value: 78 },
-  { label: 'UI/UX — Figma', value: 75 },
-  { label: 'Docker / Kubernetes', value: 70 },
-];
+const TECH_SYSTEM_BASE_SIZE = 680;
 
-const planets = [
-  { label: 'Dart', radius: 110, size: 44, speed: 14, color: '#0ea5e9', glow: '#0ea5e9', start: 0 },
-  { label: 'TypeScript', radius: 110, size: 44, speed: 14, color: '#3b82f6', glow: '#3b82f6', start: 72 },
-  { label: 'Java', radius: 110, size: 44, speed: 14, color: '#2563eb', glow: '#2563eb', start: 144 },
-  { label: 'JS', radius: 110, size: 44, speed: 14, color: '#1d4ed8', glow: '#1d4ed8', start: 216 },
-  { label: 'PHP', radius: 110, size: 44, speed: 14, color: '#1e40af', glow: '#1e40af', start: 288 },
-  { label: 'Flutter', radius: 190, size: 50, speed: 20, color: '#0284c7', glow: '#0284c7', start: 30 },
-  { label: 'React', radius: 190, size: 50, speed: 20, color: '#0369a1', glow: '#0369a1', start: 102 },
-  { label: 'Spring', radius: 190, size: 50, speed: 20, color: '#075985', glow: '#075985', start: 174 },
-  { label: 'Node.js', radius: 190, size: 50, speed: 20, color: '#0c4a6e', glow: '#0c4a6e', start: 246 },
-  { label: 'Tailwind', radius: 190, size: 50, speed: 20, color: '#164e63', glow: '#164e63', start: 318 },
-  { label: 'Docker', radius: 275, size: 54, speed: 32, color: '#1e3a5f', glow: '#2563eb', start: 10 },
-  { label: 'Kubernetes', radius: 275, size: 54, speed: 32, color: '#172554', glow: '#1d4ed8', start: 70 },
-  { label: 'PostgreSQL', radius: 275, size: 54, speed: 32, color: '#0c2340', glow: '#0284c7', start: 130 },
-  { label: 'Redis', radius: 275, size: 54, speed: 32, color: '#0f1f3d', glow: '#0369a1', start: 190 },
-  { label: 'Firebase', radius: 275, size: 54, speed: 32, color: '#0a1628', glow: '#0ea5e9', start: 250 },
-  { label: 'AWS', radius: 275, size: 54, speed: 32, color: '#060e1e', glow: '#60a5fa', start: 310 },
-];
+const TECH_STACK_PLANETS = TECH_STACK_ORBITS.flatMap((group, orbitIndex) => {
+  const step = 360 / group.items.length;
 
-const technologyIcons = {
-  Dart: {
-    path: 'M3.3 24l9.5-9.5 4.8 4.8L8.1 24H3.3zm0-24L20.7 17.4 24 14.1 8.3 0H3.3zM0 3.3L13.7 17 17 13.7 3.3 0H0v3.3z',
-    color: '#0175C2',
-  },
-  TypeScript: {
-    path: 'M3 3h18v18H3V3zm9.7 14.2c.3.6 1 1.1 2 1.1 1.6 0 2.6-.8 2.6-2.8v-5.4h-1.8v5.4c0 .9-.4 1.2-1 1.2s-1-.3-1.3-1l-1.5.9zm-4.2-.2c.3.5.7.9 1.4.9.7 0 1.1-.3 1.1-1.4V11h1.9v4.5c0 2-1.1 2.9-2.8 2.9-1.5 0-2.4-.8-2.9-1.8l1.5-.9z',
-    color: '#3178C6',
-  },
-  Java: {
-    path: 'M11.5 21l1.5-3s-5.5 1.8-8.5 1.3c1.7.7 7.5 1.7 7-1.5-.4-2.5-3-1.3-4.5-.5.6.3 1.2.6 1.7 1l-2 .9c-1.6-1.2-2-2.4.2-3.1 1.7-.5 3.5.2 3.5 2 0 1.6-1.4 3.1-2.9 3.1-.4 0-1-.3-1-.3l.5-1.1 4.3-4.8 3 1.5L9 21h2.5zM19 3s-3 1-3 3 2 2.5 2 2.5-.5-2-.5-2 1.5 1.8 1.5 3.5c0 1.8-2 2.5-2 2.5s2-1.2 4.5-1.2S25 11 25 11c0-4-2-7-6-8z',
-    color: '#ED8B00',
-  },
-  JS: {
-    path: 'M3 3h18v18H3V3zm9.7 14.2c.3.6 1 1.1 2 1.1 1.6 0 2.6-.8 2.6-2.8v-5.4h-1.8v5.4c0 .9-.4 1.2-1 1.2s-1-.3-1.3-1l-1.5.9zm-4.2-.2c.3.5.7.9 1.4.9.7 0 1.1-.3 1.1-1.4V11h1.9v4.5c0 2-1.1 2.9-2.8 2.9-1.5 0-2.4-.8-2.9-1.8l1.5-.9z',
-    color: '#F7DF1E',
-  },
-  PHP: {
-    path: 'M7.5 6.5h6.4c2.6 0 4.4 1.3 4.4 4 0 2.6-1.8 4-4.4 4h-2.4v3.5h-4V6.5zm3.9 2.4v3.4h1.7c1 0 1.6-.6 1.6-1.7s-.6-1.7-1.6-1.7h-1.7zM3 12c0 5 4 9 9 9s9-4 9-9-4-9-9-9-9 4-9 9z',
-    color: '#777BB4',
-  },
-  Flutter: { path: 'M14.5 2L4 12.5l3 3L20.5 2h-6zM4 19.5L9.5 14l3 3L9.5 22 4 19.5z', color: '#02569B' },
-  React: {
-    path: 'M12 9.8a2.2 2.2 0 100 4.4 2.2 2.2 0 000-4.4zM5 12c0 1.7-2.1 3.3-1.5 5 .8 2.2 4 .2 6.2 1 1.6.7 2.3 3 4.3 3s2.7-2.3 4.3-3c2.2-.8 5.4 1.2 6.2-1 .6-1.7-1.5-3.3-1.5-5s2.1-3.3 1.5-5c-.8-2.2-4-.2-6.2-1-1.6-.7-2.3-3-4.3-3s-2.7 2.3-4.3 3c-2.2.8-5.4-1.2-6.2 1-.6 1.7 1.5 3.3 1.5 5z',
-    color: '#61DAFB',
-  },
-  Spring: {
-    path: 'M12 2C8 2 4 6 4 10c0 3 2 5 5 5 2 0 3-1 3-3 0-1-1-1-1-2 0-1 1-2 2-2 1 0 1 0 1 1 0 2-1 3-1 4 0 1 1 2 2 2 2 0 3-2 3-4 0-3-3-7-6-7zm8 14c-1 2-3 3-5 3-3 0-5-2-5-5 0-2 1-3 2-4l-1-1c-2 1-3 3-3 5 0 4 3 7 7 7 3 0 5-2 6-4l-1-1z',
-    color: '#6DB33F',
-  },
-  'Node.js': { path: 'M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.3l6.7 3.7v7.5L12 19.3 5.3 15.5V8L12 4.3zM12 7c-2 0-3 2-3 5s1 5 3 5 3-2 3-5-1-5-3-5z', color: '#339933' },
-  Tailwind: {
-    path: 'M6.5 10c.8-3.2 2.6-4.8 5.5-4.8 4.3 0 4.8 3.2 7 3.7 1.5.4 2.8 0 4-1.2-.8 3.2-2.6 4.8-5.5 4.8-4.3 0-4.8-3.2-7-3.7-1.5-.4-2.8 0-4 1.2zm-4 7.5c.8-3.2 2.6-4.8 5.5-4.8 4.3 0 4.8 3.2 7 3.7 1.5.4 2.8 0 4-1.2-.8 3.2-2.6 4.8-5.5 4.8-4.3 0-4.8-3.2-7-3.7-1.5-.4-2.8 0-4 1.2z',
-    color: '#06B6D4',
-  },
-  Docker: { path: 'M3 13h2.2v2H3v-2zm2.8 0h2.2v2H5.8v-2zm2.8 0h2.2v2H8.6v-2zm0-2.7h2.2v2H8.6v-2zm2.8 0h2.2v2h-2.2v-2zm0 2.7h2.2v2h-2.2v-2zm2.8 0h2.2v2h-2.2v-2zm0-2.7h2.2v2h-2.2v-2zm2.8 0h2.2v2h-2.2v-2zm0 2.7h2.2v2h-2.2v-2zm2.8 0h2.2v2h-2.2v-2z', color: '#2496ED' },
-  Kubernetes: { path: 'M12 2L4 6v8l8 4 8-4V6l-8-4zm0 2.3l5.7 2.8v5.8L12 15.7 6.3 12.9V7.1L12 4.3zM12 7L9 12l3 5 3-5-3-5z', color: '#326CE5' },
-  PostgreSQL: { path: 'M21 11c.3 2-.4 4-2 5.3-.6.5-1.5.7-2.3.7-.3 1-.8 2-1.7 2.6-.7.5-1.6.6-2.4.5h-.5c-.4.4-1 .8-1.7.8-1.6.2-3.2-.6-4-2-.9-1.6-1-3.4-.7-5 .2-1 .5-1.8.5-2.5 0-.6-.3-1.2-.3-1.8 0-1 .5-1.8 1.3-2.5.7-.6 1.8-1 3-1 1 0 1.8.2 2.5.5.5-.2 1.2-.3 1.8-.3 1 0 2 .3 2.7 1 .4.3.7.7.8 1.2 1 .3 1.8 1 2.2 1.8.4.6.5 1.4.3 2.2-.5.3-.9.5-1.4.5z', color: '#4169E1' },
-  Redis: { path: 'M3 8.5l9-2.5 9 2.5-9 2.5-9-2.5zm0 4l9 2.5 9-2.5-9 2.5-9-2.5zm0 4l9 2.5 9-2.5-9 2.5-9-2.5z', color: '#DC382D' },
-  Firebase: { path: 'M5 19l3-14 4 8-3 6H5zm5.5 0L8 7l3 6 9-2-9.5 8z', color: '#FFCA28' },
-  AWS: { path: 'M12 4c-4.4 0-8.2 2.7-9.8 6.5C3.6 15.6 7.5 19 12 19V4zm.5 4.5L16 9v9l-3.5.5v-10zm-3 9L6 17V8l3.5-.5v10z', color: '#FF9900' },
-};
+  return group.items.map((item, itemIndex) => {
+    const start = group.startOffset + itemIndex * step;
+    const iconHex = item.icon?.hex ? `#${item.icon.hex}` : null;
+
+    return {
+      ...item,
+      id: `${slugify(group.label)}-${slugify(item.label)}`,
+      category: group.label,
+      orbitLabel: group.legendLabel,
+      orbitIndex,
+      orbitRadius: group.orbitRadius,
+      size: group.planetSize,
+      speed: group.speed,
+      start,
+      surface: group.surface,
+      ringColor: group.ringColor,
+      accent: group.accent,
+      iconHex,
+      glyphColor: iconHex || group.accent,
+    };
+  });
+});
 
 const iconPaths = {
   code: ['M8 9l-4 3 4 3', 'M16 9l4 3-4 3', 'M14 5l-4 14'],
