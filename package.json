@@ -24,6 +24,7 @@
     "react-router-dom": "^6.26.2",
     "react-scripts": "^5.0.1",
     "react-scroll": "^1.9.0",
+    "simple-icons": "^16.24.1",
     "swiper": "^11.1.12",
     "web-vitals": "^2.1.4",
     "ws": "^8.18.3"
