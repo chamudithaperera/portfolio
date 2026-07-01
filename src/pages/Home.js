@@ -1593,7 +1593,7 @@ function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
           <span className="pulse-ring pulse-ring-one" />
           <span className="pulse-ring pulse-ring-two" />
           <span className="pulse-ring pulse-ring-three" />
-          <strong>CV</strong>
+          <strong>Tech Stacks</strong>
         </div>
         {planets.map((planet) => (
           <TechPlanet
@@ -1642,7 +1642,6 @@ function Skills() {
           index="04. What I Know"
           title="Technical"
           accent="Skills"
-          description="A full solar system of my CV stack. Click any planet to open a popup detail card."
         />
         <div className="skills-layout">
           <SolarSystem
