@@ -1467,10 +1467,10 @@ body.modal-open {
 
 .skills-layout {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+  display: flex;
   align-items: center;
-  gap: 3rem;
+  justify-content: center;
+  margin-top: 1.75rem;
 }
 
 .orbit-line,
@@ -1482,10 +1482,24 @@ body.modal-open {
 }
 
 .solar-stage {
+  position: relative;
   display: flex;
   width: 100%;
   min-width: 0;
   justify-content: center;
+  padding: 1.5rem 0 3.25rem;
+}
+
+.solar-stage::before {
+  position: absolute;
+  inset: 8% 15%;
+  pointer-events: none;
+  content: '';
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(96, 165, 250, 0.18), transparent 58%),
+    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.06), transparent 18%);
+  filter: blur(14px);
 }
 
 .skills-reference .solar-system {
@@ -1493,6 +1507,38 @@ body.modal-open {
   display: block;
   flex: 0 0 auto;
   aspect-ratio: 1;
+  overflow: visible;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(8, 13, 28, 0.98) 0%, rgba(4, 8, 20, 0.98) 54%, rgba(1, 4, 12, 1) 100%);
+  box-shadow:
+    0 0 0 1px rgba(96, 165, 250, 0.06),
+    0 30px 100px rgba(2, 6, 23, 0.55),
+    inset 0 0 64px rgba(59, 130, 246, 0.08);
+}
+
+.skills-reference .solar-system::before,
+.skills-reference .solar-system::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.skills-reference .solar-system::before {
+  inset: -3%;
+  background:
+    radial-gradient(circle at center, rgba(96, 165, 250, 0.16), transparent 58%),
+    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.07), transparent 18%);
+  filter: blur(8px);
+}
+
+.skills-reference .solar-system::after {
+  inset: 11%;
+  border: 1px solid rgba(148, 163, 184, 0.07);
+  box-shadow: inset 0 0 40px rgba(15, 23, 42, 0.55);
+  opacity: 0.65;
 }
 
 .orbit-line {
@@ -1517,12 +1563,14 @@ body.modal-open {
 .solar-core {
   z-index: 20;
   display: grid;
-  width: 82px;
-  height: 82px;
+  width: 88px;
+  height: 88px;
   place-items: center;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #7dd3fc, #2563eb 55%, #020617);
+  background:
+    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.75), transparent 26%),
+    radial-gradient(circle at 35% 35%, #93c5fd, #2563eb 52%, #020617);
   box-shadow:
     0 0 38px 10px rgba(37, 99, 235, 0.38),
     0 0 80px 28px rgba(37, 99, 235, 0.14);
@@ -1533,8 +1581,9 @@ body.modal-open {
   z-index: 2;
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.64rem;
   letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .pulse-ring {
@@ -1577,14 +1626,16 @@ body.modal-open {
   animation-name: planet-orbit;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+  backdrop-filter: blur(2px);
+  will-change: transform, box-shadow, filter;
 }
 
 .skill-planet:hover,
 .skill-planet:focus-visible,
 .skill-planet.is-selected {
   z-index: 99;
-  scale: 1.12;
-  filter: brightness(1.12);
+  scale: 1.14;
+  filter: brightness(1.14) saturate(1.08);
 }
 
 .skill-planet:focus-visible {
@@ -1631,23 +1682,156 @@ body.modal-open {
 
 .stack-glyph--planet {
   background: rgba(255, 255, 255, 0.04);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.stack-glyph--card {
-  width: 72px;
-  height: 72px;
+.stack-glyph--modal {
+  width: 86px;
+  height: 86px;
 }
 
-.selected-stack-card {
+.skill-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(2, 5, 16, 0.78);
+  backdrop-filter: blur(22px) saturate(170%);
+}
+
+.skill-modal {
+  position: relative;
   display: flex;
   flex-direction: column;
+  width: min(36rem, 100%);
+  overflow: hidden;
   gap: 1rem;
   padding: 1.6rem;
   border: 1px solid rgba(96, 165, 250, 0.18);
   border-radius: 1.5rem;
   background:
-    radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 45%),
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 42%),
+    radial-gradient(circle at bottom left, rgba(167, 139, 250, 0.12), transparent 32%),
     linear-gradient(180deg, rgba(8, 15, 32, 0.98), rgba(4, 9, 22, 0.98));
+  box-shadow:
+    0 28px 80px rgba(3, 8, 24, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.skill-modal::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 22%, transparent 78%, rgba(255, 255, 255, 0.04));
+}
+
+.skill-modal-orb {
+  position: absolute;
+  top: -3rem;
+  right: -2rem;
+  width: 12rem;
+  height: 12rem;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--stack-accent), transparent 70%);
+  opacity: 0.18;
+  filter: blur(8px);
+}
+
+.skill-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border: 1px solid rgba(30, 58, 138, 0.22);
+  border-radius: 50%;
+  color: #c7d6ff;
+  background: rgba(7, 13, 31, 0.9);
+}
+
+.skill-modal-close:hover {
+  color: #fff;
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.skill-modal-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-right: 2.75rem;
+}
+
+.skill-modal-copy {
+  min-width: 0;
+}
+
+.skill-modal-eyebrow {
+  margin: 0 0 0.35rem;
+  color: #60a5fa;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.skill-modal-copy h3 {
+  margin: 0;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+  line-height: 1.08;
+}
+
+.skill-modal-category {
+  margin: 0.5rem 0 0;
+  color: rgba(191, 219, 254, 0.72);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.skill-modal-summary {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--slate-400);
+  font-size: 0.98rem;
+  line-height: 1.85;
+}
+
+.skill-modal-meta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.skill-modal-meta span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  border-radius: 999px;
+  color: #93c5fd;
+  background: rgba(7, 13, 31, 0.72);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .selected-stack-header {
@@ -1728,12 +1912,6 @@ body.modal-open {
   border: 1px solid var(--orbit-accent);
   border-radius: 50%;
   background: var(--orbit-accent);
-}
-
-.skills-reference .skills-details {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
 }
 
 .column-label {
@@ -3851,17 +4029,47 @@ textarea:focus-visible {
 }
 
 .skills-reference .skills-layout {
-  gap: 3rem;
+  width: 100%;
 }
 
 .solar-stage {
-  display: flex;
+  width: 100%;
   min-width: 0;
-  justify-content: center;
 }
 
 .skills-reference .solar-system {
-  flex: 0 0 auto;
+  overflow: visible;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(8, 13, 28, 0.98) 0%, rgba(4, 8, 20, 0.98) 54%, rgba(1, 4, 12, 1) 100%);
+  box-shadow:
+    0 0 0 1px rgba(96, 165, 250, 0.06),
+    0 30px 100px rgba(2, 6, 23, 0.55),
+    inset 0 0 64px rgba(59, 130, 246, 0.08);
+}
+
+.skills-reference .solar-system::before,
+.skills-reference .solar-system::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.skills-reference .solar-system::before {
+  inset: -3%;
+  background:
+    radial-gradient(circle at center, rgba(96, 165, 250, 0.16), transparent 58%),
+    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.07), transparent 18%);
+  filter: blur(8px);
+}
+
+.skills-reference .solar-system::after {
+  inset: 11%;
+  border: 1px solid rgba(148, 163, 184, 0.07);
+  box-shadow: inset 0 0 40px rgba(15, 23, 42, 0.55);
+  opacity: 0.65;
 }
 
 .skills-reference .orbit-line {
@@ -3891,6 +4099,8 @@ textarea:focus-visible {
     scale 0.3s ease,
     border-color 0.3s ease,
     filter 0.3s ease;
+  backdrop-filter: blur(2px);
+  will-change: transform, box-shadow, filter;
 }
 
 .skills-reference .skill-planet.is-paused {
@@ -3901,8 +4111,8 @@ textarea:focus-visible {
 .skills-reference .skill-planet:focus-visible,
 .skills-reference .skill-planet.is-selected {
   z-index: 99;
-  scale: 1.12;
-  filter: brightness(1.12);
+  scale: 1.14;
+  filter: brightness(1.14) saturate(1.08);
 }
 
 .skills-reference .skill-planet:focus-visible {
@@ -3938,10 +4148,6 @@ textarea:focus-visible {
 
 .skills-reference .orbit-legend {
   bottom: 0.5rem;
-}
-
-.skills-reference .skills-details {
-  gap: 1.25rem;
 }
 
 .contact-reference {
@@ -4632,12 +4838,7 @@ textarea:focus-visible {
   }
 
   .skills-reference .skills-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .skills-reference .skills-details {
-    width: min(100%, 34rem);
-    margin-inline: auto;
+    margin-top: 1.25rem;
   }
 }
 
@@ -4802,10 +5003,6 @@ textarea:focus-visible {
 
   .experience-help {
     display: none;
-  }
-
-  .skills-reference .skills-details {
-    margin-top: 1rem;
   }
 
   .availability-banner {

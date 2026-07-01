@@ -1428,47 +1428,86 @@ function TechPlanet({ stack, running, reducedMotion, selected, onSelect }) {
   );
 }
 
-function SelectedStackCard({ stack }) {
-  if (!stack) {
-    return (
-      <article className="selected-stack-card card-3d">
-        <p className="selected-stack-empty">Select a planet to see the stack detail.</p>
-      </article>
-    );
+function StackDetailModal({ stack, onClose }) {
+  useEffect(() => {
+    if (!stack) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.body.classList.add('modal-open');
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose, stack]);
+
+  if (!stack || typeof document === 'undefined') {
+    return null;
   }
 
-  return (
-    <motion.article
-      key={stack.id}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{ duration: 0.24, ease: 'easeOut' }}
-      className="selected-stack-card card-3d"
-      style={{
-        '--stack-accent': stack.glyphColor,
-        borderColor: stack.glyphColor,
-      }}
-      aria-live="polite"
-      aria-atomic="true"
+  const modalId = `skill-modal-title-${stack.id}`;
+
+  return createPortal(
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="skill-modal-backdrop"
+      role="presentation"
+      onClick={onClose}
     >
-      <div className="selected-stack-header">
-        <div className="selected-stack-copy">
-          <p className="selected-stack-label">Selected planet</p>
-          <h3>{stack.label}</h3>
-          <p className="selected-stack-category">{stack.category}</p>
+      <motion.article
+        initial={{ scale: 0.94, y: 18, opacity: 0 }}
+        animate={{ scale: 1, y: 0, opacity: 1 }}
+        transition={{ type: 'spring', damping: 24, stiffness: 280 }}
+        className="skill-modal card-3d"
+        style={{
+          '--stack-accent': stack.glyphColor,
+          borderColor: stack.glyphColor,
+        }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={modalId}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="skill-modal-close" aria-label={`Close ${stack.label} details`} onClick={onClose}>
+          <Icon name="close" size={18} />
+        </button>
+
+        <div className="skill-modal-orb" aria-hidden="true" />
+
+        <div className="skill-modal-header">
+          <div className="skill-modal-copy">
+            <p className="skill-modal-eyebrow">Selected planet</p>
+            <h3 id={modalId}>{stack.label}</h3>
+            <p className="skill-modal-category">{stack.category}</p>
+          </div>
+          <StackGlyph stack={stack} size={86} className="stack-glyph--modal" />
         </div>
-        <StackGlyph stack={stack} size={72} className="stack-glyph--card" />
-      </div>
-      <p className="selected-stack-summary">{stack.summary}</p>
-    </motion.article>
+
+        <p className="skill-modal-summary">{stack.summary}</p>
+
+        <div className="skill-modal-meta">
+          <span>{stack.orbitLabel}</span>
+          <span>{stack.icon ? 'Official brand mark' : 'Fallback monogram'}</span>
+        </div>
+      </motion.article>
+    </motion.div>,
+    document.body,
   );
 }
 
 function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
   const reducedMotion = useReducedMotion();
   const viewportWidth = useViewportWidth();
-  const canvasSize = Math.max(260, Math.min(TECH_SYSTEM_BASE_SIZE, viewportWidth - 64));
+  const canvasSize = Math.max(280, Math.min(TECH_SYSTEM_BASE_SIZE, viewportWidth - 72));
   const scale = canvasSize / TECH_SYSTEM_BASE_SIZE;
 
   const orbitGroups = useMemo(
@@ -1554,7 +1593,7 @@ function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
           <span className="pulse-ring pulse-ring-one" />
           <span className="pulse-ring pulse-ring-two" />
           <span className="pulse-ring pulse-ring-three" />
-          <strong>STACK</strong>
+          <strong>CV</strong>
         </div>
         {planets.map((planet) => (
           <TechPlanet
@@ -1582,6 +1621,12 @@ function Skills() {
   const [revealRef, visible] = useInView(0.1);
   const [running, setRunning] = useState(false);
   const [selectedStack, setSelectedStack] = useState(() => TECH_STACK_PLANETS[0] ?? null);
+  const [activeStack, setActiveStack] = useState(null);
+
+  const handleSelectStack = (stack) => {
+    setSelectedStack(stack);
+    setActiveStack(stack);
+  };
 
   useEffect(() => {
     if (visible) setRunning(true);
@@ -1597,21 +1642,19 @@ function Skills() {
           index="04. What I Know"
           title="Technical"
           accent="Skills"
-          description="A full solar system of my CV stack. Click any planet to open its detail card."
+          description="A full solar system of my CV stack. Click any planet to open a popup detail card."
         />
         <div className="skills-layout">
           <SolarSystem
             running={running}
             setRunning={setRunning}
             selectedStack={selectedStack}
-            onSelectStack={setSelectedStack}
+            onSelectStack={handleSelectStack}
           />
-          <div className="skills-details">
-            <AnimatePresence initial={false}>
-              <SelectedStackCard key={selectedStack?.id || 'empty'} stack={selectedStack} />
-            </AnimatePresence>
-          </div>
         </div>
+        <AnimatePresence initial={false}>
+          {activeStack && <StackDetailModal key={activeStack.id} stack={activeStack} onClose={() => setActiveStack(null)} />}
+        </AnimatePresence>
       </div>
     </section>
   );

@@ -242,6 +242,7 @@ test('renders the full portfolio structure and navigation anchors', async () => 
   expect(screen.getByRole('heading', { name: 'Technical Skills' })).toBeInTheDocument();
   expect(screen.queryByText('Core Proficiencies')).not.toBeInTheDocument();
   expect(screen.queryByText('Full Stack')).not.toBeInTheDocument();
+  expect(screen.queryByText('Select a planet to see the stack detail.')).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Education & Certifications' })).toBeInTheDocument();
   expect(screen.getByText('BSc in Information Technology')).toBeInTheDocument();
   expect(screen.getByText('AI/ML Engineer — Stage 1')).toBeInTheDocument();
@@ -269,10 +270,17 @@ test('clicking a skill planet updates the selected detail card', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'React' }));
 
   await waitFor(() => {
-    expect(screen.getByRole('heading', { name: 'React' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'React' })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'React logo' })).toBeInTheDocument();
     expect(screen.getByText('Frameworks & Libraries')).toBeInTheDocument();
     expect(screen.getByText('Frontend library for web interfaces and admin panels.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Close React details' })).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByRole('button', { name: 'Close React details' }));
+
+  await waitFor(() => {
+    expect(screen.queryByRole('dialog', { name: 'React' })).not.toBeInTheDocument();
   });
 });
 
