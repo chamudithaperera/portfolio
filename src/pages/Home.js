@@ -42,6 +42,7 @@ const navItems = [
   { label: 'Projects', href: '#projects' },
   { label: 'Skills', href: '#skills' },
   { label: 'Education', href: '#education' },
+  { label: 'Pricing', href: '/pricing' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -84,10 +85,210 @@ const siteDescription =
 const projectsPageTitle = 'Projects | Chamuditha Perera';
 const projectsPageDescription =
   "Selected projects by Chamuditha Perera, including Flutter apps, React web experiences, and Spring Boot systems.";
+const pricingPageTitle = 'Pricing | Chamuditha Perera';
+const pricingPageDescription =
+  'Flexible website and mobile app packages by Chamuditha Perera, including Basic, Standard, Premium, and custom project options.';
 const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`;
 
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
+
+const pricingServices = [
+  {
+    id: 'websites',
+    label: 'Websites',
+    icon: 'code',
+    intro: 'Responsive websites, business platforms, content systems, and online stores built around your goals.',
+    packages: [
+      {
+        tier: 'Basic',
+        title: 'Basic Website',
+        price: 'Rs. 45,000',
+        description: 'Suitable for individuals, portfolios and small businesses.',
+        delivery: '7-10 working days',
+        button: 'Choose Basic',
+        features: [
+          'Up to 5 pages',
+          'Modern responsive design',
+          'Mobile, tablet and desktop support',
+          'Contact form',
+          'WhatsApp and social media links',
+          'Google Maps integration',
+          'Basic search engine optimization',
+          'Basic performance optimization',
+          'One revision round',
+          '30 days of technical support',
+        ],
+      },
+      {
+        tier: 'Standard',
+        title: 'Standard Website',
+        price: 'Rs. 85,000',
+        description: 'Suitable for growing businesses that need to manage their website content.',
+        delivery: '2-3 weeks',
+        badge: 'Most Popular',
+        button: 'Choose Standard',
+        features: [
+          'Up to 10 pages',
+          'Custom UI/UX design',
+          'Content management system',
+          'Admin dashboard',
+          'Blog or news section',
+          'Contact and inquiry management',
+          'WhatsApp integration',
+          'Google Analytics integration',
+          'Advanced search engine optimization',
+          'Speed and security optimization',
+          'Three revision rounds',
+          '60 days of technical support',
+        ],
+      },
+      {
+        tier: 'Premium',
+        title: 'Premium Website',
+        price: 'Rs. 150,000',
+        description: 'Suitable for advanced business websites, online stores and custom platforms.',
+        delivery: '4-6 weeks',
+        button: 'Choose Premium',
+        features: [
+          'Unlimited essential pages',
+          'Fully customized UI/UX design',
+          'Advanced admin dashboard',
+          'E-commerce, booking or reservation system',
+          'Online payment integration',
+          'User registration and login',
+          'Email notification system',
+          'Third-party API integrations',
+          'Advanced security and performance optimization',
+          'Analytics and reporting',
+          'Deployment assistance',
+          'Five revision rounds',
+          '90 days of technical support',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'mobile-apps',
+    label: 'Mobile Apps',
+    icon: 'phone',
+    intro: 'Android and iOS applications shaped for MVP launches, business workflows, and scalable products.',
+    packages: [
+      {
+        tier: 'Basic',
+        title: 'Basic Mobile App',
+        price: 'Rs. 120,000',
+        description: 'Suitable for simple business apps and minimum viable products.',
+        delivery: '3-4 weeks',
+        button: 'Choose Basic',
+        features: [
+          'Android or iOS application',
+          'Up to 5 main screens',
+          'Responsive mobile interface',
+          'Basic user login',
+          'Simple database integration',
+          'Basic API integration',
+          'Contact or inquiry features',
+          'Basic testing',
+          'Application build file',
+          'One revision round',
+          '30 days of technical support',
+        ],
+      },
+      {
+        tier: 'Standard',
+        title: 'Standard Mobile App',
+        price: 'Rs. 250,000',
+        description: 'Suitable for businesses that need a complete application for Android and iOS.',
+        delivery: '6-8 weeks',
+        badge: 'Most Popular',
+        button: 'Choose Standard',
+        features: [
+          'Android and iOS applications',
+          'Up to 12 main screens',
+          'Custom UI/UX design',
+          'User registration and login',
+          'Database and backend development',
+          'Admin dashboard',
+          'Push notifications',
+          'API integrations',
+          'User profile management',
+          'Basic analytics',
+          'App Store and Play Store submission assistance',
+          'Three revision rounds',
+          '60 days of technical support',
+        ],
+      },
+      {
+        tier: 'Premium',
+        title: 'Premium Mobile App',
+        price: 'Rs. 450,000',
+        description: 'Suitable for startups and businesses that require a scalable custom application.',
+        delivery: '10-16 weeks',
+        button: 'Choose Premium',
+        features: [
+          'Android and iOS applications',
+          'Fully customized UI/UX',
+          'Advanced backend system',
+          'Advanced admin dashboard',
+          'Payment gateway integration',
+          'Google Maps and location tracking',
+          'Real-time notifications',
+          'Chat or messaging features',
+          'Role-based user accounts',
+          'Advanced API integrations',
+          'Analytics and reporting',
+          'Security and performance optimization',
+          'Store deployment assistance',
+          'Five revision rounds',
+          '90 days of technical support',
+        ],
+      },
+    ],
+  },
+];
+
+const pricingImportantInfo = [
+  'Prices are starting prices.',
+  'Final cost depends on features and project complexity.',
+  'Domain, hosting and third-party service charges are not included.',
+  'A deposit is required before starting.',
+  'Additional revisions may have extra charges.',
+  'Clients must provide text, images and business information unless content creation is included.',
+];
+
+const pricingFaqs = [
+  {
+    question: 'How long will my project take?',
+    answer:
+      'Each package includes an estimated delivery range. The final timeline depends on content readiness, feature complexity, feedback speed, and integrations.',
+  },
+  {
+    question: 'Do you provide maintenance?',
+    answer:
+      'Yes. Each package includes technical support after delivery, and ongoing maintenance can be arranged separately when the project needs long-term care.',
+  },
+  {
+    question: 'Can I upgrade my package later?',
+    answer:
+      'Yes. You can start with a smaller package and upgrade later as your business needs grow or new features become clear.',
+  },
+  {
+    question: 'Are domain and hosting included?',
+    answer:
+      'Domain, hosting, payment gateway, app store, and third-party service charges are not included in the starting prices.',
+  },
+  {
+    question: 'Do you publish mobile apps to the stores?',
+    answer:
+      'I can assist with Play Store and App Store submission. Store account fees, approvals, and required business documentation remain the client responsibility.',
+  },
+  {
+    question: 'What payment methods are available?',
+    answer:
+      'Payment options can be confirmed during quotation. A deposit is required before starting, with remaining payments usually tied to project milestones.',
+  },
+];
 
 const emptyPortfolioContent = {
   projects: [],
@@ -567,8 +768,11 @@ function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('');
   const location = useLocation();
-  const sectionHref = (href) => (location.pathname === '/' ? href : `/${href}`);
+  const getNavHref = (href) => (href.startsWith('#') && location.pathname !== '/' ? `/${href}` : href);
   const homeHref = location.pathname === '/' ? '#hero' : '/#hero';
+  const contactHref = getNavHref('#contact');
+  const isActiveItem = (item) =>
+    item.href.startsWith('#') ? location.pathname === '/' && active === item.href : location.pathname === item.href;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -578,8 +782,14 @@ function Navigation() {
   }, []);
 
   useEffect(() => {
+    if (location.pathname !== '/') {
+      setActive('');
+      return undefined;
+    }
+
     if (!('IntersectionObserver' in window)) return undefined;
     const sections = navItems
+      .filter((item) => item.href.startsWith('#'))
       .map((item) => document.querySelector(item.href))
       .filter(Boolean);
     const observer = new IntersectionObserver(
@@ -593,7 +803,43 @@ function Navigation() {
     );
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [location.pathname]);
+
+  const renderNavItem = (item, className = '') => {
+    const resolvedHref = getNavHref(item.href);
+    const activeClass = isActiveItem(item) ? 'active' : '';
+    const combinedClassName = `${className} ${activeClass}`.trim();
+
+    if (item.href.startsWith('/')) {
+      return (
+        <Link
+          key={item.href}
+          className={combinedClassName}
+          to={item.href}
+          onClick={() => {
+            setActive('');
+            setOpen(false);
+          }}
+        >
+          {item.label}
+        </Link>
+      );
+    }
+
+    return (
+      <a
+        key={item.href}
+        className={combinedClassName}
+        href={resolvedHref}
+        onClick={() => {
+          setActive(item.href);
+          setOpen(false);
+        }}
+      >
+        {item.label}
+      </a>
+    );
+  };
 
   return (
     <nav className={`top-nav ${scrolled ? 'top-nav-scrolled' : ''}`} aria-label="Main navigation">
@@ -603,19 +849,10 @@ function Navigation() {
         </a>
 
         <div className="desktop-nav">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              className={active === item.href ? 'active' : ''}
-              href={sectionHref(item.href)}
-              onClick={() => setActive(item.href)}
-            >
-              {item.label}
-            </a>
-          ))}
+          {navItems.map((item) => renderNavItem(item))}
         </div>
 
-        <a className="hire-button" href="#contact">
+        <a className="hire-button" href={contactHref}>
           Hire Me
         </a>
 
@@ -633,12 +870,8 @@ function Navigation() {
 
       {open ? (
         <div id="mobile-navigation" className="mobile-nav">
-          {navItems.map((item) => (
-            <a key={item.href} href={sectionHref(item.href)} onClick={() => setOpen(false)}>
-              {item.label}
-            </a>
-          ))}
-          <a href="#contact" className="mobile-hire" onClick={() => setOpen(false)}>
+          {navItems.map((item) => renderNavItem(item))}
+          <a href={contactHref} className="mobile-hire" onClick={() => setOpen(false)}>
             Hire Me
           </a>
         </div>

@@ -2,7 +2,7 @@ import './App.css';
 import './utils/basePath';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Admin from './pages/Admin';
-import Home, { ProjectsPage } from './pages/Home';
+import Home, { PricingPage, ProjectsPage } from './pages/Home';
 
 function App() {
   return (
@@ -10,6 +10,7 @@ function App() {
       <Routes>
         <Route path="/admin/*" element={<Admin />} />
         <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </Router>
