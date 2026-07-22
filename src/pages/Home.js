@@ -2332,7 +2332,262 @@ function Contact() {
   );
 }
 
+function getPricingInquiryHref(serviceLabel, packageTitle = 'Custom Project') {
+  const subject = `${packageTitle} inquiry`;
+  const body = [
+    `Hi Chamuditha,`,
+    '',
+    `I am interested in the ${packageTitle} option for ${serviceLabel}.`,
+    '',
+    'Project summary:',
+    'Preferred timeline:',
+    'Business or product name:',
+  ].join('\n');
+
+  return `mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function PricingTabs({ activeServiceId, onChange }) {
+  return (
+    <div className="pricing-tabs" role="tablist" aria-label="Pricing service type">
+      {pricingServices.map((service) => {
+        const selected = service.id === activeServiceId;
+        return (
+          <button
+            key={service.id}
+            id={`pricing-tab-${service.id}`}
+            type="button"
+            className={`pricing-tab ${selected ? 'is-active' : ''}`}
+            role="tab"
+            aria-selected={selected}
+            aria-controls={`pricing-panel-${service.id}`}
+            onClick={() => onChange(service.id)}
+          >
+            <Icon name={service.icon} size={15} />
+            <span>{service.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function PricingCard({ plan, service }) {
+  const featured = Boolean(plan.badge);
+
+  return (
+    <article className={`pricing-card card-3d ${featured ? 'pricing-card-featured' : ''}`}>
+      <span className="pricing-card-accent" aria-hidden="true" />
+      <div className="pricing-card-header">
+        <div>
+          <p className="pricing-tier">{plan.tier}</p>
+          <h3>{plan.title}</h3>
+        </div>
+        {plan.badge ? <span className="pricing-badge">{plan.badge}</span> : null}
+      </div>
+
+      <p className="pricing-card-description">{plan.description}</p>
+
+      <div className="pricing-price">
+        <span>Starting from</span>
+        <strong>{plan.price}</strong>
+      </div>
+
+      <ul className="pricing-feature-list">
+        {plan.features.map((feature) => (
+          <li key={feature}>
+            <Icon name="check" size={13} />
+            <span>{feature}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="pricing-card-footer">
+        <span className="pricing-delivery">
+          <Icon name="clock" size={12} /> {plan.delivery}
+        </span>
+        <a className="pricing-select-button" href={getPricingInquiryHref(service.label, plan.title)}>
+          {plan.button} <Icon name="arrowUpRight" size={14} />
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function PricingPage() {
+  const [activeServiceId, setActiveServiceId] = useState(pricingServices[0].id);
+  const activeService = pricingServices.find((service) => service.id === activeServiceId) || pricingServices[0];
+  const customQuoteHref = getPricingInquiryHref(activeService.label);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') {
+      return;
+    }
+
+    try {
+      window.scrollTo(0, 0);
+    } catch (error) {
+      void error;
+    }
+  }, []);
+
+  return (
+    <div className="bolt-shell pricing-page-shell">
+      <Helmet>
+        <title>{pricingPageTitle}</title>
+        <meta name="description" content={pricingPageDescription} />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <link rel="canonical" href={`${siteUrl}/pricing`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${siteUrl}/pricing`} />
+        <meta property="og:title" content={pricingPageTitle} />
+        <meta property="og:description" content={pricingPageDescription} />
+        <meta property="og:image" content={socialImage} />
+        <meta property="og:site_name" content="Chamuditha Portfolio" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pricingPageTitle} />
+        <meta name="twitter:description" content={pricingPageDescription} />
+        <meta name="twitter:image" content={socialImage} />
+        <meta name="theme-color" content="#00020a" />
+        <link rel="icon" href={withBase('/assets/imgs/favicon.ico')} />
+      </Helmet>
+      <div className="noise" aria-hidden="true" />
+      <Navigation />
+      <main className="pricing-main">
+        <section className="pricing-hero">
+          <div className="hero-grid-mask" aria-hidden="true" />
+          <div className="hero-glow hero-glow-a" aria-hidden="true" />
+          <div className="hero-glow hero-glow-b" aria-hidden="true" />
+          <div className="section-inner pricing-hero-inner">
+            <div className="pricing-hero-copy">
+              <p className="hero-eyebrow">Pricing</p>
+              <h1>Flexible Packages for Your Next Digital Product</h1>
+              <p>
+                Choose a package that matches your goals, requirements and budget. Every price is a starting point,
+                with the final quotation shaped around your exact feature set.
+              </p>
+              <div className="pricing-hero-actions">
+                <a className="primary-button" href="#pricing-options">
+                  Explore Packages <Icon name="arrowDown" size={15} />
+                </a>
+                <a className="secondary-button" href={customQuoteHref}>
+                  Request a Quote <Icon name="arrowUpRight" size={15} />
+                </a>
+              </div>
+            </div>
+
+            <aside className="pricing-hero-panel card-3d" aria-label="Pricing highlights">
+              <span className="pricing-panel-accent" aria-hidden="true" />
+              <p>Popular starting points</p>
+              <div className="pricing-snapshot-list">
+                <div>
+                  <span>Website</span>
+                  <strong>Rs. 45,000+</strong>
+                </div>
+                <div>
+                  <span>Mobile app</span>
+                  <strong>Rs. 120,000+</strong>
+                </div>
+                <div>
+                  <span>Support</span>
+                  <strong>30-90 days</strong>
+                </div>
+              </div>
+              <div className="pricing-panel-note">
+                <Icon name="sparkles" size={14} />
+                <span>Standard packages are tuned for most growing businesses.</span>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="pricing-options" className="section pricing-packages-section">
+          <div className="section-divider" />
+          <Reveal className="section-inner">
+            <SectionHeading
+              index="01. Choose Your Service"
+              title="Flexible"
+              accent="Packages"
+              description={activeService.intro}
+            />
+            <PricingTabs activeServiceId={activeServiceId} onChange={setActiveServiceId} />
+            <div
+              id={`pricing-panel-${activeService.id}`}
+              className="pricing-grid"
+              role="tabpanel"
+              aria-labelledby={`pricing-tab-${activeService.id}`}
+            >
+              {activeService.packages.map((plan) => (
+                <PricingCard key={plan.title} plan={plan} service={activeService} />
+              ))}
+            </div>
+          </Reveal>
+        </section>
+
+        <section className="section pricing-custom-section">
+          <div className="section-divider" />
+          <Reveal className="section-inner">
+            <div className="pricing-custom-panel card-3d">
+              <div>
+                <p className="pricing-tier">Custom Project</p>
+                <h2>Need Something More Custom?</h2>
+                <p>
+                  Every project is different. Contact me for a personalized quotation based on your exact
+                  requirements.
+                </p>
+              </div>
+              <a className="primary-button" href={customQuoteHref}>
+                Request a Custom Quote <Icon name="send" size={15} />
+              </a>
+            </div>
+          </Reveal>
+        </section>
+
+        <section className="section pricing-info-section">
+          <div className="section-divider" />
+          <Reveal className="section-inner pricing-info-layout">
+            <div className="pricing-info-copy">
+              <SectionHeading
+                index="02. Important Information"
+                title="Before You"
+                accent="Start"
+                align="left"
+                description="A few practical details that keep quotations clear and project scope realistic."
+              />
+              <ul className="pricing-info-list">
+                {pricingImportantInfo.map((item) => (
+                  <li key={item}>
+                    <Icon name="check" size={13} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="pricing-faq-panel">
+              <p className="pricing-tier">Frequently Asked Questions</p>
+              <div className="pricing-faq-list">
+                {pricingFaqs.map((item) => (
+                  <details key={item.question} className="pricing-faq-item">
+                    <summary>{item.question}</summary>
+                    <p>{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 function Footer() {
+  const location = useLocation();
+  const resolveFooterHref = (href) => (href.startsWith('#') && location.pathname !== '/' ? `/${href}` : href);
+  const homeHref = resolveFooterHref('#hero');
+  const contactHref = resolveFooterHref('#contact');
   const footerGroups = [
     {
       title: 'Navigate',
@@ -2348,6 +2603,7 @@ function Footer() {
       links: [
         ['Education', '#education'],
         ['Certifications', '#education'],
+        ['Pricing', '/pricing'],
         ['Contact', '#contact'],
         ['Hire Me', '#contact'],
       ],
@@ -2365,14 +2621,14 @@ function Footer() {
             <h3>Have a project in mind?</h3>
             <span>Always open to discussing new opportunities, collaborations, or just a friendly chat.</span>
           </div>
-          <a href="#contact">
+          <a href={contactHref}>
             Start a Conversation <Icon name="mail" size={15} />
           </a>
         </div>
 
         <div className="footer-grid">
           <div className="footer-brand-column">
-            <a href="#hero" className="footer-brand">
+            <a href={homeHref} className="footer-brand">
               <span>
                 <strong>
                   ChamudithaPerera.Online
@@ -2395,7 +2651,7 @@ function Footer() {
               <ul>
                 {group.links.map(([label, href]) => (
                   <li key={label}>
-                    <a href={href}>
+                    <a href={resolveFooterHref(href)}>
                       <i /> {label}
                     </a>
                   </li>
@@ -2432,7 +2688,7 @@ function Footer() {
           </p>
           <div>
             <span>All rights reserved</span>
-            <a href="#hero" aria-label="Back to top">
+            <a href={homeHref} aria-label="Back to top">
               <Icon name="arrowUp" size={15} />
             </a>
           </div>
@@ -2484,5 +2740,5 @@ function Home() {
   );
 }
 
-export { ProjectsPage };
+export { PricingPage, ProjectsPage };
 export default Home;
