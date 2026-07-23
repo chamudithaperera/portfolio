@@ -338,6 +338,50 @@ app.get('/api/admin/messages', requireAdmin, async (req, res) => {
   });
 });
 
+app.patch('/api/admin/messages/:id/status', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  const status = String(req.body?.status || '').trim().toLowerCase();
+
+  if (!id) {
+    return fail(res, 400, 'A valid message id is required.');
+  }
+
+  if (!['new', 'read'].includes(status)) {
+    return fail(res, 400, 'Message status must be read or new.');
+  }
+
+  const { data, error } = await supabase
+    .from('contact_messages')
+    .update({ status })
+    .eq('id', id)
+    .select('id, name, email, phone, subject, message, status, created_at')
+    .single();
+
+  if (error) {
+    console.error('Supabase message status update failed:', error);
+    return fail(res, 500, 'We could not update that message right now.');
+  }
+
+  return res.json({ ok: true, message: data });
+});
+
+app.delete('/api/admin/messages/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+
+  if (!id) {
+    return fail(res, 400, 'A valid message id is required.');
+  }
+
+  const { error } = await supabase.from('contact_messages').delete().eq('id', id);
+
+  if (error) {
+    console.error('Supabase message delete failed:', error);
+    return fail(res, 500, 'We could not delete that message right now.');
+  }
+
+  return res.json({ ok: true, deleted: true });
+});
+
 app.get('/api/admin/dashboard', requireAdmin, async (_req, res) => {
   try {
     const summary = await getDashboardSummary();

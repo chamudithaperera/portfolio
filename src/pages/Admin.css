@@ -582,7 +582,6 @@
   font-size: 1.35rem;
 }
 
-.admin-message-workspace,
 .admin-dual-column {
   display: grid;
   gap: 1rem;
@@ -590,10 +589,13 @@
 }
 
 .admin-message-workspace {
-  min-height: calc(100vh - 9.5rem);
+  display: grid;
+  gap: 1rem;
+  min-height: 0;
 }
 
 .admin-message-list-panel,
+.admin-message-table-card,
 .admin-list-panel,
 .admin-editor-panel,
 .admin-chat-panel {
@@ -621,6 +623,75 @@
   border: 0;
   border-radius: 0;
   background: transparent;
+}
+
+.admin-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-message-table {
+  width: 100%;
+  min-width: 1100px;
+  border-collapse: collapse;
+  color: var(--admin-text);
+}
+
+.admin-message-table th {
+  padding: 0.88rem 0.8rem;
+  color: var(--admin-muted-strong);
+  background: var(--admin-panel-soft);
+  border-bottom: 1px solid var(--admin-border);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.admin-message-table td {
+  padding: 0.9rem 0.8rem;
+  border-bottom: 1px solid var(--admin-border);
+  color: var(--admin-text);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.admin-message-table td strong {
+  color: var(--admin-text);
+  font-size: 0.92rem;
+}
+
+.admin-message-preview {
+  max-width: 390px;
+  color: var(--admin-muted-strong) !important;
+  line-height: 1.45;
+}
+
+.admin-table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.admin-compact-button {
+  min-height: 2.15rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.admin-status-action {
+  min-width: 5.7rem;
+  color: var(--admin-accent);
+  border-color: #f4d1c7;
+  background: #fff7f4;
+}
+
+.admin-icon-button {
+  width: 2.15rem;
+  min-width: 2.15rem;
+  min-height: 2.15rem;
+  padding: 0;
 }
 
 .admin-message-list,
@@ -870,6 +941,29 @@
   line-height: 1.5;
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.admin-modal {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, 760px);
+  max-height: calc(100vh - 3rem);
+  overflow: auto;
+  padding: 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 28px 70px rgba(17, 24, 39, 0.22);
 }
 
 .admin-action-row {

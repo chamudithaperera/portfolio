@@ -64,6 +64,7 @@ const iconPaths = {
   education: ['M12 4 3 8l9 4 9-4-9-4z', 'M6 10v4c0 2 3 4 6 4s6-2 6-4v-4'],
   delete: ['M6 7h12', 'M9 7V5h6v2', 'M8 7v12h8V7', 'M10 11v5', 'M14 11v5'],
   edit: ['M4 20h4l10-10-4-4L4 16v4z', 'M13 7l4 4'],
+  eye: ['M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z', 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'],
   grid: ['M4 4h7v7H4z', 'M13 4h7v7h-7z', 'M4 13h7v7H4z', 'M13 13h7v7h-7z'],
   bell: ['M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8', 'M10 20h4'],
   home: ['M3 11l9-7 9 7', 'M5 10v10h14V10', 'M9 20v-6h6v6'],
@@ -124,15 +125,6 @@ function formatShortDate(value) {
     month: 'short',
     day: 'numeric',
   }).format(date);
-}
-
-function initials(value) {
-  const parts = String(value || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-  if (!parts.length) return '?';
-  return parts.slice(0, 2).map((part) => part[0]).join('').toUpperCase();
 }
 
 function splitCommaList(value) {
@@ -326,6 +318,7 @@ function Admin() {
   const [messagesError, setMessagesError] = useState('');
   const [messageSearch, setMessageSearch] = useState('');
   const [selectedMessageId, setSelectedMessageId] = useState('');
+  const [messageActionPending, setMessageActionPending] = useState('');
 
   const [projects, setProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
@@ -375,7 +368,7 @@ function Admin() {
   const [certificateImagePreview, setCertificateImagePreview] = useState('');
 
   const selectedMessage = useMemo(
-    () => messages.find((message) => String(message.id) === String(selectedMessageId)) || messages[0] || null,
+    () => messages.find((message) => String(message.id) === String(selectedMessageId)) || null,
     [messages, selectedMessageId],
   );
 
@@ -431,12 +424,7 @@ function Admin() {
       const response = await apiRequest(`/api/admin/messages?search=${encodeURIComponent(query)}`);
       const loaded = response.messages || [];
       setMessages(loaded);
-      setSelectedMessageId((current) => {
-        if (current && loaded.some((item) => String(item.id) === String(current))) {
-          return current;
-        }
-        return loaded[0] ? String(loaded[0].id) : '';
-      });
+      setSelectedMessageId((current) => (current && loaded.some((item) => String(item.id) === String(current)) ? current : ''));
     } catch (error) {
       setMessagesError(error.message || 'Unable to load messages.');
     } finally {
@@ -708,6 +696,7 @@ function Admin() {
       setCertificateImageActionPending(false);
       setMessageSearch('');
       setContentMode('experience');
+      setMessageActionPending('');
       setLoginForm((current) => ({ ...current, password: '' }));
     } catch (error) {
       setDashboardError(error.message || 'Logout failed.');
@@ -719,6 +708,49 @@ function Admin() {
   const updateProjectForm = (event) => {
     const { name, type, value, checked } = event.target;
     setProjectForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handleMessageStatusToggle = async (message) => {
+    if (!message?.id) return;
+    const nextStatus = message.status === 'read' ? 'new' : 'read';
+    const pendingKey = `status-${message.id}`;
+    setMessageActionPending(pendingKey);
+    setMessagesError('');
+
+    try {
+      const response = await apiRequest(`/api/admin/messages/${message.id}/status`, {
+        method: 'PATCH',
+        body: { status: nextStatus },
+      });
+      const updated = response.message;
+      setMessages((current) => current.map((item) => (String(item.id) === String(message.id) ? { ...item, ...updated } : item)));
+      await loadDashboard();
+    } catch (error) {
+      setMessagesError(error.message || 'Unable to update this message.');
+    } finally {
+      setMessageActionPending('');
+    }
+  };
+
+  const handleMessageDelete = async (message) => {
+    if (!message?.id) return;
+    const confirmed = window.confirm(`Delete message from ${message.name}?`);
+    if (!confirmed) return;
+
+    const pendingKey = `delete-${message.id}`;
+    setMessageActionPending(pendingKey);
+    setMessagesError('');
+
+    try {
+      await apiRequest(`/api/admin/messages/${message.id}`, { method: 'DELETE' });
+      setMessages((current) => current.filter((item) => String(item.id) !== String(message.id)));
+      setSelectedMessageId((current) => (String(current) === String(message.id) ? '' : current));
+      await loadDashboard();
+    } catch (error) {
+      setMessagesError(error.message || 'Unable to delete this message.');
+    } finally {
+      setMessageActionPending('');
+    }
   };
 
   const updateEducationForm = (event) => {
@@ -1381,13 +1413,16 @@ function Admin() {
 
           {activeTab === 'messages' ? (
             <section className="admin-message-workspace">
-              <aside className="admin-card admin-message-list-panel">
+              <div className="admin-card admin-message-table-card">
                 <div className="admin-card-header">
                   <div>
-                    <p className="admin-card-label">Inbox</p>
-                    <h2>User messages</h2>
+                    <p className="admin-card-label">Read and clear</p>
+                    <h2>Website messages</h2>
                   </div>
-                  <span className="admin-pill">{messages.length}</span>
+                  <button type="button" className="admin-secondary-button" onClick={() => loadMessages(messageSearch)} disabled={messagesLoading}>
+                    <Icon name="refresh" size={14} />
+                    Refresh
+                  </button>
                 </div>
 
                 <label className="admin-search">
@@ -1401,79 +1436,105 @@ function Admin() {
 
                 {messagesError ? <div className="admin-inline-error">{messagesError}</div> : null}
 
-                <div className="admin-message-list">
-                  {messagesLoading ? (
-                    <div className="admin-loading-panel">
-                      <span className="admin-spinner" aria-hidden="true" />
-                      Loading messages...
-                    </div>
-                  ) : messages.length ? (
-                    messages.map((message) => {
-                      const active = String(message.id) === String(selectedMessageId || messages[0]?.id);
-                      const snippet = String(message.message || '').replace(/\s+/g, ' ').slice(0, 92);
-                      return (
-                        <button
-                          key={message.id}
-                          type="button"
-                          className={`admin-message-item ${active ? 'is-active' : ''}`}
-                          onClick={() => setSelectedMessageId(String(message.id))}
-                        >
-                          <span className="admin-message-avatar">{initials(message.name)}</span>
-                          <div className="admin-message-copy">
-                            <div className="admin-message-top">
-                              <strong>{message.name}</strong>
-                              <span>{formatShortDate(message.created_at)}</span>
-                            </div>
-                            <p>{message.subject}</p>
-                            <small>{snippet}</small>
-                          </div>
-                          <span className={`admin-status-dot ${message.status === 'read' ? 'is-read' : 'is-new'}`} />
-                        </button>
-                      );
-                    })
-                  ) : (
+                {messagesLoading ? (
+                  <div className="admin-loading-panel">
+                    <span className="admin-spinner" aria-hidden="true" />
+                    Loading messages...
+                  </div>
+                ) : messages.length ? (
+                  <div className="admin-table-scroll">
+                    <table className="admin-message-table">
+                      <thead>
+                        <tr>
+                          <th>Status</th>
+                          <th>Name</th>
+                          <th>Phone</th>
+                          <th>Event</th>
+                          <th>Message</th>
+                          <th>Received</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {messages.map((message) => {
+                          const status = message.status === 'read' ? 'read' : 'new';
+                          const isRead = status === 'read';
+                          const statusPending = messageActionPending === `status-${message.id}`;
+                          const deletePending = messageActionPending === `delete-${message.id}`;
+                          const snippet = String(message.message || '').replace(/\s+/g, ' ').slice(0, 86);
+
+                          return (
+                            <tr key={message.id}>
+                              <td>
+                                <span className={`admin-status-badge ${isRead ? 'is-read' : 'is-new'}`}>
+                                  {isRead ? 'Read' : 'Unread'}
+                                </span>
+                              </td>
+                              <td>
+                                <strong>{message.name}</strong>
+                              </td>
+                              <td>{message.phone || 'Not provided'}</td>
+                              <td>{message.subject || 'Website inquiry'}</td>
+                              <td className="admin-message-preview">{snippet}</td>
+                              <td>{formatDate(message.created_at)}</td>
+                              <td>
+                                <div className="admin-table-actions">
+                                  <button
+                                    type="button"
+                                    className="admin-secondary-button admin-compact-button"
+                                    onClick={() => setSelectedMessageId(String(message.id))}
+                                  >
+                                    <Icon name="eye" size={14} />
+                                    View
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="admin-secondary-button admin-compact-button admin-status-action"
+                                    onClick={() => handleMessageStatusToggle(message)}
+                                    disabled={statusPending}
+                                  >
+                                    {statusPending ? 'Saving...' : isRead ? 'Unread' : 'Read'}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="admin-danger-button admin-icon-button"
+                                    onClick={() => handleMessageDelete(message)}
+                                    disabled={deletePending}
+                                    aria-label={`Delete message from ${message.name}`}
+                                  >
+                                    {deletePending ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="trash" size={14} />}
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
                     <EmptyState
                       icon="inbox"
                       title="No messages found"
                       description={messageSearch ? 'Try another search term.' : 'Incoming contact submissions will show up here.'}
                     />
                   )}
-                </div>
-              </aside>
+              </div>
 
-              <article className="admin-card admin-chat-panel">
-                {selectedMessage ? (
-                  <>
+              {selectedMessage ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => setSelectedMessageId('')}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-message-modal-title" onClick={(event) => event.stopPropagation()}>
                     <div className="admin-card-header">
                       <div>
-                        <p className="admin-card-label">Selected message</p>
-                        <h2>{selectedMessage.subject}</h2>
+                        <p className="admin-card-label">Message details</p>
+                        <h2 id="admin-message-modal-title">{selectedMessage.subject || 'Website inquiry'}</h2>
                         <p className="admin-muted">
                           From {selectedMessage.name} on {formatDate(selectedMessage.created_at)}
                         </p>
                       </div>
-                      <span className={`admin-status-badge ${selectedMessage.status === 'read' ? 'is-read' : 'is-new'}`}>
-                        {selectedMessage.status || 'new'}
-                      </span>
-                    </div>
-
-                    <div className="admin-chat-meta">
-                      <span>
-                        <Icon name="inbox" size={12} />
-                        Portfolio contact form
-                      </span>
-                      <span>
-                        <Icon name="calendar" size={12} />
-                        {formatDate(selectedMessage.created_at)}
-                      </span>
-                    </div>
-
-                    <div className="admin-chat-thread">
-                      <div className="admin-chat-note">
-                        <span className="admin-chat-note-label">Visitor</span>
-                        <p>{selectedMessage.message}</p>
-                        <small>{formatDate(selectedMessage.created_at)}</small>
-                      </div>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => setSelectedMessageId('')} aria-label="Close message details">
+                        <Icon name="close" size={15} />
+                      </button>
                     </div>
 
                     <div className="admin-contact-grid">
@@ -1500,12 +1561,26 @@ function Admin() {
                           <Icon name="tag" size={12} />
                           Status
                         </span>
-                        <span className="admin-muted">{selectedMessage.status || 'new'}</span>
+                        <span className={`admin-status-badge ${selectedMessage.status === 'read' ? 'is-read' : 'is-new'}`}>
+                          {selectedMessage.status === 'read' ? 'Read' : 'Unread'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="admin-chat-thread">
+                      <div className="admin-chat-note">
+                        <span className="admin-chat-note-label">Visitor message</span>
+                        <p>{selectedMessage.message}</p>
+                        <small>{formatDate(selectedMessage.created_at)}</small>
                       </div>
                     </div>
 
                     <div className="admin-action-row">
-                      <a className="admin-primary-button" href={`mailto:${selectedMessage.email}`}>
+                      <button type="button" className="admin-primary-button" onClick={() => handleMessageStatusToggle(selectedMessage)} disabled={messageActionPending === `status-${selectedMessage.id}`}>
+                        <Icon name="check" size={14} />
+                        {messageActionPending === `status-${selectedMessage.id}` ? 'Saving...' : selectedMessage.status === 'read' ? 'Mark unread' : 'Mark read'}
+                      </button>
+                      <a className="admin-secondary-button" href={`mailto:${selectedMessage.email}`}>
                         <Icon name="mail" size={14} />
                         Reply by email
                       </a>
@@ -1516,15 +1591,9 @@ function Admin() {
                         </a>
                       ) : null}
                     </div>
-                  </>
-                ) : (
-                  <EmptyState
-                    icon="messages"
-                    title="No message selected"
-                    description="Pick a conversation from the list to see the full WhatsApp-style preview."
-                  />
-                )}
-              </article>
+                  </article>
+                </div>
+              ) : null}
             </section>
           ) : null}
 
