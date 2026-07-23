@@ -2332,21 +2332,6 @@ function Contact() {
   );
 }
 
-function getPricingInquiryHref(serviceLabel, packageTitle = 'Custom Project') {
-  const subject = `${packageTitle} inquiry`;
-  const body = [
-    `Hi Chamuditha,`,
-    '',
-    `I am interested in the ${packageTitle} option for ${serviceLabel}.`,
-    '',
-    'Project summary:',
-    'Preferred timeline:',
-    'Business or product name:',
-  ].join('\n');
-
-  return `mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-
 function PricingTabs({ activeServiceId, onChange }) {
   return (
     <div className="pricing-tabs" role="tablist" aria-label="Pricing service type">
@@ -2372,8 +2357,10 @@ function PricingTabs({ activeServiceId, onChange }) {
   );
 }
 
-function PricingCard({ plan, service }) {
+function PricingCard({ plan }) {
   const featured = Boolean(plan.badge);
+  const visibleFeatures = plan.features.slice(0, 5);
+  const hiddenFeatures = plan.features.slice(5);
 
   return (
     <article className={`pricing-card card-3d ${featured ? 'pricing-card-featured' : ''}`}>
@@ -2386,15 +2373,15 @@ function PricingCard({ plan, service }) {
         {plan.badge ? <span className="pricing-badge">{plan.badge}</span> : null}
       </div>
 
-      <p className="pricing-card-description">{plan.description}</p>
-
       <div className="pricing-price">
         <span>Starting from</span>
         <strong>{plan.price}</strong>
       </div>
 
+      <p className="pricing-card-description">{plan.description}</p>
+
       <ul className="pricing-feature-list">
-        {plan.features.map((feature) => (
+        {visibleFeatures.map((feature) => (
           <li key={feature}>
             <Icon name="check" size={13} />
             <span>{feature}</span>
@@ -2402,11 +2389,25 @@ function PricingCard({ plan, service }) {
         ))}
       </ul>
 
+      {hiddenFeatures.length ? (
+        <details className="pricing-feature-details">
+          <summary>View all features</summary>
+          <ul className="pricing-feature-list pricing-feature-list-extra">
+            {hiddenFeatures.map((feature) => (
+              <li key={feature}>
+                <Icon name="check" size={13} />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+
       <div className="pricing-card-footer">
         <span className="pricing-delivery">
           <Icon name="clock" size={12} /> {plan.delivery}
         </span>
-        <a className="pricing-select-button" href={getPricingInquiryHref(service.label, plan.title)}>
+        <a className="pricing-select-button" href="#pricing-contact">
           {plan.button} <Icon name="arrowUpRight" size={14} />
         </a>
       </div>
@@ -2414,10 +2415,167 @@ function PricingCard({ plan, service }) {
   );
 }
 
+function PricingContact() {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    projectType: 'Website project',
+    budget: '',
+    message: '',
+  });
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
+  const sending = status === 'sending';
+  const sent = status === 'success';
+
+  const update = (event) => {
+    const { name, value } = event.target;
+    setForm((current) => ({ ...current, [name]: value }));
+  };
+
+  const submit = async (event) => {
+    event.preventDefault();
+    setStatus('sending');
+    setError('');
+
+    try {
+      await apiRequest('/api/contact/messages', {
+        method: 'POST',
+        body: {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          subject: `Pricing quote - ${form.projectType}`,
+          message: [
+            `Project type: ${form.projectType}`,
+            form.budget ? `Budget: ${form.budget}` : null,
+            '',
+            form.message,
+          ]
+            .filter(Boolean)
+            .join('\n'),
+        },
+      });
+      setStatus('success');
+      setForm({
+        name: '',
+        email: '',
+        phone: '',
+        projectType: 'Website project',
+        budget: '',
+        message: '',
+      });
+    } catch (submissionError) {
+      setStatus('error');
+      setError(submissionError.message || 'Something went wrong. Please try again.');
+    }
+  };
+
+  return (
+    <section id="pricing-contact" className="section pricing-contact-section">
+      <div className="section-divider" />
+      <Reveal className="section-inner pricing-contact-layout">
+        <div className="pricing-contact-copy">
+          <p className="pricing-tier">Request a Quote</p>
+          <h2>Tell me what you want to build.</h2>
+          <p>
+            Share the project type, timeline, and important features. I will reply with the best package or a custom
+            quotation.
+          </p>
+          <div className="pricing-contact-direct">
+            <a href={`mailto:${profile.email}`}>
+              <Icon name="mail" size={14} />
+              {profile.email}
+            </a>
+            <a href={`tel:${profile.phone}`}>
+              <Icon name="phone" size={14} />
+              {profile.phone}
+            </a>
+          </div>
+        </div>
+
+        <div className="pricing-contact-panel">
+          {sent ? (
+            <div className="pricing-contact-success" role="status">
+              <span className="success-icon">
+                <Icon name="check" size={24} />
+              </span>
+              <h3>Quote request sent</h3>
+              <p>Thanks. I will review your details and get back to you shortly.</p>
+              <button type="button" onClick={() => setStatus('idle')}>
+                Send another request
+              </button>
+            </div>
+          ) : (
+            <form className="pricing-contact-form" onSubmit={submit}>
+              <div className="form-row">
+                <label>
+                  <span>Name</span>
+                  <input name="name" value={form.name} onChange={update} required placeholder="Your name" />
+                </label>
+                <label>
+                  <span>Email</span>
+                  <input
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={update}
+                    required
+                    placeholder="your@email.com"
+                  />
+                </label>
+              </div>
+              <div className="form-row">
+                <label>
+                  <span>Phone</span>
+                  <input name="phone" type="tel" value={form.phone} onChange={update} placeholder="+94 12 345 6789" />
+                </label>
+                <label>
+                  <span>Project type</span>
+                  <select name="projectType" value={form.projectType} onChange={update}>
+                    <option>Website project</option>
+                    <option>Mobile app project</option>
+                    <option>Custom platform</option>
+                    <option>Maintenance or upgrade</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                <span>Budget range</span>
+                <input name="budget" value={form.budget} onChange={update} placeholder="Example: Rs. 85,000 - 150,000" />
+              </label>
+              <label>
+                <span>Project details</span>
+                <textarea
+                  name="message"
+                  value={form.message}
+                  onChange={update}
+                  required
+                  rows="5"
+                  placeholder="Tell me about your pages, screens, features, deadline, and business goals."
+                />
+              </label>
+              {error ? (
+                <div className="contact-form-error" role="alert">
+                  {error}
+                </div>
+              ) : null}
+              <button className="submit-button" type="submit" disabled={sending}>
+                {sending ? <span className="spinner" aria-label="Sending" /> : <Icon name="send" size={15} />}
+                {sending ? 'Sending...' : 'Send Quote Request'}
+              </button>
+            </form>
+          )}
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
 function PricingPage() {
   const [activeServiceId, setActiveServiceId] = useState(pricingServices[0].id);
   const activeService = pricingServices.find((service) => service.id === activeServiceId) || pricingServices[0];
-  const customQuoteHref = getPricingInquiryHref(activeService.label);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
@@ -2461,43 +2619,24 @@ function PricingPage() {
           <div className="section-inner pricing-hero-inner">
             <div className="pricing-hero-copy">
               <p className="hero-eyebrow">Pricing</p>
-              <h1>Flexible Packages for Your Next Digital Product</h1>
+              <h1>Simple Pricing for Websites and Apps</h1>
               <p>
-                Choose a package that matches your goals, requirements and budget. Every price is a starting point,
-                with the final quotation shaped around your exact feature set.
+                Pick a starting package, then request a quote with your exact features, deadline, and budget.
               </p>
               <div className="pricing-hero-actions">
                 <a className="primary-button" href="#pricing-options">
                   Explore Packages <Icon name="arrowDown" size={15} />
                 </a>
-                <a className="secondary-button" href={customQuoteHref}>
+                <a className="secondary-button" href="#pricing-contact">
                   Request a Quote <Icon name="arrowUpRight" size={15} />
                 </a>
               </div>
+              <div className="pricing-hero-points" aria-label="Pricing summary">
+                <span>Website from Rs. 45,000</span>
+                <span>Mobile app from Rs. 120,000</span>
+                <span>Support included</span>
+              </div>
             </div>
-
-            <aside className="pricing-hero-panel card-3d" aria-label="Pricing highlights">
-              <span className="pricing-panel-accent" aria-hidden="true" />
-              <p>Popular starting points</p>
-              <div className="pricing-snapshot-list">
-                <div>
-                  <span>Website</span>
-                  <strong>Rs. 45,000+</strong>
-                </div>
-                <div>
-                  <span>Mobile app</span>
-                  <strong>Rs. 120,000+</strong>
-                </div>
-                <div>
-                  <span>Support</span>
-                  <strong>30-90 days</strong>
-                </div>
-              </div>
-              <div className="pricing-panel-note">
-                <Icon name="sparkles" size={14} />
-                <span>Standard packages are tuned for most growing businesses.</span>
-              </div>
-            </aside>
           </div>
         </section>
 
@@ -2518,7 +2657,7 @@ function PricingPage() {
               aria-labelledby={`pricing-tab-${activeService.id}`}
             >
               {activeService.packages.map((plan) => (
-                <PricingCard key={plan.title} plan={plan} service={activeService} />
+                <PricingCard key={plan.title} plan={plan} />
               ))}
             </div>
           </Reveal>
@@ -2536,7 +2675,7 @@ function PricingPage() {
                   requirements.
                 </p>
               </div>
-              <a className="primary-button" href={customQuoteHref}>
+              <a className="primary-button" href="#pricing-contact">
                 Request a Custom Quote <Icon name="send" size={15} />
               </a>
             </div>
@@ -2577,6 +2716,7 @@ function PricingPage() {
             </div>
           </Reveal>
         </section>
+        <PricingContact />
       </main>
       <Footer />
     </div>
