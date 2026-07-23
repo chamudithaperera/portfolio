@@ -65,6 +65,8 @@ const iconPaths = {
   delete: ['M6 7h12', 'M9 7V5h6v2', 'M8 7v12h8V7', 'M10 11v5', 'M14 11v5'],
   edit: ['M4 20h4l10-10-4-4L4 16v4z', 'M13 7l4 4'],
   grid: ['M4 4h7v7H4z', 'M13 4h7v7h-7z', 'M4 13h7v7H4z', 'M13 13h7v7h-7z'],
+  bell: ['M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8', 'M10 20h4'],
+  home: ['M3 11l9-7 9 7', 'M5 10v10h14V10', 'M9 20v-6h6v6'],
   inbox: ['M4 5h16v14H4z', 'M4 13h4l2 3h4l2-3h4'],
   lock: ['M8 11V8a4 4 0 0 1 8 0v3', 'M6 11h12v9H6z', 'M12 15v2'],
   mail: ['M4 5h16v14H4z', 'm4 7 8 6 8-6'],
@@ -1231,7 +1233,7 @@ function Admin() {
             </div>
             <div>
               <strong>Portfolio Admin</strong>
-              <span>Dark workspace</span>
+              <span>Website management</span>
             </div>
           </div>
 
@@ -1275,7 +1277,7 @@ function Admin() {
             <div>
               <p className="admin-kicker">
                 <Icon name="spark" size={12} />
-                Clean admin workspace
+                Editable website content
               </p>
               <h1>
                 {activeTab === 'dashboard' && 'Dashboard'}
@@ -1292,14 +1294,14 @@ function Admin() {
             </div>
 
             <div className="admin-header-actions">
-              <button type="button" className="admin-secondary-button" onClick={refreshDashboardTab} disabled={dashboardLoading || messagesLoading}>
-                <Icon name="refresh" size={14} />
-                Refresh Data
-              </button>
               <a href="/" className="admin-secondary-button">
-                <Icon name="arrowLeft" size={14} />
-                Back to site
+                <Icon name="home" size={14} />
+                Public site
               </a>
+              <button type="button" className="admin-secondary-button admin-notification-button" onClick={refreshDashboardTab} disabled={dashboardLoading || messagesLoading}>
+                <Icon name="bell" size={14} />
+                {stats.unread}
+              </button>
             </div>
           </header>
 
