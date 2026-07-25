@@ -30,6 +30,8 @@ const {
   validateContactMessage,
   validateEducationPayload,
   validateExperiencePayload,
+  validatePricingPackagePayload,
+  validatePricingServicePayload,
   validateProjectPayload,
 } = require('./validation');
 const {
@@ -40,10 +42,15 @@ const {
   getDashboardSummary,
   insertRow,
   listPortfolioContent,
+  listPricingServices,
   mapCertificate,
   mapEducation,
   mapExperience,
+  mapPricingPackage,
+  mapPricingService,
   mapProject,
+  pricingPackagePayload,
+  pricingServicePayload,
   projectPayload,
   updateRow,
   TABLES,
@@ -128,6 +135,19 @@ app.get('/api/content/portfolio', async (_req, res) => {
   } catch (error) {
     console.error('Portfolio content lookup failed:', error);
     return fail(res, 500, 'We could not load portfolio content right now.');
+  }
+});
+
+app.get('/api/content/pricing', async (_req, res) => {
+  try {
+    const pricingServices = await listPricingServices(false);
+    return res.json({
+      ok: true,
+      pricingServices,
+    });
+  } catch (error) {
+    console.error('Pricing content lookup failed:', error);
+    return fail(res, 500, 'We could not load pricing content right now.');
   }
 });
 
@@ -399,6 +419,122 @@ app.get('/api/admin/content', requireAdmin, async (_req, res) => {
   } catch (error) {
     console.error('Admin content load failed:', error);
     return fail(res, 500, 'We could not load the portfolio content right now.');
+  }
+});
+
+app.get('/api/admin/pricing', requireAdmin, async (_req, res) => {
+  try {
+    const pricingServices = await listPricingServices(true);
+    const pricingPackages = pricingServices.flatMap((service) =>
+      service.packages.map((item) => ({
+        ...item,
+        serviceLabel: service.label,
+      })),
+    );
+    return res.json({ ok: true, pricingServices, pricingPackages });
+  } catch (error) {
+    console.error('Pricing admin load failed:', error);
+    return fail(res, 500, 'We could not load pricing content right now.');
+  }
+});
+
+app.post('/api/admin/pricing/services', requireAdmin, async (req, res) => {
+  const result = validatePricingServicePayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the pricing service form fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(TABLES.pricingServices, pricingServicePayload(result.values), mapPricingService);
+    return res.status(201).json({ ok: true, pricingService: created });
+  } catch (error) {
+    console.error('Pricing service create failed:', error);
+    return fail(res, 500, 'We could not save that pricing service right now.');
+  }
+});
+
+app.put('/api/admin/pricing/services/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid pricing service id.');
+  }
+
+  const result = validatePricingServicePayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the pricing service form fields.', result.errors);
+  }
+
+  try {
+    const updated = await updateRow(TABLES.pricingServices, id, pricingServicePayload(result.values), mapPricingService);
+    return res.json({ ok: true, pricingService: updated });
+  } catch (error) {
+    console.error('Pricing service update failed:', error);
+    return fail(res, 500, 'We could not update that pricing service right now.');
+  }
+});
+
+app.delete('/api/admin/pricing/services/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid pricing service id.');
+  }
+
+  try {
+    await deleteRow(TABLES.pricingServices, id);
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('Pricing service delete failed:', error);
+    return fail(res, 500, 'We could not delete that pricing service right now. Remove its packages first.');
+  }
+});
+
+app.post('/api/admin/pricing/packages', requireAdmin, async (req, res) => {
+  const result = validatePricingPackagePayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the pricing package form fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(TABLES.pricingPackages, pricingPackagePayload(result.values), mapPricingPackage);
+    return res.status(201).json({ ok: true, pricingPackage: created });
+  } catch (error) {
+    console.error('Pricing package create failed:', error);
+    return fail(res, 500, 'We could not save that pricing package right now.');
+  }
+});
+
+app.put('/api/admin/pricing/packages/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid pricing package id.');
+  }
+
+  const result = validatePricingPackagePayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the pricing package form fields.', result.errors);
+  }
+
+  try {
+    const updated = await updateRow(TABLES.pricingPackages, id, pricingPackagePayload(result.values), mapPricingPackage);
+    return res.json({ ok: true, pricingPackage: updated });
+  } catch (error) {
+    console.error('Pricing package update failed:', error);
+    return fail(res, 500, 'We could not update that pricing package right now.');
+  }
+});
+
+app.delete('/api/admin/pricing/packages/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid pricing package id.');
+  }
+
+  try {
+    await deleteRow(TABLES.pricingPackages, id);
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('Pricing package delete failed:', error);
+    return fail(res, 500, 'We could not delete that pricing package right now.');
   }
 });
 
