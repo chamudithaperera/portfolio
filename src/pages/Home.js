@@ -119,6 +119,14 @@ const pricingServices = [
           'One revision round',
           '30 days of technical support',
         ],
+        unavailable: [
+          'Content management system',
+          'Admin dashboard',
+          'Blog or news section',
+          'E-commerce or booking system',
+          'Online payment integration',
+          'User registration and login',
+        ],
       },
       {
         tier: 'Standard',
@@ -142,6 +150,13 @@ const pricingServices = [
           'Three revision rounds',
           '60 days of technical support',
         ],
+        unavailable: [
+          'E-commerce, booking or reservation system',
+          'Online payment integration',
+          'User registration and login',
+          'Advanced API integrations',
+          'Advanced analytics and reporting',
+        ],
       },
       {
         tier: 'Premium',
@@ -164,6 +179,11 @@ const pricingServices = [
           'Deployment assistance',
           'Five revision rounds',
           '90 days of technical support',
+        ],
+        unavailable: [
+          'Domain, hosting and third-party service fees',
+          'Ongoing monthly maintenance after support period',
+          'Paid plugin, payment gateway or email provider charges',
         ],
       },
     ],
@@ -194,6 +214,14 @@ const pricingServices = [
           'One revision round',
           '30 days of technical support',
         ],
+        unavailable: [
+          'Android and iOS together',
+          'Custom backend development',
+          'Admin dashboard',
+          'Push notifications',
+          'App Store and Play Store submission assistance',
+          'Payment, maps, chat or real-time features',
+        ],
       },
       {
         tier: 'Standard',
@@ -217,6 +245,13 @@ const pricingServices = [
           'App Store and Play Store submission assistance',
           'Three revision rounds',
           '60 days of technical support',
+        ],
+        unavailable: [
+          'Payment gateway integration',
+          'Google Maps and location tracking',
+          'Real-time chat or messaging features',
+          'Role-based user accounts',
+          'Advanced analytics and reporting',
         ],
       },
       {
@@ -242,6 +277,11 @@ const pricingServices = [
           'Store deployment assistance',
           'Five revision rounds',
           '90 days of technical support',
+        ],
+        unavailable: [
+          'App store, developer account and third-party service fees',
+          'Ongoing monthly maintenance after support period',
+          'Paid SMS, email, maps or payment provider charges',
         ],
       },
     ],
@@ -2359,8 +2399,6 @@ function PricingTabs({ activeServiceId, onChange }) {
 
 function PricingCard({ plan }) {
   const featured = Boolean(plan.badge);
-  const visibleFeatures = plan.features.slice(0, 4);
-  const hiddenFeatures = plan.features.slice(4);
 
   return (
     <article className={`pricing-card card-3d ${featured ? 'pricing-card-featured' : ''}`}>
@@ -2380,28 +2418,29 @@ function PricingCard({ plan }) {
 
       <p className="pricing-card-description">{plan.description}</p>
 
-      <ul className="pricing-feature-list">
-        {visibleFeatures.map((feature) => (
-          <li key={feature}>
-            <Icon name="check" size={13} />
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
+      <div className="pricing-feature-group">
+        <p className="pricing-feature-heading">Available</p>
+        <ul className="pricing-feature-list">
+          {plan.features.map((feature) => (
+            <li key={feature}>
+              <Icon name="check" size={13} />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      {hiddenFeatures.length ? (
-        <details className="pricing-feature-details">
-          <summary>View all features</summary>
-          <ul className="pricing-feature-list pricing-feature-list-extra">
-            {hiddenFeatures.map((feature) => (
-              <li key={feature}>
-                <Icon name="check" size={13} />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </details>
-      ) : null}
+      <div className="pricing-feature-group pricing-feature-group-muted">
+        <p className="pricing-feature-heading">Not available</p>
+        <ul className="pricing-feature-list pricing-feature-list-unavailable">
+          {plan.unavailable.map((feature) => (
+            <li key={feature}>
+              <Icon name="close" size={13} />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <div className="pricing-card-footer">
         <span className="pricing-delivery">
