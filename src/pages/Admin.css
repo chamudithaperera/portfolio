@@ -374,6 +374,7 @@
 }
 
 .admin-form input,
+.admin-form select,
 .admin-form textarea,
 .admin-search input {
   width: 100%;
@@ -395,6 +396,7 @@
 }
 
 .admin-form input:focus,
+.admin-form select:focus,
 .admin-form textarea:focus,
 .admin-search input:focus {
   border-color: rgba(154, 52, 31, 0.55);
@@ -510,7 +512,7 @@
 
 .admin-summary-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 0.7rem;
 }
 
@@ -1255,7 +1257,7 @@
   }
 
   .admin-tabs {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .admin-sidebar-footer {

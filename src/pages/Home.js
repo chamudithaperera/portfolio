@@ -590,6 +590,36 @@ function usePortfolioContent() {
   return content;
 }
 
+function usePricingContent() {
+  const [services, setServices] = useState(emptyPricingServices);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      try {
+        const response = await apiRequest('/api/content/pricing');
+        if (!active || !response?.ok) return;
+        setServices(Array.isArray(response.pricingServices) ? response.pricingServices : []);
+      } catch (error) {
+        void error;
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    load();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return { services, loading };
+}
+
 function SectionHeading({ index, title, accent, description, align = 'center' }) {
   return (
     <div className={`section-heading section-heading-${align}`}>
@@ -2179,10 +2209,10 @@ function Contact() {
   );
 }
 
-function PricingTabs({ activeServiceId, onChange }) {
+function PricingTabs({ services, activeServiceId, onChange }) {
   return (
     <div className="pricing-tabs" role="tablist" aria-label="Pricing service type">
-      {pricingServices.map((service) => {
+      {services.map((service) => {
         const selected = service.id === activeServiceId;
         return (
           <button
@@ -2206,6 +2236,7 @@ function PricingTabs({ activeServiceId, onChange }) {
 
 function PricingCard({ plan }) {
   const featured = Boolean(plan.badge);
+  const unavailable = Array.isArray(plan.unavailable) ? plan.unavailable : [];
 
   return (
     <article className={`pricing-card card-3d ${featured ? 'pricing-card-featured' : ''}`}>
@@ -2240,12 +2271,17 @@ function PricingCard({ plan }) {
       <div className="pricing-feature-group pricing-feature-group-muted">
         <p className="pricing-feature-heading">Not available</p>
         <ul className="pricing-feature-list pricing-feature-list-unavailable">
-          {plan.unavailable.map((feature) => (
+          {unavailable.length ? unavailable.map((feature) => (
             <li key={feature}>
               <Icon name="close" size={13} />
               <span>{feature}</span>
             </li>
-          ))}
+          )) : (
+            <li>
+              <Icon name="close" size={13} />
+              <span>No exclusions listed for this package.</span>
+            </li>
+          )}
         </ul>
       </div>
 
@@ -2420,8 +2456,16 @@ function PricingContact() {
 }
 
 function PricingPage() {
-  const [activeServiceId, setActiveServiceId] = useState(pricingServices[0].id);
-  const activeService = pricingServices.find((service) => service.id === activeServiceId) || pricingServices[0];
+  const { services: pricingServices, loading: pricingLoading } = usePricingContent();
+  const [activeServiceId, setActiveServiceId] = useState('');
+  const activeService = pricingServices.find((service) => service.id === activeServiceId) || pricingServices[0] || null;
+  const websiteService = pricingServices.find((service) => service.id === 'websites') || pricingServices[0];
+  const mobileService = pricingServices.find((service) => service.id === 'mobile-apps') || pricingServices[1];
+  const pricingHighlights = [
+    websiteService?.packages?.[0] ? `${websiteService.label} from ${websiteService.packages[0].price}` : '',
+    mobileService?.packages?.[0] ? `${mobileService.label} from ${mobileService.packages[0].price}` : '',
+    pricingServices.length ? 'Support included' : '',
+  ].filter(Boolean);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
@@ -2434,6 +2478,15 @@ function PricingPage() {
       void error;
     }
   }, []);
+
+  useEffect(() => {
+    if (!pricingServices.length) {
+      setActiveServiceId('');
+      return;
+    }
+
+    setActiveServiceId((current) => (pricingServices.some((service) => service.id === current) ? current : pricingServices[0].id));
+  }, [pricingServices]);
 
   return (
     <div className="bolt-shell pricing-page-shell">
@@ -2478,9 +2531,9 @@ function PricingPage() {
                 </a>
               </div>
               <div className="pricing-hero-points" aria-label="Pricing summary">
-                <span>Website from Rs. 45,000</span>
-                <span>Mobile app from Rs. 120,000</span>
-                <span>Support included</span>
+                {pricingHighlights.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
               </div>
             </div>
           </div>
@@ -2493,19 +2546,27 @@ function PricingPage() {
               index="01. Choose Your Service"
               title="Flexible"
               accent="Packages"
-              description={activeService.intro}
+              description={activeService?.intro || 'Pricing packages can be added and edited from the admin panel.'}
             />
-            <PricingTabs activeServiceId={activeServiceId} onChange={setActiveServiceId} />
-            <div
-              id={`pricing-panel-${activeService.id}`}
-              className="pricing-grid"
-              role="tabpanel"
-              aria-labelledby={`pricing-tab-${activeService.id}`}
-            >
-              {activeService.packages.map((plan) => (
-                <PricingCard key={plan.title} plan={plan} />
-              ))}
-            </div>
+            {pricingServices.length ? (
+              <>
+                <PricingTabs services={pricingServices} activeServiceId={activeServiceId} onChange={setActiveServiceId} />
+                <div
+                  id={`pricing-panel-${activeService.id}`}
+                  className="pricing-grid"
+                  role="tabpanel"
+                  aria-labelledby={`pricing-tab-${activeService.id}`}
+                >
+                  {activeService.packages.map((plan) => (
+                    <PricingCard key={plan.id || plan.title} plan={plan} />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="pricing-empty-panel">
+                {pricingLoading ? 'Loading pricing packages...' : 'Pricing packages are not available yet.'}
+              </div>
+            )}
           </Reveal>
         </section>
 

@@ -5900,6 +5900,15 @@ textarea:focus-visible {
   background: rgba(37, 99, 235, 1);
 }
 
+.pricing-empty-panel {
+  padding: 1.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 0.75rem;
+  color: #a7b3c4;
+  background: rgba(7, 13, 26, 0.9);
+  text-align: center;
+}
+
 .pricing-custom-section {
   background: linear-gradient(180deg, #00020a, #020510);
 }

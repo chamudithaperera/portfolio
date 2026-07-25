@@ -7,6 +7,7 @@ const tabItems = [
   { id: 'dashboard', label: 'Dashboard', description: 'Overview of the site', icon: 'grid' },
   { id: 'messages', label: 'Messages', description: 'User inquiries', icon: 'messages' },
   { id: 'projects', label: 'Projects', description: 'CRUD portfolio projects', icon: 'project' },
+  { id: 'pricing', label: 'Pricing', description: 'Edit services and packages', icon: 'pricing' },
   { id: 'content', label: 'Content', description: 'Manage experience and education', icon: 'education' },
 ];
 
@@ -52,6 +53,30 @@ const emptyCertificateForm = {
   displayOrder: '',
 };
 
+const emptyPricingServiceForm = {
+  serviceKey: '',
+  label: '',
+  icon: 'code',
+  intro: '',
+  displayOrder: '',
+  active: true,
+};
+
+const emptyPricingPackageForm = {
+  serviceId: '',
+  tier: '',
+  title: '',
+  price: '',
+  description: '',
+  delivery: '',
+  badge: '',
+  button: '',
+  features: '',
+  unavailable: '',
+  displayOrder: '',
+  active: true,
+};
+
 const iconPaths = {
   arrowLeft: ['M20 12H4', 'm10 6-6-6 6-6'],
   arrowRight: ['M4 12h16', 'm10-6 6 6-6 6'],
@@ -75,6 +100,7 @@ const iconPaths = {
   messages: ['M4 5h16v11H9l-5 4z', 'M7 9h10', 'M7 12h6'],
   plus: ['M12 5v14', 'M5 12h14'],
   phone: ['M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 5.2 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9 10.9a16 16 0 0 0 4.1 4.1l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .6 2.9.7a2 2 0 0 1 1.7 2z'],
+  pricing: ['M12 2v20', 'M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6'],
   project: ['M4 7h16v10H4z', 'M8 7V4h8v3', 'M4 11h16'],
   refresh: ['M21 12a9 9 0 1 1-3-6.7', 'M21 3v6h-6'],
   save: ['M5 5h11l3 3v11H5z', 'M8 5v6h8V5', 'M8 16h8'],
@@ -203,6 +229,36 @@ function certificateToForm(item) {
   };
 }
 
+function pricingServiceToForm(item) {
+  if (!item) return emptyPricingServiceForm;
+  return {
+    serviceKey: item.serviceKey || item.id || '',
+    label: item.label || '',
+    icon: item.icon || 'code',
+    intro: item.intro || '',
+    displayOrder: item.displayOrder ?? '',
+    active: item.active !== false,
+  };
+}
+
+function pricingPackageToForm(item, defaultServiceId = '') {
+  if (!item) return { ...emptyPricingPackageForm, serviceId: defaultServiceId };
+  return {
+    serviceId: item.serviceId ?? defaultServiceId,
+    tier: item.tier || '',
+    title: item.title || '',
+    price: item.price || '',
+    description: item.description || '',
+    delivery: item.delivery || '',
+    badge: item.badge || '',
+    button: item.button || '',
+    features: joinLineList(item.features),
+    unavailable: joinLineList(item.unavailable),
+    displayOrder: item.displayOrder ?? '',
+    active: item.active !== false,
+  };
+}
+
 function projectFormToBody(form) {
   return {
     title: form.title,
@@ -250,6 +306,34 @@ function certificateFormToBody(form) {
     image: form.image,
     detail: form.detail,
     displayOrder: form.displayOrder,
+  };
+}
+
+function pricingServiceFormToBody(form) {
+  return {
+    serviceKey: form.serviceKey,
+    label: form.label,
+    icon: form.icon,
+    intro: form.intro,
+    displayOrder: form.displayOrder,
+    active: Boolean(form.active),
+  };
+}
+
+function pricingPackageFormToBody(form) {
+  return {
+    serviceId: form.serviceId,
+    tier: form.tier,
+    title: form.title,
+    price: form.price,
+    description: form.description,
+    delivery: form.delivery,
+    badge: form.badge,
+    button: form.button,
+    features: splitLineList(form.features),
+    unavailable: splitLineList(form.unavailable),
+    displayOrder: form.displayOrder,
+    active: Boolean(form.active),
   };
 }
 
@@ -367,6 +451,18 @@ function Admin() {
   const [certificateImageError, setCertificateImageError] = useState('');
   const [certificateImagePreview, setCertificateImagePreview] = useState('');
 
+  const [pricingServices, setPricingServices] = useState([]);
+  const [pricingPackages, setPricingPackages] = useState([]);
+  const [pricingLoading, setPricingLoading] = useState(false);
+  const [pricingError, setPricingError] = useState('');
+  const [pricingStatus, setPricingStatus] = useState('');
+  const [pricingMode, setPricingMode] = useState('packages');
+  const [selectedPricingServiceId, setSelectedPricingServiceId] = useState('');
+  const [selectedPricingPackageId, setSelectedPricingPackageId] = useState('');
+  const [pricingServiceForm, setPricingServiceForm] = useState(emptyPricingServiceForm);
+  const [pricingPackageForm, setPricingPackageForm] = useState(emptyPricingPackageForm);
+  const [pricingSaving, setPricingSaving] = useState(false);
+
   const selectedMessage = useMemo(
     () => messages.find((message) => String(message.id) === String(selectedMessageId)) || null,
     [messages, selectedMessageId],
@@ -392,6 +488,16 @@ function Admin() {
     [certificates, selectedCertificateId],
   );
 
+  const selectedPricingService = useMemo(
+    () => pricingServices.find((item) => String(item.recordId || item.id) === String(selectedPricingServiceId)) || null,
+    [pricingServices, selectedPricingServiceId],
+  );
+
+  const selectedPricingPackage = useMemo(
+    () => pricingPackages.find((item) => String(item.id) === String(selectedPricingPackageId)) || null,
+    [pricingPackages, selectedPricingPackageId],
+  );
+
   const stats = useMemo(() => {
     const counts = dashboard || {};
     return {
@@ -400,9 +506,10 @@ function Admin() {
       experience: counts.experience ?? experience.length,
       education: counts.education ?? education.length,
       certificates: counts.certificates ?? certificates.length,
+      pricingPackages: counts.pricingPackages ?? pricingPackages.length,
       unread: messages.filter((item) => (item.status || 'new') === 'new').length,
     };
-  }, [certificates.length, dashboard, education.length, experience.length, messages, projects.length]);
+  }, [certificates.length, dashboard, education.length, experience.length, messages, pricingPackages.length, projects.length]);
 
   async function loadDashboard() {
     setDashboardLoading(true);
@@ -516,6 +623,36 @@ function Admin() {
     }
   }
 
+  async function loadPricing() {
+    setPricingLoading(true);
+    setPricingError('');
+    try {
+      const response = await apiRequest('/api/admin/pricing');
+      const loadedServices = response.pricingServices || [];
+      const loadedPackages = response.pricingPackages || [];
+      setPricingServices(loadedServices);
+      setPricingPackages(loadedPackages);
+      setSelectedPricingServiceId((current) => {
+        if (current && loadedServices.some((item) => String(item.recordId || item.id) === String(current))) {
+          return current;
+        }
+        return loadedServices[0] ? String(loadedServices[0].recordId || loadedServices[0].id) : '';
+      });
+      setSelectedPricingPackageId((current) => {
+        if (current && loadedPackages.some((item) => String(item.id) === String(current))) {
+          return current;
+        }
+        return loadedPackages[0] ? String(loadedPackages[0].id) : '';
+      });
+    } catch (error) {
+      setPricingError(error.message || 'Unable to load pricing content.');
+      setPricingServices([]);
+      setPricingPackages([]);
+    } finally {
+      setPricingLoading(false);
+    }
+  }
+
   async function refreshDashboardTab() {
     await Promise.allSettled([
       loadDashboard(),
@@ -524,6 +661,7 @@ function Admin() {
       loadExperience(),
       loadEducation(),
       loadCertificates(),
+      loadPricing(),
     ]);
   }
 
@@ -622,6 +760,15 @@ function Admin() {
   }, [selectedCertificate]);
 
   useEffect(() => {
+    setPricingServiceForm(pricingServiceToForm(selectedPricingService));
+  }, [selectedPricingService]);
+
+  useEffect(() => {
+    const defaultServiceId = selectedPricingServiceId || (pricingServices[0]?.recordId ? String(pricingServices[0].recordId) : '');
+    setPricingPackageForm(pricingPackageToForm(selectedPricingPackage, defaultServiceId));
+  }, [pricingServices, selectedPricingPackage, selectedPricingServiceId]);
+
+  useEffect(() => {
     if (!certificateImageFile) {
       setCertificateImagePreview('');
       return undefined;
@@ -669,15 +816,21 @@ function Admin() {
       setExperience([]);
       setEducation([]);
       setCertificates([]);
+      setPricingServices([]);
+      setPricingPackages([]);
       setSelectedMessageId('');
       setSelectedProjectId('');
       setSelectedExperienceId('');
       setSelectedEducationId('');
       setSelectedCertificateId('');
+      setSelectedPricingServiceId('');
+      setSelectedPricingPackageId('');
       setProjectForm(emptyProjectForm);
       setExperienceForm(emptyExperienceForm);
       setEducationForm(emptyEducationForm);
       setCertificateForm(emptyCertificateForm);
+      setPricingServiceForm(emptyPricingServiceForm);
+      setPricingPackageForm(emptyPricingPackageForm);
       setProjectImageFile(null);
       setProjectImageStatus('');
       setProjectImageError('');
@@ -697,6 +850,11 @@ function Admin() {
       setMessageSearch('');
       setContentMode('experience');
       setMessageActionPending('');
+      setPricingMode('packages');
+      setPricingLoading(false);
+      setPricingSaving(false);
+      setPricingStatus('');
+      setPricingError('');
       setLoginForm((current) => ({ ...current, password: '' }));
     } catch (error) {
       setDashboardError(error.message || 'Logout failed.');
@@ -708,6 +866,131 @@ function Admin() {
   const updateProjectForm = (event) => {
     const { name, type, value, checked } = event.target;
     setProjectForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const updatePricingServiceForm = (event) => {
+    const { name, type, value, checked } = event.target;
+    setPricingServiceForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const updatePricingPackageForm = (event) => {
+    const { name, type, value, checked } = event.target;
+    setPricingPackageForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handlePricingServiceNew = () => {
+    setSelectedPricingServiceId('');
+    setPricingServiceForm(emptyPricingServiceForm);
+    setPricingStatus('');
+    setPricingError('');
+  };
+
+  const handlePricingPackageNew = () => {
+    const defaultServiceId = selectedPricingServiceId || (pricingServices[0]?.recordId ? String(pricingServices[0].recordId) : '');
+    setSelectedPricingPackageId('');
+    setPricingPackageForm({ ...emptyPricingPackageForm, serviceId: defaultServiceId });
+    setPricingStatus('');
+    setPricingError('');
+  };
+
+  const handlePricingServiceSave = async (event) => {
+    event.preventDefault();
+    setPricingSaving(true);
+    setPricingError('');
+    setPricingStatus('');
+
+    try {
+      const body = pricingServiceFormToBody(pricingServiceForm);
+      const response = selectedPricingServiceId
+        ? await apiRequest(`/api/admin/pricing/services/${selectedPricingServiceId}`, {
+            method: 'PUT',
+            body,
+          })
+        : await apiRequest('/api/admin/pricing/services', {
+            method: 'POST',
+            body,
+          });
+
+      setPricingStatus(selectedPricingServiceId ? 'Pricing service updated.' : 'Pricing service created.');
+      setSelectedPricingServiceId(String(response.pricingService.id));
+      await loadPricing();
+      await loadDashboard();
+    } catch (error) {
+      setPricingError(error.message || 'Unable to save this pricing service.');
+    } finally {
+      setPricingSaving(false);
+    }
+  };
+
+  const handlePricingPackageSave = async (event) => {
+    event.preventDefault();
+    setPricingSaving(true);
+    setPricingError('');
+    setPricingStatus('');
+
+    try {
+      const body = pricingPackageFormToBody(pricingPackageForm);
+      const response = selectedPricingPackageId
+        ? await apiRequest(`/api/admin/pricing/packages/${selectedPricingPackageId}`, {
+            method: 'PUT',
+            body,
+          })
+        : await apiRequest('/api/admin/pricing/packages', {
+            method: 'POST',
+            body,
+          });
+
+      setPricingStatus(selectedPricingPackageId ? 'Pricing package updated.' : 'Pricing package created.');
+      setSelectedPricingPackageId(String(response.pricingPackage.id));
+      await loadPricing();
+      await loadDashboard();
+    } catch (error) {
+      setPricingError(error.message || 'Unable to save this pricing package.');
+    } finally {
+      setPricingSaving(false);
+    }
+  };
+
+  const handlePricingServiceDelete = async () => {
+    if (!selectedPricingServiceId) return;
+    if (!window.confirm('Delete this pricing service? Remove its packages first.')) return;
+
+    setPricingSaving(true);
+    setPricingError('');
+    setPricingStatus('');
+
+    try {
+      await apiRequest(`/api/admin/pricing/services/${selectedPricingServiceId}`, { method: 'DELETE' });
+      setPricingStatus('Pricing service removed.');
+      setSelectedPricingServiceId('');
+      await loadPricing();
+      await loadDashboard();
+    } catch (error) {
+      setPricingError(error.message || 'Unable to delete this pricing service.');
+    } finally {
+      setPricingSaving(false);
+    }
+  };
+
+  const handlePricingPackageDelete = async () => {
+    if (!selectedPricingPackageId) return;
+    if (!window.confirm('Delete this pricing package?')) return;
+
+    setPricingSaving(true);
+    setPricingError('');
+    setPricingStatus('');
+
+    try {
+      await apiRequest(`/api/admin/pricing/packages/${selectedPricingPackageId}`, { method: 'DELETE' });
+      setPricingStatus('Pricing package removed.');
+      setSelectedPricingPackageId('');
+      await loadPricing();
+      await loadDashboard();
+    } catch (error) {
+      setPricingError(error.message || 'Unable to delete this pricing package.');
+    } finally {
+      setPricingSaving(false);
+    }
   };
 
   const handleMessageStatusToggle = async (message) => {
@@ -1245,6 +1528,7 @@ function Admin() {
     { label: 'Messages', value: stats.messages, tone: 'blue' },
     { label: 'Unread', value: stats.unread, tone: 'cyan' },
     { label: 'Projects', value: stats.projects, tone: 'indigo' },
+    { label: 'Pricing', value: stats.pricingPackages, tone: 'blue' },
     { label: 'Experience', value: stats.experience, tone: 'sky' },
     { label: 'Education', value: stats.education, tone: 'slate' },
     { label: 'Certificates', value: stats.certificates, tone: 'teal' },
@@ -1315,12 +1599,14 @@ function Admin() {
                 {activeTab === 'dashboard' && 'Dashboard'}
                 {activeTab === 'messages' && 'Messages'}
                 {activeTab === 'projects' && 'Projects'}
+                {activeTab === 'pricing' && 'Pricing'}
                 {activeTab === 'content' && 'Work Experience & Content'}
               </h1>
               <p>
                 {activeTab === 'dashboard' && 'Summary of the website content and incoming activity.'}
                 {activeTab === 'messages' && 'WhatsApp-style inbox for user submissions.'}
                 {activeTab === 'projects' && 'Create, edit, and remove portfolio projects.'}
+                {activeTab === 'pricing' && 'Manage website and mobile app services, packages, prices, and feature lists.'}
                 {activeTab === 'content' && 'Manage work experience, education, and certificate entries from one place.'}
               </p>
             </div>
@@ -1805,6 +2091,319 @@ function Admin() {
                   </div>
                 </form>
               </article>
+            </section>
+          ) : null}
+
+          {activeTab === 'pricing' ? (
+            <section className="admin-content-workspace">
+              <div className="admin-subtabs">
+                <button
+                  type="button"
+                  className={pricingMode === 'packages' ? 'is-active' : ''}
+                  onClick={() => setPricingMode('packages')}
+                >
+                  <Icon name="pricing" size={14} />
+                  Packages
+                </button>
+                <button
+                  type="button"
+                  className={pricingMode === 'services' ? 'is-active' : ''}
+                  onClick={() => setPricingMode('services')}
+                >
+                  <Icon name="grid" size={14} />
+                  Services
+                </button>
+              </div>
+
+              {pricingMode === 'packages' ? (
+                <section className="admin-dual-column">
+                  <aside className="admin-card admin-list-panel">
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Pricing</p>
+                        <h2>Packages</h2>
+                      </div>
+                      <span className="admin-pill">{pricingPackages.length}</span>
+                    </div>
+
+                    <div className="admin-list-actions">
+                      <button type="button" className="admin-secondary-button" onClick={handlePricingPackageNew}>
+                        <Icon name="plus" size={14} />
+                        New package
+                      </button>
+                      <button type="button" className="admin-secondary-button" onClick={loadPricing} disabled={pricingLoading}>
+                        <Icon name="refresh" size={14} />
+                        Refresh
+                      </button>
+                    </div>
+
+                    {pricingError ? <div className="admin-inline-error">{pricingError}</div> : null}
+
+                    <div className="admin-item-list">
+                      {pricingLoading ? (
+                        <div className="admin-loading-panel">
+                          <span className="admin-spinner" aria-hidden="true" />
+                          Loading pricing packages...
+                        </div>
+                      ) : pricingPackages.length ? (
+                        pricingPackages.map((item) => {
+                          const active = String(item.id) === String(selectedPricingPackageId);
+                          return (
+                            <button
+                              key={item.id}
+                              type="button"
+                              className={`admin-item-card ${active ? 'is-active' : ''}`}
+                              onClick={() => setSelectedPricingPackageId(String(item.id))}
+                            >
+                              <div className="admin-item-card-top">
+                                <strong>{item.title}</strong>
+                                {item.active ? null : <span className="admin-pill">Hidden</span>}
+                              </div>
+                              <p>{item.serviceLabel || 'Pricing service'} • {item.price}</p>
+                              <small>{item.tier} • {item.delivery}</small>
+                            </button>
+                          );
+                        })
+                      ) : (
+                        <EmptyState
+                          icon="pricing"
+                          title="No pricing packages"
+                          description="Seed the initial packages or create a package from the editor."
+                        />
+                      )}
+                    </div>
+                  </aside>
+
+                  <article className="admin-card admin-editor-panel">
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Editor</p>
+                        <h2>{selectedPricingPackageId ? 'Edit pricing package' : 'Create pricing package'}</h2>
+                      </div>
+                      <span className="admin-pill">{selectedPricingPackageId ? 'Edit mode' : 'New item'}</span>
+                    </div>
+
+                    <form className="admin-form" onSubmit={handlePricingPackageSave}>
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Service</span>
+                          <select name="serviceId" value={pricingPackageForm.serviceId} onChange={updatePricingPackageForm} required>
+                            <option value="">Choose service</option>
+                            {pricingServices.map((service) => (
+                              <option key={service.recordId || service.id} value={service.recordId || service.id}>
+                                {service.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          <span>Display order</span>
+                          <input name="displayOrder" type="number" value={pricingPackageForm.displayOrder} onChange={updatePricingPackageForm} placeholder="1" />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Tier</span>
+                          <input name="tier" value={pricingPackageForm.tier} onChange={updatePricingPackageForm} placeholder="Basic" required />
+                        </label>
+                        <label>
+                          <span>Title</span>
+                          <input name="title" value={pricingPackageForm.title} onChange={updatePricingPackageForm} placeholder="Basic Website" required />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Price</span>
+                          <input name="price" value={pricingPackageForm.price} onChange={updatePricingPackageForm} placeholder="Rs. 45,000" required />
+                        </label>
+                        <label>
+                          <span>Delivery</span>
+                          <input name="delivery" value={pricingPackageForm.delivery} onChange={updatePricingPackageForm} placeholder="7-10 working days" required />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Badge</span>
+                          <input name="badge" value={pricingPackageForm.badge} onChange={updatePricingPackageForm} placeholder="Most Popular" />
+                        </label>
+                        <label>
+                          <span>Button text</span>
+                          <input name="button" value={pricingPackageForm.button} onChange={updatePricingPackageForm} placeholder="Choose Basic" required />
+                        </label>
+                      </div>
+
+                      <label>
+                        <span>Description</span>
+                        <textarea name="description" rows="3" value={pricingPackageForm.description} onChange={updatePricingPackageForm} placeholder="Describe who this package is for" required />
+                      </label>
+
+                      <label>
+                        <span>Available features</span>
+                        <textarea name="features" rows="8" value={pricingPackageForm.features} onChange={updatePricingPackageForm} placeholder="One feature per line" required />
+                      </label>
+
+                      <label>
+                        <span>Not available</span>
+                        <textarea name="unavailable" rows="5" value={pricingPackageForm.unavailable} onChange={updatePricingPackageForm} placeholder="One unavailable item per line" />
+                      </label>
+
+                      <label className="admin-checkbox">
+                        <input name="active" type="checkbox" checked={pricingPackageForm.active} onChange={updatePricingPackageForm} />
+                        <span>Show on public pricing page</span>
+                      </label>
+
+                      {pricingStatus ? <div className="admin-inline-success">{pricingStatus}</div> : null}
+                      {pricingError ? <div className="admin-inline-error">{pricingError}</div> : null}
+
+                      <div className="admin-action-row">
+                        <button className="admin-primary-button" type="submit" disabled={pricingSaving || !pricingServices.length}>
+                          {pricingSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                          {selectedPricingPackageId ? 'Save changes' : 'Create package'}
+                        </button>
+                        <button type="button" className="admin-secondary-button" onClick={handlePricingPackageNew}>
+                          <Icon name="plus" size={14} />
+                          Reset
+                        </button>
+                        {selectedPricingPackageId ? (
+                          <button type="button" className="admin-danger-button" onClick={handlePricingPackageDelete} disabled={pricingSaving}>
+                            <Icon name="trash" size={14} />
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </form>
+                  </article>
+                </section>
+              ) : null}
+
+              {pricingMode === 'services' ? (
+                <section className="admin-dual-column">
+                  <aside className="admin-card admin-list-panel">
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Pricing</p>
+                        <h2>Service tabs</h2>
+                      </div>
+                      <span className="admin-pill">{pricingServices.length}</span>
+                    </div>
+
+                    <div className="admin-list-actions">
+                      <button type="button" className="admin-secondary-button" onClick={handlePricingServiceNew}>
+                        <Icon name="plus" size={14} />
+                        New service
+                      </button>
+                      <button type="button" className="admin-secondary-button" onClick={loadPricing} disabled={pricingLoading}>
+                        <Icon name="refresh" size={14} />
+                        Refresh
+                      </button>
+                    </div>
+
+                    {pricingError ? <div className="admin-inline-error">{pricingError}</div> : null}
+
+                    <div className="admin-item-list">
+                      {pricingLoading ? (
+                        <div className="admin-loading-panel">
+                          <span className="admin-spinner" aria-hidden="true" />
+                          Loading pricing services...
+                        </div>
+                      ) : pricingServices.length ? (
+                        pricingServices.map((item) => {
+                          const recordId = item.recordId || item.id;
+                          const active = String(recordId) === String(selectedPricingServiceId);
+                          return (
+                            <button
+                              key={recordId}
+                              type="button"
+                              className={`admin-item-card ${active ? 'is-active' : ''}`}
+                              onClick={() => setSelectedPricingServiceId(String(recordId))}
+                            >
+                              <div className="admin-item-card-top">
+                                <strong>{item.label}</strong>
+                                {item.active ? null : <span className="admin-pill">Hidden</span>}
+                              </div>
+                              <p>{item.serviceKey || item.id}</p>
+                              <small>{item.intro}</small>
+                            </button>
+                          );
+                        })
+                      ) : (
+                        <EmptyState
+                          icon="pricing"
+                          title="No pricing services"
+                          description="Create Websites, Mobile Apps, or any other service tab."
+                        />
+                      )}
+                    </div>
+                  </aside>
+
+                  <article className="admin-card admin-editor-panel">
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Editor</p>
+                        <h2>{selectedPricingServiceId ? 'Edit service tab' : 'Create service tab'}</h2>
+                      </div>
+                      <span className="admin-pill">{selectedPricingServiceId ? 'Edit mode' : 'New item'}</span>
+                    </div>
+
+                    <form className="admin-form" onSubmit={handlePricingServiceSave}>
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Service key</span>
+                          <input name="serviceKey" value={pricingServiceForm.serviceKey} onChange={updatePricingServiceForm} placeholder="websites" required />
+                        </label>
+                        <label>
+                          <span>Label</span>
+                          <input name="label" value={pricingServiceForm.label} onChange={updatePricingServiceForm} placeholder="Websites" required />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Icon name</span>
+                          <input name="icon" value={pricingServiceForm.icon} onChange={updatePricingServiceForm} placeholder="code" required />
+                        </label>
+                        <label>
+                          <span>Display order</span>
+                          <input name="displayOrder" type="number" value={pricingServiceForm.displayOrder} onChange={updatePricingServiceForm} placeholder="1" />
+                        </label>
+                      </div>
+
+                      <label>
+                        <span>Intro text</span>
+                        <textarea name="intro" rows="4" value={pricingServiceForm.intro} onChange={updatePricingServiceForm} placeholder="Describe this pricing service tab" required />
+                      </label>
+
+                      <label className="admin-checkbox">
+                        <input name="active" type="checkbox" checked={pricingServiceForm.active} onChange={updatePricingServiceForm} />
+                        <span>Show this service tab</span>
+                      </label>
+
+                      {pricingStatus ? <div className="admin-inline-success">{pricingStatus}</div> : null}
+                      {pricingError ? <div className="admin-inline-error">{pricingError}</div> : null}
+
+                      <div className="admin-action-row">
+                        <button className="admin-primary-button" type="submit" disabled={pricingSaving}>
+                          {pricingSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                          {selectedPricingServiceId ? 'Save changes' : 'Create service'}
+                        </button>
+                        <button type="button" className="admin-secondary-button" onClick={handlePricingServiceNew}>
+                          <Icon name="plus" size={14} />
+                          Reset
+                        </button>
+                        {selectedPricingServiceId ? (
+                          <button type="button" className="admin-danger-button" onClick={handlePricingServiceDelete} disabled={pricingSaving}>
+                            <Icon name="trash" size={14} />
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </form>
+                  </article>
+                </section>
+              ) : null}
             </section>
           ) : null}
 
