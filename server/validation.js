@@ -284,6 +284,110 @@ function validateCertificatePayload(body = {}) {
   };
 }
 
+function validatePricingServicePayload(body = {}) {
+  const errors = {};
+
+  const serviceKey = normalizeText(body.serviceKey).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '');
+  const label = normalizeText(body.label);
+  const icon = normalizeText(body.icon) || 'code';
+  const intro = normalizeText(body.intro);
+  const displayOrder = validateCollectionOrder(body.displayOrder);
+  const active = body.active !== false;
+
+  if (!serviceKey) errors.serviceKey = 'Service key is required.';
+  if (!label) errors.label = 'Service label is required.';
+  if (!intro) errors.intro = 'Service intro is required.';
+
+  if (serviceKey && (serviceKey.length < 2 || serviceKey.length > 80)) {
+    errors.serviceKey = 'Service key must be between 2 and 80 characters.';
+  }
+
+  if (label && (label.length < 2 || label.length > 80)) {
+    errors.label = 'Service label must be between 2 and 80 characters.';
+  }
+
+  if (intro && (intro.length < 10 || intro.length > 400)) {
+    errors.intro = 'Service intro must be between 10 and 400 characters.';
+  }
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors,
+    values: {
+      serviceKey,
+      label,
+      icon,
+      intro,
+      displayOrder,
+      active,
+    },
+  };
+}
+
+function normalizeLineList(value) {
+  if (Array.isArray(value)) {
+    return value.map(normalizeText).filter(Boolean);
+  }
+
+  return String(value ?? '')
+    .split('\n')
+    .map((item) => normalizeText(item))
+    .filter(Boolean);
+}
+
+function validatePricingPackagePayload(body = {}) {
+  const errors = {};
+
+  const serviceId = Number.parseInt(String(body.serviceId ?? ''), 10);
+  const tier = normalizeText(body.tier);
+  const title = normalizeText(body.title);
+  const price = normalizeText(body.price);
+  const description = normalizeText(body.description);
+  const delivery = normalizeText(body.delivery);
+  const badge = normalizeText(body.badge);
+  const button = normalizeText(body.button);
+  const features = normalizeLineList(body.features);
+  const unavailable = normalizeLineList(body.unavailable);
+  const displayOrder = validateCollectionOrder(body.displayOrder);
+  const active = body.active !== false;
+
+  if (!Number.isFinite(serviceId) || serviceId <= 0) errors.serviceId = 'Choose a pricing service.';
+  if (!tier) errors.tier = 'Package tier is required.';
+  if (!title) errors.title = 'Package title is required.';
+  if (!price) errors.price = 'Package price is required.';
+  if (!description) errors.description = 'Package description is required.';
+  if (!delivery) errors.delivery = 'Delivery time is required.';
+  if (!button) errors.button = 'Button text is required.';
+  if (!features.length) errors.features = 'Add at least one available feature.';
+
+  if (title && (title.length < 2 || title.length > 120)) {
+    errors.title = 'Package title must be between 2 and 120 characters.';
+  }
+
+  if (description && (description.length < 10 || description.length > 400)) {
+    errors.description = 'Description must be between 10 and 400 characters.';
+  }
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors,
+    values: {
+      serviceId,
+      tier,
+      title,
+      price,
+      description,
+      delivery,
+      badge,
+      button,
+      features,
+      unavailable,
+      displayOrder,
+      active,
+    },
+  };
+}
+
 module.exports = {
   validateAdminCredentials,
   validateContactMessage,
@@ -291,5 +395,7 @@ module.exports = {
   validateCollectionOrder,
   validateEducationPayload,
   validateExperiencePayload,
+  validatePricingPackagePayload,
+  validatePricingServicePayload,
   validateProjectPayload,
 };
