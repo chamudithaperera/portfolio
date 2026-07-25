@@ -5626,22 +5626,23 @@ textarea:focus-visible {
 }
 
 .pricing-packages-section {
-  background: linear-gradient(180deg, #040916, #00020a);
+  background:
+    linear-gradient(180deg, #040916 0%, #020713 46%, #00020a 100%);
 }
 
 .pricing-packages-section .section-description {
-  max-width: 36rem;
+  max-width: 42rem;
 }
 
 .pricing-tabs {
   display: flex;
   width: fit-content;
-  margin: -2rem auto 3rem;
-  padding: 0.35rem;
-  border: 1px solid rgba(30, 58, 138, 0.28);
-  border-radius: 0.9rem;
-  background: rgba(4, 9, 22, 0.88);
-  box-shadow: 0 18px 46px rgba(2, 6, 23, 0.24);
+  margin: -1.3rem auto 2.4rem;
+  padding: 0.3rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 0.75rem;
+  background: rgba(8, 14, 28, 0.86);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
 }
 
 .pricing-tab {
@@ -5650,9 +5651,9 @@ textarea:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  padding: 0.65rem 1.1rem;
+  padding: 0.62rem 1rem;
   border: 0;
-  border-radius: 0.65rem;
+  border-radius: 0.55rem;
   color: #94a3b8;
   background: transparent;
   font-size: 0.86rem;
@@ -5669,8 +5670,8 @@ textarea:focus-visible {
 
 .pricing-tab.is-active {
   color: #fff;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(20, 184, 166, 0.78));
-  box-shadow: 0 12px 28px rgba(14, 165, 233, 0.18);
+  background: #2563eb;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
 }
 
 .pricing-tab.is-active svg {
@@ -5681,7 +5682,7 @@ textarea:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
-  gap: 1rem;
+  gap: 1.05rem;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -5695,18 +5696,25 @@ textarea:focus-visible {
   min-height: 100%;
   flex-direction: column;
   overflow: hidden;
-  gap: 1.15rem;
-  padding: 1.35rem;
+  gap: 1rem;
+  padding: 1.15rem;
   border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 0.75rem;
-  background: rgba(7, 13, 26, 0.9);
-  box-shadow: none;
+  border-radius: 0.85rem;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(7, 13, 26, 0.96)),
+    #070d1a;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.2);
   transform: none !important;
 }
 
 .pricing-card-featured {
-  border-color: rgba(34, 197, 94, 0.45);
-  background: rgba(8, 18, 30, 0.94);
+  border-color: rgba(96, 165, 250, 0.55);
+  background:
+    linear-gradient(180deg, rgba(20, 32, 54, 0.96), rgba(7, 13, 26, 0.98)),
+    #070d1a;
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(96, 165, 250, 0.08);
 }
 
 .pricing-card.card-3d:hover,
@@ -5723,14 +5731,17 @@ textarea:focus-visible {
   min-width: 0;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.85rem;
+  min-height: 4.25rem;
+  padding-bottom: 0.95rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.13);
 }
 
 .pricing-tier {
-  margin: 0 0 0.45rem;
-  color: #60a5fa;
+  margin: 0 0 0.38rem;
+  color: #93c5fd;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -5746,16 +5757,16 @@ textarea:focus-visible {
 }
 
 .pricing-card h3 {
-  font-size: 1.22rem;
+  font-size: 1.18rem;
 }
 
 .pricing-badge {
   flex: 0 0 auto;
-  padding: 0.28rem 0.55rem;
-  border: 1px solid rgba(34, 197, 94, 0.32);
+  padding: 0.28rem 0.52rem;
+  border: 1px solid rgba(147, 197, 253, 0.26);
   border-radius: 999px;
-  color: #86efac;
-  background: transparent;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.12);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.58rem;
   letter-spacing: 0.06em;
@@ -5764,35 +5775,37 @@ textarea:focus-visible {
 }
 
 .pricing-card-description {
-  min-height: 3.2rem;
+  min-height: 3rem;
   margin: 0;
   color: #a7b3c4;
-  font-size: 0.85rem;
-  line-height: 1.6;
+  font-size: 0.84rem;
+  line-height: 1.55;
 }
 
 .pricing-price {
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.95rem;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 0.7rem;
+  background: rgba(2, 6, 23, 0.38);
 }
 
 .pricing-price span,
 .pricing-delivery {
   color: #7f8da1;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .pricing-price strong {
   display: block;
-  margin-top: 0.35rem;
+  margin-top: 0.15rem;
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.7rem;
+  font-size: clamp(1.55rem, 1.55vw, 1.9rem);
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1;
@@ -5801,7 +5814,7 @@ textarea:focus-visible {
 .pricing-feature-list,
 .pricing-info-list {
   display: grid;
-  gap: 0.58rem;
+  gap: 0.52rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -5814,21 +5827,25 @@ textarea:focus-visible {
 .pricing-feature-group {
   display: grid;
   gap: 0.62rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 0.7rem;
+  background: rgba(15, 23, 42, 0.42);
 }
 
 .pricing-feature-heading {
   margin: 0;
   color: #e2e8f0;
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
 .pricing-feature-group-muted {
-  margin-top: 0.1rem;
-  padding-top: 0.95rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  margin-top: 0;
+  border-color: rgba(148, 163, 184, 0.08);
+  background: rgba(2, 6, 23, 0.28);
 }
 
 .pricing-feature-list li,
@@ -5836,21 +5853,23 @@ textarea:focus-visible {
   display: flex;
   min-width: 0;
   align-items: flex-start;
-  gap: 0.55rem;
+  gap: 0.5rem;
   color: #cbd5e1;
-  font-size: 0.8rem;
-  line-height: 1.45;
+  font-size: 0.78rem;
+  line-height: 1.42;
 }
 
 .pricing-feature-list svg,
 .pricing-info-list svg {
   flex: 0 0 auto;
-  margin-top: 0.16rem;
+  width: 0.82rem;
+  height: 0.82rem;
+  margin-top: 0.15rem;
   color: #22c55e;
 }
 
 .pricing-feature-list-unavailable li {
-  color: #94a3b8;
+  color: #8793a6;
 }
 
 .pricing-feature-list-unavailable svg {
@@ -5860,16 +5879,18 @@ textarea:focus-visible {
 .pricing-card-footer {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.72rem;
   margin-top: auto;
-  padding-top: 0.9rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.13);
 }
 
 .pricing-delivery {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  min-height: 1.45rem;
+  color: #a7b3c4;
 }
 
 .pricing-delivery svg {
@@ -5878,17 +5899,17 @@ textarea:focus-visible {
 
 .pricing-select-button {
   display: inline-flex;
-  min-height: 2.8rem;
+  min-height: 2.65rem;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(96, 165, 250, 0.28);
-  border-radius: 0.65rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid rgba(96, 165, 250, 0.34);
+  border-radius: 0.6rem;
   color: #fff;
-  background: rgba(37, 99, 235, 0.85);
+  background: #2563eb;
   box-shadow: none;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 700;
   transition:
     background 0.2s ease,
@@ -5897,7 +5918,7 @@ textarea:focus-visible {
 
 .pricing-select-button:hover {
   border-color: rgba(147, 197, 253, 0.5);
-  background: rgba(37, 99, 235, 1);
+  background: #1d4ed8;
 }
 
 .pricing-empty-panel {
