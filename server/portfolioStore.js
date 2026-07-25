@@ -5,6 +5,8 @@ const TABLES = {
   education: 'portfolio_education',
   messages: 'contact_messages',
   experience: 'portfolio_experience',
+  pricingPackages: 'portfolio_pricing_packages',
+  pricingServices: 'portfolio_pricing_services',
   projects: 'portfolio_projects',
 };
 
@@ -116,6 +118,40 @@ function mapCertificate(row) {
   };
 }
 
+function mapPricingService(row) {
+  return {
+    id: row.id,
+    serviceKey: row.service_key,
+    label: row.label,
+    icon: row.icon || 'code',
+    intro: row.intro,
+    displayOrder: row.display_order ?? 0,
+    active: row.active !== false,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function mapPricingPackage(row) {
+  return {
+    id: row.id,
+    serviceId: row.service_id,
+    tier: row.tier,
+    title: row.title,
+    price: row.price,
+    description: row.description,
+    delivery: row.delivery,
+    badge: row.badge || '',
+    button: row.button,
+    features: Array.isArray(row.features) ? row.features : [],
+    unavailable: Array.isArray(row.unavailable) ? row.unavailable : [],
+    displayOrder: row.display_order ?? 0,
+    active: row.active !== false,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 function projectPayload(input = {}) {
   return {
     title: normalizeString(input.title),
@@ -166,6 +202,34 @@ function certificatePayload(input = {}) {
   };
 }
 
+function pricingServicePayload(input = {}) {
+  return {
+    service_key: normalizeString(input.serviceKey).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, ''),
+    label: normalizeString(input.label),
+    icon: normalizeString(input.icon) || 'code',
+    intro: normalizeString(input.intro),
+    display_order: toInteger(input.displayOrder, 0),
+    active: toBoolean(input.active),
+  };
+}
+
+function pricingPackagePayload(input = {}) {
+  return {
+    service_id: toInteger(input.serviceId, 0),
+    tier: normalizeString(input.tier),
+    title: normalizeString(input.title),
+    price: normalizeString(input.price),
+    description: normalizeString(input.description),
+    delivery: normalizeString(input.delivery),
+    badge: normalizeString(input.badge),
+    button: normalizeString(input.button),
+    features: normalizeLineArray(input.features),
+    unavailable: normalizeLineArray(input.unavailable),
+    display_order: toInteger(input.displayOrder, 0),
+    active: toBoolean(input.active),
+  };
+}
+
 async function listRows(table, mapper) {
   const { data, error } = await supabase
     .from(table)
@@ -207,23 +271,72 @@ async function safeCountRows(table) {
 }
 
 async function listPortfolioContent() {
-  const [projects, experience, education, certificates] = await Promise.all([
+  const [projects, experience, education, certificates, pricingServices] = await Promise.all([
     listRows(TABLES.projects, mapProject),
     safeListRows(TABLES.experience, mapExperience),
     listRows(TABLES.education, mapEducation),
     listRows(TABLES.certificates, mapCertificate),
+    safeListPricingServices(false),
   ]);
 
-  return { projects, experience, education, certificates };
+  return { projects, experience, education, certificates, pricingServices };
+}
+
+async function listPricingServices(admin = false) {
+  let serviceQuery = supabase
+    .from(TABLES.pricingServices)
+    .select('*')
+    .order('display_order', { ascending: true })
+    .order('id', { ascending: true });
+
+  let packageQuery = supabase
+    .from(TABLES.pricingPackages)
+    .select('*')
+    .order('display_order', { ascending: true })
+    .order('id', { ascending: true });
+
+  if (!admin) {
+    serviceQuery = serviceQuery.eq('active', true);
+    packageQuery = packageQuery.eq('active', true);
+  }
+
+  const [{ data: serviceRows, error: serviceError }, { data: packageRows, error: packageError }] = await Promise.all([
+    serviceQuery,
+    packageQuery,
+  ]);
+
+  if (serviceError) throw serviceError;
+  if (packageError) throw packageError;
+
+  const packages = (packageRows || []).map(mapPricingPackage);
+  return (serviceRows || []).map((row) => {
+    const service = mapPricingService(row);
+    return {
+      ...service,
+      id: service.serviceKey,
+      recordId: service.id,
+      packages: packages.filter((item) => Number(item.serviceId) === Number(service.id)),
+    };
+  });
+}
+
+async function safeListPricingServices(admin = false) {
+  try {
+    return await listPricingServices(admin);
+  } catch (error) {
+    console.error(`Unable to list pricing content:`, error.message || error);
+    return [];
+  }
 }
 
 async function getDashboardSummary() {
-  const [messages, projects, experience, education, certificates] = await Promise.all([
+  const [messages, projects, experience, education, certificates, pricingPackages] = await Promise.all([
     safeCountRows(TABLES.messages),
     safeCountRows(TABLES.projects),
     safeCountRows(TABLES.experience),
     safeCountRows(TABLES.education),
     safeCountRows(TABLES.certificates),
+    safeCountRows(TABLES.pricingPackages),
   ]);
 
   let latestMessage = null;
@@ -245,6 +358,7 @@ async function getDashboardSummary() {
     experience,
     education,
     certificates,
+    pricingPackages,
     latestMessage: latestMessage || null,
   };
 }
@@ -284,9 +398,15 @@ module.exports = {
   mapCertificate,
   mapEducation,
   mapExperience,
+  mapPricingPackage,
+  mapPricingService,
   mapProject,
+  listPricingServices,
   projectPayload,
+  pricingPackagePayload,
+  pricingServicePayload,
   updateRow,
   safeCountRows,
+  safeListPricingServices,
   safeListRows,
 };
