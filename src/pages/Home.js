@@ -2359,8 +2359,8 @@ function PricingTabs({ activeServiceId, onChange }) {
 
 function PricingCard({ plan }) {
   const featured = Boolean(plan.badge);
-  const visibleFeatures = plan.features.slice(0, 5);
-  const hiddenFeatures = plan.features.slice(5);
+  const visibleFeatures = plan.features.slice(0, 4);
+  const hiddenFeatures = plan.features.slice(4);
 
   return (
     <article className={`pricing-card card-3d ${featured ? 'pricing-card-featured' : ''}`}>
