@@ -46,6 +46,7 @@
     "client": "PORT=3000 react-scripts start",
     "dev": "concurrently \"npm:server\" \"npm:client\"",
     "build": "react-scripts build",
+    "seed:pricing": "node scripts/seed-pricing.js",
     "seed:work-experience": "node scripts/seed-work-experience.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
