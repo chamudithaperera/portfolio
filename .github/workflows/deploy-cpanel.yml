@@ -39,6 +39,7 @@ jobs:
           mkdir -p cpanel-deploy/tmp
           cp app.js package.json package-lock.json cpanel-deploy/
           cp -R server build cpanel-deploy/
+          rm -rf cpanel-deploy/build/assets cpanel-deploy/build/demos
           rm -rf cpanel-deploy/build/assets/scss
           find cpanel-deploy/build -name "*.map" -type f -delete
           date -u +"%Y-%m-%dT%H:%M:%SZ" > cpanel-deploy/tmp/restart.txt
