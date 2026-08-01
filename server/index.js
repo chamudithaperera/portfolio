@@ -59,6 +59,59 @@ const {
 const app = express();
 const buildDir = path.join(__dirname, '..', 'build');
 const hasBuild = fs.existsSync(buildDir);
+const siteOrigin =
+  String(process.env.PUBLIC_SITE_ORIGIN || 'https://chamudithaperera.online')
+    .split(',')[0]
+    .trim()
+    .replace(/\/+$/, '') || 'https://chamudithaperera.online';
+const socialImage = `${siteOrigin}/assets/imgs/header/edited-photo-cropped-720.png`;
+const defaultDescription =
+  'Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products.';
+const seoPages = {
+  home: {
+    title: 'Chamuditha Perera | Software Engineer & Flutter Developer',
+    description: defaultDescription,
+    canonicalPath: '/',
+    fallbackHeading: 'Chamuditha Perera | Software Engineer & Flutter Developer',
+    fallbackParagraphs: [
+      defaultDescription,
+      'Explore selected projects, work experience, technical skills, education, certificates, pricing packages, and contact details.',
+    ],
+    robots: 'index,follow,max-image-preview:large',
+  },
+  projects: {
+    title: 'Projects | Chamuditha Perera',
+    description:
+      "Explore Chamuditha Perera's selected Flutter, React, Spring Boot, and UI/UX projects, including mobile apps, dashboards, and web platforms.",
+    canonicalPath: '/projects',
+    fallbackHeading: 'Projects by Chamuditha Perera',
+    fallbackParagraphs: [
+      "Explore Chamuditha Perera's selected Flutter, React, Spring Boot, and UI/UX projects, including mobile apps, dashboards, and web platforms.",
+      'Featured work includes mobile applications, responsive websites, backend APIs, admin panels, and product design experiments.',
+    ],
+    robots: 'index,follow,max-image-preview:large',
+  },
+  pricing: {
+    title: 'Pricing | Chamuditha Perera',
+    description:
+      'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.',
+    canonicalPath: '/pricing',
+    fallbackHeading: 'Website and Mobile App Pricing',
+    fallbackParagraphs: [
+      'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.',
+      'Packages cover basic websites, standard business sites, premium platforms, mobile apps, revisions, support, and custom project scopes.',
+    ],
+    robots: 'index,follow,max-image-preview:large',
+  },
+  admin: {
+    title: 'Admin Dashboard | Chamuditha Portfolio',
+    description: 'Private administration area for Chamuditha Perera portfolio content.',
+    canonicalPath: '/admin',
+    fallbackHeading: 'Admin Dashboard',
+    fallbackParagraphs: ['This private administration area is not intended to appear in search results.'],
+    robots: 'noindex,nofollow',
+  },
+};
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 5,
@@ -124,6 +177,188 @@ async function getCertificateImageRecord(id) {
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, status: 'healthy' });
 });
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeJsonForHtml(value) {
+  return JSON.stringify(value).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
+}
+
+function getSeoPage(requestPath) {
+  const cleanPath = String(requestPath || '/').replace(/\/+$/, '') || '/';
+
+  if (cleanPath === '/projects' || cleanPath.startsWith('/projects/')) {
+    return seoPages.projects;
+  }
+
+  if (cleanPath === '/pricing' || cleanPath.startsWith('/pricing/')) {
+    return seoPages.pricing;
+  }
+
+  if (cleanPath === '/admin' || cleanPath.startsWith('/admin/')) {
+    return seoPages.admin;
+  }
+
+  return seoPages.home;
+}
+
+function buildStructuredData(seo) {
+  const canonical = `${siteOrigin}${seo.canonicalPath}`;
+  const personId = `${siteOrigin}/#person`;
+  const websiteId = `${siteOrigin}/#website`;
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Person',
+        '@id': personId,
+        name: 'Chamuditha Perera',
+        alternateName: 'Chamuditha',
+        url: siteOrigin,
+        image: socialImage,
+        jobTitle: 'Software Engineer and Flutter Developer',
+        worksFor: {
+          '@type': 'Organization',
+          name: 'Chamuditha Perera Portfolio',
+          url: siteOrigin,
+        },
+        sameAs: ['https://github.com/chamudithaperera', 'https://linkedin.com/in/chamudithaperera'],
+        knowsAbout: [
+          'Flutter',
+          'React',
+          'Spring Boot',
+          'UI/UX Design',
+          'Mobile App Development',
+          'Full-Stack Development',
+        ],
+      },
+      {
+        '@type': 'WebSite',
+        '@id': websiteId,
+        url: siteOrigin,
+        name: 'Chamuditha Portfolio',
+        description: defaultDescription,
+        publisher: {
+          '@id': personId,
+        },
+        inLanguage: 'en',
+      },
+      {
+        '@type': 'WebPage',
+        '@id': `${canonical}#webpage`,
+        url: canonical,
+        name: seo.title,
+        description: seo.description,
+        isPartOf: {
+          '@id': websiteId,
+        },
+        about: {
+          '@id': personId,
+        },
+        inLanguage: 'en',
+      },
+    ],
+  };
+}
+
+function replaceOrInsertHeadTag(html, pattern, replacement) {
+  if (pattern.test(html)) {
+    return html.replace(pattern, replacement);
+  }
+
+  return html.replace(/<\/head>/i, `${replacement}</head>`);
+}
+
+function renderFallbackContent(seo) {
+  const paragraphs = seo.fallbackParagraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('');
+
+  return [
+    '<main class="seo-fallback" data-seo-fallback>',
+    `<h1>${escapeHtml(seo.fallbackHeading)}</h1>`,
+    paragraphs,
+    '<nav aria-label="Portfolio pages">',
+    `<a href="${siteOrigin}/">Home</a> | `,
+    `<a href="${siteOrigin}/projects">Projects</a> | `,
+    `<a href="${siteOrigin}/pricing">Pricing</a>`,
+    '</nav>',
+    '</main>',
+  ].join('');
+}
+
+function renderSeoHtml(requestPath) {
+  const indexPath = path.join(buildDir, 'index.html');
+  const seo = getSeoPage(requestPath);
+  const canonical = `${siteOrigin}${seo.canonicalPath}`;
+  let html = fs.readFileSync(indexPath, 'utf8');
+
+  html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(seo.title)}</title>`);
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']description["'][^>]*>/i,
+    `<meta name="description" content="${escapeHtml(seo.description)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']robots["'][^>]*>/i,
+    `<meta name="robots" content="${escapeHtml(seo.robots)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<link\s+rel=["']canonical["'][^>]*>/i,
+    `<link rel="canonical" href="${escapeHtml(canonical)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+property=["']og:url["'][^>]*>/i,
+    `<meta property="og:url" content="${escapeHtml(canonical)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+property=["']og:title["'][^>]*>/i,
+    `<meta property="og:title" content="${escapeHtml(seo.title)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+property=["']og:description["'][^>]*>/i,
+    `<meta property="og:description" content="${escapeHtml(seo.description)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+property=["']og:image["'][^>]*>/i,
+    `<meta property="og:image" content="${escapeHtml(socialImage)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']twitter:title["'][^>]*>/i,
+    `<meta name="twitter:title" content="${escapeHtml(seo.title)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']twitter:description["'][^>]*>/i,
+    `<meta name="twitter:description" content="${escapeHtml(seo.description)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']twitter:image["'][^>]*>/i,
+    `<meta name="twitter:image" content="${escapeHtml(socialImage)}"/>`,
+  );
+  html = html.replace(
+    /<script\s+type=["']application\/ld\+json["']>[\s\S]*?<\/script>/i,
+    `<script type="application/ld+json">${escapeJsonForHtml(buildStructuredData(seo))}</script>`,
+  );
+  html = html.replace(/<noscript>[\s\S]*?<\/noscript>/i, `<noscript>${escapeHtml(seo.description)}</noscript>`);
+  html = html.replace(/<main\s+class=["']seo-fallback["'][^>]*data-seo-fallback[^>]*>[\s\S]*?<\/main>/i, renderFallbackContent(seo));
+
+  return { html, seo };
+}
 
 app.get('/api/content/portfolio', async (_req, res) => {
   try {
@@ -811,13 +1046,23 @@ app.delete('/api/admin/certificates/:id', requireAdmin, async (req, res) => {
 });
 
 if (hasBuild) {
-  app.use(express.static(buildDir));
+  app.use(express.static(buildDir, { index: false }));
   app.use((req, res, next) => {
-    if (req.method !== 'GET' || req.path.startsWith('/api/')) {
+    if (!['GET', 'HEAD'].includes(req.method) || req.path.startsWith('/api/')) {
       return next();
     }
 
-    return res.sendFile(path.join(buildDir, 'index.html'));
+    const indexPath = path.join(buildDir, 'index.html');
+    if (!fs.existsSync(indexPath)) {
+      return next();
+    }
+
+    const { html, seo } = renderSeoHtml(req.path);
+    if (seo.robots.includes('noindex')) {
+      res.set('X-Robots-Tag', seo.robots);
+    }
+
+    return res.type('html').send(html);
   });
 } else {
   app.get('/', (_req, res) => {

@@ -79,15 +79,15 @@ const profile = {
 };
 
 const siteUrl = 'https://chamudithaperera.online';
-const siteTitle = 'Chamuditha Perera | Software Engineer';
+const siteTitle = 'Chamuditha Perera | Software Engineer & Flutter Developer';
 const siteDescription =
-  "Chamuditha Perera's portfolio website showcasing Flutter, React, Spring Boot, UI/UX, and production-ready mobile and web projects from Sri Lanka.";
+  'Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products.';
 const projectsPageTitle = 'Projects | Chamuditha Perera';
 const projectsPageDescription =
-  "Selected projects by Chamuditha Perera, including Flutter apps, React web experiences, and Spring Boot systems.";
+  "Explore Chamuditha Perera's selected Flutter, React, Spring Boot, and UI/UX projects, including mobile apps, dashboards, and web platforms.";
 const pricingPageTitle = 'Pricing | Chamuditha Perera';
 const pricingPageDescription =
-  'Flexible website and mobile app packages by Chamuditha Perera, including Basic, Standard, Premium, and custom project options.';
+  'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.';
 const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`;
 
 const locationUrl =
@@ -2757,9 +2757,9 @@ function Home() {
           content={siteDescription}
         />
         <meta name="robots" content="index,follow,max-image-preview:large" />
-        <link rel="canonical" href={siteUrl} />
+        <link rel="canonical" href={`${siteUrl}/`} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={siteUrl} />
+        <meta property="og:url" content={`${siteUrl}/`} />
         <meta property="og:title" content={siteTitle} />
         <meta property="og:description" content={siteDescription} />
         <meta property="og:image" content={socialImage} />
