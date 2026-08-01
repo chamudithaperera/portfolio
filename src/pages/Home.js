@@ -71,7 +71,7 @@ const heroTechnologies = [
 const profile = {
   name: 'Chamuditha Perera',
   email: 'chamudithaperera.dev@gmail.com',
-  phone: '+94719153552',
+  phone: '+94787250549',
   address: 'No 83, Galle Road, Kalutara North',
   github: 'chamudithaperera',
   linkedin: 'chamudithaperera',
