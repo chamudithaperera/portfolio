@@ -39,23 +39,30 @@ jobs:
           mkdir -p cpanel-deploy/tmp
           cp app.js package.json package-lock.json cpanel-deploy/
           cp -R server build cpanel-deploy/
+          rm -rf cpanel-deploy/build/assets/scss
+          find cpanel-deploy/build -name "*.map" -type f -delete
           date -u +"%Y-%m-%dT%H:%M:%SZ" > cpanel-deploy/tmp/restart.txt
 
+      - name: Install FTP client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
+
       - name: Deploy to Namecheap
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.CPANEL_FTP_SERVER }}
-          username: ${{ secrets.CPANEL_FTP_USERNAME }}
-          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          timeout: 120000
-          log-level: verbose
-          local-dir: ./cpanel-deploy/
-          server-dir: ${{ secrets.CPANEL_REMOTE_DIR }}
-          exclude: |
-            **/.git*
-            **/.DS_Store
-            **/.env
-            **/node_modules/**
-            **/portfolio-upload.zip
+        env:
+          CPANEL_FTP_SERVER: ${{ secrets.CPANEL_FTP_SERVER }}
+          CPANEL_FTP_USERNAME: ${{ secrets.CPANEL_FTP_USERNAME }}
+          CPANEL_FTP_PASSWORD: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          CPANEL_REMOTE_DIR: ${{ secrets.CPANEL_REMOTE_DIR }}
+        run: |
+          lftp -u "$CPANEL_FTP_USERNAME","$CPANEL_FTP_PASSWORD" "ftp://$CPANEL_FTP_SERVER:21" <<EOF
+          set ftp:ssl-force true
+          set ftp:ssl-protect-data true
+          set ftp:passive-mode true
+          set ssl:verify-certificate no
+          set net:timeout 30
+          set net:max-retries 5
+          set net:reconnect-interval-base 5
+          mirror --reverse --continue --only-newer --verbose --parallel=1 ./cpanel-deploy/ "$CPANEL_REMOTE_DIR"
+          bye
+          EOF
