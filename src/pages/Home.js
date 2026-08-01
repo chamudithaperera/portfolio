@@ -78,6 +78,12 @@ const profile = {
   portfolio: 'chamudithaperera.online',
 };
 
+const whatsappNumber = profile.phone.replace(/\D/g, '');
+const whatsappMessage = encodeURIComponent(
+  'Hi Chamuditha, I found your portfolio and would like to discuss a project.'
+);
+const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
 const siteUrl = 'https://chamudithaperera.online';
 const siteTitle = 'Chamuditha Perera | Software Engineer & Flutter Developer';
 const siteDescription =
@@ -417,6 +423,10 @@ const iconPaths = {
   mail: ['M4 4h16v16H4z', 'm4 6 8 6 8-6'],
   external: ['M14 3h7v7', 'M10 14 21 3', 'M21 14v7H3V3h7'],
   phone: ['M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 5.2 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9 10.9a16 16 0 0 0 4.1 4.1l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .6 2.9.7a2 2 0 0 1 1.7 2z'],
+  whatsapp: [
+    'M20 11.5a8 8 0 0 1-11.9 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5z',
+    'M8.8 8.9c.2-.4.4-.5.7-.5h.5c.2 0 .4.1.5.4l.5 1.2c.1.3.1.5-.1.7l-.4.5c.8 1.4 1.9 2.3 3.3 2.8l.5-.5c.2-.2.5-.2.7-.1l1.2.6c.3.1.4.3.4.6v.5c0 .4-.2.6-.5.8-.5.2-1 .3-1.6.2-2.9-.5-5.1-2.4-6.2-5.1-.2-.6-.1-1.3.2-2.1z',
+  ],
   pin: ['M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0z', 'M12 10a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5'],
   briefcase: ['M4 7h16v13H4z', 'M9 7V4h6v3', 'M4 12h16'],
   calendar: ['M3 5h18v16H3z', 'M16 3v4', 'M8 3v4', 'M3 10h18'],
@@ -848,6 +858,7 @@ function Hero() {
             <div className="social-row" aria-label="Social links">
               <SocialLink icon="github" label="GitHub" href={`https://github.com/${profile.github}`} />
               <SocialLink icon="linkedin" label="LinkedIn" href={`https://linkedin.com/in/${profile.linkedin}`} />
+              <SocialLink icon="whatsapp" label="WhatsApp" href={whatsappUrl} />
               <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
             </div>
           </div>
@@ -899,6 +910,7 @@ function Hero() {
 const contactItems = [
   { icon: 'mail', label: profile.email, href: `mailto:${profile.email}` },
   { icon: 'phone', label: profile.phone, href: `tel:${profile.phone}` },
+  { icon: 'whatsapp', label: 'WhatsApp', href: whatsappUrl },
   { icon: 'pin', label: profile.address },
   { icon: 'github', label: `github/${profile.github}`, href: `https://github.com/${profile.github}` },
   { icon: 'linkedin', label: `in/${profile.linkedin}`, href: `https://linkedin.com/in/${profile.linkedin}` },
@@ -2028,6 +2040,7 @@ function Contact() {
   const directItems = [
     { icon: 'mail', label: 'Email', value: profile.email, href: `mailto:${profile.email}` },
     { icon: 'phone', label: 'Phone', value: profile.phone, href: `tel:${profile.phone}` },
+    { icon: 'whatsapp', label: 'WhatsApp', value: profile.phone, href: whatsappUrl },
     { icon: 'pin', label: 'Location', value: profile.address, href: locationUrl },
     { icon: 'external', label: 'Portfolio', value: profile.portfolio, href: profile.portfolio },
   ];
@@ -2035,6 +2048,7 @@ function Contact() {
   const followItems = [
     { icon: 'github', label: 'GitHub', href: `https://github.com/${profile.github}` },
     { icon: 'linkedin', label: 'LinkedIn', href: `https://linkedin.com/in/${profile.linkedin}` },
+    { icon: 'whatsapp', label: 'WhatsApp', href: whatsappUrl },
     { icon: 'external', label: 'Website', href: profile.portfolio },
   ];
 
@@ -2374,6 +2388,10 @@ function PricingContact() {
               <Icon name="phone" size={14} />
               {profile.phone}
             </a>
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+              <Icon name="whatsapp" size={14} />
+              WhatsApp
+            </a>
           </div>
         </div>
 
@@ -2687,6 +2705,7 @@ function Footer() {
             <div className="footer-socials">
               <SocialLink icon="github" label="GitHub" href={`https://github.com/${profile.github}`} />
               <SocialLink icon="linkedin" label="LinkedIn" href={`https://linkedin.com/in/${profile.linkedin}`} />
+              <SocialLink icon="whatsapp" label="WhatsApp" href={whatsappUrl} />
               <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
               <SocialLink icon="external" label="Website" href={profile.portfolio} />
             </div>
@@ -2718,6 +2737,11 @@ function Footer() {
               <li>
                 <a href={`tel:${profile.phone}`}>
                   <Icon name="phone" size={14} /> <span>{profile.phone}</span>
+                </a>
+              </li>
+              <li>
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                  <Icon name="whatsapp" size={14} /> <span>WhatsApp</span>
                 </a>
               </li>
               <li>
