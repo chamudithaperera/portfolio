@@ -423,6 +423,12 @@ const iconPaths = {
   mail: ['M4 4h16v16H4z', 'm4 6 8 6 8-6'],
   external: ['M14 3h7v7', 'M10 14 21 3', 'M21 14v7H3V3h7'],
   phone: ['M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 5.2 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9 10.9a16 16 0 0 0 4.1 4.1l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .6 2.9.7a2 2 0 0 1 1.7 2z'],
+  support: [
+    'M4 13v-1a8 8 0 0 1 16 0v1',
+    'M6 13h2v5H6a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2z',
+    'M16 13h2a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-2z',
+    'M18 18c0 2-2 3-5 3h-1',
+  ],
   whatsapp: [
     'M20 11.5a8 8 0 0 1-11.9 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5z',
     'M8.8 8.9c.2-.4.4-.5.7-.5h.5c.2 0 .4.1.5.4l.5 1.2c.1.3.1.5-.1.7l-.4.5c.8 1.4 1.9 2.3 3.3 2.8l.5-.5c.2-.2.5-.2.7-.1l1.2.6c.3.1.4.3.4.6v.5c0 .4-.2.6-.5.8-.5.2-1 .3-1.6.2-2.9-.5-5.1-2.4-6.2-5.1-.2-.6-.1-1.3.2-2.1z',
@@ -463,6 +469,47 @@ function Icon({ name, size = 16, className = '' }) {
         <path key={path} d={path} />
       ))}
     </svg>
+  );
+}
+
+function FloatingContactMenu() {
+  const [open, setOpen] = useState(false);
+  const actions = [
+    { icon: 'phone', label: 'Call', href: `tel:${profile.phone}` },
+    { icon: 'whatsapp', label: 'WhatsApp', href: whatsappUrl },
+    { icon: 'mail', label: 'Email', href: `mailto:${profile.email}` },
+  ];
+
+  return (
+    <div className={`floating-contact ${open ? 'is-open' : ''}`}>
+      <div className="floating-contact-actions" aria-label="Quick contact options" aria-hidden={!open}>
+        {actions.map((action, index) => (
+          <a
+            key={action.label}
+            className="floating-contact-action"
+            href={action.href}
+            target={action.href.startsWith('http') ? '_blank' : undefined}
+            rel={action.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            style={{ '--contact-delay': `${index * 55}ms` }}
+            tabIndex={open ? 0 : -1}
+            aria-label={action.label}
+          >
+            <Icon name={action.icon} size={22} />
+            <span>{action.label}</span>
+          </a>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="floating-contact-toggle"
+        onClick={() => setOpen((current) => !current)}
+        aria-expanded={open}
+        aria-label={open ? 'Close quick contact options' : 'Open quick contact options'}
+      >
+        <span className="floating-contact-pulse" aria-hidden="true" />
+        <Icon name={open ? 'close' : 'support'} size={28} />
+      </button>
+    </div>
   );
 }
 
@@ -1483,6 +1530,7 @@ function ProjectsPage() {
       <main>
         <Projects mode="page" projectsData={portfolioContent.projects} />
       </main>
+      <FloatingContactMenu />
     </div>
   );
 }
@@ -2643,6 +2691,7 @@ function PricingPage() {
         </section>
         <PricingContact />
       </main>
+      <FloatingContactMenu />
       <Footer />
     </div>
   );
@@ -2806,6 +2855,7 @@ function Home() {
         <Education educationItems={portfolioContent.education} certificateItems={portfolioContent.certificates} />
         <Contact />
       </main>
+      <FloatingContactMenu />
       <Footer />
     </div>
   );
