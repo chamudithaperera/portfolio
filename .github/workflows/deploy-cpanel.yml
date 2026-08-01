@@ -47,6 +47,10 @@ jobs:
           server: ${{ secrets.CPANEL_FTP_SERVER }}
           username: ${{ secrets.CPANEL_FTP_USERNAME }}
           password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          timeout: 120000
+          log-level: verbose
           local-dir: ./cpanel-deploy/
           server-dir: ${{ secrets.CPANEL_REMOTE_DIR }}
           exclude: |
