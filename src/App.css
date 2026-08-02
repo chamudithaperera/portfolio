@@ -100,17 +100,12 @@ html {
   letter-spacing: 0;
 }
 
-.brand-mark,
 .brand-icon {
   display: grid;
   width: 2rem;
   height: 2rem;
   place-items: center;
   border-radius: 0.5rem;
-}
-
-.brand-mark {
-  object-fit: cover;
 }
 
 .brand-icon {

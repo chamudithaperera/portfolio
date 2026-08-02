@@ -696,7 +696,6 @@ function SectionHeading({ index, title, accent, description, align = 'center' })
 function Brand() {
   return (
     <span className="brand">
-      <img className="brand-mark" src={withBase('/favicon-48.png')} alt="" aria-hidden="true" />
       <span>Chamuditha Perera</span>
     </span>
   );
@@ -1537,9 +1536,6 @@ function ProjectsPage() {
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
         <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
-        <link rel="icon" type="image/png" sizes="48x48" href={withBase('/favicon-48.png')} />
-        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon-96.png')} />
-        <link rel="apple-touch-icon" sizes="180x180" href={withBase('/apple-touch-icon.png')} />
       </Helmet>
       <Navigation />
       <main>
@@ -2593,9 +2589,6 @@ function PricingPage() {
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
         <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
-        <link rel="icon" type="image/png" sizes="48x48" href={withBase('/favicon-48.png')} />
-        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon-96.png')} />
-        <link rel="apple-touch-icon" sizes="180x180" href={withBase('/apple-touch-icon.png')} />
       </Helmet>
       <div className="noise" aria-hidden="true" />
       <Navigation />
@@ -2871,9 +2864,6 @@ function Home() {
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
         <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
-        <link rel="icon" type="image/png" sizes="48x48" href={withBase('/favicon-48.png')} />
-        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon-96.png')} />
-        <link rel="apple-touch-icon" sizes="180x180" href={withBase('/apple-touch-icon.png')} />
       </Helmet>
       <div className="noise" aria-hidden="true" />
       <Navigation />
