@@ -1535,7 +1535,8 @@ function ProjectsPage() {
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
-        <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon.png')} />
+        <link rel="shortcut icon" href={withBase('/favicon.ico')} sizes="any" />
       </Helmet>
       <Navigation />
       <main>
@@ -2588,7 +2589,8 @@ function PricingPage() {
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
-        <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon.png')} />
+        <link rel="shortcut icon" href={withBase('/favicon.ico')} sizes="any" />
       </Helmet>
       <div className="noise" aria-hidden="true" />
       <Navigation />
@@ -2863,7 +2865,8 @@ function Home() {
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
-        <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon.png')} />
+        <link rel="shortcut icon" href={withBase('/favicon.ico')} sizes="any" />
       </Helmet>
       <div className="noise" aria-hidden="true" />
       <Navigation />

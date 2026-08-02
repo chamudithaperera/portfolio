@@ -66,7 +66,7 @@ const siteOrigin =
     .replace(/\/+$/, '') || 'https://chamudithaperera.online';
 const siteName = 'Chamuditha Perera';
 const socialImage = `${siteOrigin}/assets/imgs/header/edited-photo-cropped-720.png`;
-const siteLogo = `${siteOrigin}/logo512.png`;
+const siteLogo = `${siteOrigin}/favicon.png`;
 const defaultDescription =
   'Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.';
 const defaultKeywords =
@@ -1100,9 +1100,7 @@ if (hasBuild) {
     }
 
     const { html, seo } = renderSeoHtml(req.path);
-    if (seo.robots.includes('noindex')) {
-      res.set('X-Robots-Tag', seo.robots);
-    }
+    res.set('X-Robots-Tag', seo.robots);
 
     return res.type('html').send(html);
   });
