@@ -228,21 +228,23 @@ function buildStructuredData(seo) {
       {
         '@type': 'Person',
         '@id': personId,
-        name: 'Chamuditha Perera',
-        alternateName: 'Chamuditha',
+        name: siteName,
+        alternateName: ['Chamuditha', 'ChamXdev'],
         url: siteOrigin,
         image: socialImage,
-        jobTitle: 'Software Engineer and Flutter Developer',
+        jobTitle: 'Software Engineer',
         worksFor: {
           '@type': 'Organization',
-          name: 'Chamuditha Perera Portfolio',
+          name: siteName,
           url: siteOrigin,
+          logo: siteLogo,
         },
         sameAs: ['https://github.com/chamudithaperera', 'https://linkedin.com/in/chamudithaperera'],
         knowsAbout: [
           'Flutter',
           'React',
           'Spring Boot',
+          'Software Engineering',
           'UI/UX Design',
           'Mobile App Development',
           'Full-Stack Development',
@@ -252,7 +254,8 @@ function buildStructuredData(seo) {
         '@type': 'WebSite',
         '@id': websiteId,
         url: siteOrigin,
-        name: 'Chamuditha Portfolio',
+        name: siteName,
+        alternateName: ['Chamuditha', 'Chamuditha Perera Portfolio', 'ChamXdev'],
         description: defaultDescription,
         publisher: {
           '@id': personId,
@@ -265,6 +268,7 @@ function buildStructuredData(seo) {
         url: canonical,
         name: seo.title,
         description: seo.description,
+        keywords: seo.keywords,
         isPartOf: {
           '@id': websiteId,
         },
@@ -315,8 +319,23 @@ function renderSeoHtml(requestPath) {
   );
   html = replaceOrInsertHeadTag(
     html,
+    /<meta\s+name=["']keywords["'][^>]*>/i,
+    `<meta name="keywords" content="${escapeHtml(seo.keywords || defaultKeywords)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']author["'][^>]*>/i,
+    `<meta name="author" content="${escapeHtml(siteName)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
     /<meta\s+name=["']robots["'][^>]*>/i,
     `<meta name="robots" content="${escapeHtml(seo.robots)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']googlebot["'][^>]*>/i,
+    `<meta name="googlebot" content="${escapeHtml(seo.robots)}"/>`,
   );
   html = replaceOrInsertHeadTag(
     html,
@@ -345,6 +364,16 @@ function renderSeoHtml(requestPath) {
   );
   html = replaceOrInsertHeadTag(
     html,
+    /<meta\s+property=["']og:image:alt["'][^>]*>/i,
+    '<meta property="og:image:alt" content="Chamuditha Perera software engineer portfolio"/>',
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+property=["']og:site_name["'][^>]*>/i,
+    `<meta property="og:site_name" content="${escapeHtml(siteName)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
     /<meta\s+name=["']twitter:title["'][^>]*>/i,
     `<meta name="twitter:title" content="${escapeHtml(seo.title)}"/>`,
   );
@@ -357,6 +386,11 @@ function renderSeoHtml(requestPath) {
     html,
     /<meta\s+name=["']twitter:image["'][^>]*>/i,
     `<meta name="twitter:image" content="${escapeHtml(socialImage)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']twitter:image:alt["'][^>]*>/i,
+    '<meta name="twitter:image:alt" content="Chamuditha Perera software engineer portfolio"/>',
   );
   html = html.replace(
     /<script\s+type=["']application\/ld\+json["']>[\s\S]*?<\/script>/i,

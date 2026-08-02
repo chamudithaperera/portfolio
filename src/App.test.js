@@ -349,7 +349,7 @@ test('routes project-page navigation links back to the home page anchors', async
 
   const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
   expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '/#about');
-  expect(within(navigation).getByRole('link', { name: 'ChamudithaPerera.Online home' })).toHaveAttribute(
+  expect(within(navigation).getByRole('link', { name: 'Chamuditha Perera home' })).toHaveAttribute(
     'href',
     '/#hero',
   );
