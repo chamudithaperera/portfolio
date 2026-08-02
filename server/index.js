@@ -64,48 +64,56 @@ const siteOrigin =
     .split(',')[0]
     .trim()
     .replace(/\/+$/, '') || 'https://chamudithaperera.online';
+const siteName = 'Chamuditha Perera';
 const socialImage = `${siteOrigin}/assets/imgs/header/edited-photo-cropped-720.png`;
+const siteLogo = `${siteOrigin}/logo512.png`;
 const defaultDescription =
-  'Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products.';
+  'Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.';
+const defaultKeywords =
+  'Chamuditha, Chamuditha Perera, software engineer, Flutter developer, React developer, full-stack developer, mobile app developer, Sri Lanka software engineer';
 const seoPages = {
   home: {
-    title: 'Chamuditha Perera | Software Engineer & Flutter Developer',
+    title: 'Chamuditha Perera | Software Engineer',
     description: defaultDescription,
+    keywords: defaultKeywords,
     canonicalPath: '/',
-    fallbackHeading: 'Chamuditha Perera | Software Engineer & Flutter Developer',
+    fallbackHeading: 'Chamuditha Perera | Software Engineer',
     fallbackParagraphs: [
       defaultDescription,
       'Explore selected projects, work experience, technical skills, education, certificates, pricing packages, and contact details.',
     ],
-    robots: 'index,follow,max-image-preview:large',
+    robots: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
   },
   projects: {
     title: 'Projects | Chamuditha Perera',
     description:
-      "Explore Chamuditha Perera's selected Flutter, React, Spring Boot, and UI/UX projects, including mobile apps, dashboards, and web platforms.",
+      "Selected projects by Chamuditha Perera, software engineer: Flutter apps, React websites, Spring Boot APIs, dashboards, admin panels, and UI/UX product work.",
+    keywords: `${defaultKeywords}, Chamuditha projects, software engineer portfolio, Flutter projects, React projects`,
     canonicalPath: '/projects',
     fallbackHeading: 'Projects by Chamuditha Perera',
     fallbackParagraphs: [
-      "Explore Chamuditha Perera's selected Flutter, React, Spring Boot, and UI/UX projects, including mobile apps, dashboards, and web platforms.",
+      "Selected projects by Chamuditha Perera, software engineer: Flutter apps, React websites, Spring Boot APIs, dashboards, admin panels, and UI/UX product work.",
       'Featured work includes mobile applications, responsive websites, backend APIs, admin panels, and product design experiments.',
     ],
-    robots: 'index,follow,max-image-preview:large',
+    robots: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
   },
   pricing: {
     title: 'Pricing | Chamuditha Perera',
     description:
       'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.',
+    keywords: `${defaultKeywords}, website pricing, mobile app pricing, software engineer Sri Lanka`,
     canonicalPath: '/pricing',
     fallbackHeading: 'Website and Mobile App Pricing',
     fallbackParagraphs: [
       'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.',
       'Packages cover basic websites, standard business sites, premium platforms, mobile apps, revisions, support, and custom project scopes.',
     ],
-    robots: 'index,follow,max-image-preview:large',
+    robots: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
   },
   admin: {
     title: 'Admin Dashboard | Chamuditha Portfolio',
     description: 'Private administration area for Chamuditha Perera portfolio content.',
+    keywords: '',
     canonicalPath: '/admin',
     fallbackHeading: 'Admin Dashboard',
     fallbackParagraphs: ['This private administration area is not intended to appear in search results.'],

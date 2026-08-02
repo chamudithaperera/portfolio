@@ -75,7 +75,7 @@ const profile = {
   address: 'No 83, Galle Road, Kalutara North',
   github: 'chamudithaperera',
   linkedin: 'chamudithaperera',
-  portfolio: 'chamudithaperera.online',
+  portfolio: 'https://chamudithaperera.online',
 };
 
 const whatsappNumber = profile.phone.replace(/\D/g, '');
@@ -85,16 +85,20 @@ const whatsappMessage = encodeURIComponent(
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
 const siteUrl = 'https://chamudithaperera.online';
-const siteTitle = 'Chamuditha Perera | Software Engineer & Flutter Developer';
+const siteName = 'Chamuditha Perera';
+const siteTitle = 'Chamuditha Perera | Software Engineer';
 const siteDescription =
-  'Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products.';
+  'Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.';
+const siteKeywords =
+  'Chamuditha, Chamuditha Perera, software engineer, Flutter developer, React developer, full-stack developer, mobile app developer, Sri Lanka software engineer';
 const projectsPageTitle = 'Projects | Chamuditha Perera';
 const projectsPageDescription =
-  "Explore Chamuditha Perera's selected Flutter, React, Spring Boot, and UI/UX projects, including mobile apps, dashboards, and web platforms.";
+  "Selected projects by Chamuditha Perera, software engineer: Flutter apps, React websites, Spring Boot APIs, dashboards, admin panels, and UI/UX product work.";
 const pricingPageTitle = 'Pricing | Chamuditha Perera';
 const pricingPageDescription =
   'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.';
 const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`;
+const socialImageAlt = 'Chamuditha Perera software engineer portfolio';
 
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
@@ -692,7 +696,8 @@ function SectionHeading({ index, title, accent, description, align = 'center' })
 function Brand() {
   return (
     <span className="brand">
-      <span>ChamudithaPerera.Online</span>
+      <img className="brand-mark" src={withBase('/favicon-48.png')} alt="" aria-hidden="true" />
+      <span>Chamuditha Perera</span>
     </span>
   );
 }
@@ -778,7 +783,7 @@ function Navigation() {
   return (
     <nav className={`top-nav ${scrolled ? 'top-nav-scrolled' : ''}`} aria-label="Main navigation">
       <div className="nav-inner">
-        <a href={homeHref} aria-label="ChamudithaPerera.Online home">
+        <a href={homeHref} aria-label="Chamuditha Perera home">
           <Brand />
         </a>
 
@@ -1513,18 +1518,28 @@ function ProjectsPage() {
       <Helmet>
         <title>{projectsPageTitle}</title>
         <meta name="description" content={projectsPageDescription} />
-        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta name="keywords" content={siteKeywords} />
+        <meta name="author" content={siteName} />
+        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+        <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <link rel="canonical" href={`${siteUrl}/projects`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${siteUrl}/projects`} />
         <meta property="og:title" content={projectsPageTitle} />
         <meta property="og:description" content={projectsPageDescription} />
         <meta property="og:image" content={socialImage} />
-        <meta property="og:site_name" content="Chamuditha Portfolio" />
+        <meta property="og:image:alt" content={socialImageAlt} />
+        <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={projectsPageTitle} />
         <meta name="twitter:description" content={projectsPageDescription} />
         <meta name="twitter:image" content={socialImage} />
+        <meta name="twitter:image:alt" content={socialImageAlt} />
+        <meta name="theme-color" content="#00020a" />
+        <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="48x48" href={withBase('/favicon-48.png')} />
+        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon-96.png')} />
+        <link rel="apple-touch-icon" sizes="180x180" href={withBase('/apple-touch-icon.png')} />
       </Helmet>
       <Navigation />
       <main>
@@ -2559,20 +2574,28 @@ function PricingPage() {
       <Helmet>
         <title>{pricingPageTitle}</title>
         <meta name="description" content={pricingPageDescription} />
-        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta name="keywords" content={siteKeywords} />
+        <meta name="author" content={siteName} />
+        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+        <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <link rel="canonical" href={`${siteUrl}/pricing`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${siteUrl}/pricing`} />
         <meta property="og:title" content={pricingPageTitle} />
         <meta property="og:description" content={pricingPageDescription} />
         <meta property="og:image" content={socialImage} />
-        <meta property="og:site_name" content="Chamuditha Portfolio" />
+        <meta property="og:image:alt" content={socialImageAlt} />
+        <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pricingPageTitle} />
         <meta name="twitter:description" content={pricingPageDescription} />
         <meta name="twitter:image" content={socialImage} />
+        <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
-        <link rel="icon" href={withBase('/assets/imgs/favicon.ico')} />
+        <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="48x48" href={withBase('/favicon-48.png')} />
+        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon-96.png')} />
+        <link rel="apple-touch-icon" sizes="180x180" href={withBase('/apple-touch-icon.png')} />
       </Helmet>
       <div className="noise" aria-hidden="true" />
       <Navigation />
@@ -2745,7 +2768,7 @@ function Footer() {
             <a href={homeHref} className="footer-brand">
               <span>
                 <strong>
-                  ChamudithaPerera.Online
+                  Chamuditha Perera
                 </strong>
                 <small>/ Software Engineer</small>
               </span>
@@ -2804,7 +2827,7 @@ function Footer() {
 
         <div className="footer-bottom">
           <p>
-            © 2026 ChamudithaPerera.Online by {profile.name}.
+            © 2026 Chamuditha Perera. Built by {profile.name}.
           </p>
           <div>
             <span>All rights reserved</span>
@@ -2829,20 +2852,28 @@ function Home() {
           name="description"
           content={siteDescription}
         />
-        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta name="keywords" content={siteKeywords} />
+        <meta name="author" content={siteName} />
+        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+        <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <link rel="canonical" href={`${siteUrl}/`} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${siteUrl}/`} />
         <meta property="og:title" content={siteTitle} />
         <meta property="og:description" content={siteDescription} />
         <meta property="og:image" content={socialImage} />
-        <meta property="og:site_name" content="Chamuditha Portfolio" />
+        <meta property="og:image:alt" content={socialImageAlt} />
+        <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={siteTitle} />
         <meta name="twitter:description" content={siteDescription} />
         <meta name="twitter:image" content={socialImage} />
+        <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
-        <link rel="icon" href={withBase('/assets/imgs/favicon.ico')} />
+        <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="48x48" href={withBase('/favicon-48.png')} />
+        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon-96.png')} />
+        <link rel="apple-touch-icon" sizes="180x180" href={withBase('/apple-touch-icon.png')} />
       </Helmet>
       <div className="noise" aria-hidden="true" />
       <Navigation />

@@ -2,34 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="48x48" href="%PUBLIC_URL%/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="%PUBLIC_URL%/favicon-96.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#080b14" />
     <meta
       name="description"
-      content="Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products."
+      content="Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products."
     />
-    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta
+      name="keywords"
+      content="Chamuditha, Chamuditha Perera, software engineer, Flutter developer, React developer, full-stack developer, mobile app developer, Sri Lanka software engineer"
+    />
+    <meta name="author" content="Chamuditha Perera" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://chamudithaperera.online/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://chamudithaperera.online/" />
-    <meta property="og:title" content="Chamuditha Perera | Software Engineer & Flutter Developer" />
+    <meta property="og:title" content="Chamuditha Perera | Software Engineer" />
     <meta
       property="og:description"
-      content="Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products."
+      content="Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products."
     />
     <meta property="og:image" content="https://chamudithaperera.online/assets/imgs/header/edited-photo-cropped-720.png" />
-    <meta property="og:site_name" content="Chamuditha Portfolio" />
+    <meta property="og:image:alt" content="Chamuditha Perera software engineer portfolio" />
+    <meta property="og:site_name" content="Chamuditha Perera" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Chamuditha Perera | Software Engineer & Flutter Developer" />
+    <meta name="twitter:title" content="Chamuditha Perera | Software Engineer" />
     <meta
       name="twitter:description"
-      content="Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products."
+      content="Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products."
     />
     <meta
       name="twitter:image"
       content="https://chamudithaperera.online/assets/imgs/header/edited-photo-cropped-720.png"
     />
+    <meta name="twitter:image:alt" content="Chamuditha Perera software engineer portfolio" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -38,14 +49,15 @@
             "@type": "Person",
             "@id": "https://chamudithaperera.online/#person",
             "name": "Chamuditha Perera",
-            "alternateName": "Chamuditha",
+            "alternateName": ["Chamuditha", "ChamXdev"],
             "url": "https://chamudithaperera.online",
             "image": "https://chamudithaperera.online/assets/imgs/header/edited-photo-cropped-720.png",
-            "jobTitle": "Software Engineer and Flutter Developer",
+            "jobTitle": "Software Engineer",
             "worksFor": {
               "@type": "Organization",
-              "name": "Chamuditha Perera Portfolio",
-              "url": "https://chamudithaperera.online"
+              "name": "Chamuditha Perera",
+              "url": "https://chamudithaperera.online",
+              "logo": "https://chamudithaperera.online/logo512.png"
             },
             "sameAs": [
               "https://github.com/chamudithaperera",
@@ -55,6 +67,7 @@
               "Flutter",
               "React",
               "Spring Boot",
+              "Software Engineering",
               "UI/UX Design",
               "Mobile App Development",
               "Full-Stack Development"
@@ -64,8 +77,9 @@
             "@type": "WebSite",
             "@id": "https://chamudithaperera.online/#website",
             "url": "https://chamudithaperera.online",
-            "name": "Chamuditha Portfolio",
-            "description": "Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products.",
+            "name": "Chamuditha Perera",
+            "alternateName": ["Chamuditha", "Chamuditha Perera Portfolio", "ChamXdev"],
+            "description": "Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.",
             "publisher": {
               "@id": "https://chamudithaperera.online/#person"
             },
@@ -75,8 +89,9 @@
             "@type": "WebPage",
             "@id": "https://chamudithaperera.online/#webpage",
             "url": "https://chamudithaperera.online/",
-            "name": "Chamuditha Perera | Software Engineer & Flutter Developer",
-            "description": "Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products.",
+            "name": "Chamuditha Perera | Software Engineer",
+            "description": "Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.",
+            "keywords": "Chamuditha, Chamuditha Perera, software engineer, Flutter developer, React developer, full-stack developer, mobile app developer, Sri Lanka software engineer",
             "isPartOf": {
               "@id": "https://chamudithaperera.online/#website"
             },
@@ -88,7 +103,6 @@
         ]
       }
     </script>
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -108,16 +122,16 @@
         display: none;
       }
     </style>
-    <title>Chamuditha Perera | Software Engineer & Flutter Developer</title>
+    <title>Chamuditha Perera | Software Engineer</title>
   </head>
   <body>
-    <noscript>Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps, React websites, Spring Boot APIs, and UI/UX products.</noscript>
+    <noscript>Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.</noscript>
     <div id="root">
       <main class="seo-fallback" data-seo-fallback>
-        <h1>Chamuditha Perera | Software Engineer & Flutter Developer</h1>
+        <h1>Chamuditha Perera | Software Engineer</h1>
         <p>
-          Portfolio of Chamuditha Perera, a Sri Lankan software engineer building Flutter mobile apps,
-          React websites, Spring Boot APIs, and UI/UX products.
+          Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps,
+          React websites, Spring Boot APIs, and full-stack products.
         </p>
         <p>
           Explore selected projects, work experience, technical skills, education, certificates,

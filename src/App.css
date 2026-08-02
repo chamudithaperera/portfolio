@@ -97,15 +97,23 @@ html {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
 }
 
+.brand-mark,
 .brand-icon {
   display: grid;
   width: 2rem;
   height: 2rem;
   place-items: center;
   border-radius: 0.5rem;
+}
+
+.brand-mark {
+  object-fit: cover;
+}
+
+.brand-icon {
   color: #fff;
   background: linear-gradient(135deg, #2563eb, #0ea5e9);
 }
@@ -4742,7 +4750,7 @@ textarea:focus-visible {
 .footer-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0;
+  gap: 0.75rem;
 }
 
 .footer-brand>span:last-child,
