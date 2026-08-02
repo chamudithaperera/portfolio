@@ -44,61 +44,36 @@ jobs:
           find cpanel-deploy/build -name "*.map" -type f -delete
           date -u +"%Y-%m-%dT%H:%M:%SZ" > cpanel-deploy/tmp/restart.txt
 
-      - name: Install FTP client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y lftp
-
-      - name: Deploy to Namecheap
+      - name: Normalize cPanel settings
+        id: cpanel
         env:
           CPANEL_FTP_SERVER: ${{ secrets.CPANEL_FTP_SERVER }}
           CPANEL_FTP_USERNAME: ${{ secrets.CPANEL_FTP_USERNAME }}
           CPANEL_FTP_PASSWORD: ${{ secrets.CPANEL_FTP_PASSWORD }}
           CPANEL_REMOTE_DIR: ${{ secrets.CPANEL_REMOTE_DIR }}
-          CPANEL_FTP_PORT: ${{ secrets.CPANEL_FTP_PORT || '21' }}
+          CPANEL_FTP_PORT: ${{ secrets.CPANEL_FTP_PORT }}
         run: |
           set -euo pipefail
-
           : "${CPANEL_FTP_SERVER:?Missing CPANEL_FTP_SERVER secret}"
           : "${CPANEL_FTP_USERNAME:?Missing CPANEL_FTP_USERNAME secret}"
           : "${CPANEL_FTP_PASSWORD:?Missing CPANEL_FTP_PASSWORD secret}"
           : "${CPANEL_REMOTE_DIR:?Missing CPANEL_REMOTE_DIR secret}"
 
           remote_dir="${CPANEL_REMOTE_DIR%/}/"
-          ftp_url="ftp://${CPANEL_FTP_SERVER}:${CPANEL_FTP_PORT:-21}"
+          ftp_port="${CPANEL_FTP_PORT:-21}"
+          echo "remote-dir=${remote_dir}" >> "$GITHUB_OUTPUT"
+          echo "ftp-port=${ftp_port}" >> "$GITHUB_OUTPUT"
 
-          for attempt in 1 2 3; do
-            echo "FTPS deploy attempt ${attempt}"
-            lftp_script="$(mktemp)"
-            {
-              echo "set cmd:fail-exit true"
-              echo "set ftp:ssl-force true"
-              echo "set ftp:ssl-protect-data true"
-              echo "set ftp:passive-mode true"
-              echo "set ftp:ignore-pasv-address true"
-              echo "set ftp:use-allo false"
-              echo "set ssl:verify-certificate no"
-              echo "set net:timeout 90"
-              echo "set net:max-retries 3"
-              echo "set net:reconnect-interval-base 10"
-              echo "set net:reconnect-interval-multiplier 1"
-              printf 'cd "%s"\n' "$remote_dir"
-              echo 'mirror --reverse --continue --only-newer --verbose --parallel=1 --no-perms ./cpanel-deploy/ .'
-              echo "bye"
-            } > "$lftp_script"
-
-            if lftp -u "$CPANEL_FTP_USERNAME","$CPANEL_FTP_PASSWORD" -f "$lftp_script" "$ftp_url"
-            then
-              echo "Namecheap deploy completed."
-              exit 0
-            fi
-
-            if [ "$attempt" -lt 3 ]; then
-              sleep_seconds=$((attempt * 30))
-              echo "Deploy attempt ${attempt} failed. Retrying in ${sleep_seconds}s..."
-              sleep "$sleep_seconds"
-            fi
-          done
-
-          echo "Namecheap deploy failed after 3 attempts."
-          exit 1
+      - name: Deploy to Namecheap
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          port: ${{ steps.cpanel.outputs.ftp-port }}
+          protocol: ftps
+          local-dir: ./cpanel-deploy/
+          server-dir: ${{ steps.cpanel.outputs.remote-dir }}
+          security: loose
+          timeout: 120000
+          log-level: verbose
