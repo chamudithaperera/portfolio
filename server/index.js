@@ -67,6 +67,13 @@ const siteOrigin =
 const siteName = 'Chamuditha Perera';
 const socialImage = `${siteOrigin}/assets/imgs/header/edited-photo-cropped-720.png`;
 const siteLogo = `${siteOrigin}/favicon.png`;
+const siteIcon = `${siteOrigin}/favicon.ico`;
+const siteTouchIcon = `${siteOrigin}/site-icon-192.png`;
+const structuredLogo = `${siteOrigin}/site-logo-512.png`;
+const siteLogoWidth = 96;
+const siteLogoHeight = 96;
+const structuredLogoSize = 512;
+const sameAsUrls = ['https://github.com/chamudithaperera', 'https://linkedin.com/in/chamudithaperera'];
 const defaultDescription =
   'Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.';
 const defaultKeywords =
@@ -153,6 +160,12 @@ app.use(
   }),
 );
 
+app.get('/robots.txt', (_req, res) => {
+  res
+    .type('text/plain')
+    .send(['User-agent: *', 'Allow: /', '', `Sitemap: ${siteOrigin}/sitemap.xml`, ''].join('\n'));
+});
+
 function fail(res, status, message, details) {
   return res.status(status).json({
     ok: false,
@@ -220,7 +233,9 @@ function getSeoPage(requestPath) {
 function buildStructuredData(seo) {
   const canonical = `${siteOrigin}${seo.canonicalPath}`;
   const personId = `${siteOrigin}/#person`;
+  const organizationId = `${siteOrigin}/#organization`;
   const websiteId = `${siteOrigin}/#website`;
+  const logoId = `${siteOrigin}/#logo`;
 
   return {
     '@context': 'https://schema.org',
@@ -231,15 +246,14 @@ function buildStructuredData(seo) {
         name: siteName,
         alternateName: ['Chamuditha', 'ChamXdev'],
         url: siteOrigin,
+        mainEntityOfPage: `${siteOrigin}/`,
+        description: defaultDescription,
         image: socialImage,
         jobTitle: 'Software Engineer',
         worksFor: {
-          '@type': 'Organization',
-          name: siteName,
-          url: siteOrigin,
-          logo: siteLogo,
+          '@id': organizationId,
         },
-        sameAs: ['https://github.com/chamudithaperera', 'https://linkedin.com/in/chamudithaperera'],
+        sameAs: sameAsUrls,
         knowsAbout: [
           'Flutter',
           'React',
@@ -251,12 +265,30 @@ function buildStructuredData(seo) {
         ],
       },
       {
+        '@type': 'Organization',
+        '@id': organizationId,
+        name: siteName,
+        alternateName: 'ChamXdev',
+        url: siteOrigin,
+        logo: {
+          '@type': 'ImageObject',
+          '@id': logoId,
+          url: structuredLogo,
+          contentUrl: structuredLogo,
+          width: structuredLogoSize,
+          height: structuredLogoSize,
+          caption: `${siteName} logo`,
+        },
+        sameAs: sameAsUrls,
+      },
+      {
         '@type': 'WebSite',
         '@id': websiteId,
         url: siteOrigin,
         name: siteName,
         alternateName: ['Chamuditha', 'Chamuditha Perera Portfolio', 'ChamXdev'],
         description: defaultDescription,
+        image: siteLogo,
         publisher: {
           '@id': personId,
         },
@@ -274,6 +306,12 @@ function buildStructuredData(seo) {
         },
         about: {
           '@id': personId,
+        },
+        primaryImageOfPage: {
+          '@type': 'ImageObject',
+          url: socialImage,
+          width: 720,
+          height: 1136,
         },
         inLanguage: 'en',
       },
@@ -305,6 +343,24 @@ function renderFallbackContent(seo) {
   ].join('');
 }
 
+function renderNoScriptContent(seo) {
+  const paragraphs = seo.fallbackParagraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('');
+
+  return [
+    '<noscript>',
+    '<main>',
+    `<h1>${escapeHtml(seo.fallbackHeading)}</h1>`,
+    paragraphs,
+    '<nav aria-label="Portfolio pages without JavaScript">',
+    `<a href="${siteOrigin}/">Home</a> | `,
+    `<a href="${siteOrigin}/projects">Projects</a> | `,
+    `<a href="${siteOrigin}/pricing">Pricing</a>`,
+    '</nav>',
+    '</main>',
+    '</noscript>',
+  ].join('');
+}
+
 function renderSeoHtml(requestPath) {
   const indexPath = path.join(buildDir, 'index.html');
   const seo = getSeoPage(requestPath);
@@ -312,6 +368,21 @@ function renderSeoHtml(requestPath) {
   let html = fs.readFileSync(indexPath, 'utf8');
 
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(seo.title)}</title>`);
+  html = replaceOrInsertHeadTag(
+    html,
+    /<link\s+rel=["']icon["'][^>]*>/i,
+    `<link rel="icon" type="image/png" sizes="${siteLogoWidth}x${siteLogoHeight}" href="${escapeHtml(siteLogo)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<link\s+rel=["']shortcut icon["'][^>]*>/i,
+    `<link rel="shortcut icon" type="image/x-icon" href="${escapeHtml(siteIcon)}" sizes="any"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<link\s+rel=["']apple-touch-icon["'][^>]*>/i,
+    `<link rel="apple-touch-icon" href="${escapeHtml(siteTouchIcon)}"/>`,
+  );
   html = replaceOrInsertHeadTag(
     html,
     /<meta\s+name=["']description["'][^>]*>/i,
@@ -326,6 +397,16 @@ function renderSeoHtml(requestPath) {
     html,
     /<meta\s+name=["']author["'][^>]*>/i,
     `<meta name="author" content="${escapeHtml(siteName)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']application-name["'][^>]*>/i,
+    `<meta name="application-name" content="${escapeHtml(siteName)}"/>`,
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+name=["']apple-mobile-web-app-title["'][^>]*>/i,
+    `<meta name="apple-mobile-web-app-title" content="${escapeHtml(siteName)}"/>`,
   );
   html = replaceOrInsertHeadTag(
     html,
@@ -364,6 +445,21 @@ function renderSeoHtml(requestPath) {
   );
   html = replaceOrInsertHeadTag(
     html,
+    /<meta\s+property=["']og:image:type["'][^>]*>/i,
+    '<meta property="og:image:type" content="image/png"/>',
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+property=["']og:image:width["'][^>]*>/i,
+    '<meta property="og:image:width" content="720"/>',
+  );
+  html = replaceOrInsertHeadTag(
+    html,
+    /<meta\s+property=["']og:image:height["'][^>]*>/i,
+    '<meta property="og:image:height" content="1136"/>',
+  );
+  html = replaceOrInsertHeadTag(
+    html,
     /<meta\s+property=["']og:image:alt["'][^>]*>/i,
     '<meta property="og:image:alt" content="Chamuditha Perera software engineer portfolio"/>',
   );
@@ -392,11 +488,12 @@ function renderSeoHtml(requestPath) {
     /<meta\s+name=["']twitter:image:alt["'][^>]*>/i,
     '<meta name="twitter:image:alt" content="Chamuditha Perera software engineer portfolio"/>',
   );
-  html = html.replace(
+  html = replaceOrInsertHeadTag(
+    html,
     /<script\s+type=["']application\/ld\+json["']>[\s\S]*?<\/script>/i,
     `<script type="application/ld+json">${escapeJsonForHtml(buildStructuredData(seo))}</script>`,
   );
-  html = html.replace(/<noscript>[\s\S]*?<\/noscript>/i, `<noscript>${escapeHtml(seo.description)}</noscript>`);
+  html = html.replace(/<noscript>[\s\S]*?<\/noscript>/i, renderNoScriptContent(seo));
   html = html.replace(/<main\s+class=["']seo-fallback["'][^>]*data-seo-fallback[^>]*>[\s\S]*?<\/main>/i, renderFallbackContent(seo));
 
   return { html, seo };

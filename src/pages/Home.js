@@ -99,6 +99,9 @@ const pricingPageDescription =
   'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.';
 const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`;
 const socialImageAlt = 'Chamuditha Perera software engineer portfolio';
+const siteLogo = `${siteUrl}/favicon.png`;
+const siteIcon = `${siteUrl}/favicon.ico`;
+const siteTouchIcon = `${siteUrl}/site-icon-192.png`;
 
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
@@ -1519,6 +1522,8 @@ function ProjectsPage() {
         <meta name="description" content={projectsPageDescription} />
         <meta name="keywords" content={siteKeywords} />
         <meta name="author" content={siteName} />
+        <meta name="application-name" content={siteName} />
+        <meta name="apple-mobile-web-app-title" content={siteName} />
         <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <link rel="canonical" href={`${siteUrl}/projects`} />
@@ -1527,6 +1532,9 @@ function ProjectsPage() {
         <meta property="og:title" content={projectsPageTitle} />
         <meta property="og:description" content={projectsPageDescription} />
         <meta property="og:image" content={socialImage} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="720" />
+        <meta property="og:image:height" content="1136" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
@@ -1535,8 +1543,9 @@ function ProjectsPage() {
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
-        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon.png')} />
-        <link rel="shortcut icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
+        <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
+        <link rel="apple-touch-icon" href={siteTouchIcon} />
       </Helmet>
       <Navigation />
       <main>
@@ -2573,6 +2582,8 @@ function PricingPage() {
         <meta name="description" content={pricingPageDescription} />
         <meta name="keywords" content={siteKeywords} />
         <meta name="author" content={siteName} />
+        <meta name="application-name" content={siteName} />
+        <meta name="apple-mobile-web-app-title" content={siteName} />
         <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <link rel="canonical" href={`${siteUrl}/pricing`} />
@@ -2581,6 +2592,9 @@ function PricingPage() {
         <meta property="og:title" content={pricingPageTitle} />
         <meta property="og:description" content={pricingPageDescription} />
         <meta property="og:image" content={socialImage} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="720" />
+        <meta property="og:image:height" content="1136" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
@@ -2589,8 +2603,9 @@ function PricingPage() {
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
-        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon.png')} />
-        <link rel="shortcut icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
+        <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
+        <link rel="apple-touch-icon" href={siteTouchIcon} />
       </Helmet>
       <div className="noise" aria-hidden="true" />
       <Navigation />
@@ -2849,6 +2864,8 @@ function Home() {
         />
         <meta name="keywords" content={siteKeywords} />
         <meta name="author" content={siteName} />
+        <meta name="application-name" content={siteName} />
+        <meta name="apple-mobile-web-app-title" content={siteName} />
         <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
         <link rel="canonical" href={`${siteUrl}/`} />
@@ -2857,6 +2874,9 @@ function Home() {
         <meta property="og:title" content={siteTitle} />
         <meta property="og:description" content={siteDescription} />
         <meta property="og:image" content={socialImage} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="720" />
+        <meta property="og:image:height" content="1136" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
@@ -2865,8 +2885,9 @@ function Home() {
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
         <meta name="theme-color" content="#00020a" />
-        <link rel="icon" type="image/png" sizes="96x96" href={withBase('/favicon.png')} />
-        <link rel="shortcut icon" href={withBase('/favicon.ico')} sizes="any" />
+        <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
+        <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
+        <link rel="apple-touch-icon" href={siteTouchIcon} />
       </Helmet>
       <div className="noise" aria-hidden="true" />
       <Navigation />

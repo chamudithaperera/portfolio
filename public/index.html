@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" sizes="96x96" href="%PUBLIC_URL%/favicon.png" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="96x96" href="https://chamudithaperera.online/favicon.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="https://chamudithaperera.online/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="https://chamudithaperera.online/site-icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#080b14" />
     <meta
@@ -15,6 +16,8 @@
       content="Chamuditha, Chamuditha Perera, software engineer, Flutter developer, React developer, full-stack developer, mobile app developer, Sri Lanka software engineer"
     />
     <meta name="author" content="Chamuditha Perera" />
+    <meta name="application-name" content="Chamuditha Perera" />
+    <meta name="apple-mobile-web-app-title" content="Chamuditha Perera" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="canonical" href="https://chamudithaperera.online/" />
@@ -26,6 +29,9 @@
       content="Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products."
     />
     <meta property="og:image" content="https://chamudithaperera.online/assets/imgs/header/edited-photo-cropped-720.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="720" />
+    <meta property="og:image:height" content="1136" />
     <meta property="og:image:alt" content="Chamuditha Perera software engineer portfolio" />
     <meta property="og:site_name" content="Chamuditha Perera" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -49,13 +55,12 @@
             "name": "Chamuditha Perera",
             "alternateName": ["Chamuditha", "ChamXdev"],
             "url": "https://chamudithaperera.online",
+            "mainEntityOfPage": "https://chamudithaperera.online/",
+            "description": "Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.",
             "image": "https://chamudithaperera.online/assets/imgs/header/edited-photo-cropped-720.png",
             "jobTitle": "Software Engineer",
             "worksFor": {
-              "@type": "Organization",
-              "name": "Chamuditha Perera",
-              "url": "https://chamudithaperera.online",
-              "logo": "https://chamudithaperera.online/favicon.png"
+              "@id": "https://chamudithaperera.online/#organization"
             },
             "sameAs": [
               "https://github.com/chamudithaperera",
@@ -72,12 +77,33 @@
             ]
           },
           {
+            "@type": "Organization",
+            "@id": "https://chamudithaperera.online/#organization",
+            "name": "Chamuditha Perera",
+            "alternateName": "ChamXdev",
+            "url": "https://chamudithaperera.online",
+            "logo": {
+              "@type": "ImageObject",
+              "@id": "https://chamudithaperera.online/#logo",
+              "url": "https://chamudithaperera.online/site-logo-512.png",
+              "contentUrl": "https://chamudithaperera.online/site-logo-512.png",
+              "width": 512,
+              "height": 512,
+              "caption": "Chamuditha Perera logo"
+            },
+            "sameAs": [
+              "https://github.com/chamudithaperera",
+              "https://linkedin.com/in/chamudithaperera"
+            ]
+          },
+          {
             "@type": "WebSite",
             "@id": "https://chamudithaperera.online/#website",
             "url": "https://chamudithaperera.online",
             "name": "Chamuditha Perera",
             "alternateName": ["Chamuditha", "Chamuditha Perera Portfolio", "ChamXdev"],
             "description": "Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.",
+            "image": "https://chamudithaperera.online/favicon.png",
             "publisher": {
               "@id": "https://chamudithaperera.online/#person"
             },
@@ -95,6 +121,12 @@
             },
             "about": {
               "@id": "https://chamudithaperera.online/#person"
+            },
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://chamudithaperera.online/assets/imgs/header/edited-photo-cropped-720.png",
+              "width": 720,
+              "height": 1136
             },
             "inLanguage": "en"
           }
@@ -123,7 +155,24 @@
     <title>Chamuditha Perera | Software Engineer</title>
   </head>
   <body>
-    <noscript>Chamuditha Perera (Chamuditha), software engineer in Sri Lanka building Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.</noscript>
+    <noscript>
+      <main>
+        <h1>Chamuditha Perera | Software Engineer</h1>
+        <p>
+          Chamuditha Perera (Chamuditha) is a software engineer in Sri Lanka building
+          Flutter mobile apps, React websites, Spring Boot APIs, and full-stack products.
+        </p>
+        <p>
+          Explore selected projects, work experience, technical skills, education,
+          certificates, pricing packages, and contact details.
+        </p>
+        <nav aria-label="Portfolio pages without JavaScript">
+          <a href="https://chamudithaperera.online/">Home</a> |
+          <a href="https://chamudithaperera.online/projects">Projects</a> |
+          <a href="https://chamudithaperera.online/pricing">Pricing</a>
+        </nav>
+      </main>
+    </noscript>
     <div id="root">
       <main class="seo-fallback" data-seo-fallback>
         <h1>Chamuditha Perera | Software Engineer</h1>
