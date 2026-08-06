@@ -2334,6 +2334,14 @@ function PricingCard({ plan }) {
 
       <div className="pricing-price">
         <span>Starting from</span>
+        {plan.originalPrice ? (
+          <div className="pricing-price-discounted">
+            <span className="pricing-original-price">{plan.originalPrice}</span>
+            {plan.discountPercent ? (
+              <span className="pricing-discount-badge">{plan.discountPercent}</span>
+            ) : null}
+          </div>
+        ) : null}
         <strong>{plan.price}</strong>
       </div>
 

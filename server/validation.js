@@ -342,6 +342,8 @@ function validatePricingPackagePayload(body = {}) {
   const tier = normalizeText(body.tier);
   const title = normalizeText(body.title);
   const price = normalizeText(body.price);
+  const originalPrice = normalizeText(body.originalPrice);
+  const discountPercent = normalizeText(body.discountPercent);
   const description = normalizeText(body.description);
   const delivery = normalizeText(body.delivery);
   const badge = normalizeText(body.badge);
@@ -376,6 +378,8 @@ function validatePricingPackagePayload(body = {}) {
       tier,
       title,
       price,
+      originalPrice,
+      discountPercent,
       description,
       delivery,
       badge,

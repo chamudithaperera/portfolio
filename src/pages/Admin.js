@@ -67,6 +67,8 @@ const emptyPricingPackageForm = {
   tier: '',
   title: '',
   price: '',
+  originalPrice: '',
+  discountPercent: '',
   description: '',
   delivery: '',
   badge: '',
@@ -248,6 +250,8 @@ function pricingPackageToForm(item, defaultServiceId = '') {
     tier: item.tier || '',
     title: item.title || '',
     price: item.price || '',
+    originalPrice: item.originalPrice || '',
+    discountPercent: item.discountPercent || '',
     description: item.description || '',
     delivery: item.delivery || '',
     badge: item.badge || '',
@@ -326,6 +330,8 @@ function pricingPackageFormToBody(form) {
     tier: form.tier,
     title: form.title,
     price: form.price,
+    originalPrice: form.originalPrice,
+    discountPercent: form.discountPercent,
     description: form.description,
     delivery: form.delivery,
     badge: form.badge,
@@ -2213,11 +2219,22 @@ function Admin() {
                         </label>
                       </div>
 
-                      <div className="admin-grid-2">
+                      <div className="admin-grid-3">
                         <label>
-                          <span>Price</span>
+                          <span>Original Price (Old Price)</span>
+                          <input name="originalPrice" value={pricingPackageForm.originalPrice} onChange={updatePricingPackageForm} placeholder="Rs. 60,000" />
+                        </label>
+                        <label>
+                          <span>Discount (e.g. 25% off)</span>
+                          <input name="discountPercent" value={pricingPackageForm.discountPercent} onChange={updatePricingPackageForm} placeholder="25% off" />
+                        </label>
+                        <label>
+                          <span>Current Price (New Price)</span>
                           <input name="price" value={pricingPackageForm.price} onChange={updatePricingPackageForm} placeholder="Rs. 45,000" required />
                         </label>
+                      </div>
+
+                      <div className="admin-grid-2">
                         <label>
                           <span>Delivery</span>
                           <input name="delivery" value={pricingPackageForm.delivery} onChange={updatePricingPackageForm} placeholder="7-10 working days" required />

@@ -126,6 +126,8 @@ create table if not exists public.portfolio_pricing_packages (
   tier text not null,
   title text not null,
   price text not null,
+  original_price text not null default '',
+  discount_percent text not null default '',
   description text not null,
   delivery text not null,
   badge text not null default '',
