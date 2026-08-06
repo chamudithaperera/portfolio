@@ -2348,7 +2348,7 @@ function PricingCard({ plan }) {
       <p className="pricing-card-description">{plan.description}</p>
 
       <div className="pricing-feature-group">
-        <p className="pricing-feature-heading">Include</p>
+        <p className="pricing-feature-heading">Included</p>
         <ul className="pricing-feature-list">
           {plan.features.map((feature) => (
             <li key={feature}>
@@ -2360,7 +2360,7 @@ function PricingCard({ plan }) {
       </div>
 
       <div className="pricing-feature-group pricing-feature-group-muted">
-        <p className="pricing-feature-heading">Not include</p>
+        <p className="pricing-feature-heading">Not Included</p>
         <ul className="pricing-feature-list pricing-feature-list-unavailable">
           {unavailable.length ? unavailable.map((feature) => (
             <li key={feature}>

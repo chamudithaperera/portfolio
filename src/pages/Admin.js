@@ -2258,12 +2258,12 @@ function Admin() {
                       </label>
 
                       <label>
-                        <span>Include features</span>
+                        <span>Included features</span>
                         <textarea name="features" rows="8" value={pricingPackageForm.features} onChange={updatePricingPackageForm} placeholder="One feature per line" required />
                       </label>
 
                       <label>
-                        <span>Not include</span>
+                        <span>Not included</span>
                         <textarea name="unavailable" rows="5" value={pricingPackageForm.unavailable} onChange={updatePricingPackageForm} placeholder="One item per line" />
                       </label>
 
