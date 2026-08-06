@@ -216,13 +216,49 @@ function pricingServicePayload(input = {}) {
 }
 
 function pricingPackagePayload(input = {}) {
+  const price = normalizeString(input.price);
+  let originalPrice = normalizeString(input.originalPrice);
+  let discountPercent = normalizeString(input.discountPercent);
+
+  if (price && (!originalPrice || !discountPercent)) {
+    const cleanedPrice = price.replace(/,/g, '');
+    const numericMatch = cleanedPrice.match(/\d+/);
+    if (numericMatch) {
+      const currentPriceNum = parseFloat(numericMatch[0]);
+      if (currentPriceNum > 0) {
+        if (!discountPercent) {
+          discountPercent = '25% off';
+        }
+        if (!originalPrice) {
+          const originalPriceNum = Math.round(currentPriceNum / 0.75);
+          const hasCommas = price.includes(',');
+          let formattedOriginal = originalPriceNum.toString();
+          if (hasCommas) {
+            formattedOriginal = originalPriceNum.toLocaleString('en-US');
+          }
+          const rawNumIndex = price.search(/\d/);
+          let prefix = '';
+          let suffix = '';
+          if (rawNumIndex !== -1) {
+            prefix = price.substring(0, rawNumIndex);
+            const suffixMatch = price.substring(rawNumIndex).match(/^[\d,]+/);
+            if (suffixMatch) {
+              suffix = price.substring(rawNumIndex + suffixMatch[0].length);
+            }
+          }
+          originalPrice = `${prefix}${formattedOriginal}${suffix}`;
+        }
+      }
+    }
+  }
+
   return {
     service_id: toInteger(input.serviceId, 0),
     tier: normalizeString(input.tier),
     title: normalizeString(input.title),
-    price: normalizeString(input.price),
-    original_price: normalizeString(input.originalPrice),
-    discount_percent: normalizeString(input.discountPercent),
+    price: price,
+    original_price: originalPrice,
+    discount_percent: discountPercent,
     description: normalizeString(input.description),
     delivery: normalizeString(input.delivery),
     badge: normalizeString(input.badge),
