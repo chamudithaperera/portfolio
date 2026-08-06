@@ -19,6 +19,8 @@ function packagePayload(serviceId, item) {
     tier: item.tier,
     title: item.title,
     price: item.price,
+    original_price: item.originalPrice || '',
+    discount_percent: item.discountPercent || '',
     description: item.description,
     delivery: item.delivery,
     badge: item.badge || '',
