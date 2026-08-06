@@ -2258,13 +2258,13 @@ function Admin() {
                       </label>
 
                       <label>
-                        <span>Available features</span>
+                        <span>Include features</span>
                         <textarea name="features" rows="8" value={pricingPackageForm.features} onChange={updatePricingPackageForm} placeholder="One feature per line" required />
                       </label>
 
                       <label>
-                        <span>Not available</span>
-                        <textarea name="unavailable" rows="5" value={pricingPackageForm.unavailable} onChange={updatePricingPackageForm} placeholder="One unavailable item per line" />
+                        <span>Not include</span>
+                        <textarea name="unavailable" rows="5" value={pricingPackageForm.unavailable} onChange={updatePricingPackageForm} placeholder="One item per line" />
                       </label>
 
                       <label className="admin-checkbox">
