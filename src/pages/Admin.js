@@ -399,6 +399,13 @@ function Admin() {
   const [logoutPending, setLogoutPending] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
 
+  const [isEditingProject, setIsEditingProject] = useState(false);
+  const [isEditingPricingPackage, setIsEditingPricingPackage] = useState(false);
+  const [isEditingPricingService, setIsEditingPricingService] = useState(false);
+  const [isEditingExperience, setIsEditingExperience] = useState(false);
+  const [isEditingEducation, setIsEditingEducation] = useState(false);
+  const [isEditingCertificate, setIsEditingCertificate] = useState(false);
+
   const [dashboard, setDashboard] = useState(null);
   const [dashboardLoading, setDashboardLoading] = useState(false);
   const [dashboardError, setDashboardError] = useState('');
@@ -921,6 +928,7 @@ function Admin() {
       setSelectedPricingServiceId(String(response.pricingService.id));
       await loadPricing();
       await loadDashboard();
+      setIsEditingPricingService(false);
     } catch (error) {
       setPricingError(error.message || 'Unable to save this pricing service.');
     } finally {
@@ -950,6 +958,7 @@ function Admin() {
       setSelectedPricingPackageId(String(response.pricingPackage.id));
       await loadPricing();
       await loadDashboard();
+      setIsEditingPricingPackage(false);
     } catch (error) {
       setPricingError(error.message || 'Unable to save this pricing package.');
     } finally {
@@ -971,6 +980,7 @@ function Admin() {
       setSelectedPricingServiceId('');
       await loadPricing();
       await loadDashboard();
+      setIsEditingPricingService(false);
     } catch (error) {
       setPricingError(error.message || 'Unable to delete this pricing service.');
     } finally {
@@ -992,6 +1002,7 @@ function Admin() {
       setSelectedPricingPackageId('');
       await loadPricing();
       await loadDashboard();
+      setIsEditingPricingPackage(false);
     } catch (error) {
       setPricingError(error.message || 'Unable to delete this pricing package.');
     } finally {
@@ -1098,6 +1109,7 @@ function Admin() {
       setExperienceStatus(selectedExperienceId ? 'Work experience updated.' : 'Work experience created.');
       setSelectedExperienceId(String(response.experience.id));
       await Promise.allSettled([loadExperience(), loadDashboard()]);
+      setIsEditingExperience(false);
     } catch (error) {
       setExperienceError(error.message || 'Unable to save this work experience entry.');
     } finally {
@@ -1119,6 +1131,7 @@ function Admin() {
       setSelectedExperienceId('');
       setExperienceForm(emptyExperienceForm);
       await Promise.allSettled([loadExperience(), loadDashboard()]);
+      setIsEditingExperience(false);
     } catch (error) {
       setExperienceError(error.message || 'Unable to delete this work experience entry.');
     } finally {
@@ -1228,6 +1241,7 @@ function Admin() {
       setProjectImageUploading(false);
       setProjectImageActionPending(false);
       await Promise.allSettled([loadProjects(), loadDashboard()]);
+      setIsEditingProject(false);
     } catch (error) {
       setProjectError(error.message || 'Unable to save this project.');
     } finally {
@@ -1253,6 +1267,7 @@ function Admin() {
       setProjectImageUploading(false);
       setProjectImageActionPending(false);
       await Promise.allSettled([loadProjects(), loadDashboard()]);
+      setIsEditingProject(false);
     } catch (error) {
       setProjectError(error.message || 'Unable to delete this project.');
     } finally {
@@ -1288,6 +1303,7 @@ function Admin() {
       setEducationStatus(selectedEducationId ? 'Education entry updated.' : 'Education entry created.');
       setSelectedEducationId(String(response.education.id));
       await Promise.allSettled([loadEducation(), loadDashboard()]);
+      setIsEditingEducation(false);
     } catch (error) {
       setEducationError(error.message || 'Unable to save this education entry.');
     } finally {
@@ -1309,6 +1325,7 @@ function Admin() {
       setSelectedEducationId('');
       setEducationForm(emptyEducationForm);
       await Promise.allSettled([loadEducation(), loadDashboard()]);
+      setIsEditingEducation(false);
     } catch (error) {
       setEducationError(error.message || 'Unable to delete this education entry.');
     } finally {
@@ -1431,6 +1448,7 @@ function Admin() {
       setCertificateImageUploading(false);
       setCertificateImageActionPending(false);
       await Promise.allSettled([loadCertificates(), loadDashboard()]);
+      setIsEditingCertificate(false);
     } catch (error) {
       setCertificatesError(error.message || 'Unable to save this certificate.');
     } finally {
@@ -1456,6 +1474,7 @@ function Admin() {
       setCertificateImageUploading(false);
       setCertificateImageActionPending(false);
       await Promise.allSettled([loadCertificates(), loadDashboard()]);
+      setIsEditingCertificate(false);
     } catch (error) {
       setCertificatesError(error.message || 'Unable to delete this certificate.');
     } finally {
@@ -1890,213 +1909,246 @@ function Admin() {
           ) : null}
 
           {activeTab === 'projects' ? (
-            <section className="admin-dual-column">
-              <aside className="admin-card admin-list-panel">
+            <section className="admin-content-workspace">
+              <div className="admin-card">
                 <div className="admin-card-header">
                   <div>
                     <p className="admin-card-label">Projects</p>
                     <h2>Portfolio items</h2>
                   </div>
-                  <span className="admin-pill">{projects.length}</span>
-                </div>
-
-                <div className="admin-list-actions">
-                  <button type="button" className="admin-secondary-button" onClick={handleProjectNew}>
-                    <Icon name="plus" size={14} />
-                    New project
-                  </button>
-                  <button type="button" className="admin-secondary-button" onClick={loadProjects} disabled={projectsLoading}>
-                    <Icon name="refresh" size={14} />
-                    Refresh
-                  </button>
+                  <div className="admin-list-actions">
+                    <button type="button" className="admin-primary-button" onClick={() => { handleProjectNew(); setIsEditingProject(true); }}>
+                      <Icon name="plus" size={14} />
+                      New project
+                    </button>
+                    <button type="button" className="admin-secondary-button" onClick={loadProjects} disabled={projectsLoading}>
+                      <Icon name="refresh" size={14} />
+                      Refresh
+                    </button>
+                  </div>
                 </div>
 
                 {projectsError ? <div className="admin-inline-error">{projectsError}</div> : null}
 
-                <div className="admin-item-list">
-                  {projectsLoading ? (
-                    <div className="admin-loading-panel">
-                      <span className="admin-spinner" aria-hidden="true" />
-                      Loading projects...
-                    </div>
-                  ) : projects.length ? (
-                    projects.map((project) => {
-                      const active = String(project.id) === String(selectedProjectId);
-                      return (
-                        <button
-                          key={project.id}
-                          type="button"
-                          className={`admin-item-card ${active ? 'is-active' : ''}`}
-                          onClick={() => setSelectedProjectId(String(project.id))}
-                        >
-                          <div className="admin-item-card-top">
-                            <strong>{project.title}</strong>
-                            {project.isFeatured ? <span className="admin-pill">Featured</span> : null}
+                {projectsLoading ? (
+                  <div className="admin-loading-panel">
+                    <span className="admin-spinner" aria-hidden="true" />
+                    Loading projects...
+                  </div>
+                ) : projects.length ? (
+                  <div className="admin-cards-row-list">
+                    {projects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="admin-item-row-card"
+                        onClick={() => {
+                          setSelectedProjectId(String(project.id));
+                          setIsEditingProject(true);
+                        }}
+                      >
+                        {project.image ? (
+                          <div className="admin-item-row-image">
+                            <img src={project.image} alt={project.title} />
                           </div>
-                          <p>{project.category}</p>
-                          <small>{project.summary}</small>
-                        </button>
-                      );
-                    })
-                  ) : (
-                    <EmptyState
-                      icon="project"
-                      title="No projects yet"
-                      description="Add your first portfolio project using the editor on the right."
-                    />
-                  )}
-                </div>
-              </aside>
-
-              <article className="admin-card admin-editor-panel">
-                <div className="admin-card-header">
-                  <div>
-                    <p className="admin-card-label">Editor</p>
-                    <h2>{selectedProjectId ? 'Edit project' : 'Create project'}</h2>
-                  </div>
-                  <span className="admin-pill">{selectedProjectId ? 'Edit mode' : 'New item'}</span>
-                </div>
-
-                <form className="admin-form" onSubmit={handleProjectSave}>
-                  <div className="admin-grid-2">
-                    <label>
-                      <span>Title</span>
-                      <input name="title" value={projectForm.title} onChange={updateProjectForm} placeholder="Money Manager App" required />
-                    </label>
-                    <label>
-                      <span>Category</span>
-                      <input name="category" value={projectForm.category} onChange={updateProjectForm} placeholder="Flutter mobile system" required />
-                    </label>
-                  </div>
-
-                  <label>
-                    <span>Image path or URL</span>
-                    <input
-                      name="image"
-                      value={projectForm.image}
-                      onChange={updateProjectForm}
-                      placeholder="Supabase Storage URL or /assets/imgs/works/example.png"
-                      required
-                    />
-                  </label>
-
-                  <div className="admin-image-panel">
-                    <div className="admin-image-preview">
-                      {projectImagePreview || projectForm.image ? (
-                        <img src={projectImagePreview || projectForm.image} alt={projectForm.title || 'Project preview'} />
-                      ) : (
-                        <div className="admin-image-empty">
-                          <Icon name="project" size={18} />
-                          <span>No image selected yet</span>
+                        ) : null}
+                        <div className="admin-item-row-info">
+                          <div className="admin-item-row-header">
+                            <h3>{project.title}</h3>
+                            <div className="admin-row-badges">
+                              {project.isFeatured ? <span className="admin-pill">Featured</span> : null}
+                              <span className="admin-pill-secondary">{project.category}</span>
+                            </div>
+                          </div>
+                          <p className="admin-item-row-summary">{project.summary}</p>
+                          {project.tags ? (
+                            <div className="admin-row-tags">
+                              {String(project.tags).split(',').map(t => t.trim()).filter(Boolean).map(tag => (
+                                <span key={tag} className="admin-tag-badge">{tag}</span>
+                              ))}
+                            </div>
+                          ) : null}
                         </div>
-                      )}
+                        <div className="admin-item-row-actions">
+                          <button
+                            type="button"
+                            className="admin-secondary-button admin-compact-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedProjectId(String(project.id));
+                              setIsEditingProject(true);
+                            }}
+                          >
+                            <Icon name="edit" size={14} />
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState
+                    icon="project"
+                    title="No projects yet"
+                    description="Create your first portfolio project by clicking 'New project' above."
+                  />
+                )}
+              </div>
+
+              {isEditingProject ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingProject(false); setSelectedProjectId(''); }}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-project-modal-title" onClick={(event) => event.stopPropagation()}>
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Editor</p>
+                        <h2 id="admin-project-modal-title">{selectedProjectId ? 'Edit project' : 'Create project'}</h2>
+                      </div>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => { setIsEditingProject(false); setSelectedProjectId(''); }} aria-label="Close editor">
+                        <Icon name="close" size={15} />
+                      </button>
                     </div>
 
-                    <div className="admin-image-tools">
-                      <label className="admin-file-picker">
-                        <span>Choose an image file</span>
-                        <input type="file" accept="image/*" onChange={handleProjectImageChange} />
-                      </label>
-
-                      <div className="admin-action-row">
-                        <button
-                          type="button"
-                          className="admin-primary-button"
-                          onClick={handleProjectImageUpload}
-                          disabled={!projectImageFile || projectImageUploading}
-                        >
-                          {projectImageUploading ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
-                          {projectImageUploading ? 'Uploading...' : 'Upload to Supabase'}
-                        </button>
-                        <button
-                          type="button"
-                          className="admin-danger-button"
-                          onClick={handleProjectImageDelete}
-                          disabled={!projectForm.image || projectImageActionPending}
-                        >
-                          <Icon name="trash" size={14} />
-                          {projectImageActionPending ? 'Deleting...' : 'Delete image'}
-                        </button>
+                    <form className="admin-form" onSubmit={handleProjectSave}>
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Title</span>
+                          <input name="title" value={projectForm.title} onChange={updateProjectForm} placeholder="Money Manager App" required />
+                        </label>
+                        <label>
+                          <span>Category</span>
+                          <input name="category" value={projectForm.category} onChange={updateProjectForm} placeholder="Flutter mobile system" required />
+                        </label>
                       </div>
 
-                      <p className="admin-image-note">
-                        Uploaded images are stored in Supabase Storage. When you save a project with a new image, the old storage file is cleaned up automatically.
-                      </p>
-                      {projectImageError ? <div className="admin-inline-error">{projectImageError}</div> : null}
-                      {projectImageStatus ? <div className="admin-inline-success">{projectImageStatus}</div> : null}
-                    </div>
-                  </div>
+                      <label>
+                        <span>Image path or URL</span>
+                        <input
+                          name="image"
+                          value={projectForm.image}
+                          onChange={updateProjectForm}
+                          placeholder="Supabase Storage URL or /assets/imgs/works/example.png"
+                          required
+                        />
+                      </label>
 
-                  <label>
-                    <span>Summary</span>
-                    <textarea name="summary" rows="3" value={projectForm.summary} onChange={updateProjectForm} placeholder="Short summary of the project" required />
-                  </label>
+                      <div className="admin-image-panel">
+                        <div className="admin-image-preview">
+                          {projectImagePreview || projectForm.image ? (
+                            <img src={projectImagePreview || projectForm.image} alt={projectForm.title || 'Project preview'} />
+                          ) : (
+                            <div className="admin-image-empty">
+                              <Icon name="project" size={18} />
+                              <span>No image selected yet</span>
+                            </div>
+                          )}
+                        </div>
 
-                  <div className="admin-grid-2">
-                    <label>
-                      <span>Featured note</span>
-                      <input name="featuredNote" value={projectForm.featuredNote} onChange={updateProjectForm} placeholder="Personal finance companion" />
-                    </label>
-                    <label>
-                      <span>Sort order</span>
-                      <input name="displayOrder" type="number" value={projectForm.displayOrder} onChange={updateProjectForm} placeholder="1" />
-                    </label>
-                  </div>
+                        <div className="admin-image-tools">
+                          <label className="admin-file-picker">
+                            <span>Choose an image file</span>
+                            <input type="file" accept="image/*" onChange={handleProjectImageChange} />
+                          </label>
 
-                  <label>
-                    <span>Tags</span>
-                    <textarea
-                      name="tags"
-                      rows="2"
-                      value={projectForm.tags}
-                      onChange={updateProjectForm}
-                      placeholder="Flutter, Riverpod, SQLite"
-                    />
-                  </label>
+                          <div className="admin-action-row">
+                            <button
+                              type="button"
+                              className="admin-primary-button"
+                              onClick={handleProjectImageUpload}
+                              disabled={!projectImageFile || projectImageUploading}
+                            >
+                              {projectImageUploading ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                              {projectImageUploading ? 'Uploading...' : 'Upload to Supabase'}
+                            </button>
+                            <button
+                              type="button"
+                              className="admin-danger-button"
+                              onClick={handleProjectImageDelete}
+                              disabled={!projectForm.image || projectImageActionPending}
+                            >
+                              <Icon name="trash" size={14} />
+                              {projectImageActionPending ? 'Deleting...' : 'Delete image'}
+                            </button>
+                          </div>
 
-                  <label>
-                    <span>Highlights</span>
-                    <textarea
-                      name="highlights"
-                      rows="4"
-                      value={projectForm.highlights}
-                      onChange={updateProjectForm}
-                      placeholder="One highlight per line"
-                    />
-                  </label>
+                          <p className="admin-image-note">
+                            Uploaded images are stored in Supabase Storage. When you save a project with a new image, the old storage file is cleaned up automatically.
+                          </p>
+                          {projectImageError ? <div className="admin-inline-error">{projectImageError}</div> : null}
+                          {projectImageStatus ? <div className="admin-inline-success">{projectImageStatus}</div> : null}
+                        </div>
+                      </div>
 
-                  <div className="admin-grid-2">
-                    <label>
-                      <span>Project link</span>
-                      <input name="link" value={projectForm.link} onChange={updateProjectForm} placeholder="https://..." required />
-                    </label>
-                    <label className="admin-checkbox">
-                      <input name="isFeatured" type="checkbox" checked={projectForm.isFeatured} onChange={updateProjectForm} />
-                      <span>Mark as featured</span>
-                    </label>
-                  </div>
+                      <label>
+                        <span>Summary</span>
+                        <textarea name="summary" rows="3" value={projectForm.summary} onChange={updateProjectForm} placeholder="Short summary of the project" required />
+                      </label>
 
-                  {projectError ? <div className="admin-inline-error">{projectError}</div> : null}
-                  {projectStatus ? <div className="admin-inline-success">{projectStatus}</div> : null}
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Featured note</span>
+                          <input name="featuredNote" value={projectForm.featuredNote} onChange={updateProjectForm} placeholder="Personal finance companion" />
+                        </label>
+                        <label>
+                          <span>Sort order</span>
+                          <input name="displayOrder" type="number" value={projectForm.displayOrder} onChange={updateProjectForm} placeholder="1" />
+                        </label>
+                      </div>
 
-                  <div className="admin-action-row">
-                    <button className="admin-primary-button" type="submit" disabled={projectSaving}>
-                      {projectSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
-                      {selectedProjectId ? 'Save changes' : 'Create project'}
-                    </button>
-                    <button type="button" className="admin-secondary-button" onClick={handleProjectNew}>
-                      <Icon name="plus" size={14} />
-                      Reset
-                    </button>
-                    {selectedProjectId ? (
-                      <button type="button" className="admin-danger-button" onClick={handleProjectDelete} disabled={projectSaving}>
-                        <Icon name="trash" size={14} />
-                        Delete
-                      </button>
-                    ) : null}
-                  </div>
-                </form>
-              </article>
+                      <label>
+                        <span>Tags</span>
+                        <textarea
+                          name="tags"
+                          rows="2"
+                          value={projectForm.tags}
+                          onChange={updateProjectForm}
+                          placeholder="Flutter, Riverpod, SQLite"
+                        />
+                      </label>
+
+                      <label>
+                        <span>Highlights</span>
+                        <textarea
+                          name="highlights"
+                          rows="4"
+                          value={projectForm.highlights}
+                          onChange={updateProjectForm}
+                          placeholder="One highlight per line"
+                        />
+                      </label>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Project link</span>
+                          <input name="link" value={projectForm.link} onChange={updateProjectForm} placeholder="https://..." required />
+                        </label>
+                        <label className="admin-checkbox">
+                          <input name="isFeatured" type="checkbox" checked={projectForm.isFeatured} onChange={updateProjectForm} />
+                          <span>Mark as featured</span>
+                        </label>
+                      </div>
+
+                      {projectError ? <div className="admin-inline-error">{projectError}</div> : null}
+                      {projectStatus ? <div className="admin-inline-success">{projectStatus}</div> : null}
+
+                      <div className="admin-action-row">
+                        <button className="admin-primary-button" type="submit" disabled={projectSaving}>
+                          {projectSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                          {selectedProjectId ? 'Save changes' : 'Create project'}
+                        </button>
+                        <button type="button" className="admin-secondary-button" onClick={handleProjectNew}>
+                          <Icon name="plus" size={14} />
+                          Reset Form
+                        </button>
+                        {selectedProjectId ? (
+                          <button type="button" className="admin-danger-button" onClick={handleProjectDelete} disabled={projectSaving}>
+                            <Icon name="trash" size={14} />
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </form>
+                  </article>
+                </div>
+              ) : null}
             </section>
           ) : null}
 
@@ -2122,18 +2174,14 @@ function Admin() {
               </div>
 
               {pricingMode === 'packages' ? (
-                <section className="admin-dual-column">
-                  <aside className="admin-card admin-list-panel">
-                    <div className="admin-card-header">
-                      <div>
-                        <p className="admin-card-label">Pricing</p>
-                        <h2>Packages</h2>
-                      </div>
-                      <span className="admin-pill">{pricingPackages.length}</span>
+                <div className="admin-card">
+                  <div className="admin-card-header">
+                    <div>
+                      <p className="admin-card-label">Pricing</p>
+                      <h2>Packages</h2>
                     </div>
-
                     <div className="admin-list-actions">
-                      <button type="button" className="admin-secondary-button" onClick={handlePricingPackageNew}>
+                      <button type="button" className="admin-primary-button" onClick={() => { handlePricingPackageNew(); setIsEditingPricingPackage(true); }}>
                         <Icon name="plus" size={14} />
                         New package
                       </button>
@@ -2142,51 +2190,155 @@ function Admin() {
                         Refresh
                       </button>
                     </div>
+                  </div>
 
-                    {pricingError ? <div className="admin-inline-error">{pricingError}</div> : null}
+                  {pricingError ? <div className="admin-inline-error">{pricingError}</div> : null}
 
-                    <div className="admin-item-list">
-                      {pricingLoading ? (
-                        <div className="admin-loading-panel">
-                          <span className="admin-spinner" aria-hidden="true" />
-                          Loading pricing packages...
-                        </div>
-                      ) : pricingPackages.length ? (
-                        pricingPackages.map((item) => {
-                          const active = String(item.id) === String(selectedPricingPackageId);
-                          return (
-                            <button
-                              key={item.id}
-                              type="button"
-                              className={`admin-item-card ${active ? 'is-active' : ''}`}
-                              onClick={() => setSelectedPricingPackageId(String(item.id))}
-                            >
-                              <div className="admin-item-card-top">
-                                <strong>{item.title}</strong>
-                                {item.active ? null : <span className="admin-pill">Hidden</span>}
-                              </div>
-                              <p>{item.serviceLabel || 'Pricing service'} • {item.price}</p>
-                              <small>{item.tier} • {item.delivery}</small>
-                            </button>
-                          );
-                        })
-                      ) : (
-                        <EmptyState
-                          icon="pricing"
-                          title="No pricing packages"
-                          description="Seed the initial packages or create a package from the editor."
-                        />
-                      )}
+                  {pricingLoading ? (
+                    <div className="admin-loading-panel">
+                      <span className="admin-spinner" aria-hidden="true" />
+                      Loading pricing packages...
                     </div>
-                  </aside>
+                  ) : pricingPackages.length ? (
+                    <div className="admin-cards-row-list">
+                      {pricingPackages.map((item) => (
+                        <div
+                          key={item.id}
+                          className="admin-item-row-card"
+                          onClick={() => {
+                            setSelectedPricingPackageId(String(item.id));
+                            setIsEditingPricingPackage(true);
+                          }}
+                        >
+                          <div className="admin-item-row-info">
+                            <div className="admin-item-row-header">
+                              <h3>{item.title}</h3>
+                              <div className="admin-row-badges">
+                                {item.active ? null : <span className="admin-pill-danger">Hidden</span>}
+                                <span className="admin-pill">{item.tier}</span>
+                                <span className="admin-pill-secondary">{item.serviceLabel || 'Pricing service'}</span>
+                              </div>
+                            </div>
+                            <p className="admin-item-row-summary">{item.description}</p>
+                            <small className="admin-row-meta">
+                              <strong>Price:</strong> {item.price} {item.originalPrice ? `(was ${item.originalPrice})` : ''} • <strong>Delivery:</strong> {item.delivery}
+                            </small>
+                          </div>
+                          <div className="admin-item-row-actions">
+                            <button
+                              type="button"
+                              className="admin-secondary-button admin-compact-button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPricingPackageId(String(item.id));
+                                setIsEditingPricingPackage(true);
+                              }}
+                            >
+                              <Icon name="edit" size={14} />
+                              Edit
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <EmptyState
+                      icon="pricing"
+                      title="No pricing packages"
+                      description="Create your first package by clicking 'New package' above."
+                    />
+                  )}
+                </div>
+              ) : null}
 
-                  <article className="admin-card admin-editor-panel">
+              {pricingMode === 'services' ? (
+                <div className="admin-card">
+                  <div className="admin-card-header">
+                    <div>
+                      <p className="admin-card-label">Pricing</p>
+                      <h2>Service tabs</h2>
+                    </div>
+                    <div className="admin-list-actions">
+                      <button type="button" className="admin-primary-button" onClick={() => { handlePricingServiceNew(); setIsEditingPricingService(true); }}>
+                        <Icon name="plus" size={14} />
+                        New service
+                      </button>
+                      <button type="button" className="admin-secondary-button" onClick={loadPricing} disabled={pricingLoading}>
+                        <Icon name="refresh" size={14} />
+                        Refresh
+                      </button>
+                    </div>
+                  </div>
+
+                  {pricingError ? <div className="admin-inline-error">{pricingError}</div> : null}
+
+                  {pricingLoading ? (
+                    <div className="admin-loading-panel">
+                      <span className="admin-spinner" aria-hidden="true" />
+                      Loading pricing services...
+                    </div>
+                  ) : pricingServices.length ? (
+                    <div className="admin-cards-row-list">
+                      {pricingServices.map((item) => {
+                        const recordId = item.recordId || item.id;
+                        return (
+                          <div
+                            key={recordId}
+                            className="admin-item-row-card"
+                            onClick={() => {
+                              setSelectedPricingServiceId(String(recordId));
+                              setIsEditingPricingService(true);
+                            }}
+                          >
+                            <div className="admin-item-row-info">
+                              <div className="admin-item-row-header">
+                                <h3>{item.label}</h3>
+                                <div className="admin-row-badges">
+                                  {item.active ? null : <span className="admin-pill-danger">Hidden</span>}
+                                  <span className="admin-pill-secondary">Key: {item.serviceKey || item.id}</span>
+                                </div>
+                              </div>
+                              <p className="admin-item-row-summary">{item.intro}</p>
+                            </div>
+                            <div className="admin-item-row-actions">
+                              <button
+                                type="button"
+                                className="admin-secondary-button admin-compact-button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedPricingServiceId(String(recordId));
+                                  setIsEditingPricingService(true);
+                                }}
+                              >
+                                <Icon name="edit" size={14} />
+                                Edit
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <EmptyState
+                      icon="pricing"
+                      title="No pricing services"
+                      description="Create your first pricing service tab by clicking 'New service' above."
+                    />
+                  )}
+                </div>
+              ) : null}
+
+              {isEditingPricingPackage ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingPricingPackage(false); setSelectedPricingPackageId(''); }}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-package-modal-title" onClick={(event) => event.stopPropagation()}>
                     <div className="admin-card-header">
                       <div>
                         <p className="admin-card-label">Editor</p>
-                        <h2>{selectedPricingPackageId ? 'Edit pricing package' : 'Create pricing package'}</h2>
+                        <h2 id="admin-package-modal-title">{selectedPricingPackageId ? 'Edit pricing package' : 'Create pricing package'}</h2>
                       </div>
-                      <span className="admin-pill">{selectedPricingPackageId ? 'Edit mode' : 'New item'}</span>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => { setIsEditingPricingPackage(false); setSelectedPricingPackageId(''); }} aria-label="Close editor">
+                        <Icon name="close" size={15} />
+                      </button>
                     </div>
 
                     <form className="admin-form" onSubmit={handlePricingPackageSave}>
@@ -2282,7 +2434,7 @@ function Admin() {
                         </button>
                         <button type="button" className="admin-secondary-button" onClick={handlePricingPackageNew}>
                           <Icon name="plus" size={14} />
-                          Reset
+                          Reset Form
                         </button>
                         {selectedPricingPackageId ? (
                           <button type="button" className="admin-danger-button" onClick={handlePricingPackageDelete} disabled={pricingSaving}>
@@ -2293,76 +2445,20 @@ function Admin() {
                       </div>
                     </form>
                   </article>
-                </section>
+                </div>
               ) : null}
 
-              {pricingMode === 'services' ? (
-                <section className="admin-dual-column">
-                  <aside className="admin-card admin-list-panel">
-                    <div className="admin-card-header">
-                      <div>
-                        <p className="admin-card-label">Pricing</p>
-                        <h2>Service tabs</h2>
-                      </div>
-                      <span className="admin-pill">{pricingServices.length}</span>
-                    </div>
-
-                    <div className="admin-list-actions">
-                      <button type="button" className="admin-secondary-button" onClick={handlePricingServiceNew}>
-                        <Icon name="plus" size={14} />
-                        New service
-                      </button>
-                      <button type="button" className="admin-secondary-button" onClick={loadPricing} disabled={pricingLoading}>
-                        <Icon name="refresh" size={14} />
-                        Refresh
-                      </button>
-                    </div>
-
-                    {pricingError ? <div className="admin-inline-error">{pricingError}</div> : null}
-
-                    <div className="admin-item-list">
-                      {pricingLoading ? (
-                        <div className="admin-loading-panel">
-                          <span className="admin-spinner" aria-hidden="true" />
-                          Loading pricing services...
-                        </div>
-                      ) : pricingServices.length ? (
-                        pricingServices.map((item) => {
-                          const recordId = item.recordId || item.id;
-                          const active = String(recordId) === String(selectedPricingServiceId);
-                          return (
-                            <button
-                              key={recordId}
-                              type="button"
-                              className={`admin-item-card ${active ? 'is-active' : ''}`}
-                              onClick={() => setSelectedPricingServiceId(String(recordId))}
-                            >
-                              <div className="admin-item-card-top">
-                                <strong>{item.label}</strong>
-                                {item.active ? null : <span className="admin-pill">Hidden</span>}
-                              </div>
-                              <p>{item.serviceKey || item.id}</p>
-                              <small>{item.intro}</small>
-                            </button>
-                          );
-                        })
-                      ) : (
-                        <EmptyState
-                          icon="pricing"
-                          title="No pricing services"
-                          description="Create Websites, Mobile Apps, or any other service tab."
-                        />
-                      )}
-                    </div>
-                  </aside>
-
-                  <article className="admin-card admin-editor-panel">
+              {isEditingPricingService ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingPricingService(false); setSelectedPricingServiceId(''); }}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-service-modal-title" onClick={(event) => event.stopPropagation()}>
                     <div className="admin-card-header">
                       <div>
                         <p className="admin-card-label">Editor</p>
-                        <h2>{selectedPricingServiceId ? 'Edit service tab' : 'Create service tab'}</h2>
+                        <h2 id="admin-service-modal-title">{selectedPricingServiceId ? 'Edit service tab' : 'Create service tab'}</h2>
                       </div>
-                      <span className="admin-pill">{selectedPricingServiceId ? 'Edit mode' : 'New item'}</span>
+                      <button type="button" className="admin-secondary-button" onClick={() => { setIsEditingPricingService(false); setSelectedPricingServiceId(''); }} aria-label="Close editor">
+                        <Icon name="close" size={15} />
+                      </button>
                     </div>
 
                     <form className="admin-form" onSubmit={handlePricingServiceSave}>
@@ -2408,7 +2504,7 @@ function Admin() {
                         </button>
                         <button type="button" className="admin-secondary-button" onClick={handlePricingServiceNew}>
                           <Icon name="plus" size={14} />
-                          Reset
+                          Reset Form
                         </button>
                         {selectedPricingServiceId ? (
                           <button type="button" className="admin-danger-button" onClick={handlePricingServiceDelete} disabled={pricingSaving}>
@@ -2419,7 +2515,7 @@ function Admin() {
                       </div>
                     </form>
                   </article>
-                </section>
+                </div>
               ) : null}
             </section>
           ) : null}
@@ -2454,18 +2550,14 @@ function Admin() {
               </div>
 
               {contentMode === 'experience' ? (
-                <section className="admin-dual-column">
-                  <aside className="admin-card admin-list-panel">
-                    <div className="admin-card-header">
-                      <div>
-                        <p className="admin-card-label">Experience</p>
-                        <h2>Work timeline</h2>
-                      </div>
-                      <span className="admin-pill">{experience.length}</span>
+                <div className="admin-card">
+                  <div className="admin-card-header">
+                    <div>
+                      <p className="admin-card-label">Experience</p>
+                      <h2>Work timeline</h2>
                     </div>
-
                     <div className="admin-list-actions">
-                      <button type="button" className="admin-secondary-button" onClick={handleExperienceNew}>
+                      <button type="button" className="admin-primary-button" onClick={() => { handleExperienceNew(); setIsEditingExperience(true); }}>
                         <Icon name="plus" size={14} />
                         New role
                       </button>
@@ -2474,53 +2566,240 @@ function Admin() {
                         Refresh
                       </button>
                     </div>
+                  </div>
 
-                    {experienceError ? <div className="admin-inline-error">{experienceError}</div> : null}
+                  {experienceError ? <div className="admin-inline-error">{experienceError}</div> : null}
 
-                    <div className="admin-item-list">
-                      {experienceLoading ? (
-                        <div className="admin-loading-panel">
-                          <span className="admin-spinner" aria-hidden="true" />
-                          Loading work experience...
-                        </div>
-                      ) : experience.length ? (
-                        experience.map((item) => {
-                          const active = String(item.id) === String(selectedExperienceId);
-                          return (
-                            <button
-                              key={item.id}
-                              type="button"
-                              className={`admin-item-card ${active ? 'is-active' : ''}`}
-                              onClick={() => setSelectedExperienceId(String(item.id))}
-                            >
-                              <div className="admin-item-card-top">
-                                <strong>{item.role}</strong>
-                                {item.current ? <span className="admin-pill">Current</span> : null}
-                              </div>
-                              <p>{item.org}</p>
-                              <small>
-                                {item.period}
-                              </small>
-                            </button>
-                          );
-                        })
-                      ) : (
-                        <EmptyState
-                          icon="briefcase"
-                          title="No work experience yet"
-                          description="Add your roles from the editor to populate the public timeline."
-                        />
-                      )}
+                  {experienceLoading ? (
+                    <div className="admin-loading-panel">
+                      <span className="admin-spinner" aria-hidden="true" />
+                      Loading work experience...
                     </div>
-                  </aside>
+                  ) : experience.length ? (
+                    <div className="admin-cards-row-list">
+                      {experience.map((item) => (
+                        <div
+                          key={item.id}
+                          className="admin-item-row-card"
+                          onClick={() => {
+                            setSelectedExperienceId(String(item.id));
+                            setIsEditingExperience(true);
+                          }}
+                        >
+                          <div className="admin-item-row-info">
+                            <div className="admin-item-row-header">
+                              <h3>{item.role}</h3>
+                              <div className="admin-row-badges">
+                                {item.current ? <span className="admin-pill">Current</span> : null}
+                                <span className="admin-pill-secondary">{item.org}</span>
+                              </div>
+                            </div>
+                            <p className="admin-item-row-summary">{item.detail}</p>
+                            <small className="admin-row-meta">
+                              <strong>Period:</strong> {item.period}
+                            </small>
+                            {item.tags ? (
+                              <div className="admin-row-tags">
+                                {String(item.tags).split(',').map(t => t.trim()).filter(Boolean).map(tag => (
+                                  <span key={tag} className="admin-tag-badge">{tag}</span>
+                                ))}
+                              </div>
+                            ) : null}
+                          </div>
+                          <div className="admin-item-row-actions">
+                            <button
+                              type="button"
+                              className="admin-secondary-button admin-compact-button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedExperienceId(String(item.id));
+                                setIsEditingExperience(true);
+                              }}
+                            >
+                              <Icon name="edit" size={14} />
+                              Edit
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <EmptyState
+                      icon="briefcase"
+                      title="No work experience yet"
+                      description="Create your first role by clicking 'New role' above."
+                    />
+                  )}
+                </div>
+              ) : null}
 
-                  <article className="admin-card admin-editor-panel">
+              {contentMode === 'education' ? (
+                <div className="admin-card">
+                  <div className="admin-card-header">
+                    <div>
+                      <p className="admin-card-label">Education</p>
+                      <h2>Study timeline</h2>
+                    </div>
+                    <div className="admin-list-actions">
+                      <button type="button" className="admin-primary-button" onClick={() => { handleEducationNew(); setIsEditingEducation(true); }}>
+                        <Icon name="plus" size={14} />
+                        New entry
+                      </button>
+                      <button type="button" className="admin-secondary-button" onClick={loadEducation} disabled={educationLoading}>
+                        <Icon name="refresh" size={14} />
+                        Refresh
+                      </button>
+                    </div>
+                  </div>
+
+                  {educationError ? <div className="admin-inline-error">{educationError}</div> : null}
+
+                  {educationLoading ? (
+                    <div className="admin-loading-panel">
+                      <span className="admin-spinner" aria-hidden="true" />
+                      Loading education...
+                    </div>
+                  ) : education.length ? (
+                    <div className="admin-cards-row-list">
+                      {education.map((item) => (
+                        <div
+                          key={item.id}
+                          className="admin-item-row-card"
+                          onClick={() => {
+                            setSelectedEducationId(String(item.id));
+                            setIsEditingEducation(true);
+                          }}
+                        >
+                          <div className="admin-item-row-info">
+                            <div className="admin-item-row-header">
+                              <h3>{item.title}</h3>
+                              <div className="admin-row-badges">
+                                {item.badge ? <span className="admin-pill">{item.badge}</span> : null}
+                                <span className="admin-pill-secondary">{item.org}</span>
+                              </div>
+                            </div>
+                            <p className="admin-item-row-summary">{item.detail}</p>
+                            <small className="admin-row-meta">
+                              <strong>Track:</strong> {item.track} • <strong>Period:</strong> {item.period}
+                            </small>
+                          </div>
+                          <div className="admin-item-row-actions">
+                            <button
+                              type="button"
+                              className="admin-secondary-button admin-compact-button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedEducationId(String(item.id));
+                                setIsEditingEducation(true);
+                              }}
+                            >
+                              <Icon name="edit" size={14} />
+                              Edit
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <EmptyState
+                      icon="education"
+                      title="No education entries"
+                      description="Create your first education entry by clicking 'New entry' above."
+                    />
+                  )}
+                </div>
+              ) : null}
+
+              {contentMode === 'certificates' ? (
+                <div className="admin-card">
+                  <div className="admin-card-header">
+                    <div>
+                      <p className="admin-card-label">Certificates</p>
+                      <h2>Learning milestones</h2>
+                    </div>
+                    <div className="admin-list-actions">
+                      <button type="button" className="admin-primary-button" onClick={() => { handleCertificateNew(); setIsEditingCertificate(true); }}>
+                        <Icon name="plus" size={14} />
+                        New certificate
+                      </button>
+                      <button type="button" className="admin-secondary-button" onClick={loadCertificates} disabled={certificatesLoading}>
+                        <Icon name="refresh" size={14} />
+                        Refresh
+                      </button>
+                    </div>
+                  </div>
+
+                  {certificatesError ? <div className="admin-inline-error">{certificatesError}</div> : null}
+
+                  {certificatesLoading ? (
+                    <div className="admin-loading-panel">
+                      <span className="admin-spinner" aria-hidden="true" />
+                      Loading certificates...
+                    </div>
+                  ) : certificates.length ? (
+                    <div className="admin-cards-row-list">
+                      {certificates.map((item) => (
+                        <div
+                          key={item.id}
+                          className="admin-item-row-card"
+                          onClick={() => {
+                            setSelectedCertificateId(String(item.id));
+                            setIsEditingCertificate(true);
+                          }}
+                        >
+                          {item.image ? (
+                            <div className="admin-item-row-image">
+                              <img src={item.image} alt={item.title} />
+                            </div>
+                          ) : null}
+                          <div className="admin-item-row-info">
+                            <div className="admin-item-row-header">
+                              <h3>{item.title}</h3>
+                              <div className="admin-row-badges">
+                                <span className="admin-pill">{item.year}</span>
+                                <span className="admin-pill-secondary">{item.org}</span>
+                              </div>
+                            </div>
+                            <p className="admin-item-row-summary">{item.detail}</p>
+                          </div>
+                          <div className="admin-item-row-actions">
+                            <button
+                              type="button"
+                              className="admin-secondary-button admin-compact-button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedCertificateId(String(item.id));
+                                setIsEditingCertificate(true);
+                              }}
+                            >
+                              <Icon name="edit" size={14} />
+                              Edit
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <EmptyState
+                      icon="certificate"
+                      title="No certificates yet"
+                      description="Create your first certificate by clicking 'New certificate' above."
+                    />
+                  )}
+                </div>
+              ) : null}
+
+              {isEditingExperience ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingExperience(false); setSelectedExperienceId(''); }}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-experience-modal-title" onClick={(event) => event.stopPropagation()}>
                     <div className="admin-card-header">
                       <div>
                         <p className="admin-card-label">Editor</p>
-                        <h2>{selectedExperienceId ? 'Edit work experience' : 'Create work experience'}</h2>
+                        <h2 id="admin-experience-modal-title">{selectedExperienceId ? 'Edit work experience' : 'Create work experience'}</h2>
                       </div>
-                      <span className="admin-pill">{selectedExperienceId ? 'Edit mode' : 'New item'}</span>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => { setIsEditingExperience(false); setSelectedExperienceId(''); }} aria-label="Close editor">
+                        <Icon name="close" size={15} />
+                      </button>
                     </div>
 
                     <form className="admin-form" onSubmit={handleExperienceSave}>
@@ -2585,7 +2864,7 @@ function Admin() {
                         </button>
                         <button type="button" className="admin-secondary-button" onClick={handleExperienceNew}>
                           <Icon name="plus" size={14} />
-                          Reset
+                          Reset Form
                         </button>
                         {selectedExperienceId ? (
                           <button type="button" className="admin-danger-button" onClick={handleExperienceDelete} disabled={experienceSaving}>
@@ -2596,77 +2875,20 @@ function Admin() {
                       </div>
                     </form>
                   </article>
-                </section>
+                </div>
               ) : null}
 
-              {contentMode === 'education' ? (
-                <section className="admin-dual-column">
-                  <aside className="admin-card admin-list-panel">
-                    <div className="admin-card-header">
-                      <div>
-                        <p className="admin-card-label">Education</p>
-                        <h2>Study timeline</h2>
-                      </div>
-                      <span className="admin-pill">{education.length}</span>
-                    </div>
-
-                    <div className="admin-list-actions">
-                      <button type="button" className="admin-secondary-button" onClick={handleEducationNew}>
-                        <Icon name="plus" size={14} />
-                        New entry
-                      </button>
-                      <button type="button" className="admin-secondary-button" onClick={loadEducation} disabled={educationLoading}>
-                        <Icon name="refresh" size={14} />
-                        Refresh
-                      </button>
-                    </div>
-
-                    {educationError ? <div className="admin-inline-error">{educationError}</div> : null}
-
-                    <div className="admin-item-list">
-                      {educationLoading ? (
-                        <div className="admin-loading-panel">
-                          <span className="admin-spinner" aria-hidden="true" />
-                          Loading education...
-                        </div>
-                      ) : education.length ? (
-                        education.map((item) => {
-                          const active = String(item.id) === String(selectedEducationId);
-                          return (
-                            <button
-                              key={item.id}
-                              type="button"
-                              className={`admin-item-card ${active ? 'is-active' : ''}`}
-                              onClick={() => setSelectedEducationId(String(item.id))}
-                            >
-                              <div className="admin-item-card-top">
-                                <strong>{item.title}</strong>
-                                {item.badge ? <span className="admin-pill">{item.badge}</span> : null}
-                              </div>
-                              <p>{item.org}</p>
-                              <small>
-                                {item.track} • {item.period}
-                              </small>
-                            </button>
-                          );
-                        })
-                      ) : (
-                        <EmptyState
-                          icon="education"
-                          title="No education entries"
-                          description="Create the study timeline cards from the editor."
-                        />
-                      )}
-                    </div>
-                  </aside>
-
-                  <article className="admin-card admin-editor-panel">
+              {isEditingEducation ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingEducation(false); setSelectedEducationId(''); }}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-education-modal-title" onClick={(event) => event.stopPropagation()}>
                     <div className="admin-card-header">
                       <div>
                         <p className="admin-card-label">Editor</p>
-                        <h2>{selectedEducationId ? 'Edit education' : 'Create education'}</h2>
+                        <h2 id="admin-education-modal-title">{selectedEducationId ? 'Edit education' : 'Create education'}</h2>
                       </div>
-                      <span className="admin-pill">{selectedEducationId ? 'Edit mode' : 'New item'}</span>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => { setIsEditingEducation(false); setSelectedEducationId(''); }} aria-label="Close editor">
+                        <Icon name="close" size={15} />
+                      </button>
                     </div>
 
                     <form className="admin-form" onSubmit={handleEducationSave}>
@@ -2718,7 +2940,7 @@ function Admin() {
                         </button>
                         <button type="button" className="admin-secondary-button" onClick={handleEducationNew}>
                           <Icon name="plus" size={14} />
-                          Reset
+                          Reset Form
                         </button>
                         {selectedEducationId ? (
                           <button type="button" className="admin-danger-button" onClick={handleEducationDelete} disabled={educationSaving}>
@@ -2729,75 +2951,20 @@ function Admin() {
                       </div>
                     </form>
                   </article>
-                </section>
+                </div>
               ) : null}
 
-              {contentMode === 'certificates' ? (
-                <section className="admin-dual-column">
-                  <aside className="admin-card admin-list-panel">
-                    <div className="admin-card-header">
-                      <div>
-                        <p className="admin-card-label">Certificates</p>
-                        <h2>Learning milestones</h2>
-                      </div>
-                      <span className="admin-pill">{certificates.length}</span>
-                    </div>
-
-                    <div className="admin-list-actions">
-                      <button type="button" className="admin-secondary-button" onClick={handleCertificateNew}>
-                        <Icon name="plus" size={14} />
-                        New certificate
-                      </button>
-                      <button type="button" className="admin-secondary-button" onClick={loadCertificates} disabled={certificatesLoading}>
-                        <Icon name="refresh" size={14} />
-                        Refresh
-                      </button>
-                    </div>
-
-                    {certificatesError ? <div className="admin-inline-error">{certificatesError}</div> : null}
-
-                    <div className="admin-item-list">
-                      {certificatesLoading ? (
-                        <div className="admin-loading-panel">
-                          <span className="admin-spinner" aria-hidden="true" />
-                          Loading certificates...
-                        </div>
-                      ) : certificates.length ? (
-                        certificates.map((item) => {
-                          const active = String(item.id) === String(selectedCertificateId);
-                          return (
-                            <button
-                              key={item.id}
-                              type="button"
-                              className={`admin-item-card ${active ? 'is-active' : ''}`}
-                              onClick={() => setSelectedCertificateId(String(item.id))}
-                            >
-                              <div className="admin-item-card-top">
-                                <strong>{item.title}</strong>
-                                <span className="admin-pill">{item.year}</span>
-                              </div>
-                              <p>{item.org}</p>
-                              <small>{item.detail}</small>
-                            </button>
-                          );
-                        })
-                      ) : (
-                        <EmptyState
-                          icon="certificate"
-                          title="No certificates yet"
-                          description="Add certificates to show learning progress in the portfolio."
-                        />
-                      )}
-                    </div>
-                  </aside>
-
-                  <article className="admin-card admin-editor-panel">
+              {isEditingCertificate ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingCertificate(false); setSelectedCertificateId(''); }}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-certificate-modal-title" onClick={(event) => event.stopPropagation()}>
                     <div className="admin-card-header">
                       <div>
                         <p className="admin-card-label">Editor</p>
-                        <h2>{selectedCertificateId ? 'Edit certificate' : 'Create certificate'}</h2>
+                        <h2 id="admin-certificate-modal-title">{selectedCertificateId ? 'Edit certificate' : 'Create certificate'}</h2>
                       </div>
-                      <span className="admin-pill">{selectedCertificateId ? 'Edit mode' : 'New item'}</span>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => { setIsEditingCertificate(false); setSelectedCertificateId(''); }} aria-label="Close editor">
+                        <Icon name="close" size={15} />
+                      </button>
                     </div>
 
                     <form className="admin-form" onSubmit={handleCertificateSave}>
@@ -2902,7 +3069,7 @@ function Admin() {
                         </button>
                         <button type="button" className="admin-secondary-button" onClick={handleCertificateNew}>
                           <Icon name="plus" size={14} />
-                          Reset
+                          Reset Form
                         </button>
                         {selectedCertificateId ? (
                           <button type="button" className="admin-danger-button" onClick={handleCertificateDelete} disabled={certificateSaving}>
@@ -2913,7 +3080,7 @@ function Admin() {
                       </div>
                     </form>
                   </article>
-                </section>
+                </div>
               ) : null}
             </section>
           ) : null}
