@@ -1371,35 +1371,36 @@ a.contact-item:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.35rem 0.8rem;
+  padding: 0.4rem 0.9rem;
   border-radius: 999px;
-  background: rgba(96, 165, 250, 0.08);
-  border: 1px solid rgba(96, 165, 250, 0.2);
-  color: #60a5fa;
+  background: #3b82f6;
+  border: none;
+  color: #ffffff;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.625rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  font-weight: 600;
   transition: all 0.3s ease;
   flex-shrink: 0;
   margin-top: 0;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
 }
 
 .project-card:hover .project-card-cta {
-  background: rgba(96, 165, 250, 0.15);
-  border-color: rgba(96, 165, 250, 0.45);
-  color: #93c5fd;
-  box-shadow: 0 0 10px rgba(96, 165, 250, 0.2);
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
 }
 
 .project-card-cta svg {
-  color: #60a5fa;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.4s ease;
+  color: #ffffff;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .project-card:hover .project-card-cta svg {
-  transform: rotate(15deg) scale(1.2);
-  color: #93c5fd;
+  transform: rotate(15deg) scale(1.1);
+  color: #ffffff;
 }
 
 .colorful-tag {
