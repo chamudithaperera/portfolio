@@ -110,6 +110,7 @@ const iconPaths = {
   spark: ['m12 3-1.1 3.2L8 7.4l2.9 1.3L12 12l1.1-3.3L16 7.4l-2.9-1.2L12 3z'],
   tag: ['M5 8V5h3', 'M4 4l7 7-6 6-7-7z'],
   trash: ['M4 7h16', 'M10 11v6', 'M14 11v6', 'M6 7l1 13h10l1-13', 'M9 7V4h6v3'],
+  drag: ['M4 8h16', 'M4 12h16', 'M4 16h16'],
 };
 
 function Icon({ name, size = 16, className = '' }) {
@@ -1068,6 +1069,95 @@ function Admin() {
     setCertificateForm((current) => ({ ...current, [name]: value }));
   };
 
+  const [draggedItem, setDraggedItem] = useState(null);
+
+  const handleDragStart = (listType, index) => (e) => {
+    setDraggedItem({ listType, index });
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (index) => (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (listType, targetIndex) => async (e) => {
+    e.preventDefault();
+    if (!draggedItem || draggedItem.listType !== listType || draggedItem.index === targetIndex) {
+      return;
+    }
+
+    let list;
+    let setList;
+    let dbTable;
+
+    if (listType === 'projects') {
+      list = [...projects];
+      setList = setProjects;
+      dbTable = 'projects';
+    } else if (listType === 'experience') {
+      list = [...experience];
+      setList = setExperience;
+      dbTable = 'experience';
+    } else if (listType === 'education') {
+      list = [...education];
+      setList = setEducation;
+      dbTable = 'education';
+    } else if (listType === 'certificates') {
+      list = [...certificates];
+      setList = setCertificates;
+      dbTable = 'certificates';
+    } else if (listType === 'pricingPackages') {
+      list = [...pricingPackages];
+      setList = setPricingPackages;
+      dbTable = 'pricing_packages';
+    } else if (listType === 'pricingServices') {
+      list = [...pricingServices];
+      setList = setPricingServices;
+      dbTable = 'pricing_services';
+    }
+
+    if (!list) return;
+
+    const draggedIdx = draggedItem.index;
+    const item = list[draggedIdx];
+    list.splice(draggedIdx, 1);
+    list.splice(targetIndex, 0, item);
+
+    const updatedList = list.map((item, idx) => ({
+      ...item,
+      displayOrder: idx + 1,
+    }));
+
+    setList(updatedList);
+    setDraggedItem(null);
+
+    try {
+      const response = await fetch('/api/admin/reorder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
+        },
+        body: JSON.stringify({
+          table: dbTable,
+          items: updatedList.map((item) => ({
+            id: item.id,
+            displayOrder: item.displayOrder,
+          })),
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to save order');
+      }
+    } catch (err) {
+      console.error('Reordering failed:', err);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedItem(null);
+  };
+
   const handleProjectNew = () => {
     setSelectedProjectId('');
     setProjectError('');
@@ -1937,15 +2027,23 @@ function Admin() {
                   </div>
                 ) : projects.length ? (
                   <div className="admin-cards-row-list">
-                    {projects.map((project) => (
+                    {projects.map((project, index) => (
                       <div
                         key={project.id}
-                        className="admin-item-row-card"
+                        className={`admin-item-row-card ${(draggedItem && draggedItem.listType === 'projects' && draggedItem.index === index) ? 'is-dragging' : ''}`}
+                        draggable="true"
+                        onDragStart={handleDragStart('projects', index)}
+                        onDragOver={handleDragOver(index)}
+                        onDrop={handleDrop('projects', index)}
+                        onDragEnd={handleDragEnd}
                         onClick={() => {
                           setSelectedProjectId(String(project.id));
                           setIsEditingProject(true);
                         }}
                       >
+                        <div className="admin-drag-handle" title="Drag to reorder" onClick={(e) => e.stopPropagation()}>
+                          <Icon name="drag" size={14} />
+                        </div>
                         {project.image ? (
                           <div className="admin-item-row-image">
                             <img src={project.image} alt={project.title} />
@@ -2201,15 +2299,23 @@ function Admin() {
                     </div>
                   ) : pricingPackages.length ? (
                     <div className="admin-cards-row-list">
-                      {pricingPackages.map((item) => (
+                      {pricingPackages.map((item, index) => (
                         <div
                           key={item.id}
-                          className="admin-item-row-card"
+                          className={`admin-item-row-card ${(draggedItem && draggedItem.listType === 'pricingPackages' && draggedItem.index === index) ? 'is-dragging' : ''}`}
+                          draggable="true"
+                          onDragStart={handleDragStart('pricingPackages', index)}
+                          onDragOver={handleDragOver(index)}
+                          onDrop={handleDrop('pricingPackages', index)}
+                          onDragEnd={handleDragEnd}
                           onClick={() => {
                             setSelectedPricingPackageId(String(item.id));
                             setIsEditingPricingPackage(true);
                           }}
                         >
+                          <div className="admin-drag-handle" title="Drag to reorder" onClick={(e) => e.stopPropagation()}>
+                            <Icon name="drag" size={14} />
+                          </div>
                           <div className="admin-item-row-info">
                             <div className="admin-item-row-header">
                               <h3>{item.title}</h3>
@@ -2279,17 +2385,25 @@ function Admin() {
                     </div>
                   ) : pricingServices.length ? (
                     <div className="admin-cards-row-list">
-                      {pricingServices.map((item) => {
+                      {pricingServices.map((item, index) => {
                         const recordId = item.recordId || item.id;
                         return (
                           <div
                             key={recordId}
-                            className="admin-item-row-card"
+                            className={`admin-item-row-card ${(draggedItem && draggedItem.listType === 'pricingServices' && draggedItem.index === index) ? 'is-dragging' : ''}`}
+                            draggable="true"
+                            onDragStart={handleDragStart('pricingServices', index)}
+                            onDragOver={handleDragOver(index)}
+                            onDrop={handleDrop('pricingServices', index)}
+                            onDragEnd={handleDragEnd}
                             onClick={() => {
                               setSelectedPricingServiceId(String(recordId));
                               setIsEditingPricingService(true);
                             }}
                           >
+                            <div className="admin-drag-handle" title="Drag to reorder" onClick={(e) => e.stopPropagation()}>
+                              <Icon name="drag" size={14} />
+                            </div>
                             <div className="admin-item-row-info">
                               <div className="admin-item-row-header">
                                 <h3>{item.label}</h3>
@@ -2577,15 +2691,23 @@ function Admin() {
                     </div>
                   ) : experience.length ? (
                     <div className="admin-cards-row-list">
-                      {experience.map((item) => (
+                      {experience.map((item, index) => (
                         <div
                           key={item.id}
-                          className="admin-item-row-card"
+                          className={`admin-item-row-card ${(draggedItem && draggedItem.listType === 'experience' && draggedItem.index === index) ? 'is-dragging' : ''}`}
+                          draggable="true"
+                          onDragStart={handleDragStart('experience', index)}
+                          onDragOver={handleDragOver(index)}
+                          onDrop={handleDrop('experience', index)}
+                          onDragEnd={handleDragEnd}
                           onClick={() => {
                             setSelectedExperienceId(String(item.id));
                             setIsEditingExperience(true);
                           }}
                         >
+                          <div className="admin-drag-handle" title="Drag to reorder" onClick={(e) => e.stopPropagation()}>
+                            <Icon name="drag" size={14} />
+                          </div>
                           <div className="admin-item-row-info">
                             <div className="admin-item-row-header">
                               <h3>{item.role}</h3>
@@ -2661,15 +2783,23 @@ function Admin() {
                     </div>
                   ) : education.length ? (
                     <div className="admin-cards-row-list">
-                      {education.map((item) => (
+                      {education.map((item, index) => (
                         <div
                           key={item.id}
-                          className="admin-item-row-card"
+                          className={`admin-item-row-card ${(draggedItem && draggedItem.listType === 'education' && draggedItem.index === index) ? 'is-dragging' : ''}`}
+                          draggable="true"
+                          onDragStart={handleDragStart('education', index)}
+                          onDragOver={handleDragOver(index)}
+                          onDrop={handleDrop('education', index)}
+                          onDragEnd={handleDragEnd}
                           onClick={() => {
                             setSelectedEducationId(String(item.id));
                             setIsEditingEducation(true);
                           }}
                         >
+                          <div className="admin-drag-handle" title="Drag to reorder" onClick={(e) => e.stopPropagation()}>
+                            <Icon name="drag" size={14} />
+                          </div>
                           <div className="admin-item-row-info">
                             <div className="admin-item-row-header">
                               <h3>{item.title}</h3>
@@ -2738,15 +2868,23 @@ function Admin() {
                     </div>
                   ) : certificates.length ? (
                     <div className="admin-cards-row-list">
-                      {certificates.map((item) => (
+                      {certificates.map((item, index) => (
                         <div
                           key={item.id}
-                          className="admin-item-row-card"
+                          className={`admin-item-row-card ${(draggedItem && draggedItem.listType === 'certificates' && draggedItem.index === index) ? 'is-dragging' : ''}`}
+                          draggable="true"
+                          onDragStart={handleDragStart('certificates', index)}
+                          onDragOver={handleDragOver(index)}
+                          onDrop={handleDrop('certificates', index)}
+                          onDragEnd={handleDragEnd}
                           onClick={() => {
                             setSelectedCertificateId(String(item.id));
                             setIsEditingCertificate(true);
                           }}
                         >
+                          <div className="admin-drag-handle" title="Drag to reorder" onClick={(e) => e.stopPropagation()}>
+                            <Icon name="drag" size={14} />
+                          </div>
                           {item.image ? (
                             <div className="admin-item-row-image">
                               <img src={item.image} alt={item.title} />

@@ -1184,6 +1184,34 @@ app.delete('/api/admin/certificates/:id', requireAdmin, async (req, res) => {
   }
 });
 
+app.post('/api/admin/reorder', requireAdmin, async (req, res) => {
+  const { table, items } = req.body;
+  if (!table || !Array.isArray(items)) {
+    return fail(res, 400, 'Invalid parameters.');
+  }
+
+  // Ensure table name matches allowed ones to prevent injection/unintended updates
+  const allowedTables = Object.values(TABLES);
+  if (!allowedTables.includes(table)) {
+    return fail(res, 400, 'Invalid table name.');
+  }
+
+  try {
+    const promises = items.map((item) =>
+      supabase
+        .from(table)
+        .update({ display_order: item.displayOrder })
+        .eq('id', item.id)
+    );
+    await Promise.all(promises);
+
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('Bulk reorder failed:', error);
+    return fail(res, 500, 'We could not reorder those items right now.');
+  }
+});
+
 if (hasBuild) {
   app.use(express.static(buildDir, { index: false }));
   app.use((req, res, next) => {
