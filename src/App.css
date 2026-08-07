@@ -1281,6 +1281,13 @@ a.contact-item:hover {
   z-index: 2;
 }
 
+.project-card-button .project-image .project-status {
+  top: auto;
+  left: auto;
+  bottom: 1rem;
+  right: 1rem;
+}
+
 .project-status>span {
   width: 0.375rem;
   height: 0.375rem;

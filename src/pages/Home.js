@@ -1212,8 +1212,9 @@ function ProjectCard({ project, featured = false, onOpen }) {
   };
 
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       className={`${featured ? 'featured-project' : 'project-card'} project-card-button card-3d`}
       aria-label={`Open details for ${project.title}`}
       onClick={() => onOpen(project)}
@@ -1241,13 +1242,20 @@ function ProjectCard({ project, featured = false, onOpen }) {
               </span>
             ))}
           </div>
-          <div className="project-card-cta">
+          <a
+            href={project.link || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="project-card-cta"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
             <Icon name="sparkles" size={12} />
             <span>View project</span>
-          </div>
+          </a>
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 
