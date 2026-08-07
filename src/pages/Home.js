@@ -1449,8 +1449,7 @@ function CertificationModal({ certificate, onClose }) {
 function Projects({ mode = 'home', projectsData = [] }) {
   const [activeProject, setActiveProject] = useState(null);
   const safeProjects = Array.isArray(projectsData) ? projectsData : [];
-  const featuredProject = safeProjects[0];
-  const projectItems = mode === 'page' ? safeProjects : safeProjects.slice(1);
+  const projectItems = mode === 'page' ? safeProjects : safeProjects.slice(0, 6);
   const headingTitle = mode === 'page' ? 'All' : 'Featured';
   const sectionClassName = `section section-projects ${mode === 'page' ? 'projects-page-grid' : ''}`.trim();
 
@@ -1481,7 +1480,6 @@ function Projects({ mode = 'home', projectsData = [] }) {
             </Link>
           </div>
         )}
-        {mode === 'home' && featuredProject ? <ProjectCard project={featuredProject} featured onOpen={setActiveProject} /> : null}
         {projectItems.length ? (
           <div className={`project-grid ${mode === 'page' ? 'project-grid-page' : ''}`}>
             {projectItems.map((project) => (
