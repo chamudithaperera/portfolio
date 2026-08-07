@@ -1093,27 +1093,27 @@ function Admin() {
     if (listType === 'projects') {
       list = [...projects];
       setList = setProjects;
-      dbTable = 'projects';
+      dbTable = 'portfolio_projects';
     } else if (listType === 'experience') {
       list = [...experience];
       setList = setExperience;
-      dbTable = 'experience';
+      dbTable = 'portfolio_experience';
     } else if (listType === 'education') {
       list = [...education];
       setList = setEducation;
-      dbTable = 'education';
+      dbTable = 'portfolio_education';
     } else if (listType === 'certificates') {
       list = [...certificates];
       setList = setCertificates;
-      dbTable = 'certificates';
+      dbTable = 'portfolio_certificates';
     } else if (listType === 'pricingPackages') {
       list = [...pricingPackages];
       setList = setPricingPackages;
-      dbTable = 'pricing_packages';
+      dbTable = 'portfolio_pricing_packages';
     } else if (listType === 'pricingServices') {
       list = [...pricingServices];
       setList = setPricingServices;
-      dbTable = 'pricing_services';
+      dbTable = 'portfolio_pricing_services';
     }
 
     if (!list) return;
