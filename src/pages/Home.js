@@ -1243,7 +1243,7 @@ function ProjectCard({ project, featured = false, onOpen }) {
           </div>
           <div className="project-card-cta">
             <Icon name="sparkles" size={12} />
-            <span>Click for details</span>
+            <span>View project</span>
           </div>
         </div>
       </div>
