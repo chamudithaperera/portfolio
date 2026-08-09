@@ -279,6 +279,18 @@ function projectFormToBody(form) {
   };
 }
 
+function getApiFieldErrors(error) {
+  const details = error?.data?.details;
+  if (!details || typeof details !== 'object' || Array.isArray(details)) return {};
+
+  return Object.entries(details).reduce((errors, [field, message]) => {
+    if (typeof message === 'string' && message.trim()) {
+      errors[field] = message;
+    }
+    return errors;
+  }, {});
+}
+
 function educationFormToBody(form) {
   return {
     track: form.track,
@@ -368,6 +380,10 @@ function EmptyState({ icon, title, description, action }) {
   );
 }
 
+function FieldError({ message }) {
+  return message ? <small className="admin-field-error">{message}</small> : null;
+}
+
 function TabButton({ active, icon, label, description, onClick }) {
   return (
     <button type="button" className={`admin-tab-button ${active ? 'is-active' : ''}`} onClick={onClick}>
@@ -425,6 +441,7 @@ function Admin() {
   const [projectForm, setProjectForm] = useState(emptyProjectForm);
   const [projectSaving, setProjectSaving] = useState(false);
   const [projectError, setProjectError] = useState('');
+  const [projectFieldErrors, setProjectFieldErrors] = useState({});
   const [projectStatus, setProjectStatus] = useState('');
   const [projectImageFile, setProjectImageFile] = useState(null);
   const [projectImageUploading, setProjectImageUploading] = useState(false);
@@ -727,6 +744,7 @@ function Admin() {
     } else {
       setProjectForm(emptyProjectForm);
     }
+    setProjectFieldErrors({});
     setProjectImageFile(null);
     setProjectImageStatus('');
     setProjectImageError('');
@@ -880,6 +898,12 @@ function Admin() {
   const updateProjectForm = (event) => {
     const { name, type, value, checked } = event.target;
     setProjectForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+    setProjectFieldErrors((current) => {
+      if (!current[name]) return current;
+      const next = { ...current };
+      delete next[name];
+      return next;
+    });
   };
 
   const updatePricingServiceForm = (event) => {
@@ -1161,6 +1185,7 @@ function Admin() {
   const handleProjectNew = () => {
     setSelectedProjectId('');
     setProjectError('');
+    setProjectFieldErrors({});
     setProjectStatus('');
     setProjectForm(emptyProjectForm);
     setProjectImageFile(null);
@@ -1310,6 +1335,7 @@ function Admin() {
     event.preventDefault();
     setProjectSaving(true);
     setProjectError('');
+    setProjectFieldErrors({});
     setProjectStatus('');
 
     try {
@@ -1333,6 +1359,7 @@ function Admin() {
       await Promise.allSettled([loadProjects(), loadDashboard()]);
       setIsEditingProject(false);
     } catch (error) {
+      setProjectFieldErrors(getApiFieldErrors(error));
       setProjectError(error.message || 'Unable to save this project.');
     } finally {
       setProjectSaving(false);
@@ -1345,6 +1372,7 @@ function Admin() {
 
     setProjectSaving(true);
     setProjectError('');
+    setProjectFieldErrors({});
     setProjectStatus('');
 
     try {
@@ -2110,10 +2138,12 @@ function Admin() {
                         <label>
                           <span>Title</span>
                           <input name="title" value={projectForm.title} onChange={updateProjectForm} placeholder="Money Manager App" required />
+                          <FieldError message={projectFieldErrors.title} />
                         </label>
                         <label>
                           <span>Category</span>
                           <input name="category" value={projectForm.category} onChange={updateProjectForm} placeholder="Flutter mobile system" required />
+                          <FieldError message={projectFieldErrors.category} />
                         </label>
                       </div>
 
@@ -2126,6 +2156,7 @@ function Admin() {
                           placeholder="Supabase Storage URL or /assets/imgs/works/example.png"
                           required
                         />
+                        <FieldError message={projectFieldErrors.image} />
                       </label>
 
                       <div className="admin-image-panel">
@@ -2178,16 +2209,19 @@ function Admin() {
                       <label>
                         <span>Summary</span>
                         <textarea name="summary" rows="3" value={projectForm.summary} onChange={updateProjectForm} placeholder="Short summary of the project" required />
+                        <FieldError message={projectFieldErrors.summary} />
                       </label>
 
                       <div className="admin-grid-2">
                         <label>
                           <span>Featured note</span>
                           <input name="featuredNote" value={projectForm.featuredNote} onChange={updateProjectForm} placeholder="Personal finance companion" />
+                          <FieldError message={projectFieldErrors.featuredNote} />
                         </label>
                         <label>
                           <span>Sort order</span>
                           <input name="displayOrder" type="number" value={projectForm.displayOrder} onChange={updateProjectForm} placeholder="1" />
+                          <FieldError message={projectFieldErrors.displayOrder} />
                         </label>
                       </div>
 
@@ -2200,6 +2234,7 @@ function Admin() {
                           onChange={updateProjectForm}
                           placeholder="Flutter, Riverpod, SQLite"
                         />
+                        <FieldError message={projectFieldErrors.tags} />
                       </label>
 
                       <label>
@@ -2211,12 +2246,14 @@ function Admin() {
                           onChange={updateProjectForm}
                           placeholder="One highlight per line"
                         />
+                        <FieldError message={projectFieldErrors.highlights} />
                       </label>
 
                       <div className="admin-grid-2">
                         <label>
                           <span>Project link</span>
                           <input name="link" value={projectForm.link} onChange={updateProjectForm} placeholder="https://..." required />
+                          <FieldError message={projectFieldErrors.link} />
                         </label>
                         <label className="admin-checkbox">
                           <input name="isFeatured" type="checkbox" checked={projectForm.isFeatured} onChange={updateProjectForm} />

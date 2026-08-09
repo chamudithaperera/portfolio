@@ -378,6 +378,15 @@
   overflow-wrap: anywhere;
 }
 
+.admin-field-error {
+  margin-top: -0.12rem;
+  color: #be123c;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .admin-form input,
 .admin-form select,
 .admin-form textarea,

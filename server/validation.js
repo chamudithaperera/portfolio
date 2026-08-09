@@ -106,6 +106,9 @@ function validateCollectionOrder(value) {
   return Number.isFinite(order) ? order : 0;
 }
 
+const PROJECT_IMAGE_MAX_LENGTH = 1000;
+const PROJECT_SUMMARY_MAX_LENGTH = 1200;
+
 function validateProjectPayload(body = {}) {
   const errors = {};
 
@@ -139,12 +142,12 @@ function validateProjectPayload(body = {}) {
     errors.category = 'Category must be between 2 and 120 characters.';
   }
 
-  if (image && image.length > 500) {
+  if (image && image.length > PROJECT_IMAGE_MAX_LENGTH) {
     errors.image = 'Image path or URL is too long.';
   }
 
-  if (summary && (summary.length < 10 || summary.length > 400)) {
-    errors.summary = 'Summary must be between 10 and 400 characters.';
+  if (summary && (summary.length < 10 || summary.length > PROJECT_SUMMARY_MAX_LENGTH)) {
+    errors.summary = `Summary must be between 10 and ${PROJECT_SUMMARY_MAX_LENGTH} characters.`;
   }
 
   if (featuredNote && featuredNote.length > 140) {
