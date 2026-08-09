@@ -2851,10 +2851,9 @@ function Footer() {
 
         <div className="footer-bottom">
           <p>
-            © 2026 Chamuditha Perera. Built by {profile.name}.
+            All rights reserved © 2026 ChamudithaPerera.Online
           </p>
           <div>
-            <span>All rights reserved</span>
             <a href={homeHref} aria-label="Back to top">
               <Icon name="arrowUp" size={15} />
             </a>
