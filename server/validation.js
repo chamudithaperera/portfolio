@@ -74,6 +74,70 @@ function validateContactMessage(body) {
   };
 }
 
+function validateVisitPayload(body = {}) {
+  const errors = {};
+
+  const path = normalizeText(body.path);
+  const referrer = normalizeText(body.referrer);
+  const userAgent = normalizeText(body.userAgent);
+  const language = normalizeText(body.language);
+  const screen = normalizeText(body.screen);
+  const viewport = normalizeText(body.viewport);
+  const pageTitle = normalizeText(body.pageTitle);
+  const country = normalizeText(body.country);
+  const timezoneOffset = Number.parseInt(String(body.timezoneOffset ?? ''), 10);
+
+  if (!path) {
+    errors.path = 'Path is required.';
+  } else if (path.length > 500) {
+    errors.path = 'Path is too long.';
+  }
+
+  if (referrer.length > 1000) {
+    errors.referrer = 'Referrer is too long.';
+  }
+
+  if (userAgent.length > 500) {
+    errors.userAgent = 'User agent is too long.';
+  }
+
+  if (language.length > 100) {
+    errors.language = 'Language is too long.';
+  }
+
+  if (screen.length > 120) {
+    errors.screen = 'Screen is too long.';
+  }
+
+  if (viewport.length > 120) {
+    errors.viewport = 'Viewport is too long.';
+  }
+
+  if (pageTitle.length > 180) {
+    errors.pageTitle = 'Page title is too long.';
+  }
+
+  if (country.length > 80) {
+    errors.country = 'Country is too long.';
+  }
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors,
+    values: {
+      path,
+      referrer,
+      userAgent,
+      language,
+      screen,
+      viewport,
+      pageTitle,
+      country,
+      timezoneOffset: Number.isFinite(timezoneOffset) ? timezoneOffset : null,
+    },
+  };
+}
+
 function validateAdminCredentials(username, password) {
   const safeUsername = normalizeText(username);
   const safePassword = String(password ?? '');
@@ -405,4 +469,5 @@ module.exports = {
   validatePricingPackagePayload,
   validatePricingServicePayload,
   validateProjectPayload,
+  validateVisitPayload,
 };

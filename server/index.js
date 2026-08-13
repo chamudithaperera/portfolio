@@ -33,6 +33,7 @@ const {
   validatePricingPackagePayload,
   validatePricingServicePayload,
   validateProjectPayload,
+  validateVisitPayload,
 } = require('./validation');
 const {
   certificatePayload,
@@ -43,12 +44,14 @@ const {
   insertRow,
   listPortfolioContent,
   listPricingServices,
+  listVisitRows,
   mapCertificate,
   mapEducation,
   mapExperience,
   mapPricingPackage,
   mapPricingService,
   mapProject,
+  mapVisit,
   pricingPackagePayload,
   pricingServicePayload,
   projectPayload,
@@ -177,6 +180,15 @@ function fail(res, status, message, details) {
 function parseNumericId(value) {
   const id = Number.parseInt(String(value ?? ''), 10);
   return Number.isFinite(id) && id > 0 ? id : null;
+}
+
+function getRequestIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string' && forwarded.trim()) {
+    return forwarded.split(',')[0].trim();
+  }
+
+  return String(req.ip || req.socket?.remoteAddress || '').trim();
 }
 
 async function getProjectImageRecord(id) {
@@ -525,6 +537,38 @@ app.get('/api/content/pricing', async (_req, res) => {
   }
 });
 
+app.post('/api/visit', async (req, res) => {
+  const result = validateVisitPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the visit payload.', result.errors);
+  }
+
+  const payload = {
+    path: result.values.path,
+    referrer: result.values.referrer,
+    ip_address: getRequestIp(req),
+    user_agent: result.values.userAgent || String(req.headers['user-agent'] || ''),
+    language: result.values.language || String(req.headers['accept-language'] || ''),
+    screen: result.values.screen,
+    viewport: result.values.viewport,
+    page_title: result.values.pageTitle,
+    country: String(req.headers['cf-ipcountry'] || req.headers['x-vercel-ip-country'] || '').trim(),
+    timezone_offset: result.values.timezoneOffset,
+  };
+
+  try {
+    const { error } = await supabase.from(TABLES.visits).insert([payload]);
+    if (error) {
+      throw error;
+    }
+
+    return res.status(201).json({ ok: true });
+  } catch (error) {
+    console.error('Visit logging failed:', error);
+    return fail(res, 500, 'We could not record that visit right now.');
+  }
+});
+
 app.post('/api/admin/project-images/upload', requireAdmin, async (req, res) => {
   const fileName = String(req.body?.fileName || '').trim();
   const dataUrl = String(req.body?.dataUrl || '').trim();
@@ -730,6 +774,20 @@ app.get('/api/admin/messages', requireAdmin, async (req, res) => {
     messages,
     total: messages.length,
   });
+});
+
+app.get('/api/admin/visits', requireAdmin, async (_req, res) => {
+  try {
+    const visits = await listVisitRows(200);
+    return res.json({
+      ok: true,
+      visits,
+      total: visits.length,
+    });
+  } catch (error) {
+    console.error('Supabase visit read failed:', error);
+    return fail(res, 500, 'We could not load visits right now.');
+  }
 });
 
 app.patch('/api/admin/messages/:id/status', requireAdmin, async (req, res) => {

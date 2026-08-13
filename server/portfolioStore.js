@@ -8,6 +8,7 @@ const TABLES = {
   pricingPackages: 'portfolio_pricing_packages',
   pricingServices: 'portfolio_pricing_services',
   projects: 'portfolio_projects',
+  visits: 'site_visits',
 };
 
 function normalizeString(value) {
@@ -154,6 +155,23 @@ function mapPricingPackage(row) {
   };
 }
 
+function mapVisit(row) {
+  return {
+    id: row.id,
+    path: row.path,
+    referrer: row.referrer || '',
+    ipAddress: row.ip_address || '',
+    userAgent: row.user_agent || '',
+    language: row.language || '',
+    screen: row.screen || '',
+    viewport: row.viewport || '',
+    pageTitle: row.page_title || '',
+    country: row.country || '',
+    timezoneOffset: row.timezone_offset ?? null,
+    createdAt: row.created_at,
+  };
+}
+
 function projectPayload(input = {}) {
   return {
     title: normalizeString(input.title),
@@ -293,6 +311,29 @@ async function safeListRows(table, mapper) {
   }
 }
 
+async function listVisitRows(limit = 200) {
+  const { data, error } = await supabase
+    .from(TABLES.visits)
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    throw error;
+  }
+
+  return (data || []).map(mapVisit);
+}
+
+async function safeListVisitRows(limit = 200) {
+  try {
+    return await listVisitRows(limit);
+  } catch (error) {
+    console.error(`Unable to list rows for ${TABLES.visits}:`, error.message || error);
+    return [];
+  }
+}
+
 async function countRows(table) {
   const { count, error } = await supabase.from(table).select('id', { count: 'exact', head: true });
   if (error) {
@@ -370,13 +411,14 @@ async function safeListPricingServices(admin = false) {
 }
 
 async function getDashboardSummary() {
-  const [messages, projects, experience, education, certificates, pricingPackages] = await Promise.all([
+  const [messages, projects, experience, education, certificates, pricingPackages, visits] = await Promise.all([
     safeCountRows(TABLES.messages),
     safeCountRows(TABLES.projects),
     safeCountRows(TABLES.experience),
     safeCountRows(TABLES.education),
     safeCountRows(TABLES.certificates),
     safeCountRows(TABLES.pricingPackages),
+    safeCountRows(TABLES.visits),
   ]);
 
   let latestMessage = null;
@@ -392,6 +434,29 @@ async function getDashboardSummary() {
     console.error(`Unable to load latest message:`, error.message || error);
   }
 
+  let latestVisit = null;
+  try {
+    const { data } = await supabase
+      .from(TABLES.visits)
+      .select('id, path, referrer, ip_address, country, page_title, created_at')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    latestVisit = data
+      ? {
+          id: data.id,
+          path: data.path,
+          referrer: data.referrer || '',
+          ipAddress: data.ip_address || '',
+          country: data.country || '',
+          pageTitle: data.page_title || '',
+          createdAt: data.created_at,
+        }
+      : null;
+  } catch (error) {
+    console.error(`Unable to load latest visit:`, error.message || error);
+  }
+
   return {
     messages,
     projects,
@@ -399,7 +464,9 @@ async function getDashboardSummary() {
     education,
     certificates,
     pricingPackages,
+    visits,
     latestMessage: latestMessage || null,
+    latestVisit,
   };
 }
 
@@ -441,10 +508,13 @@ module.exports = {
   mapPricingPackage,
   mapPricingService,
   mapProject,
+  mapVisit,
   listPricingServices,
+  listVisitRows,
   projectPayload,
   pricingPackagePayload,
   pricingServicePayload,
+  safeListVisitRows,
   updateRow,
   safeCountRows,
   safeListPricingServices,
