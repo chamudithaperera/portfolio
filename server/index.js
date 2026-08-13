@@ -558,13 +558,20 @@ app.post('/api/visit', async (req, res) => {
   try {
     const { error } = await supabase.from(TABLES.visits).insert([payload]);
     if (error) {
-      throw error;
+      console.error('Visit logging failed:', error);
+      return res.status(202).json({
+        ok: true,
+        recorded: false,
+      });
     }
 
     return res.status(201).json({ ok: true });
   } catch (error) {
     console.error('Visit logging failed:', error);
-    return fail(res, 500, 'We could not record that visit right now.');
+    return res.status(202).json({
+      ok: true,
+      recorded: false,
+    });
   }
 });
 
@@ -776,17 +783,12 @@ app.get('/api/admin/messages', requireAdmin, async (req, res) => {
 });
 
 app.get('/api/admin/visits', requireAdmin, async (_req, res) => {
-  try {
-    const visits = await listVisitRows(200);
-    return res.json({
-      ok: true,
-      visits,
-      total: visits.length,
-    });
-  } catch (error) {
-    console.error('Supabase visit read failed:', error);
-    return fail(res, 500, 'We could not load visits right now.');
-  }
+  const visits = await safeListVisitRows(200);
+  return res.json({
+    ok: true,
+    visits,
+    total: visits.length,
+  });
 });
 
 app.patch('/api/admin/messages/:id/status', requireAdmin, async (req, res) => {
