@@ -46,6 +46,12 @@ function normalizeVisitRow(row = {}) {
   };
 }
 
+function toSupabaseVisitPayload(row = {}) {
+  const normalized = normalizeVisitRow(row);
+  const { id, ...payload } = normalized;
+  return payload;
+}
+
 async function readLocalVisitRows() {
   try {
     const raw = await fs.readFile(visitsFile, 'utf8');
@@ -78,9 +84,10 @@ async function listLocalVisits(limit = 200) {
 
 async function recordVisit(row) {
   const payload = normalizeVisitRow(row);
+  const dbPayload = toSupabaseVisitPayload(row);
 
   try {
-    const { error } = await supabase.from(visitsTable).insert([payload]);
+    const { error } = await supabase.from(visitsTable).insert([dbPayload]);
     if (!error) {
       return { stored: true, source: 'supabase', visit: mapVisit(payload) };
     }
