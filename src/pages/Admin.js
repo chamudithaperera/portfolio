@@ -2094,6 +2094,70 @@ function Admin() {
             </section>
           ) : null}
 
+          {activeTab === 'visits' ? (
+            <section className="admin-message-workspace">
+              <div className="admin-card admin-message-table-card">
+                <div className="admin-card-header">
+                  <div>
+                    <p className="admin-card-label">Public page loads</p>
+                    <h2>Website visits</h2>
+                  </div>
+                  <button type="button" className="admin-secondary-button" onClick={loadVisits} disabled={visitsLoading}>
+                    <Icon name="refresh" size={14} />
+                    Refresh
+                  </button>
+                </div>
+
+                {visitsError ? <div className="admin-inline-error">{visitsError}</div> : null}
+
+                {visitsLoading ? (
+                  <div className="admin-loading-panel">
+                    <span className="admin-spinner" aria-hidden="true" />
+                    Loading visits...
+                  </div>
+                ) : visits.length ? (
+                  <div className="admin-table-scroll">
+                    <table className="admin-visit-table">
+                      <thead>
+                        <tr>
+                          <th>Page</th>
+                          <th>Referrer</th>
+                          <th>IP</th>
+                          <th>Country</th>
+                          <th>Device</th>
+                          <th>Screen</th>
+                          <th>Visited</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {visits.map((visit) => (
+                          <tr key={visit.id}>
+                            <td>
+                              <strong>{visit.pageTitle || visit.path}</strong>
+                              <div className="admin-visit-path">{visit.path}</div>
+                            </td>
+                            <td className="admin-visit-muted">{truncateText(visit.referrer || 'Direct', 42)}</td>
+                            <td className="admin-visit-muted">{visit.ipAddress || 'Unknown'}</td>
+                            <td>{visit.country || 'Unknown'}</td>
+                            <td className="admin-visit-muted">{truncateText(visit.userAgent || 'Unknown', 54)}</td>
+                            <td>{visit.screen || visit.viewport || 'Unknown'}</td>
+                            <td>{formatDate(visit.createdAt)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <EmptyState
+                    icon="globe"
+                    title="No visits found"
+                    description="Public page loads will appear here once the visit logger is active."
+                  />
+                )}
+              </div>
+            </section>
+          ) : null}
+
           {activeTab === 'projects' ? (
             <section className="admin-content-workspace">
               <div className="admin-card">
