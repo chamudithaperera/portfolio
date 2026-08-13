@@ -15,11 +15,16 @@ function VisitTracker() {
     }
 
     const fullPath = `${location.pathname}${location.search}${location.hash}`;
-    if (lastTrackedPath.current === fullPath) {
+    const trackerState = window.__visitTrackerState || (window.__visitTrackerState = { path: '', at: 0 });
+    const now = Date.now();
+
+    if (lastTrackedPath.current === fullPath || (trackerState.path === fullPath && now - trackerState.at < 2000)) {
       return;
     }
 
     lastTrackedPath.current = fullPath;
+    trackerState.path = fullPath;
+    trackerState.at = now;
 
     const payload = {
       path: fullPath,
