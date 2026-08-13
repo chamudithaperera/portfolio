@@ -1657,7 +1657,7 @@ function Admin() {
             Secure Admin Access
           </div>
           <h1>Portfolio Admin</h1>
-          <p>Sign in to manage messages, projects, education, and certificates.</p>
+          <p>Sign in to manage messages, visits, projects, education, and certificates.</p>
           <form className="admin-login-form" onSubmit={handleLogin}>
             <label>
               <span>Username</span>
@@ -1749,7 +1749,7 @@ function Admin() {
           </nav>
 
           <div className="admin-sidebar-footer">
-            <button type="button" className="admin-secondary-button" onClick={refreshDashboardTab} disabled={dashboardLoading || messagesLoading}>
+            <button type="button" className="admin-secondary-button" onClick={refreshDashboardTab} disabled={dashboardLoading || messagesLoading || visitsLoading}>
               <Icon name="refresh" size={14} />
               Refresh
             </button>
