@@ -1703,6 +1703,7 @@ function Admin() {
   const summaryCards = [
     { label: 'Messages', value: stats.messages, tone: 'blue' },
     { label: 'Unread', value: stats.unread, tone: 'cyan' },
+    { label: 'Visits', value: stats.visits, tone: 'teal' },
     { label: 'Projects', value: stats.projects, tone: 'indigo' },
     { label: 'Pricing', value: stats.pricingPackages, tone: 'blue' },
     { label: 'Experience', value: stats.experience, tone: 'sky' },
@@ -1774,6 +1775,7 @@ function Admin() {
               <h1>
                 {activeTab === 'dashboard' && 'Dashboard'}
                 {activeTab === 'messages' && 'Messages'}
+                {activeTab === 'visits' && 'Visits'}
                 {activeTab === 'projects' && 'Projects'}
                 {activeTab === 'pricing' && 'Pricing'}
                 {activeTab === 'content' && 'Work Experience & Content'}
@@ -1781,6 +1783,7 @@ function Admin() {
               <p>
                 {activeTab === 'dashboard' && 'Summary of the website content and incoming activity.'}
                 {activeTab === 'messages' && 'WhatsApp-style inbox for user submissions.'}
+                {activeTab === 'visits' && 'Table of website visit records captured from public page loads.'}
                 {activeTab === 'projects' && 'Create, edit, and remove portfolio projects.'}
                 {activeTab === 'pricing' && 'Manage website and mobile app services, packages, prices, and feature lists.'}
                 {activeTab === 'content' && 'Manage work experience, education, and certificate entries from one place.'}
@@ -1792,7 +1795,7 @@ function Admin() {
                 <Icon name="home" size={14} />
                 Public site
               </a>
-              <button type="button" className="admin-secondary-button admin-notification-button" onClick={refreshDashboardTab} disabled={dashboardLoading || messagesLoading}>
+              <button type="button" className="admin-secondary-button admin-notification-button" onClick={refreshDashboardTab} disabled={dashboardLoading || messagesLoading || visitsLoading}>
                 <Icon name="bell" size={14} />
                 {stats.unread}
               </button>
@@ -1869,6 +1872,38 @@ function Admin() {
                     <strong>{stats.certificates}</strong>
                   </div>
                 </div>
+              </div>
+
+              <div className="admin-card">
+                <div className="admin-card-header">
+                  <div>
+                    <p className="admin-card-label">Recent activity</p>
+                    <h2>Latest visit</h2>
+                  </div>
+                </div>
+
+                {dashboardLoading ? (
+                  <div className="admin-loading-panel">
+                    <span className="admin-spinner" aria-hidden="true" />
+                    Loading visits...
+                  </div>
+                ) : dashboard?.latestVisit ? (
+                  <div className="admin-activity-card">
+                    <strong>{dashboard.latestVisit.pageTitle || dashboard.latestVisit.path}</strong>
+                    <p>{dashboard.latestVisit.path}</p>
+                    <small>{dashboard.latestVisit.country || 'Unknown country'}</small>
+                    <small>
+                      {dashboard.latestVisit.referrer ? truncateText(dashboard.latestVisit.referrer, 60) : 'Direct visit'}
+                    </small>
+                    <small>{formatShortDate(dashboard.latestVisit.createdAt)}</small>
+                  </div>
+                ) : (
+                  <EmptyState
+                    icon="globe"
+                    title="No visit records yet"
+                    description="Once the public site records a page view, the latest visit will appear here."
+                  />
+                )}
               </div>
             </section>
           ) : null}
