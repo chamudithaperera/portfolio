@@ -222,6 +222,8 @@ on conflict (period, role, org) do update set
   updated_at = now();
 ```
 
+If you want a separate file to run, the same SQL lives in [supabase/site_visits.sql](/Users/chamudithaperera/Documents/Projects/portfolio/supabase/site_visits.sql).
+
 ## 3. Keep access server-only
 
 1. Keep **Row Level Security** enabled on the table.

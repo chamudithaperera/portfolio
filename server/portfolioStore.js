@@ -1,4 +1,5 @@
 const { supabase } = require('./supabase');
+const { countVisits, listVisits } = require('./visitStore');
 
 const TABLES = {
   certificates: 'portfolio_certificates',
@@ -411,14 +412,14 @@ async function safeListPricingServices(admin = false) {
 }
 
 async function getDashboardSummary() {
-  const [messages, projects, experience, education, certificates, pricingPackages, visits] = await Promise.all([
+  const [messages, projects, experience, education, certificates, pricingPackages, visitRows] = await Promise.all([
     safeCountRows(TABLES.messages),
     safeCountRows(TABLES.projects),
     safeCountRows(TABLES.experience),
     safeCountRows(TABLES.education),
     safeCountRows(TABLES.certificates),
     safeCountRows(TABLES.pricingPackages),
-    safeCountRows(TABLES.visits),
+    listVisits(1),
   ]);
 
   let latestMessage = null;
@@ -436,26 +437,12 @@ async function getDashboardSummary() {
 
   let latestVisit = null;
   try {
-    const { data } = await supabase
-      .from(TABLES.visits)
-      .select('id, path, referrer, ip_address, country, page_title, created_at')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    latestVisit = data
-      ? {
-          id: data.id,
-          path: data.path,
-          referrer: data.referrer || '',
-          ipAddress: data.ip_address || '',
-          country: data.country || '',
-          pageTitle: data.page_title || '',
-          createdAt: data.created_at,
-        }
-      : null;
+    latestVisit = visitRows[0] || null;
   } catch (error) {
     console.error(`Unable to load latest visit:`, error.message || error);
   }
+
+  const visits = await countVisits();
 
   return {
     messages,

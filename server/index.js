@@ -44,7 +44,6 @@ const {
   insertRow,
   listPortfolioContent,
   listPricingServices,
-  listVisitRows,
   mapCertificate,
   mapEducation,
   mapExperience,
@@ -57,6 +56,7 @@ const {
   updateRow,
   TABLES,
 } = require('./portfolioStore');
+const { listVisits, recordVisit } = require('./visitStore');
 
 const app = express();
 const buildDir = path.join(__dirname, '..', 'build');
@@ -556,22 +556,15 @@ app.post('/api/visit', async (req, res) => {
   };
 
   try {
-    const { error } = await supabase.from(TABLES.visits).insert([payload]);
-    if (error) {
-      console.error('Visit logging failed:', error);
-      return res.status(202).json({
-        ok: true,
-        recorded: false,
-      });
-    }
-
-    return res.status(201).json({ ok: true });
+    const stored = await recordVisit(payload);
+    return res.status(201).json({
+      ok: true,
+      recorded: stored.stored,
+      source: stored.source,
+    });
   } catch (error) {
     console.error('Visit logging failed:', error);
-    return res.status(202).json({
-      ok: true,
-      recorded: false,
-    });
+    return fail(res, 500, 'We could not record that visit right now.');
   }
 });
 
@@ -783,7 +776,7 @@ app.get('/api/admin/messages', requireAdmin, async (req, res) => {
 });
 
 app.get('/api/admin/visits', requireAdmin, async (_req, res) => {
-  const visits = await safeListVisitRows(200);
+  const visits = await listVisits(200);
   return res.json({
     ok: true,
     visits,
