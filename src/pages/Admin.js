@@ -6,6 +6,7 @@ import './Admin.css';
 const tabItems = [
   { id: 'dashboard', label: 'Dashboard', description: 'Overview of the site', icon: 'grid' },
   { id: 'messages', label: 'Messages', description: 'User inquiries', icon: 'messages' },
+  { id: 'visits', label: 'Visits', description: 'Visitor analytics', icon: 'globe' },
   { id: 'projects', label: 'Projects', description: 'CRUD portfolio projects', icon: 'project' },
   { id: 'pricing', label: 'Pricing', description: 'Edit services and packages', icon: 'pricing' },
   { id: 'content', label: 'Content', description: 'Manage experience and education', icon: 'education' },
@@ -95,6 +96,7 @@ const iconPaths = {
   grid: ['M4 4h7v7H4z', 'M13 4h7v7h-7z', 'M4 13h7v7H4z', 'M13 13h7v7h-7z'],
   bell: ['M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8', 'M10 20h4'],
   home: ['M3 11l9-7 9 7', 'M5 10v10h14V10', 'M9 20v-6h6v6'],
+  globe: ['M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z', 'M2 12h20', 'M12 2c3 3 3.5 7 3.5 10s-.5 7-3.5 10', 'M12 2c-3 3-3.5 7-3.5 10s.5 7 3.5 10'],
   inbox: ['M4 5h16v14H4z', 'M4 13h4l2 3h4l2-3h4'],
   lock: ['M8 11V8a4 4 0 0 1 8 0v3', 'M6 11h12v9H6z', 'M12 15v2'],
   mail: ['M4 5h16v14H4z', 'm4 7 8 6 8-6'],
@@ -154,6 +156,13 @@ function formatShortDate(value) {
     month: 'short',
     day: 'numeric',
   }).format(date);
+}
+
+function truncateText(value, maxLength = 48) {
+  const text = String(value || '').trim();
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, Math.max(0, maxLength - 1)).trimEnd()}…`;
 }
 
 function splitCommaList(value) {
@@ -434,6 +443,10 @@ function Admin() {
   const [selectedMessageId, setSelectedMessageId] = useState('');
   const [messageActionPending, setMessageActionPending] = useState('');
 
+  const [visits, setVisits] = useState([]);
+  const [visitsLoading, setVisitsLoading] = useState(false);
+  const [visitsError, setVisitsError] = useState('');
+
   const [projects, setProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
   const [projectsError, setProjectsError] = useState('');
@@ -533,6 +546,7 @@ function Admin() {
     const counts = dashboard || {};
     return {
       messages: counts.messages ?? messages.length,
+      visits: counts.visits ?? visits.length,
       projects: counts.projects ?? projects.length,
       experience: counts.experience ?? experience.length,
       education: counts.education ?? education.length,
@@ -540,7 +554,7 @@ function Admin() {
       pricingPackages: counts.pricingPackages ?? pricingPackages.length,
       unread: messages.filter((item) => (item.status || 'new') === 'new').length,
     };
-  }, [certificates.length, dashboard, education.length, experience.length, messages, pricingPackages.length, projects.length]);
+  }, [certificates.length, dashboard, education.length, experience.length, messages, pricingPackages.length, projects.length, visits.length]);
 
   async function loadDashboard() {
     setDashboardLoading(true);
@@ -567,6 +581,21 @@ function Admin() {
       setMessagesError(error.message || 'Unable to load messages.');
     } finally {
       setMessagesLoading(false);
+    }
+  }
+
+  async function loadVisits() {
+    setVisitsLoading(true);
+    setVisitsError('');
+    try {
+      const response = await apiRequest('/api/admin/visits');
+      const loaded = response.visits || [];
+      setVisits(loaded);
+    } catch (error) {
+      setVisitsError(error.message || 'Unable to load website visits.');
+      setVisits([]);
+    } finally {
+      setVisitsLoading(false);
     }
   }
 
@@ -688,6 +717,7 @@ function Admin() {
     await Promise.allSettled([
       loadDashboard(),
       loadMessages(messageSearch),
+      loadVisits(),
       loadProjects(),
       loadExperience(),
       loadEducation(),
@@ -844,6 +874,7 @@ function Admin() {
       setAuthenticated(false);
       setDashboard(null);
       setMessages([]);
+      setVisits([]);
       setProjects([]);
       setExperience([]);
       setEducation([]);
@@ -882,6 +913,8 @@ function Admin() {
       setMessageSearch('');
       setContentMode('experience');
       setMessageActionPending('');
+      setVisitsLoading(false);
+      setVisitsError('');
       setPricingMode('packages');
       setPricingLoading(false);
       setPricingSaving(false);
