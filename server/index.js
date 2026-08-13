@@ -51,7 +51,6 @@ const {
   mapPricingPackage,
   mapPricingService,
   mapProject,
-  mapVisit,
   pricingPackagePayload,
   pricingServicePayload,
   projectPayload,

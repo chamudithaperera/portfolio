@@ -1874,7 +1874,7 @@ function Admin() {
                 </div>
               </div>
 
-              <div className="admin-card">
+              <div className="admin-card admin-dashboard-wide-card">
                 <div className="admin-card-header">
                   <div>
                     <p className="admin-card-label">Recent activity</p>

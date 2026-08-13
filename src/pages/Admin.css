@@ -572,6 +572,10 @@
   grid-column: span 2;
 }
 
+.admin-dashboard-wide-card {
+  grid-column: span 2;
+}
+
 .admin-collection-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
