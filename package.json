@@ -16,6 +16,7 @@
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "framer-motion": "^12.9.4",
+    "geoip-lite": "^2.0.3",
     "gsap": "^3.12.5",
     "helmet": "^8.0.0",
     "react": "^18.3.1",

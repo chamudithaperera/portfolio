@@ -35,6 +35,7 @@ const {
   validateProjectPayload,
   validateVisitPayload,
 } = require('./validation');
+const { getRequestIp, resolveVisitCountry } = require('./visitGeo');
 const {
   certificatePayload,
   deleteRow,
@@ -179,15 +180,6 @@ function fail(res, status, message, details) {
 function parseNumericId(value) {
   const id = Number.parseInt(String(value ?? ''), 10);
   return Number.isFinite(id) && id > 0 ? id : null;
-}
-
-function getRequestIp(req) {
-  const forwarded = req.headers['x-forwarded-for'];
-  if (typeof forwarded === 'string' && forwarded.trim()) {
-    return forwarded.split(',')[0].trim();
-  }
-
-  return String(req.ip || req.socket?.remoteAddress || '').trim();
 }
 
 async function getProjectImageRecord(id) {
@@ -551,7 +543,7 @@ app.post('/api/visit', async (req, res) => {
     screen: result.values.screen,
     viewport: result.values.viewport,
     page_title: result.values.pageTitle,
-    country: String(req.headers['cf-ipcountry'] || req.headers['x-vercel-ip-country'] || '').trim(),
+    country: resolveVisitCountry(req),
     timezone_offset: result.values.timezoneOffset,
   };
 
