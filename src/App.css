@@ -4372,6 +4372,16 @@ textarea:focus-visible {
   z-index: 20;
 }
 
+.skills-reference .section-heading::before {
+  position: absolute;
+  inset: -1.25rem -2rem;
+  z-index: -1;
+  pointer-events: none;
+  content: '';
+  background: radial-gradient(ellipse at center, rgba(0, 2, 10, 0.86), rgba(0, 2, 10, 0.62) 48%, transparent 78%);
+  filter: blur(12px);
+}
+
 .skills-reference > .galaxy-canvas {
   position: absolute;
   inset: 0;
@@ -5414,6 +5424,15 @@ textarea:focus-visible {
   .skills-reference,
   .contact-reference {
     padding-block: 8rem;
+  }
+
+  .skills-reference > .galaxy-canvas {
+    opacity: 0.28;
+  }
+
+  .skills-reference .section-heading::before {
+    inset: -1.5rem -1rem;
+    background: radial-gradient(ellipse at center, rgba(0, 2, 10, 0.94), rgba(0, 2, 10, 0.72) 52%, transparent 82%);
   }
 
   .skills-reference .orbit-legend {
