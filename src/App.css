@@ -4357,6 +4357,175 @@ textarea:focus-visible {
   opacity: 1;
 }
 
+.skills-reference {
+  isolation: isolate;
+}
+
+.skills-reference .section-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.skills-reference > .galaxy-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.62;
+}
+
+.solar-stage {
+  padding: 0.5rem 0 3.75rem;
+}
+
+.solar-stage::before {
+  inset: 1% 8%;
+  background:
+    radial-gradient(ellipse at center, rgba(14, 165, 233, 0.18), transparent 62%),
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.07), transparent 16%);
+  filter: blur(24px);
+}
+
+.skills-reference .solar-system {
+  --galaxy-node-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.62);
+  overflow: visible;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79, 70, 229, 0.28), transparent 70%),
+    linear-gradient(180deg, rgba(4, 8, 20, 0.98), rgba(8, 13, 28, 0.98));
+}
+
+.skills-reference .solar-system:active {
+  cursor: grabbing;
+}
+
+.skills-reference .solar-system .galaxy-canvas {
+  position: absolute;
+  inset: -45%;
+  width: 190%;
+  height: 190%;
+  pointer-events: none;
+}
+
+.skills-reference .orbit-line {
+  z-index: 2;
+  transform: translate(-50%, -50%) rotateX(64deg) rotateY(-18deg);
+  box-shadow: 0 0 34px rgba(37, 99, 235, 0.08);
+  animation: galaxy-ring-spin 24s linear infinite;
+}
+
+.skills-reference .orbit-line:nth-of-type(2) {
+  transform: translate(-50%, -50%) rotateX(72deg) rotateY(20deg);
+  animation-duration: 32s;
+  animation-direction: reverse;
+}
+
+.skills-reference .orbit-line:nth-of-type(3) {
+  transform: translate(-50%, -50%) rotateX(55deg) rotateY(34deg);
+  animation-duration: 18s;
+}
+
+.skills-reference .orbit-line:nth-of-type(4) {
+  transform: translate(-50%, -50%) rotateX(68deg) rotateY(-30deg);
+  animation-duration: 38s;
+  animation-direction: reverse;
+}
+
+.galaxy-node-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 8;
+  width: 0;
+  height: 0;
+}
+
+.skills-reference .skill-planet {
+  top: 0;
+  left: 0;
+  width: clamp(2.75rem, 7vw, 3.5rem);
+  height: clamp(2.75rem, 7vw, 3.5rem);
+  border-radius: 1rem;
+  animation: none;
+  transform-origin: center;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    scale 0.3s ease,
+    filter 0.3s ease;
+}
+
+.skill-planet-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(circle, color-mix(in srgb, var(--stack-accent) 42%, transparent), transparent 70%);
+  filter: blur(10px);
+  transition: opacity 0.3s ease;
+}
+
+.skills-reference .skill-planet:hover .skill-planet-glow,
+.skills-reference .skill-planet:focus-visible .skill-planet-glow,
+.skills-reference .skill-planet.is-selected .skill-planet-glow {
+  opacity: 1;
+}
+
+.skills-reference .skill-planet:hover,
+.skills-reference .skill-planet:focus-visible,
+.skills-reference .skill-planet.is-selected {
+  scale: 1.22;
+}
+
+.skills-reference .stack-glyph--planet {
+  position: relative;
+  z-index: 1;
+  border-radius: 0.875rem;
+  background: transparent;
+  box-shadow: none !important;
+}
+
+.skills-reference .planet-tooltip {
+  bottom: auto;
+  top: calc(100% + 0.45rem);
+  z-index: 2;
+  max-width: min(11rem, 48vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-color: rgba(96, 165, 250, 0.32);
+  color: #cfe4ff;
+  background: rgba(4, 9, 22, 0.86);
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.galaxy-status {
+  position: absolute;
+  right: 0;
+  bottom: -2.5rem;
+  left: 0;
+  margin: 0;
+  color: rgba(207, 228, 255, 0.72);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
+  pointer-events: none;
+}
+
+.skills-reference .solar-core {
+  z-index: 12;
+  background:
+    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.75), transparent 24%),
+    radial-gradient(circle at 50% 50%, rgba(96, 165, 250, 0.95), rgba(79, 70, 229, 0.72) 48%, rgba(2, 6, 23, 0.16) 72%);
+  filter: saturate(1.08);
+  animation: galaxy-core-pulse 6s ease-in-out infinite;
+}
+
 .skills-reference .orbit-legend {
   bottom: 0.5rem;
 }
@@ -5012,6 +5181,26 @@ textarea:focus-visible {
 
   to {
     transform: rotate(var(--orbit-end)) translateX(var(--orbit-radius)) rotate(var(--orbit-end-reverse));
+  }
+}
+
+@keyframes galaxy-core-pulse {
+
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.12);
+  }
+}
+
+@keyframes galaxy-ring-spin {
+  to {
+    rotate: 360deg;
   }
 }
 
