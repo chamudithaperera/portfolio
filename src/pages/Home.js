@@ -392,7 +392,7 @@ const TECH_STACK_ORBITS = [
   },
 ];
 
-const TECH_SYSTEM_BASE_SIZE = 760;
+const TECH_SYSTEM_BASE_SIZE = 900;
 const GALAXY_PARTICLE_COUNT = 1900;
 const GALAXY_ARMS = 4;
 const GALAXY_FEATURED_STACKS = new Set([
@@ -404,29 +404,21 @@ const GALAXY_FEATURED_STACKS = new Set([
   'Kubernetes',
   'Git',
   'Tailwind CSS',
-  'Docker',
-  'TypeScript',
   'Flutter',
   'Spring Boot',
-  'MongoDB',
-  'Figma',
 ]);
 
 const GALAXY_FEATURED_LAYOUT = {
-  React: { x: 0.03, y: -0.82, z: 0.38 },
-  JavaScript: { x: 0.78, y: -0.55, z: 0.48 },
-  'Node.js': { x: -0.58, y: -0.36, z: 0.54 },
-  PostgreSQL: { x: -0.22, y: 0.05, z: 0.82 },
-  Redis: { x: 0.72, y: 0.22, z: 0.6 },
-  Kubernetes: { x: 0.18, y: 0.58, z: 0.62 },
-  Git: { x: -0.24, y: 0.83, z: 0.5 },
-  'Tailwind CSS': { x: 0.58, y: 0.7, z: -0.18 },
-  Docker: { x: -0.78, y: 0.28, z: 0.18 },
-  TypeScript: { x: -0.12, y: -0.58, z: -0.28 },
-  Flutter: { x: -0.46, y: -0.72, z: -0.1 },
-  'Spring Boot': { x: -0.84, y: -0.05, z: 0.12 },
-  MongoDB: { x: 0.46, y: 0.06, z: 0.56 },
-  Figma: { x: 0.08, y: 0.86, z: -0.2 },
+  React: { x: 0.02, y: -0.88, z: 0.34 },
+  JavaScript: { x: 0.86, y: -0.42, z: 0.38 },
+  'Node.js': { x: -0.76, y: -0.35, z: 0.48 },
+  PostgreSQL: { x: -0.28, y: 0.1, z: 0.82 },
+  Redis: { x: 0.78, y: 0.2, z: 0.5 },
+  Kubernetes: { x: 0.22, y: 0.7, z: 0.5 },
+  Git: { x: -0.2, y: 0.88, z: 0.42 },
+  'Tailwind CSS': { x: 0.54, y: 0.66, z: -0.26 },
+  Flutter: { x: -0.45, y: -0.74, z: -0.14 },
+  'Spring Boot': { x: -0.84, y: -0.02, z: 0.08 },
 };
 
 const TECH_STACK_PLANETS = TECH_STACK_ORBITS.flatMap((group, orbitIndex) => {
@@ -1745,7 +1737,7 @@ function useGalaxyPoints(stacks) {
 
     for (let index = 0; index < count; index += 1) {
       const stack = stacks[index];
-      const featuredPoint = GALAXY_FEATURED_LAYOUT[stack.label];
+      const featuredPoint = stack.featured ? GALAXY_FEATURED_LAYOUT[stack.label] : null;
 
       if (featuredPoint) {
         const length = Math.hypot(featuredPoint.x, featuredPoint.y, featuredPoint.z);
@@ -1968,7 +1960,7 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
     }
 
     const measure = () => {
-      const radiusFactor = window.innerWidth < 768 ? 0.39 : 0.43;
+      const radiusFactor = window.innerWidth < 768 ? 0.4 : 0.48;
       setRadius(Math.min(node.clientWidth, node.clientHeight) * radiusFactor);
     };
     measure();
@@ -1985,7 +1977,7 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
     let frameId = 0;
     let time = 0;
     let previousTime = window.performance.now();
-    const perspective = 1040;
+    const perspective = 2000;
     const targetVelocity = 0.00024;
 
     const updateNodes = (currentTime) => {
@@ -2026,10 +2018,10 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
         const z = z2 * radius;
         const nodeScale = perspective / (perspective - z);
         const depth = (z2 + 1) / 2;
-        const prominence = planet.featured ? 1.05 : 0.72;
-        const depthScale = planet.featured ? 0.76 + depth * 0.62 : 0.58 + depth * 0.48;
-        const blur = planet.featured ? (1 - depth) * 2.4 : 1.4 + (1 - depth) * 4.8;
-        const opacity = planet.featured ? 0.34 + depth * 0.72 : 0.12 + depth * 0.46;
+        const prominence = planet.featured ? 1 : 0.66;
+        const depthScale = planet.featured ? 0.78 + depth * 0.28 : 0.5 + depth * 0.34;
+        const blur = planet.featured ? (1 - depth) * 3.2 : 1.8 + (1 - depth) * 4.8;
+        const opacity = planet.featured ? 0.4 + depth * 0.62 : 0.1 + depth * 0.4;
 
         node.style.transform = `translate3d(calc(${x}px - 50%), calc(${y + Math.sin(time * 0.0012 + index) * 2.4}px - 50%), 0) scale(${nodeScale * prominence * depthScale})`;
         node.style.opacity = String(Math.min(1, opacity));

@@ -4367,6 +4367,11 @@ textarea:focus-visible {
   z-index: 1;
 }
 
+.skills-reference .section-heading {
+  position: relative;
+  z-index: 20;
+}
+
 .skills-reference > .galaxy-canvas {
   position: absolute;
   inset: 0;
@@ -4378,6 +4383,8 @@ textarea:focus-visible {
 }
 
 .solar-stage {
+  position: relative;
+  z-index: 2;
   padding: 0 0 4.5rem;
 }
 
@@ -4481,7 +4488,7 @@ textarea:focus-visible {
 .skill-node-card {
   position: relative;
   display: grid;
-  width: clamp(4.45rem, 8.5vw, 6.35rem);
+  width: clamp(4.05rem, 7.2vw, 5.6rem);
   aspect-ratio: 1;
   place-items: center;
   overflow: hidden;
@@ -4499,7 +4506,7 @@ textarea:focus-visible {
 }
 
 .skills-reference .skill-planet.is-background .skill-node-card {
-  width: clamp(3.5rem, 6vw, 4.75rem);
+  width: clamp(3.05rem, 5.2vw, 4.05rem);
   border-radius: 1rem;
   opacity: 0.72;
 }
@@ -4542,7 +4549,7 @@ textarea:focus-visible {
   text-overflow: ellipsis;
   color: rgba(226, 238, 255, 0.86);
   font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(0.88rem, 1.65vw, 1.55rem);
+  font-size: clamp(0.82rem, 1.35vw, 1.2rem);
   font-weight: 700;
   line-height: 1.08;
   text-align: center;
@@ -4553,8 +4560,8 @@ textarea:focus-visible {
 
 .skills-reference .skill-planet.is-background .planet-label {
   max-width: min(9rem, 40vw);
-  opacity: 0.58;
-  font-size: clamp(0.68rem, 1.1vw, 1rem);
+  opacity: 0.4;
+  font-size: clamp(0.62rem, 0.95vw, 0.86rem);
   font-weight: 600;
 }
 
