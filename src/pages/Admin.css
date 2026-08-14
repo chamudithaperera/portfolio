@@ -653,7 +653,7 @@
 .admin-message-table,
 .admin-visit-table {
   width: 100%;
-  min-width: 1100px;
+  min-width: 1180px;
   border-collapse: collapse;
   color: var(--admin-text);
 }
@@ -704,6 +704,10 @@
   color: var(--admin-muted-strong) !important;
   line-height: 1.45;
   overflow-wrap: anywhere;
+}
+
+.admin-visit-detail-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .admin-table-actions {
@@ -975,6 +979,14 @@
 
 .admin-contact-grid a,
 .admin-contact-grid .admin-muted {
+  color: var(--admin-text);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.admin-contact-grid > div span:last-child {
+  display: block;
   color: var(--admin-text);
   line-height: 1.5;
   overflow-wrap: anywhere;

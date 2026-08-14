@@ -158,6 +158,17 @@ function formatShortDate(value) {
   }).format(date);
 }
 
+function formatTimezoneOffset(value) {
+  if (value === null || value === undefined || value === '') return 'Unknown';
+  const minutes = Number(value);
+  if (!Number.isFinite(minutes)) return 'Unknown';
+  const absolute = Math.abs(minutes);
+  const hours = String(Math.floor(absolute / 60)).padStart(2, '0');
+  const mins = String(absolute % 60).padStart(2, '0');
+  const sign = minutes > 0 ? '-' : '+';
+  return `UTC${sign}${hours}:${mins}`;
+}
+
 function truncateText(value, maxLength = 48) {
   const text = String(value || '').trim();
   if (!text) return '';
@@ -446,6 +457,7 @@ function Admin() {
   const [visits, setVisits] = useState([]);
   const [visitsLoading, setVisitsLoading] = useState(false);
   const [visitsError, setVisitsError] = useState('');
+  const [selectedVisitId, setSelectedVisitId] = useState('');
 
   const [projects, setProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
@@ -510,6 +522,11 @@ function Admin() {
   const selectedMessage = useMemo(
     () => messages.find((message) => String(message.id) === String(selectedMessageId)) || null,
     [messages, selectedMessageId],
+  );
+
+  const selectedVisit = useMemo(
+    () => visits.find((visit) => String(visit.id) === String(selectedVisitId)) || null,
+    [selectedVisitId, visits],
   );
 
   const selectedProject = useMemo(
@@ -591,9 +608,11 @@ function Admin() {
       const response = await apiRequest('/api/admin/visits');
       const loaded = response.visits || [];
       setVisits(loaded);
+      setSelectedVisitId((current) => (current && loaded.some((item) => String(item.id) === String(current)) ? current : ''));
     } catch (error) {
       setVisitsError(error.message || 'Unable to load website visits.');
       setVisits([]);
+      setSelectedVisitId('');
     } finally {
       setVisitsLoading(false);
     }
@@ -2127,6 +2146,7 @@ function Admin() {
                           <th>Device</th>
                           <th>Screen</th>
                           <th>Visited</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -2142,6 +2162,18 @@ function Admin() {
                             <td className="admin-visit-muted">{truncateText(visit.userAgent || 'Unknown', 54)}</td>
                             <td>{visit.screen || visit.viewport || 'Unknown'}</td>
                             <td>{formatDate(visit.createdAt)}</td>
+                            <td>
+                              <div className="admin-table-actions">
+                                <button
+                                  type="button"
+                                  className="admin-secondary-button admin-compact-button"
+                                  onClick={() => setSelectedVisitId(String(visit.id))}
+                                >
+                                  <Icon name="eye" size={14} />
+                                  View
+                                </button>
+                              </div>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -2155,6 +2187,97 @@ function Admin() {
                   />
                 )}
               </div>
+
+              {selectedVisit ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => setSelectedVisitId('')}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-visit-modal-title" onClick={(event) => event.stopPropagation()}>
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Visit details</p>
+                        <h2 id="admin-visit-modal-title">{selectedVisit.pageTitle || selectedVisit.path}</h2>
+                        <p className="admin-muted">Recorded on {formatDate(selectedVisit.createdAt)}</p>
+                      </div>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => setSelectedVisitId('')} aria-label="Close visit details">
+                        <Icon name="close" size={15} />
+                      </button>
+                    </div>
+
+                    <div className="admin-contact-grid admin-visit-detail-grid">
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="home" size={12} />
+                          Page
+                        </span>
+                        <span>{selectedVisit.path || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="link" size={12} />
+                          Referrer
+                        </span>
+                        <span>{selectedVisit.referrer || 'Direct visit'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="globe" size={12} />
+                          Country
+                        </span>
+                        <span>{selectedVisit.country || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="tag" size={12} />
+                          IP address
+                        </span>
+                        <span>{selectedVisit.ipAddress || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="spark" size={12} />
+                          Language
+                        </span>
+                        <span>{selectedVisit.language || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="calendar" size={12} />
+                          Time zone
+                        </span>
+                        <span>{formatTimezoneOffset(selectedVisit.timezoneOffset)}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="dashboard" size={12} />
+                          Screen
+                        </span>
+                        <span>{selectedVisit.screen || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="grid" size={12} />
+                          Viewport
+                        </span>
+                        <span>{selectedVisit.viewport || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="edit" size={12} />
+                          User agent
+                        </span>
+                        <span>{selectedVisit.userAgent || 'Unknown'}</span>
+                      </div>
+                    </div>
+
+                    <div className="admin-chat-thread">
+                      <div className="admin-chat-note">
+                        <span className="admin-chat-note-label">Full page title</span>
+                        <p>{selectedVisit.pageTitle || 'Untitled page'}</p>
+                        <small>Visit ID: {selectedVisit.id}</small>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              ) : null}
             </section>
           ) : null}
 
