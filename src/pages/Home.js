@@ -393,6 +393,8 @@ const TECH_STACK_ORBITS = [
 ];
 
 const TECH_SYSTEM_BASE_SIZE = 680;
+const GALAXY_PARTICLE_COUNT = 1400;
+const GALAXY_ARMS = 4;
 
 const TECH_STACK_PLANETS = TECH_STACK_ORBITS.flatMap((group, orbitIndex) => {
   const step = 360 / group.items.length;
@@ -1562,6 +1564,162 @@ function ProjectsPage() {
   );
 }
 
+function GalaxyCanvas({ variant = 'disc' }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') {
+      return undefined;
+    }
+
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext?.('2d');
+
+    if (!canvas || !context) {
+      return undefined;
+    }
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let width = 0;
+    let height = 0;
+    let frameId = 0;
+    let tick = 0;
+    const particles = [];
+    const stars = [];
+
+    const build = () => {
+      particles.length = 0;
+
+      for (let index = 0; index < GALAXY_PARTICLE_COUNT; index += 1) {
+        const arm = index % GALAXY_ARMS;
+        const distance = Math.random() ** 0.6;
+        const spread = (Math.random() - 0.5) * (0.35 + distance * 0.5);
+        const angle = (arm / GALAXY_ARMS) * Math.PI * 2 + distance * 3.4 + spread;
+
+        particles.push({
+          radius: 0.08 + distance * 0.92,
+          angle,
+          z: (Math.random() - 0.5) * (0.1 - distance * 0.06),
+          size: Math.random() * 2.4 + 0.7,
+          hue: 205 + Math.random() * 60,
+          speed: 0.22 / (0.25 + distance),
+        });
+      }
+
+      stars.length = 0;
+      const starCount = variant === 'stars' ? Math.round((width * height) / 5000) : 0;
+
+      for (let index = 0; index < starCount; index += 1) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.2 + 0.2,
+          phase: Math.random() * Math.PI * 2,
+        });
+      }
+    };
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build();
+    };
+
+    const draw = () => {
+      tick += 0.0016;
+      context.clearRect(0, 0, width, height);
+
+      if (variant === 'stars') {
+        stars.forEach((star) => {
+          star.phase += 0.02;
+          context.globalAlpha = 0.2 + 0.5 * (0.5 + 0.5 * Math.sin(star.phase));
+          context.fillStyle = '#cfe4ff';
+          context.beginPath();
+          context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+          context.fill();
+        });
+
+        context.globalAlpha = 1;
+        frameId = window.requestAnimationFrame(draw);
+        return;
+      }
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const galaxyRadius = Math.min(width * 0.46, height * 0.85);
+      const tilt = 1.05;
+      const cosTilt = Math.cos(tilt);
+      const sinTilt = Math.sin(tilt);
+      const perspective = 1400;
+      const coreGradient = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, galaxyRadius * 0.5);
+
+      coreGradient.addColorStop(0, 'rgba(200, 230, 255, 0.9)');
+      coreGradient.addColorStop(0.25, 'rgba(110, 160, 255, 0.45)');
+      coreGradient.addColorStop(1, 'rgba(20, 40, 110, 0)');
+
+      context.fillStyle = coreGradient;
+      context.beginPath();
+      context.arc(centerX, centerY, galaxyRadius * 0.5, 0, Math.PI * 2);
+      context.fill();
+
+      context.globalCompositeOperation = 'lighter';
+
+      particles.forEach((particle) => {
+        const angle = particle.angle + tick * particle.speed * 6;
+        const x = Math.cos(angle) * particle.radius * galaxyRadius;
+        const flatZ = Math.sin(angle) * particle.radius * galaxyRadius;
+        const flatY = particle.z * galaxyRadius;
+        const y = flatY * cosTilt - flatZ * sinTilt;
+        const z = flatY * sinTilt + flatZ * cosTilt;
+        const scale = perspective / (perspective - z);
+        const depth = (z / galaxyRadius + 1) / 2;
+        const pointX = centerX + x * scale;
+        const pointY = centerY + y * scale;
+
+        context.fillStyle = `hsla(${particle.hue}, 90%, ${62 + depth * 18}%, ${0.35 + depth * 0.65})`;
+        context.beginPath();
+        context.arc(pointX, pointY, particle.size * scale, 0, Math.PI * 2);
+        context.fill();
+      });
+
+      context.globalCompositeOperation = 'source-over';
+      frameId = window.requestAnimationFrame(draw);
+    };
+
+    resize();
+    draw();
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', resize);
+    };
+  }, [variant]);
+
+  return <canvas ref={canvasRef} className="galaxy-canvas" aria-hidden="true" />;
+}
+
+function useGalaxyPoints(count) {
+  return useMemo(() => {
+    const points = [];
+    const offset = 2 / count;
+    const increment = Math.PI * (3 - Math.sqrt(5));
+
+    for (let index = 0; index < count; index += 1) {
+      const y = index * offset - 1 + offset / 2;
+      const radius = Math.sqrt(Math.max(0, 1 - y * y));
+      const phi = index * increment;
+      points.push({ x: Math.cos(phi) * radius, y, z: Math.sin(phi) * radius });
+    }
+
+    return points;
+  }, [count]);
+}
+
 function StackGlyph({ stack, size = 24, decorative = false, className = '' }) {
   const ariaProps = decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': `${stack.label} logo` };
 
@@ -1590,34 +1748,29 @@ function StackGlyph({ stack, size = 24, decorative = false, className = '' }) {
   );
 }
 
-function TechPlanet({ stack, running, reducedMotion, selected, onSelect }) {
-  const endAngle = stack.start + 360;
-
+function TechPlanet({ stack, selected, onSelect, nodeRef, onHover, onLeave }) {
   return (
     <button
       type="button"
-      className={`skill-planet ${!running || reducedMotion ? 'is-paused' : ''} ${selected ? 'is-selected' : ''}`}
+      ref={nodeRef}
+      className={`skill-planet ${selected ? 'is-selected' : ''}`}
       title={stack.label}
       aria-label={stack.label}
       aria-pressed={selected}
       onClick={() => onSelect(stack)}
+      onMouseEnter={() => onHover(stack)}
+      onMouseLeave={onLeave}
+      onFocus={() => onHover(stack)}
+      onBlur={onLeave}
       style={{
-        width: stack.size,
-        height: stack.size,
-        marginTop: -stack.size / 2,
-        marginLeft: -stack.size / 2,
-        '--orbit-radius': `${stack.orbitRadius}px`,
-        '--orbit-start': `${stack.start}deg`,
-        '--orbit-start-reverse': `${-stack.start}deg`,
-        '--orbit-end': `${endAngle}deg`,
-        '--orbit-end-reverse': `${-endAngle}deg`,
-        animationDuration: `${stack.speed}s`,
-        background: `radial-gradient(circle at 35% 35%, rgba(255,255,255,.22), ${stack.surface})`,
-        boxShadow: `0 0 18px 3px ${stack.glyphColor}44, inset 0 0 8px rgba(255,255,255,.08)`,
+        '--stack-accent': stack.glyphColor,
+        background: `linear-gradient(145deg, rgba(15, 23, 42, 0.72), ${stack.surface})`,
+        boxShadow: `0 0 22px -6px ${stack.glyphColor}88, var(--galaxy-node-shadow)`,
         borderColor: selected ? stack.glyphColor : stack.ringColor,
       }}
     >
-      <StackGlyph stack={stack} size={Math.max(16, Math.round(stack.size * 0.6))} decorative className="stack-glyph--planet" />
+      <span className="skill-planet-glow" aria-hidden="true" />
+      <StackGlyph stack={stack} size={Math.max(18, Math.round(stack.size * 0.58))} decorative className="stack-glyph--planet" />
       <span className="planet-tooltip" aria-hidden="true">
         {stack.label}
       </span>
@@ -1701,9 +1854,14 @@ function StackDetailModal({ stack, onClose }) {
   );
 }
 
-function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
+function SolarSystem({ running, selectedStack, onSelectStack }) {
   const reducedMotion = useReducedMotion();
   const viewportWidth = useViewportWidth();
+  const containerRef = useRef(null);
+  const nodeRefs = useRef([]);
+  const motionState = useRef({ rotationX: -0.2, rotationY: 0, velocityX: 0, velocityY: 0.0022, dragging: false, x: 0, y: 0 });
+  const [activeLabel, setActiveLabel] = useState(null);
+  const [radius, setRadius] = useState(220);
   const canvasSize = Math.max(280, Math.min(TECH_SYSTEM_BASE_SIZE, viewportWidth - 72));
   const scale = canvasSize / TECH_SYSTEM_BASE_SIZE;
 
@@ -1748,32 +1906,123 @@ function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
     [orbitGroups],
   );
 
-  const stars = useMemo(
-    () =>
-      Array.from({ length: 96 }, (_, index) => ({
-        id: index,
-        left: `${(index * 37) % 100}%`,
-        top: `${(index * 61) % 100}%`,
-        animationDelay: `${(index % 10) * 0.43}s`,
-        animationDuration: `${2 + (index % 7) * 0.41}s`,
-      })),
-    [],
-  );
+  const points = useGalaxyPoints(planets.length);
+
+  useEffect(() => {
+    const node = containerRef.current;
+
+    if (!node) {
+      return undefined;
+    }
+
+    const measure = () => setRadius(Math.min(node.clientWidth, node.clientHeight) * 0.38);
+    measure();
+    window.addEventListener('resize', measure);
+
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') {
+      return undefined;
+    }
+
+    let frameId = 0;
+    let time = 0;
+    const perspective = 900;
+
+    const updateNodes = () => {
+      const state = motionState.current;
+
+      if (running && !reducedMotion && !state.dragging) {
+        state.rotationY += state.velocityY;
+        state.rotationX += state.velocityX;
+        state.velocityX *= 0.95;
+        state.velocityY += (0.0022 - state.velocityY) * 0.03;
+      }
+
+      state.rotationX = Math.max(-0.9, Math.min(0.9, state.rotationX));
+      time += running && !reducedMotion ? 0.01 : 0;
+
+      const wobble = Math.sin(time * 0.4) * 0.18;
+      const cosY = Math.cos(state.rotationY);
+      const sinY = Math.sin(state.rotationY);
+      const cosX = Math.cos(state.rotationX + wobble);
+      const sinX = Math.sin(state.rotationX + wobble);
+
+      points.forEach((point, index) => {
+        const node = nodeRefs.current[index];
+
+        if (!node) {
+          return;
+        }
+
+        const x1 = point.x * cosY - point.z * sinY;
+        const z1 = point.x * sinY + point.z * cosY;
+        const y2 = point.y * cosX - z1 * sinX;
+        const z2 = point.y * sinX + z1 * cosX;
+        const x = x1 * radius;
+        const y = y2 * radius;
+        const z = z2 * radius;
+        const nodeScale = perspective / (perspective - z);
+        const depth = (z2 + 1) / 2;
+
+        node.style.transform = `translate3d(calc(${x}px - 50%), calc(${y + Math.sin(time * 1.2 + index) * 3}px - 50%), 0) scale(${nodeScale})`;
+        node.style.opacity = String(0.28 + depth * 0.72);
+        node.style.zIndex = String(Math.round(depth * 100));
+        node.style.filter = `blur(${(1 - depth) * 1.8}px) saturate(${0.58 + depth}) brightness(${0.75 + depth * 0.55})`;
+      });
+
+      frameId = window.requestAnimationFrame(updateNodes);
+    };
+
+    frameId = window.requestAnimationFrame(updateNodes);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [points, radius, reducedMotion, running]);
+
+  const handlePointerDown = (event) => {
+    const state = motionState.current;
+    state.dragging = true;
+    state.x = event.clientX;
+    state.y = event.clientY;
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  };
+
+  const handlePointerMove = (event) => {
+    const state = motionState.current;
+
+    if (!state.dragging) {
+      return;
+    }
+
+    const deltaX = event.clientX - state.x;
+    const deltaY = event.clientY - state.y;
+    state.x = event.clientX;
+    state.y = event.clientY;
+    state.rotationY += deltaX * 0.006;
+    state.rotationX -= deltaY * 0.005;
+    state.velocityY = deltaX * 0.006;
+    state.velocityX = -deltaY * 0.005;
+  };
+
+  const endDrag = () => {
+    motionState.current.dragging = false;
+  };
 
   return (
     <div className="solar-stage">
       <div
+        ref={containerRef}
         className="solar-system"
-        onMouseEnter={() => setRunning(false)}
-        onMouseLeave={() => setRunning(true)}
-        onFocus={() => setRunning(false)}
-        onBlur={() => setRunning(true)}
-        aria-label="Interactive solar system showing technical skills"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        onPointerLeave={endDrag}
+        aria-label="Interactive 3D galaxy showing technical skills"
         style={{ width: canvasSize, height: canvasSize }}
       >
-        {stars.map((star) => (
-          <span key={star.id} className="solar-star" style={star} />
-        ))}
+        <GalaxyCanvas variant="disc" />
         {orbitGroups.map((group) => (
           <span
             key={group.label}
@@ -1792,16 +2041,21 @@ function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
           <span className="pulse-ring pulse-ring-three" />
           <strong>Tech Stacks</strong>
         </div>
-        {planets.map((planet) => (
+        <div className="galaxy-node-layer">
+          {planets.map((planet, index) => (
           <TechPlanet
             key={planet.id}
+            nodeRef={(node) => {
+              nodeRefs.current[index] = node;
+            }}
             stack={planet}
-            running={running}
-            reducedMotion={reducedMotion}
             selected={selectedStack?.id === planet.id}
             onSelect={onSelectStack}
+            onHover={(stack) => setActiveLabel(stack.label)}
+            onLeave={() => setActiveLabel(null)}
           />
-        ))}
+          ))}
+        </div>
         <div className="orbit-legend" aria-hidden="true">
           {orbitGroups.map((group) => (
             <span key={group.label} style={{ '--orbit-accent': group.ringColor }}>
@@ -1809,6 +2063,9 @@ function SolarSystem({ running, setRunning, selectedStack, onSelectStack }) {
             </span>
           ))}
         </div>
+        <p className="galaxy-status" aria-live="polite">
+          {activeLabel ?? 'Drag to spin the galaxy'}
+        </p>
       </div>
     </div>
   );
@@ -1834,6 +2091,7 @@ function Skills() {
       <div className="section-divider" />
       <div className="nebula nebula-a" aria-hidden="true" />
       <div className="nebula nebula-b" aria-hidden="true" />
+      <GalaxyCanvas variant="stars" />
       <div ref={revealRef} className={`section-inner reveal ${visible ? 'is-visible' : ''}`}>
         <SectionHeading
           index="04. What I Know"
@@ -1843,7 +2101,6 @@ function Skills() {
         <div className="skills-layout">
           <SolarSystem
             running={running}
-            setRunning={setRunning}
             selectedStack={selectedStack}
             onSelectStack={handleSelectStack}
           />
