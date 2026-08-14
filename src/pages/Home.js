@@ -392,9 +392,42 @@ const TECH_STACK_ORBITS = [
   },
 ];
 
-const TECH_SYSTEM_BASE_SIZE = 680;
-const GALAXY_PARTICLE_COUNT = 1400;
+const TECH_SYSTEM_BASE_SIZE = 760;
+const GALAXY_PARTICLE_COUNT = 1900;
 const GALAXY_ARMS = 4;
+const GALAXY_FEATURED_STACKS = new Set([
+  'React',
+  'JavaScript',
+  'Node.js',
+  'PostgreSQL',
+  'Redis',
+  'Kubernetes',
+  'Git',
+  'Tailwind CSS',
+  'Docker',
+  'TypeScript',
+  'Flutter',
+  'Spring Boot',
+  'MongoDB',
+  'Figma',
+]);
+
+const GALAXY_FEATURED_LAYOUT = {
+  React: { x: 0.03, y: -0.82, z: 0.38 },
+  JavaScript: { x: 0.78, y: -0.55, z: 0.48 },
+  'Node.js': { x: -0.58, y: -0.36, z: 0.54 },
+  PostgreSQL: { x: -0.22, y: 0.05, z: 0.82 },
+  Redis: { x: 0.72, y: 0.22, z: 0.6 },
+  Kubernetes: { x: 0.18, y: 0.58, z: 0.62 },
+  Git: { x: -0.24, y: 0.83, z: 0.5 },
+  'Tailwind CSS': { x: 0.58, y: 0.7, z: -0.18 },
+  Docker: { x: -0.78, y: 0.28, z: 0.18 },
+  TypeScript: { x: -0.12, y: -0.58, z: -0.28 },
+  Flutter: { x: -0.46, y: -0.72, z: -0.1 },
+  'Spring Boot': { x: -0.84, y: -0.05, z: 0.12 },
+  MongoDB: { x: 0.46, y: 0.06, z: 0.56 },
+  Figma: { x: 0.08, y: 0.86, z: -0.2 },
+};
 
 const TECH_STACK_PLANETS = TECH_STACK_ORBITS.flatMap((group, orbitIndex) => {
   const step = 360 / group.items.length;
@@ -1703,21 +1736,34 @@ function GalaxyCanvas({ variant = 'disc' }) {
   return <canvas ref={canvasRef} className="galaxy-canvas" aria-hidden="true" />;
 }
 
-function useGalaxyPoints(count) {
+function useGalaxyPoints(stacks) {
   return useMemo(() => {
     const points = [];
+    const count = stacks.length;
     const offset = 2 / count;
     const increment = Math.PI * (3 - Math.sqrt(5));
 
     for (let index = 0; index < count; index += 1) {
-      const y = index * offset - 1 + offset / 2;
-      const radius = Math.sqrt(Math.max(0, 1 - y * y));
-      const phi = index * increment;
-      points.push({ x: Math.cos(phi) * radius, y, z: Math.sin(phi) * radius });
+      const stack = stacks[index];
+      const featuredPoint = GALAXY_FEATURED_LAYOUT[stack.label];
+
+      if (featuredPoint) {
+        const length = Math.hypot(featuredPoint.x, featuredPoint.y, featuredPoint.z);
+        points.push({
+          x: featuredPoint.x / length,
+          y: featuredPoint.y / length,
+          z: featuredPoint.z / length,
+        });
+      } else {
+        const y = index * offset - 1 + offset / 2;
+        const radius = Math.sqrt(Math.max(0, 1 - y * y));
+        const phi = index * increment + 0.65;
+        points.push({ x: Math.cos(phi) * radius, y, z: Math.sin(phi) * radius });
+      }
     }
 
     return points;
-  }, [count]);
+  }, [stacks]);
 }
 
 function StackGlyph({ stack, size = 24, decorative = false, className = '' }) {
@@ -1749,11 +1795,15 @@ function StackGlyph({ stack, size = 24, decorative = false, className = '' }) {
 }
 
 function TechPlanet({ stack, selected, onSelect, nodeRef, onHover, onLeave }) {
+  const glyphSize = stack.featured
+    ? Math.max(34, Math.round(stack.size * 1.08))
+    : Math.max(22, Math.round(stack.size * 0.76));
+
   return (
     <button
       type="button"
       ref={nodeRef}
-      className={`skill-planet ${selected ? 'is-selected' : ''}`}
+      className={`skill-planet ${stack.featured ? 'is-featured' : 'is-background'} ${selected ? 'is-selected' : ''}`}
       title={stack.label}
       aria-label={stack.label}
       aria-pressed={selected}
@@ -1764,14 +1814,15 @@ function TechPlanet({ stack, selected, onSelect, nodeRef, onHover, onLeave }) {
       onBlur={onLeave}
       style={{
         '--stack-accent': stack.glyphColor,
-        background: `linear-gradient(145deg, rgba(15, 23, 42, 0.72), ${stack.surface})`,
-        boxShadow: `0 0 22px -6px ${stack.glyphColor}88, var(--galaxy-node-shadow)`,
-        borderColor: selected ? stack.glyphColor : stack.ringColor,
+        '--node-surface': stack.surface,
+        '--node-border': selected ? stack.glyphColor : stack.ringColor,
       }}
     >
-      <span className="skill-planet-glow" aria-hidden="true" />
-      <StackGlyph stack={stack} size={Math.max(18, Math.round(stack.size * 0.58))} decorative className="stack-glyph--planet" />
-      <span className="planet-tooltip" aria-hidden="true">
+      <span className="skill-node-card" aria-hidden="true">
+        <span className="skill-planet-glow" />
+        <StackGlyph stack={stack} size={glyphSize} decorative className="stack-glyph--planet" />
+      </span>
+      <span className="planet-label" aria-hidden="true">
         {stack.label}
       </span>
     </button>
@@ -1859,7 +1910,7 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
   const viewportWidth = useViewportWidth();
   const containerRef = useRef(null);
   const nodeRefs = useRef([]);
-  const motionState = useRef({ rotationX: -0.2, rotationY: 0, velocityX: 0, velocityY: 0.0022, dragging: false, x: 0, y: 0 });
+  const motionState = useRef({ rotationX: -0.2, rotationY: 0, velocityX: 0, velocityY: 0.00024, dragging: false, x: 0, y: 0 });
   const [activeLabel, setActiveLabel] = useState(null);
   const [radius, setRadius] = useState(220);
   const canvasSize = Math.max(280, Math.min(TECH_SYSTEM_BASE_SIZE, viewportWidth - 72));
@@ -1900,13 +1951,14 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
             accent: group.accent,
             iconHex,
             glyphColor,
+            featured: GALAXY_FEATURED_STACKS.has(item.label),
           };
         });
       }),
     [orbitGroups],
   );
 
-  const points = useGalaxyPoints(planets.length);
+  const points = useGalaxyPoints(planets);
 
   useEffect(() => {
     const node = containerRef.current;
@@ -1915,7 +1967,10 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
       return undefined;
     }
 
-    const measure = () => setRadius(Math.min(node.clientWidth, node.clientHeight) * 0.38);
+    const measure = () => {
+      const radiusFactor = window.innerWidth < 768 ? 0.39 : 0.43;
+      setRadius(Math.min(node.clientWidth, node.clientHeight) * radiusFactor);
+    };
     measure();
     window.addEventListener('resize', measure);
 
@@ -1929,22 +1984,26 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
 
     let frameId = 0;
     let time = 0;
-    const perspective = 900;
+    let previousTime = window.performance.now();
+    const perspective = 1040;
+    const targetVelocity = 0.00024;
 
-    const updateNodes = () => {
+    const updateNodes = (currentTime) => {
       const state = motionState.current;
+      const delta = Math.min(34, currentTime - previousTime);
+      previousTime = currentTime;
 
       if (running && !reducedMotion && !state.dragging) {
-        state.rotationY += state.velocityY;
-        state.rotationX += state.velocityX;
-        state.velocityX *= 0.95;
-        state.velocityY += (0.0022 - state.velocityY) * 0.03;
+        state.rotationY += state.velocityY * delta;
+        state.rotationX += state.velocityX * delta;
+        state.velocityX *= 0.965;
+        state.velocityY += (targetVelocity - state.velocityY) * 0.035;
       }
 
       state.rotationX = Math.max(-0.9, Math.min(0.9, state.rotationX));
-      time += running && !reducedMotion ? 0.01 : 0;
+      time += running && !reducedMotion ? delta : 0;
 
-      const wobble = Math.sin(time * 0.4) * 0.18;
+      const wobble = Math.sin(time * 0.0004) * 0.1;
       const cosY = Math.cos(state.rotationY);
       const sinY = Math.sin(state.rotationY);
       const cosX = Math.cos(state.rotationX + wobble);
@@ -1952,8 +2011,9 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
 
       points.forEach((point, index) => {
         const node = nodeRefs.current[index];
+        const planet = planets[index];
 
-        if (!node) {
+        if (!node || !planet) {
           return;
         }
 
@@ -1966,11 +2026,15 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
         const z = z2 * radius;
         const nodeScale = perspective / (perspective - z);
         const depth = (z2 + 1) / 2;
+        const prominence = planet.featured ? 1.05 : 0.72;
+        const depthScale = planet.featured ? 0.76 + depth * 0.62 : 0.58 + depth * 0.48;
+        const blur = planet.featured ? (1 - depth) * 2.4 : 1.4 + (1 - depth) * 4.8;
+        const opacity = planet.featured ? 0.34 + depth * 0.72 : 0.12 + depth * 0.46;
 
-        node.style.transform = `translate3d(calc(${x}px - 50%), calc(${y + Math.sin(time * 1.2 + index) * 3}px - 50%), 0) scale(${nodeScale})`;
-        node.style.opacity = String(0.28 + depth * 0.72);
+        node.style.transform = `translate3d(calc(${x}px - 50%), calc(${y + Math.sin(time * 0.0012 + index) * 2.4}px - 50%), 0) scale(${nodeScale * prominence * depthScale})`;
+        node.style.opacity = String(Math.min(1, opacity));
         node.style.zIndex = String(Math.round(depth * 100));
-        node.style.filter = `blur(${(1 - depth) * 1.8}px) saturate(${0.58 + depth}) brightness(${0.75 + depth * 0.55})`;
+        node.style.filter = `blur(${blur}px) saturate(${0.62 + depth * 0.86}) brightness(${0.68 + depth * 0.64})`;
       });
 
       frameId = window.requestAnimationFrame(updateNodes);
@@ -1979,7 +2043,7 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
     frameId = window.requestAnimationFrame(updateNodes);
 
     return () => window.cancelAnimationFrame(frameId);
-  }, [points, radius, reducedMotion, running]);
+  }, [planets, points, radius, reducedMotion, running]);
 
   const handlePointerDown = (event) => {
     const state = motionState.current;
@@ -2002,8 +2066,8 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
     state.y = event.clientY;
     state.rotationY += deltaX * 0.006;
     state.rotationX -= deltaY * 0.005;
-    state.velocityY = deltaX * 0.006;
-    state.velocityX = -deltaY * 0.005;
+    state.velocityY = Math.max(-0.0012, Math.min(0.0012, deltaX * 0.00008));
+    state.velocityX = Math.max(-0.0008, Math.min(0.0008, -deltaY * 0.00006));
   };
 
   const endDrag = () => {
@@ -2019,6 +2083,8 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
         onPointerMove={handlePointerMove}
         onPointerUp={endDrag}
         onPointerLeave={endDrag}
+        onPointerCancel={endDrag}
+        onLostPointerCapture={endDrag}
         aria-label="Interactive 3D galaxy showing technical skills"
         style={{ width: canvasSize, height: canvasSize }}
       >
@@ -2038,8 +2104,6 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
         <div className="solar-core">
           <span className="pulse-ring pulse-ring-one" />
           <span className="pulse-ring pulse-ring-two" />
-          <span className="pulse-ring pulse-ring-three" />
-          <strong>Tech Stacks</strong>
         </div>
         <div className="galaxy-node-layer">
           {planets.map((planet, index) => (
@@ -2054,13 +2118,6 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
             onHover={(stack) => setActiveLabel(stack.label)}
             onLeave={() => setActiveLabel(null)}
           />
-          ))}
-        </div>
-        <div className="orbit-legend" aria-hidden="true">
-          {orbitGroups.map((group) => (
-            <span key={group.label} style={{ '--orbit-accent': group.ringColor }}>
-              {group.legendLabel}
-            </span>
           ))}
         </div>
         <p className="galaxy-status" aria-live="polite">
