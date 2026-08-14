@@ -168,6 +168,12 @@ function mapVisit(row) {
     viewport: row.viewport || '',
     pageTitle: row.page_title || '',
     country: row.country || '',
+    countryCode: row.country_code || '',
+    region: row.region || '',
+    city: row.city || '',
+    timezone: row.timezone || '',
+    latitude: row.latitude ?? null,
+    longitude: row.longitude ?? null,
     timezoneOffset: row.timezone_offset ?? null,
     createdAt: row.created_at,
   };

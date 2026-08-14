@@ -9,9 +9,23 @@ create table if not exists public.site_visits (
   viewport text not null default '',
   page_title text not null default '',
   country text not null default '',
+  country_code text not null default '',
+  region text not null default '',
+  city text not null default '',
+  timezone text not null default '',
+  latitude double precision,
+  longitude double precision,
   timezone_offset integer,
   created_at timestamptz not null default now()
 );
+
+alter table public.site_visits
+  add column if not exists country_code text not null default '',
+  add column if not exists region text not null default '',
+  add column if not exists city text not null default '',
+  add column if not exists timezone text not null default '',
+  add column if not exists latitude double precision,
+  add column if not exists longitude double precision;
 
 create index if not exists site_visits_created_at_idx
   on public.site_visits (created_at desc);

@@ -24,6 +24,12 @@ function mapVisit(row = {}) {
     viewport: row.viewport || '',
     pageTitle: row.page_title || '',
     country: row.country || '',
+    countryCode: row.country_code || '',
+    region: row.region || '',
+    city: row.city || '',
+    timezone: row.timezone || '',
+    latitude: row.latitude ?? null,
+    longitude: row.longitude ?? null,
     timezoneOffset: row.timezone_offset ?? null,
     createdAt: row.created_at,
   };
@@ -41,6 +47,12 @@ function normalizeVisitRow(row = {}) {
     viewport: normalizeText(row.viewport),
     page_title: normalizeText(row.page_title),
     country: normalizeText(row.country),
+    country_code: normalizeText(row.country_code),
+    region: normalizeText(row.region),
+    city: normalizeText(row.city),
+    timezone: normalizeText(row.timezone),
+    latitude: Number.isFinite(row.latitude) ? row.latitude : null,
+    longitude: Number.isFinite(row.longitude) ? row.longitude : null,
     timezone_offset: Number.isFinite(row.timezone_offset) ? row.timezone_offset : null,
     created_at: row.created_at || new Date().toISOString(),
   };
@@ -50,6 +62,12 @@ function toSupabaseVisitPayload(row = {}) {
   const normalized = normalizeVisitRow(row);
   const { id, ...payload } = normalized;
   return payload;
+}
+
+function toBasicSupabaseVisitPayload(row = {}) {
+  const payload = toSupabaseVisitPayload(row);
+  const { country_code, region, city, timezone, latitude, longitude, ...basicPayload } = payload;
+  return basicPayload;
 }
 
 async function readLocalVisitRows() {
@@ -91,6 +109,14 @@ async function recordVisit(row) {
     if (!error) {
       return { stored: true, source: 'supabase', visit: mapVisit(payload) };
     }
+
+    if (String(error.message || '').includes('column')) {
+      const { error: retryError } = await supabase.from(visitsTable).insert([toBasicSupabaseVisitPayload(row)]);
+      if (!retryError) {
+        return { stored: true, source: 'supabase', visit: mapVisit(payload) };
+      }
+    }
+
     console.error('Supabase visit insert failed:', error);
   } catch (error) {
     console.error('Supabase visit insert failed:', error.message || error);

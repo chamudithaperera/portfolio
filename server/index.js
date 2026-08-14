@@ -35,7 +35,7 @@ const {
   validateProjectPayload,
   validateVisitPayload,
 } = require('./validation');
-const { getRequestIp, resolveVisitCountry } = require('./visitGeo');
+const { getRequestIp, resolveVisitLocation } = require('./visitGeo');
 const {
   certificatePayload,
   deleteRow,
@@ -534,6 +534,7 @@ app.post('/api/visit', async (req, res) => {
     return fail(res, 400, 'Please fix the visit payload.', result.errors);
   }
 
+  const location = resolveVisitLocation(req);
   const payload = {
     path: result.values.path,
     referrer: result.values.referrer,
@@ -543,7 +544,13 @@ app.post('/api/visit', async (req, res) => {
     screen: result.values.screen,
     viewport: result.values.viewport,
     page_title: result.values.pageTitle,
-    country: resolveVisitCountry(req),
+    country: location.country,
+    country_code: location.countryCode,
+    region: location.region,
+    city: location.city,
+    timezone: location.timezone,
+    latitude: location.latitude,
+    longitude: location.longitude,
     timezone_offset: result.values.timezoneOffset,
   };
 

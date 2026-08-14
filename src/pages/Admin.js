@@ -169,6 +169,20 @@ function formatTimezoneOffset(value) {
   return `UTC${sign}${hours}:${mins}`;
 }
 
+function formatVisitLocation(visit = {}) {
+  const parts = [visit.city, visit.region, visit.country].filter(Boolean);
+  return parts.length ? parts.join(', ') : 'Unknown';
+}
+
+function formatCoordinates(visit = {}) {
+  const latitude = Number(visit.latitude);
+  const longitude = Number(visit.longitude);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return 'Unknown';
+  }
+  return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+}
+
 function truncateText(value, maxLength = 48) {
   const text = String(value || '').trim();
   if (!text) return '';
@@ -1910,7 +1924,7 @@ function Admin() {
                   <div className="admin-activity-card">
                     <strong>{dashboard.latestVisit.pageTitle || dashboard.latestVisit.path}</strong>
                     <p>{dashboard.latestVisit.path}</p>
-                    <small>{dashboard.latestVisit.country || 'Unknown country'}</small>
+                    <small>{formatVisitLocation(dashboard.latestVisit)}</small>
                     <small>
                       {dashboard.latestVisit.referrer ? truncateText(dashboard.latestVisit.referrer, 60) : 'Direct visit'}
                     </small>
@@ -2142,7 +2156,7 @@ function Admin() {
                           <th>Page</th>
                           <th>Referrer</th>
                           <th>IP</th>
-                          <th>Country</th>
+                          <th>Location</th>
                           <th>Device</th>
                           <th>Screen</th>
                           <th>Visited</th>
@@ -2158,7 +2172,7 @@ function Admin() {
                             </td>
                             <td className="admin-visit-muted">{truncateText(visit.referrer || 'Direct', 42)}</td>
                             <td className="admin-visit-muted">{visit.ipAddress || 'Unknown'}</td>
-                            <td>{visit.country || 'Unknown'}</td>
+                            <td>{formatVisitLocation(visit)}</td>
                             <td className="admin-visit-muted">{truncateText(visit.userAgent || 'Unknown', 54)}</td>
                             <td>{visit.screen || visit.viewport || 'Unknown'}</td>
                             <td>{formatDate(visit.createdAt)}</td>
@@ -2227,6 +2241,27 @@ function Admin() {
                       <div>
                         <span className="admin-contact-label">
                           <Icon name="tag" size={12} />
+                          Country code
+                        </span>
+                        <span>{selectedVisit.countryCode || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="home" size={12} />
+                          City / town
+                        </span>
+                        <span>{selectedVisit.city || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="grid" size={12} />
+                          Region / district
+                        </span>
+                        <span>{selectedVisit.region || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="tag" size={12} />
                           IP address
                         </span>
                         <span>{selectedVisit.ipAddress || 'Unknown'}</span>
@@ -2241,9 +2276,23 @@ function Admin() {
                       <div>
                         <span className="admin-contact-label">
                           <Icon name="calendar" size={12} />
-                          Time zone
+                          Visitor time zone
                         </span>
                         <span>{formatTimezoneOffset(selectedVisit.timezoneOffset)}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="calendar" size={12} />
+                          IP time zone
+                        </span>
+                        <span>{selectedVisit.timezone || 'Unknown'}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="globe" size={12} />
+                          Coordinates
+                        </span>
+                        <span>{formatCoordinates(selectedVisit)}</span>
                       </div>
                       <div>
                         <span className="admin-contact-label">
