@@ -2135,7 +2135,7 @@ function Admin() {
                     Loading visits...
                   </div>
                 ) : visits.length ? (
-                  <div className="admin-table-scroll">
+                  <div className="admin-table-scroll admin-visit-table-scroll">
                     <table className="admin-visit-table">
                       <thead>
                         <tr>
