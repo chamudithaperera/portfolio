@@ -1960,7 +1960,7 @@ function SolarSystem({ running, selectedStack, onSelectStack }) {
     }
 
     const measure = () => {
-      const radiusFactor = window.innerWidth < 768 ? 0.36 : 0.43;
+      const radiusFactor = window.innerWidth < 768 ? 0.32 : 0.38;
       setRadius(Math.min(node.clientWidth, node.clientHeight) * radiusFactor);
     };
     measure();
