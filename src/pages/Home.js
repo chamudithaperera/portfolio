@@ -155,6 +155,7 @@ const emptyPortfolioContent = {
   experience: [],
   education: [],
   certificates: [],
+  techStacks: [],
 };
 
 const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -392,6 +393,94 @@ const TECH_STACK_ORBITS = [
   },
 ];
 
+const TECH_STACK_GLYPH_LIBRARY = {
+  dart: { label: 'Dart', icon: siDart },
+  java: { label: 'Java', icon: siOpenjdk },
+  typescript: { label: 'TypeScript', icon: siTypescript },
+  javascript: { label: 'JavaScript', icon: siJavascript },
+  html: { label: 'HTML', icon: siHtml5 },
+  css: { label: 'CSS', icon: siCss },
+  php: { label: 'PHP', icon: siPhp },
+  flutter: { label: 'Flutter', icon: siFlutter },
+  react: { label: 'React', icon: siReact },
+  'spring-boot': { label: 'Spring Boot', icon: siSpringboot },
+  express: { label: 'Express.js', icon: siExpress },
+  tailwind: { label: 'Tailwind CSS', icon: siTailwindcss },
+  node: { label: 'Node.js', icon: siNodedotjs },
+  firebase: { label: 'Firebase', icon: siFirebase },
+  mongodb: { label: 'MongoDB', icon: siMongodb },
+  mysql: { label: 'MySQL', icon: siMysql },
+  postgresql: { label: 'PostgreSQL', icon: siPostgresql },
+  sqlite: { label: 'SQLite', icon: siSqlite },
+  redis: { label: 'Redis', icon: siRedis },
+  mqtt: { label: 'MQTT', icon: siMqtt },
+  jwt: { label: 'JWT Auth', icon: siJsonwebtokens },
+  git: { label: 'Git', icon: siGit },
+  github: { label: 'GitHub', icon: siGithub },
+  docker: { label: 'Docker', icon: siDocker },
+  postman: { label: 'Postman', icon: siPostman },
+  kubernetes: { label: 'Kubernetes', icon: siKubernetes },
+  nginx: { label: 'Nginx', icon: siNginx },
+  figma: { label: 'Figma', icon: siFigma },
+  photoshop: { label: 'Adobe Photoshop', monogram: 'PS' },
+  'react-native': { label: 'React Native', monogram: 'RN' },
+  riverpod: { label: 'Riverpod', monogram: 'RP' },
+  api: { label: 'RESTful APIs', monogram: 'API' },
+};
+
+function resolveTechStackGlyph(glyphKey) {
+  const fallback = TECH_STACK_GLYPH_LIBRARY.api;
+  return TECH_STACK_GLYPH_LIBRARY[glyphKey] || fallback;
+}
+
+function normalizeTechStackItem(item, categoryMeta, index = 0) {
+  const glyph = resolveTechStackGlyph(item.glyphKey);
+  const iconHex = glyph.icon?.hex ? `#${glyph.icon.hex}` : null;
+  return {
+    id: item.id ?? `${slugify(item.category || categoryMeta.label)}-${slugify(item.label)}`,
+    category: item.category || categoryMeta.label,
+    orbitLabel: categoryMeta.legendLabel,
+    orbitIndex: categoryMeta.orbitIndex ?? 0,
+    orbitRadius: categoryMeta.orbitRadius,
+    size: categoryMeta.planetSize,
+    speed: categoryMeta.speed,
+    startOffset: categoryMeta.startOffset,
+    surface: categoryMeta.surface,
+    ringColor: categoryMeta.ringColor,
+    accent: categoryMeta.accent,
+    label: item.label,
+    summary: item.summary,
+    icon: item.icon || glyph.icon || null,
+    monogram: item.monogram || glyph.monogram || '',
+    glyphKey: item.glyphKey,
+    glyphColor: getReadableIconColor(item.glyphColor || iconHex, categoryMeta.accent),
+    displayOrder: item.displayOrder ?? index,
+    active: item.active !== false,
+  };
+}
+
+function buildTechStackOrbits(stacks) {
+  const activeStacks = Array.isArray(stacks)
+    ? stacks.filter((stack) => stack && stack.active !== false && stack.category && stack.label && stack.summary)
+    : [];
+
+  if (!activeStacks.length) {
+    return TECH_STACK_ORBITS;
+  }
+
+  return TECH_STACK_ORBITS.map((group) => {
+    const items = activeStacks
+      .filter((stack) => stack.category === group.label)
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0) || String(a.label).localeCompare(String(b.label)))
+      .map((stack, index) => normalizeTechStackItem(stack, group, index));
+
+    return {
+      ...group,
+      items,
+    };
+  }).filter((group) => group.items.length > 0);
+}
+
 const GALAXY_PARTICLE_COUNT = 1400;
 const GALAXY_ARMS = 4;
 
@@ -595,6 +684,7 @@ function usePortfolioContent() {
           experience: response.experience ?? [],
           education: response.education ?? [],
           certificates: response.certificates ?? [],
+          techStacks: response.techStacks ?? [],
         });
       } catch (error) {
         void error;
@@ -1659,6 +1749,10 @@ function GalaxyCanvas({ variant = 'disc' }) {
 
 function useGalaxyPoints(count) {
   return useMemo(() => {
+    if (count <= 0) {
+      return [];
+    }
+
     const points = [];
     const offset = 2 / count;
     const increment = Math.PI * (3 - Math.sqrt(5));
@@ -1733,7 +1827,7 @@ function TechPlanet({ stack, nodeRef, onHover, onLeave }) {
   );
 }
 
-function SolarSystem({ running }) {
+function SolarSystem({ running, orbitGroups = [] }) {
   const containerRef = useRef(null);
   const nodeRefs = useRef([]);
   const motionState = useRef({ rotationX: -0.2, rotationY: 0, velocityX: 0, velocityY: 0.0022, dragging: false, x: 0, y: 0 });
@@ -1742,20 +1836,21 @@ function SolarSystem({ running }) {
 
   const planets = useMemo(
     () =>
-      TECH_STACK_ORBITS.flatMap((group, orbitIndex) =>
-        group.items.map((item) => {
+      orbitGroups.flatMap((group, orbitIndex) =>
+        group.items.map((item, itemIndex) => {
           const iconHex = item.icon?.hex ? `#${item.icon.hex}` : null;
-          const glyphColor = getReadableIconColor(iconHex, group.accent);
+          const glyphColor = item.glyphColor || getReadableIconColor(iconHex, group.accent);
 
           return {
             ...item,
-            id: `${slugify(group.label)}-${slugify(item.label)}`,
+            id: item.id || `${slugify(group.label)}-${slugify(item.label)}-${itemIndex}`,
             category: group.label,
             orbitLabel: group.legendLabel,
             orbitIndex,
             orbitRadius: group.orbitRadius,
             size: group.planetSize,
             speed: group.speed,
+            startOffset: group.startOffset,
             surface: group.surface,
             ringColor: group.ringColor,
             accent: group.accent,
@@ -1891,9 +1986,17 @@ function SolarSystem({ running }) {
         <div className="galaxy-core galaxy-core-large" aria-hidden="true" />
         <div className="galaxy-core galaxy-core-small" aria-hidden="true" />
         <div className="galaxy-rings" aria-hidden="true">
-          <span className="orbit-line orbit-line-slow" />
-          <span className="orbit-line orbit-line-mid" />
-          <span className="orbit-line orbit-line-fast" />
+          {orbitGroups.map((group, index) => (
+            <span
+              key={`${group.label}-${index}`}
+              className={`orbit-line orbit-line-${index === 0 ? 'slow' : index === 1 ? 'mid' : 'fast'}`}
+              style={{
+                width: `${Math.max(36, 100 - index * 24)}%`,
+                height: `${Math.max(36, 100 - index * 24)}%`,
+                borderColor: group.ringColor,
+              }}
+            />
+          ))}
         </div>
         <div className="solar-core" />
         <div className="galaxy-node-layer">
@@ -1917,9 +2020,10 @@ function SolarSystem({ running }) {
   );
 }
 
-function Skills() {
+function Skills({ techStacks = [] }) {
   const [revealRef, visible] = useInView(0.1);
   const [running, setRunning] = useState(false);
+  const orbitGroups = useMemo(() => buildTechStackOrbits(techStacks), [techStacks]);
 
   useEffect(() => {
     if (visible) setRunning(true);
@@ -1938,7 +2042,7 @@ function Skills() {
           accent="Skills"
         />
         <div className="skills-layout">
-          <SolarSystem running={running} />
+          <SolarSystem running={running} orbitGroups={orbitGroups} />
         </div>
       </div>
     </section>
@@ -2998,7 +3102,7 @@ function Home() {
         <About />
         <Experience experienceItems={portfolioContent.experience} />
         <Projects projectsData={portfolioContent.projects} />
-        <Skills />
+        <Skills techStacks={portfolioContent.techStacks} />
         <Education educationItems={portfolioContent.education} certificateItems={portfolioContent.certificates} />
         <Contact />
       </main>

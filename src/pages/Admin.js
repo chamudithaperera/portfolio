@@ -9,6 +9,7 @@ const tabItems = [
   { id: 'visits', label: 'Visits', description: 'Visitor analytics', icon: 'globe' },
   { id: 'projects', label: 'Projects', description: 'CRUD portfolio projects', icon: 'project' },
   { id: 'pricing', label: 'Pricing', description: 'Edit services and packages', icon: 'pricing' },
+  { id: 'techStacks', label: 'Tech Stacks', description: 'Manage the galaxy items', icon: 'spark' },
   { id: 'content', label: 'Content', description: 'Manage experience and education', icon: 'education' },
 ];
 
@@ -76,6 +77,57 @@ const emptyPricingPackageForm = {
   button: '',
   features: '',
   unavailable: '',
+  displayOrder: '',
+  active: true,
+};
+
+const techStackCategoryOptions = [
+  { value: 'Languages', label: 'Languages' },
+  { value: 'Frameworks & Libraries', label: 'Frameworks & Libraries' },
+  { value: 'Backend & Database', label: 'Backend & Database' },
+  { value: 'DevOps & Other Tools', label: 'DevOps & Other Tools' },
+];
+
+const techStackGlyphOptions = [
+  { value: 'dart', label: 'Dart' },
+  { value: 'java', label: 'Java' },
+  { value: 'typescript', label: 'TypeScript' },
+  { value: 'javascript', label: 'JavaScript' },
+  { value: 'html', label: 'HTML' },
+  { value: 'css', label: 'CSS' },
+  { value: 'php', label: 'PHP' },
+  { value: 'flutter', label: 'Flutter' },
+  { value: 'react', label: 'React' },
+  { value: 'spring-boot', label: 'Spring Boot' },
+  { value: 'express', label: 'Express.js' },
+  { value: 'tailwind', label: 'Tailwind CSS' },
+  { value: 'node', label: 'Node.js' },
+  { value: 'firebase', label: 'Firebase' },
+  { value: 'mongodb', label: 'MongoDB' },
+  { value: 'mysql', label: 'MySQL' },
+  { value: 'postgresql', label: 'PostgreSQL' },
+  { value: 'sqlite', label: 'SQLite' },
+  { value: 'redis', label: 'Redis' },
+  { value: 'mqtt', label: 'MQTT' },
+  { value: 'jwt', label: 'JWT Auth' },
+  { value: 'git', label: 'Git' },
+  { value: 'github', label: 'GitHub' },
+  { value: 'docker', label: 'Docker' },
+  { value: 'postman', label: 'Postman' },
+  { value: 'kubernetes', label: 'Kubernetes' },
+  { value: 'nginx', label: 'Nginx' },
+  { value: 'figma', label: 'Figma' },
+  { value: 'photoshop', label: 'Adobe Photoshop' },
+  { value: 'react-native', label: 'React Native' },
+  { value: 'riverpod', label: 'Riverpod' },
+  { value: 'api', label: 'RESTful APIs' },
+];
+
+const emptyTechStackForm = {
+  category: '',
+  label: '',
+  summary: '',
+  glyphKey: '',
   displayOrder: '',
   active: true,
 };
