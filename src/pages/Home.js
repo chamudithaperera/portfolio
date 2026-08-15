@@ -266,8 +266,10 @@ function resolveTechStackGlyph(glyphKey) {
 }
 
 function normalizeTechStackItem(item, categoryMeta, index = 0) {
-  const glyph = resolveTechStackGlyph(item.glyphKey);
-  const iconHex = glyph.icon?.hex ? `#${glyph.icon.hex}` : null;
+  const iconKind = item.iconKind || 'glyph';
+  const iconValue = item.iconValue || item.glyphKey || '';
+  const glyph = iconKind === 'glyph' ? resolveTechStackGlyph(iconValue) : null;
+  const iconHex = glyph?.icon?.hex ? `#${glyph.icon.hex}` : null;
   return {
     id: item.id ?? `${slugify(item.category || categoryMeta.label)}-${slugify(item.label)}`,
     category: item.category || categoryMeta.label,
@@ -282,9 +284,12 @@ function normalizeTechStackItem(item, categoryMeta, index = 0) {
     accent: categoryMeta.accent,
     label: item.label,
     summary: item.summary,
-    icon: item.icon || glyph.icon || null,
-    monogram: item.monogram || glyph.monogram || '',
-    glyphKey: item.glyphKey,
+    iconKind,
+    iconValue,
+    icon: item.icon || glyph?.icon || null,
+    monogram: item.monogram || (iconKind === 'monogram' ? iconValue : glyph?.monogram || ''),
+    customSvgPath: item.customSvgPath || (iconKind === 'svg' ? iconValue : ''),
+    glyphKey: iconValue,
     glyphColor: getReadableIconColor(item.glyphColor || iconHex, categoryMeta.accent),
     displayOrder: item.displayOrder ?? index,
     active: item.active !== false,
@@ -1599,10 +1604,11 @@ function useGalaxyPoints(count) {
 
 function StackGlyph({ stack, size = 24, decorative = false, className = '' }) {
   const ariaProps = decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': `${stack.label} logo` };
+  const hasCustomSvg = Boolean(stack.customSvgPath);
 
   return (
     <span
-      className={`stack-glyph ${stack.icon ? 'has-icon' : 'has-monogram'} ${className}`.trim()}
+      className={`stack-glyph ${hasCustomSvg ? 'has-svg' : stack.icon ? 'has-icon' : 'has-monogram'} ${className}`.trim()}
       style={{
         width: size,
         height: size,
@@ -1612,7 +1618,11 @@ function StackGlyph({ stack, size = 24, decorative = false, className = '' }) {
       }}
       {...ariaProps}
     >
-      {stack.icon ? (
+      {hasCustomSvg ? (
+        <svg className="stack-glyph-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d={stack.customSvgPath} fill="currentColor" />
+        </svg>
+      ) : stack.icon ? (
         <svg className="stack-glyph-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d={stack.icon.path} fill="currentColor" />
         </svg>

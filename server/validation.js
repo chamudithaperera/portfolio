@@ -433,23 +433,48 @@ const TECH_STACK_GLYPHS = new Set([
   'api',
 ]);
 
+const TECH_STACK_ICON_KINDS = new Set([
+  'glyph',
+  'monogram',
+  'svg',
+]);
+
+function encodeTechStackGlyphKey(iconKind, iconValue) {
+  const value = normalizeText(iconValue);
+
+  if (iconKind === 'monogram') {
+    return `monogram:${value.toUpperCase()}`;
+  }
+
+  if (iconKind === 'svg') {
+    return `svg:${value}`;
+  }
+
+  return value.toLowerCase();
+}
+
 function validateTechStackPayload(body = {}) {
   const errors = {};
 
   const category = normalizeText(body.category);
   const label = normalizeText(body.label);
   const summary = normalizeText(body.summary);
-  const glyphKey = normalizeText(body.glyphKey || body.glyph_key).toLowerCase();
+  const iconKind = normalizeText(body.iconKind || body.icon_kind || 'glyph').toLowerCase() || 'glyph';
+  const iconValue = normalizeText(body.iconValue || body.icon_value || body.glyphKey || body.glyph_key);
   const displayOrder = validateCollectionOrder(body.displayOrder);
   const active = body.active !== false;
 
   if (!category) errors.category = 'Category is required.';
   if (!label) errors.label = 'Tech stack label is required.';
   if (!summary) errors.summary = 'Summary is required.';
-  if (!glyphKey) errors.glyphKey = 'Choose an icon or monogram.';
+  if (!iconValue) errors.iconValue = 'Choose an icon, monogram, or custom SVG path.';
 
   if (category && !TECH_STACK_CATEGORIES.has(category)) {
     errors.category = 'Choose a valid category.';
+  }
+
+  if (iconKind && !TECH_STACK_ICON_KINDS.has(iconKind)) {
+    errors.iconKind = 'Choose a valid icon mode.';
   }
 
   if (label && (label.length < 1 || label.length > 80)) {
@@ -460,9 +485,29 @@ function validateTechStackPayload(body = {}) {
     errors.summary = 'Summary must be between 5 and 220 characters.';
   }
 
-  if (glyphKey && !TECH_STACK_GLYPHS.has(glyphKey)) {
-    errors.glyphKey = 'Choose a valid icon option.';
+  if (iconKind === 'glyph' && iconValue && !TECH_STACK_GLYPHS.has(iconValue.toLowerCase())) {
+    errors.iconValue = 'Choose a valid preset icon.';
   }
+
+  if (iconKind === 'monogram') {
+    const monogram = iconValue.toUpperCase();
+    if (!/^[A-Z0-9]{1,4}$/.test(monogram)) {
+      errors.iconValue = 'Monogram must be 1 to 4 letters or numbers.';
+    }
+  }
+
+  if (iconKind === 'svg') {
+    if (iconValue.length < 5 || iconValue.length > 800) {
+      errors.iconValue = 'SVG path data must be between 5 and 800 characters.';
+    }
+  }
+
+  const normalizedValue =
+    iconKind === 'monogram'
+      ? iconValue.toUpperCase()
+      : iconKind === 'glyph'
+        ? iconValue.toLowerCase()
+        : iconValue;
 
   return {
     ok: Object.keys(errors).length === 0,
@@ -471,7 +516,9 @@ function validateTechStackPayload(body = {}) {
       category,
       label,
       summary,
-      glyphKey,
+      iconKind,
+      iconValue: normalizedValue,
+      glyphKey: encodeTechStackGlyphKey(iconKind, normalizedValue),
       displayOrder,
       active,
     },

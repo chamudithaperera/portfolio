@@ -135,13 +135,53 @@ function mapPricingService(row) {
   };
 }
 
+function decodeTechStackGlyphKey(rawValue) {
+  const value = normalizeString(rawValue);
+
+  if (!value) {
+    return {
+      iconKind: 'glyph',
+      iconValue: '',
+    };
+  }
+
+  if (value.startsWith('monogram:')) {
+    return {
+      iconKind: 'monogram',
+      iconValue: value.slice('monogram:'.length),
+    };
+  }
+
+  if (value.startsWith('mono:')) {
+    return {
+      iconKind: 'monogram',
+      iconValue: value.slice('mono:'.length),
+    };
+  }
+
+  if (value.startsWith('svg:')) {
+    return {
+      iconKind: 'svg',
+      iconValue: value.slice('svg:'.length),
+    };
+  }
+
+  return {
+    iconKind: 'glyph',
+    iconValue: value,
+  };
+}
+
 function mapTechStack(row) {
+  const decoded = decodeTechStackGlyphKey(row.glyph_key);
   return {
     id: row.id,
     category: row.category,
     label: row.label,
     summary: row.summary,
-    glyphKey: row.glyph_key || '',
+    iconKind: decoded.iconKind,
+    iconValue: decoded.iconValue,
+    glyphKey: decoded.iconValue,
     displayOrder: row.display_order ?? 0,
     active: row.active !== false,
     createdAt: row.created_at,
@@ -256,11 +296,15 @@ function pricingServicePayload(input = {}) {
 }
 
 function techStackPayload(input = {}) {
+  const iconKind = normalizeString(input.iconKind || input.icon_kind || 'glyph').toLowerCase() || 'glyph';
+  const iconValue = normalizeString(input.iconValue || input.icon_value || input.glyphKey || input.glyph_key);
+  const glyphKey = input.glyphKey || input.glyph_key || '';
+
   return {
     category: normalizeString(input.category),
     label: normalizeString(input.label),
     summary: normalizeString(input.summary),
-    glyph_key: normalizeString(input.glyphKey || input.glyph_key),
+    glyph_key: normalizeString(glyphKey || (iconKind === 'glyph' ? iconValue.toLowerCase() : iconKind === 'monogram' ? `monogram:${iconValue.toUpperCase()}` : `svg:${iconValue}`)),
     display_order: toInteger(input.displayOrder, 0),
     active: toBoolean(input.active),
   };

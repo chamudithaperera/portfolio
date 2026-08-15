@@ -123,19 +123,31 @@ const techStackGlyphOptions = [
   { value: 'api', label: 'RESTful APIs' },
 ];
 
+const techStackIconKindOptions = [
+  { value: 'glyph', label: 'Preset icon' },
+  { value: 'monogram', label: 'Monogram' },
+  { value: 'svg', label: 'Custom SVG' },
+];
+
 const emptyTechStackForm = {
   category: '',
   label: '',
   summary: '',
-  glyphKey: '',
+  iconKind: 'glyph',
+  iconValue: '',
   displayOrder: '',
   active: true,
 };
 
 const techStackGlyphLabels = Object.fromEntries(techStackGlyphOptions.map((option) => [option.value, option.label]));
+const techStackIconKindLabels = Object.fromEntries(techStackIconKindOptions.map((option) => [option.value, option.label]));
 
 function getTechStackGlyphLabel(value) {
   return techStackGlyphLabels[value] || value || 'Unknown';
+}
+
+function getTechStackIconKindLabel(value) {
+  return techStackIconKindLabels[value] || value || 'Unknown';
 }
 
 const iconPaths = {
@@ -362,7 +374,8 @@ function techStackToForm(item) {
     category: item.category || '',
     label: item.label || '',
     summary: item.summary || '',
-    glyphKey: item.glyphKey || '',
+    iconKind: item.iconKind || 'glyph',
+    iconValue: item.iconValue || item.glyphKey || '',
     displayOrder: item.displayOrder ?? '',
     active: item.active !== false,
   };
@@ -465,7 +478,8 @@ function techStackFormToBody(form) {
     category: form.category,
     label: form.label,
     summary: form.summary,
-    glyphKey: form.glyphKey,
+    iconKind: form.iconKind,
+    iconValue: form.iconValue,
     displayOrder: form.displayOrder,
     active: Boolean(form.active),
   };
@@ -1118,7 +1132,15 @@ function Admin() {
 
   const updateTechStackForm = (event) => {
     const { name, type, value, checked } = event.target;
-    setTechStackForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+    setTechStackForm((current) => {
+      const next = { ...current, [name]: type === 'checkbox' ? checked : value };
+
+      if (name === 'iconKind') {
+        next.iconValue = '';
+      }
+
+      return next;
+    });
   };
 
   const handlePricingServiceNew = () => {
@@ -3107,90 +3129,6 @@ function Admin() {
                 </div>
               ) : null}
 
-              {isEditingTechStack ? (
-                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingTechStack(false); setSelectedTechStackId(''); }}>
-                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-tech-stack-modal-title" onClick={(event) => event.stopPropagation()}>
-                    <div className="admin-card-header">
-                      <div>
-                        <p className="admin-card-label">Editor</p>
-                        <h2 id="admin-tech-stack-modal-title">{selectedTechStackId ? 'Edit tech stack' : 'Create tech stack'}</h2>
-                      </div>
-                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => { setIsEditingTechStack(false); setSelectedTechStackId(''); }} aria-label="Close editor">
-                        <Icon name="close" size={15} />
-                      </button>
-                    </div>
-
-                    <form className="admin-form" onSubmit={handleTechStackSave}>
-                      <div className="admin-grid-2">
-                        <label>
-                          <span>Category</span>
-                          <select name="category" value={techStackForm.category} onChange={updateTechStackForm} required>
-                            <option value="">Choose category</option>
-                            {techStackCategoryOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label>
-                          <span>Display order</span>
-                          <input name="displayOrder" type="number" value={techStackForm.displayOrder} onChange={updateTechStackForm} placeholder="1" />
-                        </label>
-                      </div>
-
-                      <div className="admin-grid-2">
-                        <label>
-                          <span>Label</span>
-                          <input name="label" value={techStackForm.label} onChange={updateTechStackForm} placeholder="React" required />
-                        </label>
-                        <label>
-                          <span>Glyph</span>
-                          <select name="glyphKey" value={techStackForm.glyphKey} onChange={updateTechStackForm} required>
-                            <option value="">Choose glyph</option>
-                            {techStackGlyphOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                      </div>
-
-                      <label>
-                        <span>Summary</span>
-                        <textarea name="summary" rows="4" value={techStackForm.summary} onChange={updateTechStackForm} placeholder="Describe how you use this stack" required />
-                      </label>
-
-                      <label className="admin-checkbox">
-                        <input name="active" type="checkbox" checked={techStackForm.active} onChange={updateTechStackForm} />
-                        <span>Show in the public galaxy</span>
-                      </label>
-
-                      {techStackStatus ? <div className="admin-inline-success">{techStackStatus}</div> : null}
-                      {techStackError ? <div className="admin-inline-error">{techStackError}</div> : null}
-
-                      <div className="admin-action-row">
-                        <button className="admin-primary-button" type="submit" disabled={techStackSaving}>
-                          {techStackSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
-                          {selectedTechStackId ? 'Save changes' : 'Create stack'}
-                        </button>
-                        <button type="button" className="admin-secondary-button" onClick={handleTechStackNew}>
-                          <Icon name="plus" size={14} />
-                          Reset Form
-                        </button>
-                        {selectedTechStackId ? (
-                          <button type="button" className="admin-danger-button" onClick={handleTechStackDelete} disabled={techStackSaving}>
-                            <Icon name="trash" size={14} />
-                            Delete
-                          </button>
-                        ) : null}
-                      </div>
-                    </form>
-                  </article>
-                </div>
-              ) : null}
-
               {isEditingPricingService ? (
                 <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingPricingService(false); setSelectedPricingServiceId(''); }}>
                   <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-service-modal-title" onClick={(event) => event.stopPropagation()}>
@@ -3310,17 +3248,29 @@ function Admin() {
                           <Icon name="drag" size={14} />
                         </div>
                         <div className="admin-item-row-info">
-                          <div className="admin-item-row-header">
+                        <div className="admin-item-row-header">
                             <h3>{item.label}</h3>
                             <div className="admin-row-badges">
                               {item.active ? null : <span className="admin-pill-danger">Hidden</span>}
                               <span className="admin-pill">{item.category}</span>
-                              <span className="admin-pill-secondary">{getTechStackGlyphLabel(item.glyphKey)}</span>
+                              <span className="admin-pill-secondary">{getTechStackIconKindLabel(item.iconKind)}</span>
                             </div>
                           </div>
                           <p className="admin-item-row-summary">{item.summary}</p>
                           <small className="admin-row-meta">
-                            <strong>Glyph:</strong> {item.glyphKey || 'Unknown'}
+                            {item.iconKind === 'glyph' ? (
+                              <>
+                                <strong>Glyph:</strong> {getTechStackGlyphLabel(item.iconValue)}
+                              </>
+                            ) : item.iconKind === 'monogram' ? (
+                              <>
+                                <strong>Monogram:</strong> {item.iconValue || 'Unknown'}
+                              </>
+                            ) : (
+                              <>
+                                <strong>SVG:</strong> {truncateText(item.iconValue, 60) || 'Unknown'}
+                              </>
+                            )}
                           </small>
                         </div>
                         <div className="admin-item-row-actions">
@@ -3387,8 +3337,21 @@ function Admin() {
                           <input name="label" value={techStackForm.label} onChange={updateTechStackForm} placeholder="React" required />
                         </label>
                         <label>
+                          <span>Icon type</span>
+                          <select name="iconKind" value={techStackForm.iconKind} onChange={updateTechStackForm} required>
+                            {techStackIconKindOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </div>
+
+                      {techStackForm.iconKind === 'glyph' ? (
+                        <label>
                           <span>Glyph</span>
-                          <select name="glyphKey" value={techStackForm.glyphKey} onChange={updateTechStackForm} required>
+                          <select name="iconValue" value={techStackForm.iconValue} onChange={updateTechStackForm} required>
                             <option value="">Choose glyph</option>
                             {techStackGlyphOptions.map((option) => (
                               <option key={option.value} value={option.value}>
@@ -3397,7 +3360,24 @@ function Admin() {
                             ))}
                           </select>
                         </label>
-                      </div>
+                      ) : techStackForm.iconKind === 'monogram' ? (
+                        <label>
+                          <span>Monogram</span>
+                          <input name="iconValue" value={techStackForm.iconValue} onChange={updateTechStackForm} placeholder="AI" maxLength={4} required />
+                        </label>
+                      ) : (
+                        <label>
+                          <span>SVG path</span>
+                          <textarea
+                            name="iconValue"
+                            rows="4"
+                            value={techStackForm.iconValue}
+                            onChange={updateTechStackForm}
+                            placeholder="M12 3l7 4-7 4-7-4 7-4z"
+                            required
+                          />
+                        </label>
+                      )}
 
                       <label>
                         <span>Summary</span>
