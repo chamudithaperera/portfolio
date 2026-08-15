@@ -350,6 +350,18 @@ function pricingPackageToForm(item, defaultServiceId = '') {
   };
 }
 
+function techStackToForm(item) {
+  if (!item) return emptyTechStackForm;
+  return {
+    category: item.category || '',
+    label: item.label || '',
+    summary: item.summary || '',
+    glyphKey: item.glyphKey || '',
+    displayOrder: item.displayOrder ?? '',
+    active: item.active !== false,
+  };
+}
+
 function projectFormToBody(form) {
   return {
     title: form.title,
@@ -437,6 +449,17 @@ function pricingPackageFormToBody(form) {
     button: form.button,
     features: splitLineList(form.features),
     unavailable: splitLineList(form.unavailable),
+    displayOrder: form.displayOrder,
+    active: Boolean(form.active),
+  };
+}
+
+function techStackFormToBody(form) {
+  return {
+    category: form.category,
+    label: form.label,
+    summary: form.summary,
+    glyphKey: form.glyphKey,
     displayOrder: form.displayOrder,
     active: Boolean(form.active),
   };
@@ -584,6 +607,15 @@ function Admin() {
   const [pricingServiceForm, setPricingServiceForm] = useState(emptyPricingServiceForm);
   const [pricingPackageForm, setPricingPackageForm] = useState(emptyPricingPackageForm);
   const [pricingSaving, setPricingSaving] = useState(false);
+  const [isEditingTechStack, setIsEditingTechStack] = useState(false);
+  const [techStacks, setTechStacks] = useState([]);
+  const [techStacksLoading, setTechStacksLoading] = useState(false);
+  const [techStacksError, setTechStacksError] = useState('');
+  const [selectedTechStackId, setSelectedTechStackId] = useState('');
+  const [techStackForm, setTechStackForm] = useState(emptyTechStackForm);
+  const [techStackSaving, setTechStackSaving] = useState(false);
+  const [techStackStatus, setTechStackStatus] = useState('');
+  const [techStackError, setTechStackError] = useState('');
 
   const selectedMessage = useMemo(
     () => messages.find((message) => String(message.id) === String(selectedMessageId)) || null,
@@ -625,6 +657,11 @@ function Admin() {
     [pricingPackages, selectedPricingPackageId],
   );
 
+  const selectedTechStack = useMemo(
+    () => techStacks.find((item) => String(item.id) === String(selectedTechStackId)) || null,
+    [techStacks, selectedTechStackId],
+  );
+
   const stats = useMemo(() => {
     const counts = dashboard || {};
     return {
@@ -635,9 +672,10 @@ function Admin() {
       education: counts.education ?? education.length,
       certificates: counts.certificates ?? certificates.length,
       pricingPackages: counts.pricingPackages ?? pricingPackages.length,
+      techStacks: counts.techStacks ?? techStacks.length,
       unread: messages.filter((item) => (item.status || 'new') === 'new').length,
     };
-  }, [certificates.length, dashboard, education.length, experience.length, messages, pricingPackages.length, projects.length, visits.length]);
+  }, [certificates.length, dashboard, education.length, experience.length, messages, pricingPackages.length, projects.length, techStacks.length, visits.length]);
 
   async function loadDashboard() {
     setDashboardLoading(true);
