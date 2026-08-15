@@ -33,6 +33,7 @@ const {
   validatePricingPackagePayload,
   validatePricingServicePayload,
   validateProjectPayload,
+  validateTechStackPayload,
   validateVisitPayload,
 } = require('./validation');
 const { getRequestIp, resolveVisitLocation } = require('./visitGeo');
@@ -45,15 +46,18 @@ const {
   insertRow,
   listPortfolioContent,
   listPricingServices,
+  listTechStacks,
   mapCertificate,
   mapEducation,
   mapExperience,
   mapPricingPackage,
   mapPricingService,
+  mapTechStack,
   mapProject,
   pricingPackagePayload,
   pricingServicePayload,
   projectPayload,
+  techStackPayload,
   updateRow,
   TABLES,
 } = require('./portfolioStore');
@@ -863,6 +867,16 @@ app.get('/api/admin/pricing', requireAdmin, async (_req, res) => {
   }
 });
 
+app.get('/api/admin/tech-stacks', requireAdmin, async (_req, res) => {
+  try {
+    const techStacks = await listTechStacks(true);
+    return res.json({ ok: true, techStacks });
+  } catch (error) {
+    console.error('Tech stack lookup failed:', error);
+    return fail(res, 500, 'We could not load tech stacks right now.');
+  }
+});
+
 app.post('/api/admin/pricing/services', requireAdmin, async (req, res) => {
   const result = validatePricingServicePayload(req.body);
   if (!result.ok) {
@@ -875,6 +889,56 @@ app.post('/api/admin/pricing/services', requireAdmin, async (req, res) => {
   } catch (error) {
     console.error('Pricing service create failed:', error);
     return fail(res, 500, 'We could not save that pricing service right now.');
+  }
+});
+
+app.post('/api/admin/tech-stacks', requireAdmin, async (req, res) => {
+  const result = validateTechStackPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the tech stack form fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(TABLES.techStacks, techStackPayload(result.values), mapTechStack);
+    return res.status(201).json({ ok: true, techStack: created });
+  } catch (error) {
+    console.error('Tech stack creation failed:', error);
+    return fail(res, 500, 'We could not save that tech stack right now.');
+  }
+});
+
+app.put('/api/admin/tech-stacks/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid tech stack id.');
+  }
+
+  const result = validateTechStackPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the tech stack form fields.', result.errors);
+  }
+
+  try {
+    const updated = await updateRow(TABLES.techStacks, id, techStackPayload(result.values), mapTechStack);
+    return res.json({ ok: true, techStack: updated });
+  } catch (error) {
+    console.error('Tech stack update failed:', error);
+    return fail(res, 500, 'We could not update that tech stack right now.');
+  }
+});
+
+app.delete('/api/admin/tech-stacks/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'Invalid tech stack id.');
+  }
+
+  try {
+    await deleteRow(TABLES.techStacks, id);
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('Tech stack deletion failed:', error);
+    return fail(res, 500, 'We could not delete that tech stack right now.');
   }
 });
 

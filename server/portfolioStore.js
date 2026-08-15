@@ -9,6 +9,7 @@ const TABLES = {
   pricingPackages: 'portfolio_pricing_packages',
   pricingServices: 'portfolio_pricing_services',
   projects: 'portfolio_projects',
+  techStacks: 'portfolio_tech_stacks',
   visits: 'site_visits',
 };
 
@@ -134,6 +135,20 @@ function mapPricingService(row) {
   };
 }
 
+function mapTechStack(row) {
+  return {
+    id: row.id,
+    category: row.category,
+    label: row.label,
+    summary: row.summary,
+    glyphKey: row.glyph_key || '',
+    displayOrder: row.display_order ?? 0,
+    active: row.active !== false,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 function mapPricingPackage(row) {
   return {
     id: row.id,
@@ -235,6 +250,17 @@ function pricingServicePayload(input = {}) {
     label: normalizeString(input.label),
     icon: normalizeString(input.icon) || 'code',
     intro: normalizeString(input.intro),
+    display_order: toInteger(input.displayOrder, 0),
+    active: toBoolean(input.active),
+  };
+}
+
+function techStackPayload(input = {}) {
+  return {
+    category: normalizeString(input.category),
+    label: normalizeString(input.label),
+    summary: normalizeString(input.summary),
+    glyph_key: normalizeString(input.glyphKey || input.glyph_key),
     display_order: toInteger(input.displayOrder, 0),
     active: toBoolean(input.active),
   };
@@ -359,15 +385,16 @@ async function safeCountRows(table) {
 }
 
 async function listPortfolioContent() {
-  const [projects, experience, education, certificates, pricingServices] = await Promise.all([
+  const [projects, experience, education, certificates, pricingServices, techStacks] = await Promise.all([
     listRows(TABLES.projects, mapProject),
     safeListRows(TABLES.experience, mapExperience),
     listRows(TABLES.education, mapEducation),
     listRows(TABLES.certificates, mapCertificate),
     safeListPricingServices(false),
+    safeListTechStacks(false),
   ]);
 
-  return { projects, experience, education, certificates, pricingServices };
+  return { projects, experience, education, certificates, pricingServices, techStacks };
 }
 
 async function listPricingServices(admin = false) {
@@ -417,14 +444,43 @@ async function safeListPricingServices(admin = false) {
   }
 }
 
+async function listTechStacks(admin = false) {
+  let query = supabase
+    .from(TABLES.techStacks)
+    .select('*')
+    .order('display_order', { ascending: true })
+    .order('id', { ascending: true });
+
+  if (!admin) {
+    query = query.eq('active', true);
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    throw error;
+  }
+
+  return (data || []).map(mapTechStack);
+}
+
+async function safeListTechStacks(admin = false) {
+  try {
+    return await listTechStacks(admin);
+  } catch (error) {
+    console.error(`Unable to list tech stacks:`, error.message || error);
+    return [];
+  }
+}
+
 async function getDashboardSummary() {
-  const [messages, projects, experience, education, certificates, pricingPackages, visitRows] = await Promise.all([
+  const [messages, projects, experience, education, certificates, pricingPackages, techStacks, visitRows] = await Promise.all([
     safeCountRows(TABLES.messages),
     safeCountRows(TABLES.projects),
     safeCountRows(TABLES.experience),
     safeCountRows(TABLES.education),
     safeCountRows(TABLES.certificates),
     safeCountRows(TABLES.pricingPackages),
+    safeCountRows(TABLES.techStacks),
     listVisits(1),
   ]);
 
@@ -457,6 +513,7 @@ async function getDashboardSummary() {
     education,
     certificates,
     pricingPackages,
+    techStacks,
     visits,
     latestMessage: latestMessage || null,
     latestVisit,
@@ -500,14 +557,18 @@ module.exports = {
   mapExperience,
   mapPricingPackage,
   mapPricingService,
+  mapTechStack,
   mapProject,
   mapVisit,
   listPricingServices,
+  listTechStacks,
   listVisitRows,
   projectPayload,
   pricingPackagePayload,
   pricingServicePayload,
+  safeListTechStacks,
   safeListVisitRows,
+  techStackPayload,
   updateRow,
   safeCountRows,
   safeListPricingServices,

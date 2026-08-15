@@ -391,6 +391,93 @@ function validatePricingServicePayload(body = {}) {
   };
 }
 
+const TECH_STACK_CATEGORIES = new Set([
+  'Languages',
+  'Frameworks & Libraries',
+  'Backend & Database',
+  'DevOps & Other Tools',
+]);
+
+const TECH_STACK_GLYPHS = new Set([
+  'dart',
+  'java',
+  'typescript',
+  'javascript',
+  'html',
+  'css',
+  'php',
+  'flutter',
+  'react',
+  'spring-boot',
+  'express',
+  'tailwind',
+  'node',
+  'firebase',
+  'mongodb',
+  'mysql',
+  'postgresql',
+  'sqlite',
+  'redis',
+  'mqtt',
+  'jwt',
+  'git',
+  'github',
+  'docker',
+  'postman',
+  'kubernetes',
+  'nginx',
+  'figma',
+  'photoshop',
+  'react-native',
+  'riverpod',
+  'api',
+]);
+
+function validateTechStackPayload(body = {}) {
+  const errors = {};
+
+  const category = normalizeText(body.category);
+  const label = normalizeText(body.label);
+  const summary = normalizeText(body.summary);
+  const glyphKey = normalizeText(body.glyphKey || body.glyph_key).toLowerCase();
+  const displayOrder = validateCollectionOrder(body.displayOrder);
+  const active = body.active !== false;
+
+  if (!category) errors.category = 'Category is required.';
+  if (!label) errors.label = 'Tech stack label is required.';
+  if (!summary) errors.summary = 'Summary is required.';
+  if (!glyphKey) errors.glyphKey = 'Choose an icon or monogram.';
+
+  if (category && !TECH_STACK_CATEGORIES.has(category)) {
+    errors.category = 'Choose a valid category.';
+  }
+
+  if (label && (label.length < 1 || label.length > 80)) {
+    errors.label = 'Label must be between 1 and 80 characters.';
+  }
+
+  if (summary && (summary.length < 5 || summary.length > 220)) {
+    errors.summary = 'Summary must be between 5 and 220 characters.';
+  }
+
+  if (glyphKey && !TECH_STACK_GLYPHS.has(glyphKey)) {
+    errors.glyphKey = 'Choose a valid icon option.';
+  }
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors,
+    values: {
+      category,
+      label,
+      summary,
+      glyphKey,
+      displayOrder,
+      active,
+    },
+  };
+}
+
 function normalizeLineList(value) {
   if (Array.isArray(value)) {
     return value.map(normalizeText).filter(Boolean);
@@ -469,5 +556,6 @@ module.exports = {
   validatePricingPackagePayload,
   validatePricingServicePayload,
   validateProjectPayload,
+  validateTechStackPayload,
   validateVisitPayload,
 };
