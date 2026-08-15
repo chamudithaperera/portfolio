@@ -132,6 +132,12 @@ const emptyTechStackForm = {
   active: true,
 };
 
+const techStackGlyphLabels = Object.fromEntries(techStackGlyphOptions.map((option) => [option.value, option.label]));
+
+function getTechStackGlyphLabel(value) {
+  return techStackGlyphLabels[value] || value || 'Unknown';
+}
+
 const iconPaths = {
   arrowLeft: ['M20 12H4', 'm10 6-6-6 6-6'],
   arrowRight: ['M4 12h16', 'm10-6 6 6-6 6'],
@@ -836,6 +842,27 @@ function Admin() {
     }
   }
 
+  async function loadTechStacks() {
+    setTechStacksLoading(true);
+    setTechStacksError('');
+    try {
+      const response = await apiRequest('/api/admin/tech-stacks');
+      const loaded = response.techStacks || [];
+      setTechStacks(loaded);
+      setSelectedTechStackId((current) => {
+        if (current && loaded.some((item) => String(item.id) === String(current))) {
+          return current;
+        }
+        return loaded[0] ? String(loaded[0].id) : '';
+      });
+    } catch (error) {
+      setTechStacksError(error.message || 'Unable to load tech stacks.');
+      setTechStacks([]);
+    } finally {
+      setTechStacksLoading(false);
+    }
+  }
+
   async function refreshDashboardTab() {
     await Promise.allSettled([
       loadDashboard(),
@@ -846,6 +873,7 @@ function Admin() {
       loadEducation(),
       loadCertificates(),
       loadPricing(),
+      loadTechStacks(),
     ]);
   }
 
@@ -954,6 +982,14 @@ function Admin() {
   }, [pricingServices, selectedPricingPackage, selectedPricingServiceId]);
 
   useEffect(() => {
+    if (selectedTechStack) {
+      setTechStackForm(techStackToForm(selectedTechStack));
+    } else {
+      setTechStackForm(emptyTechStackForm);
+    }
+  }, [selectedTechStack]);
+
+  useEffect(() => {
     if (!certificateImageFile) {
       setCertificateImagePreview('');
       return undefined;
@@ -1004,6 +1040,7 @@ function Admin() {
       setCertificates([]);
       setPricingServices([]);
       setPricingPackages([]);
+      setTechStacks([]);
       setSelectedMessageId('');
       setSelectedProjectId('');
       setSelectedExperienceId('');
@@ -1011,12 +1048,14 @@ function Admin() {
       setSelectedCertificateId('');
       setSelectedPricingServiceId('');
       setSelectedPricingPackageId('');
+      setSelectedTechStackId('');
       setProjectForm(emptyProjectForm);
       setExperienceForm(emptyExperienceForm);
       setEducationForm(emptyEducationForm);
       setCertificateForm(emptyCertificateForm);
       setPricingServiceForm(emptyPricingServiceForm);
       setPricingPackageForm(emptyPricingPackageForm);
+      setTechStackForm(emptyTechStackForm);
       setProjectImageFile(null);
       setProjectImageStatus('');
       setProjectImageError('');
@@ -1043,6 +1082,10 @@ function Admin() {
       setPricingSaving(false);
       setPricingStatus('');
       setPricingError('');
+      setTechStacksLoading(false);
+      setTechStackSaving(false);
+      setTechStackStatus('');
+      setTechStackError('');
       setLoginForm((current) => ({ ...current, password: '' }));
     } catch (error) {
       setDashboardError(error.message || 'Logout failed.');
@@ -1072,6 +1115,11 @@ function Admin() {
     setPricingPackageForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
   };
 
+  const updateTechStackForm = (event) => {
+    const { name, type, value, checked } = event.target;
+    setTechStackForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+  };
+
   const handlePricingServiceNew = () => {
     setSelectedPricingServiceId('');
     setPricingServiceForm(emptyPricingServiceForm);
@@ -1085,6 +1133,13 @@ function Admin() {
     setPricingPackageForm({ ...emptyPricingPackageForm, serviceId: defaultServiceId });
     setPricingStatus('');
     setPricingError('');
+  };
+
+  const handleTechStackNew = () => {
+    setSelectedTechStackId('');
+    setTechStackForm(emptyTechStackForm);
+    setTechStackStatus('');
+    setTechStackError('');
   };
 
   const handlePricingServiceSave = async (event) => {
@@ -1191,6 +1246,57 @@ function Admin() {
     }
   };
 
+  const handleTechStackSave = async (event) => {
+    event.preventDefault();
+    setTechStackSaving(true);
+    setTechStackError('');
+    setTechStackStatus('');
+
+    try {
+      const body = techStackFormToBody(techStackForm);
+      const response = selectedTechStackId
+        ? await apiRequest(`/api/admin/tech-stacks/${selectedTechStackId}`, {
+            method: 'PUT',
+            body,
+          })
+        : await apiRequest('/api/admin/tech-stacks', {
+            method: 'POST',
+            body,
+          });
+
+      setTechStackStatus(selectedTechStackId ? 'Tech stack updated.' : 'Tech stack created.');
+      setSelectedTechStackId(String(response.techStack.id));
+      await Promise.allSettled([loadTechStacks(), loadDashboard()]);
+      setIsEditingTechStack(false);
+    } catch (error) {
+      setTechStackError(error.message || 'Unable to save this tech stack.');
+    } finally {
+      setTechStackSaving(false);
+    }
+  };
+
+  const handleTechStackDelete = async () => {
+    if (!selectedTechStackId) return;
+    if (!window.confirm('Delete this tech stack? This cannot be undone.')) return;
+
+    setTechStackSaving(true);
+    setTechStackError('');
+    setTechStackStatus('');
+
+    try {
+      await apiRequest(`/api/admin/tech-stacks/${selectedTechStackId}`, { method: 'DELETE' });
+      setTechStackStatus('Tech stack removed.');
+      setSelectedTechStackId('');
+      setTechStackForm(emptyTechStackForm);
+      await Promise.allSettled([loadTechStacks(), loadDashboard()]);
+      setIsEditingTechStack(false);
+    } catch (error) {
+      setTechStackError(error.message || 'Unable to delete this tech stack.');
+    } finally {
+      setTechStackSaving(false);
+    }
+  };
+
   const handleMessageStatusToggle = async (message) => {
     if (!message?.id) return;
     const nextStatus = message.status === 'read' ? 'new' : 'read';
@@ -1294,6 +1400,10 @@ function Admin() {
       list = [...pricingServices];
       setList = setPricingServices;
       dbTable = 'portfolio_pricing_services';
+    } else if (listType === 'techStacks') {
+      list = [...techStacks];
+      setList = setTechStacks;
+      dbTable = 'portfolio_tech_stacks';
     }
 
     if (!list) return;
@@ -1829,6 +1939,7 @@ function Admin() {
     { label: 'Visits', value: stats.visits, tone: 'teal' },
     { label: 'Projects', value: stats.projects, tone: 'indigo' },
     { label: 'Pricing', value: stats.pricingPackages, tone: 'blue' },
+    { label: 'Tech Stacks', value: stats.techStacks, tone: 'cyan' },
     { label: 'Experience', value: stats.experience, tone: 'sky' },
     { label: 'Education', value: stats.education, tone: 'slate' },
     { label: 'Certificates', value: stats.certificates, tone: 'teal' },
@@ -1901,6 +2012,7 @@ function Admin() {
                 {activeTab === 'visits' && 'Visits'}
                 {activeTab === 'projects' && 'Projects'}
                 {activeTab === 'pricing' && 'Pricing'}
+                {activeTab === 'techStacks' && 'Tech Stacks'}
                 {activeTab === 'content' && 'Work Experience & Content'}
               </h1>
               <p>
@@ -1909,6 +2021,7 @@ function Admin() {
                 {activeTab === 'visits' && 'Table of website visit records captured from public page loads.'}
                 {activeTab === 'projects' && 'Create, edit, and remove portfolio projects.'}
                 {activeTab === 'pricing' && 'Manage website and mobile app services, packages, prices, and feature lists.'}
+                {activeTab === 'techStacks' && 'Manage the technical skills used in the galaxy section from one CMS editor.'}
                 {activeTab === 'content' && 'Manage work experience, education, and certificate entries from one place.'}
               </p>
             </div>
