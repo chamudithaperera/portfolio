@@ -1859,7 +1859,7 @@ function SolarSystem({ running, orbitGroups = [] }) {
           };
         }),
       ),
-    [],
+    [orbitGroups],
   );
 
   const points = useGalaxyPoints(planets.length);
