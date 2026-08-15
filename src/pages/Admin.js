@@ -1049,6 +1049,7 @@ function Admin() {
       setSelectedPricingServiceId('');
       setSelectedPricingPackageId('');
       setSelectedTechStackId('');
+      setIsEditingTechStack(false);
       setProjectForm(emptyProjectForm);
       setExperienceForm(emptyExperienceForm);
       setEducationForm(emptyEducationForm);
@@ -3106,6 +3107,90 @@ function Admin() {
                 </div>
               ) : null}
 
+              {isEditingTechStack ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingTechStack(false); setSelectedTechStackId(''); }}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-tech-stack-modal-title" onClick={(event) => event.stopPropagation()}>
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Editor</p>
+                        <h2 id="admin-tech-stack-modal-title">{selectedTechStackId ? 'Edit tech stack' : 'Create tech stack'}</h2>
+                      </div>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => { setIsEditingTechStack(false); setSelectedTechStackId(''); }} aria-label="Close editor">
+                        <Icon name="close" size={15} />
+                      </button>
+                    </div>
+
+                    <form className="admin-form" onSubmit={handleTechStackSave}>
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Category</span>
+                          <select name="category" value={techStackForm.category} onChange={updateTechStackForm} required>
+                            <option value="">Choose category</option>
+                            {techStackCategoryOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          <span>Display order</span>
+                          <input name="displayOrder" type="number" value={techStackForm.displayOrder} onChange={updateTechStackForm} placeholder="1" />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Label</span>
+                          <input name="label" value={techStackForm.label} onChange={updateTechStackForm} placeholder="React" required />
+                        </label>
+                        <label>
+                          <span>Glyph</span>
+                          <select name="glyphKey" value={techStackForm.glyphKey} onChange={updateTechStackForm} required>
+                            <option value="">Choose glyph</option>
+                            {techStackGlyphOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </div>
+
+                      <label>
+                        <span>Summary</span>
+                        <textarea name="summary" rows="4" value={techStackForm.summary} onChange={updateTechStackForm} placeholder="Describe how you use this stack" required />
+                      </label>
+
+                      <label className="admin-checkbox">
+                        <input name="active" type="checkbox" checked={techStackForm.active} onChange={updateTechStackForm} />
+                        <span>Show in the public galaxy</span>
+                      </label>
+
+                      {techStackStatus ? <div className="admin-inline-success">{techStackStatus}</div> : null}
+                      {techStackError ? <div className="admin-inline-error">{techStackError}</div> : null}
+
+                      <div className="admin-action-row">
+                        <button className="admin-primary-button" type="submit" disabled={techStackSaving}>
+                          {techStackSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                          {selectedTechStackId ? 'Save changes' : 'Create stack'}
+                        </button>
+                        <button type="button" className="admin-secondary-button" onClick={handleTechStackNew}>
+                          <Icon name="plus" size={14} />
+                          Reset Form
+                        </button>
+                        {selectedTechStackId ? (
+                          <button type="button" className="admin-danger-button" onClick={handleTechStackDelete} disabled={techStackSaving}>
+                            <Icon name="trash" size={14} />
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </form>
+                  </article>
+                </div>
+              ) : null}
+
               {isEditingPricingService ? (
                 <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingPricingService(false); setSelectedPricingServiceId(''); }}>
                   <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-service-modal-title" onClick={(event) => event.stopPropagation()}>
@@ -3166,6 +3251,178 @@ function Admin() {
                         </button>
                         {selectedPricingServiceId ? (
                           <button type="button" className="admin-danger-button" onClick={handlePricingServiceDelete} disabled={pricingSaving}>
+                            <Icon name="trash" size={14} />
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </form>
+                  </article>
+                </div>
+              ) : null}
+            </section>
+          ) : null}
+
+          {activeTab === 'techStacks' ? (
+            <section className="admin-content-workspace">
+              <div className="admin-card">
+                <div className="admin-card-header">
+                  <div>
+                    <p className="admin-card-label">Tech Stacks</p>
+                    <h2>Galaxy items</h2>
+                  </div>
+                  <div className="admin-list-actions">
+                    <button type="button" className="admin-primary-button" onClick={() => { handleTechStackNew(); setIsEditingTechStack(true); }}>
+                      <Icon name="plus" size={14} />
+                      New stack
+                    </button>
+                    <button type="button" className="admin-secondary-button" onClick={loadTechStacks} disabled={techStacksLoading}>
+                      <Icon name="refresh" size={14} />
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+
+                {techStacksError ? <div className="admin-inline-error">{techStacksError}</div> : null}
+
+                {techStacksLoading ? (
+                  <div className="admin-loading-panel">
+                    <span className="admin-spinner" aria-hidden="true" />
+                    Loading tech stacks...
+                  </div>
+                ) : techStacks.length ? (
+                  <div className="admin-cards-row-list">
+                    {techStacks.map((item, index) => (
+                      <div
+                        key={item.id}
+                        className={`admin-item-row-card ${(draggedItem && draggedItem.listType === 'techStacks' && draggedItem.index === index) ? 'is-dragging' : ''}`}
+                        draggable="true"
+                        onDragStart={handleDragStart('techStacks', index)}
+                        onDragOver={handleDragOver(index)}
+                        onDrop={handleDrop('techStacks', index)}
+                        onDragEnd={handleDragEnd}
+                        onClick={() => {
+                          setSelectedTechStackId(String(item.id));
+                          setIsEditingTechStack(true);
+                        }}
+                      >
+                        <div className="admin-drag-handle" title="Drag to reorder" onClick={(e) => e.stopPropagation()}>
+                          <Icon name="drag" size={14} />
+                        </div>
+                        <div className="admin-item-row-info">
+                          <div className="admin-item-row-header">
+                            <h3>{item.label}</h3>
+                            <div className="admin-row-badges">
+                              {item.active ? null : <span className="admin-pill-danger">Hidden</span>}
+                              <span className="admin-pill">{item.category}</span>
+                              <span className="admin-pill-secondary">{getTechStackGlyphLabel(item.glyphKey)}</span>
+                            </div>
+                          </div>
+                          <p className="admin-item-row-summary">{item.summary}</p>
+                          <small className="admin-row-meta">
+                            <strong>Glyph:</strong> {item.glyphKey || 'Unknown'}
+                          </small>
+                        </div>
+                        <div className="admin-item-row-actions">
+                          <button
+                            type="button"
+                            className="admin-secondary-button admin-compact-button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedTechStackId(String(item.id));
+                              setIsEditingTechStack(true);
+                            }}
+                          >
+                            <Icon name="edit" size={14} />
+                            Edit
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState
+                    icon="spark"
+                    title="No tech stacks yet"
+                    description="Create your first tech stack by clicking 'New stack' above."
+                  />
+                )}
+              </div>
+
+              {isEditingTechStack ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingTechStack(false); setSelectedTechStackId(''); }}>
+                  <article className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-tech-stack-modal-title" onClick={(event) => event.stopPropagation()}>
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Editor</p>
+                        <h2 id="admin-tech-stack-modal-title">{selectedTechStackId ? 'Edit tech stack' : 'Create tech stack'}</h2>
+                      </div>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => { setIsEditingTechStack(false); setSelectedTechStackId(''); }} aria-label="Close editor">
+                        <Icon name="close" size={15} />
+                      </button>
+                    </div>
+
+                    <form className="admin-form" onSubmit={handleTechStackSave}>
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Category</span>
+                          <select name="category" value={techStackForm.category} onChange={updateTechStackForm} required>
+                            <option value="">Choose category</option>
+                            {techStackCategoryOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          <span>Display order</span>
+                          <input name="displayOrder" type="number" value={techStackForm.displayOrder} onChange={updateTechStackForm} placeholder="1" />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Label</span>
+                          <input name="label" value={techStackForm.label} onChange={updateTechStackForm} placeholder="React" required />
+                        </label>
+                        <label>
+                          <span>Glyph</span>
+                          <select name="glyphKey" value={techStackForm.glyphKey} onChange={updateTechStackForm} required>
+                            <option value="">Choose glyph</option>
+                            {techStackGlyphOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </div>
+
+                      <label>
+                        <span>Summary</span>
+                        <textarea name="summary" rows="4" value={techStackForm.summary} onChange={updateTechStackForm} placeholder="Describe how you use this stack" required />
+                      </label>
+
+                      <label className="admin-checkbox">
+                        <input name="active" type="checkbox" checked={techStackForm.active} onChange={updateTechStackForm} />
+                        <span>Show in the public galaxy</span>
+                      </label>
+
+                      {techStackStatus ? <div className="admin-inline-success">{techStackStatus}</div> : null}
+                      {techStackError ? <div className="admin-inline-error">{techStackError}</div> : null}
+
+                      <div className="admin-action-row">
+                        <button className="admin-primary-button" type="submit" disabled={techStackSaving}>
+                          {techStackSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                          {selectedTechStackId ? 'Save changes' : 'Create stack'}
+                        </button>
+                        <button type="button" className="admin-secondary-button" onClick={handleTechStackNew}>
+                          <Icon name="plus" size={14} />
+                          Reset Form
+                        </button>
+                        {selectedTechStackId ? (
+                          <button type="button" className="admin-danger-button" onClick={handleTechStackDelete} disabled={techStackSaving}>
                             <Icon name="trash" size={14} />
                             Delete
                           </button>

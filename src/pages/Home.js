@@ -478,7 +478,7 @@ function buildTechStackOrbits(stacks) {
       ...group,
       items,
     };
-  }).filter((group) => group.items.length > 0);
+  });
 }
 
 const GALAXY_PARTICLE_COUNT = 1400;
