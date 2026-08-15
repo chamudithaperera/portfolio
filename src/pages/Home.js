@@ -183,7 +183,7 @@ const TECH_STACK_ORBIT_LAYOUT = [
     label: 'Languages',
     legendLabel: 'Languages',
     orbitRadius: 96,
-    planetSize: 38,
+    planetSize: 32,
     speed: 16,
     startOffset: 10,
     surface: '#09182e',
@@ -194,7 +194,7 @@ const TECH_STACK_ORBIT_LAYOUT = [
     label: 'Frameworks & Libraries',
     legendLabel: 'Frameworks',
     orbitRadius: 166,
-    planetSize: 42,
+    planetSize: 36,
     speed: 20,
     startOffset: 24,
     surface: '#0a1427',
@@ -205,7 +205,7 @@ const TECH_STACK_ORBIT_LAYOUT = [
     label: 'Backend & Database',
     legendLabel: 'Backend',
     orbitRadius: 236,
-    planetSize: 46,
+    planetSize: 40,
     speed: 24,
     startOffset: 18,
     surface: '#102238',
@@ -216,7 +216,7 @@ const TECH_STACK_ORBIT_LAYOUT = [
     label: 'DevOps & Other Tools',
     legendLabel: 'DevOps',
     orbitRadius: 306,
-    planetSize: 50,
+    planetSize: 44,
     speed: 28,
     startOffset: 32,
     surface: '#111b33',
@@ -1636,7 +1636,7 @@ function StackGlyph({ stack, size = 24, decorative = false, className = '' }) {
 }
 
 function TechPlanet({ stack, nodeRef, onHover, onLeave }) {
-  const glyphSize = Math.max(24, Math.round(stack.size * 0.62));
+  const glyphSize = Math.max(20, Math.round(stack.size * 0.54));
 
   return (
     <button

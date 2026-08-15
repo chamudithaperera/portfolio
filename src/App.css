@@ -7104,7 +7104,7 @@ textarea:focus-visible {
 .skill-node-card {
   position: relative;
   display: grid;
-  width: 3rem;
+  width: 2.55rem;
   aspect-ratio: 1;
   place-items: center;
   overflow: hidden;
@@ -7155,7 +7155,7 @@ textarea:focus-visible {
   max-width: 7rem;
   overflow: hidden;
   color: rgba(207, 220, 255, 0.74);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.025em;
   line-height: 1.2;
