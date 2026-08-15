@@ -178,7 +178,7 @@ function getReadableIconColor(hex, fallback) {
   return luminance < 0.42 ? '#f8fafc' : hex;
 }
 
-const TECH_STACK_ORBITS = [
+const TECH_STACK_ORBIT_LAYOUT = [
   {
     label: 'Languages',
     legendLabel: 'Languages',
@@ -189,43 +189,6 @@ const TECH_STACK_ORBITS = [
     surface: '#09182e',
     ringColor: 'rgba(56, 189, 248, 0.24)',
     accent: '#38bdf8',
-    items: [
-      {
-        label: 'Dart',
-        summary: 'Primary language for Flutter app logic and UI flows.',
-        icon: siDart,
-      },
-      {
-        label: 'Java',
-        summary: 'Backend language for Spring Boot services and system work.',
-        icon: siOpenjdk,
-      },
-      {
-        label: 'TypeScript',
-        summary: 'Typed frontend language for React dashboards and admin tools.',
-        icon: siTypescript,
-      },
-      {
-        label: 'JavaScript',
-        summary: 'Used across React UI work and full-stack web projects.',
-        icon: siJavascript,
-      },
-      {
-        label: 'HTML',
-        summary: 'Structure layer for responsive web layouts and content.',
-        icon: siHtml5,
-      },
-      {
-        label: 'CSS',
-        summary: 'Styling layer for polished, responsive interfaces.',
-        icon: siCss,
-      },
-      {
-        label: 'PHP',
-        summary: 'Legacy web scripting language from earlier project work.',
-        icon: siPhp,
-      },
-    ],
   },
   {
     label: 'Frameworks & Libraries',
@@ -237,48 +200,6 @@ const TECH_STACK_ORBITS = [
     surface: '#0a1427',
     ringColor: 'rgba(96, 165, 250, 0.24)',
     accent: '#60a5fa',
-    items: [
-      {
-        label: 'Flutter',
-        summary: 'Primary framework for Android and iOS app delivery.',
-        icon: siFlutter,
-      },
-      {
-        label: 'React',
-        summary: 'Frontend library for web interfaces and admin panels.',
-        icon: siReact,
-      },
-      {
-        label: 'Spring Boot',
-        summary: 'Backend framework for APIs and microservices.',
-        icon: siSpringboot,
-      },
-      {
-        label: 'Express.js',
-        summary: 'Lightweight Node.js server layer for REST APIs.',
-        icon: siExpress,
-      },
-      {
-        label: 'Tailwind CSS',
-        summary: 'Utility-first styling system for rapid UI work.',
-        icon: siTailwindcss,
-      },
-      {
-        label: 'Node.js',
-        summary: 'JavaScript runtime for servers, APIs, and tooling.',
-        icon: siNodedotjs,
-      },
-      {
-        label: 'React Native',
-        summary: 'Cross-platform mobile framework listed in the CV stack.',
-        monogram: 'RN',
-      },
-      {
-        label: 'Riverpod',
-        summary: 'Flutter state management for predictable app flows.',
-        monogram: 'RP',
-      },
-    ],
   },
   {
     label: 'Backend & Database',
@@ -290,53 +211,6 @@ const TECH_STACK_ORBITS = [
     surface: '#102238',
     ringColor: 'rgba(34, 211, 238, 0.22)',
     accent: '#22d3ee',
-    items: [
-      {
-        label: 'Firebase',
-        summary: 'Backend services for auth, storage, and mobile support.',
-        icon: siFirebase,
-      },
-      {
-        label: 'MongoDB',
-        summary: 'Document database for MERN-style web projects.',
-        icon: siMongodb,
-      },
-      {
-        label: 'MySQL',
-        summary: 'Relational database for structured application data.',
-        icon: siMysql,
-      },
-      {
-        label: 'PostgreSQL',
-        summary: 'Primary SQL store for scalable backend systems.',
-        icon: siPostgresql,
-      },
-      {
-        label: 'SQLite',
-        summary: 'Local-first storage for offline mobile app data.',
-        icon: siSqlite,
-      },
-      {
-        label: 'Redis',
-        summary: 'In-memory cache for low-latency app workflows.',
-        icon: siRedis,
-      },
-      {
-        label: 'MQTT',
-        summary: 'Messaging protocol for real-time device and service updates.',
-        icon: siMqtt,
-      },
-      {
-        label: 'RESTful APIs',
-        summary: 'Interface style used to connect clients and services.',
-        monogram: 'API',
-      },
-      {
-        label: 'JWT Auth',
-        summary: 'Token-based authentication for secure role-aware access.',
-        icon: siJsonwebtokens,
-      },
-    ],
   },
   {
     label: 'DevOps & Other Tools',
@@ -348,48 +222,6 @@ const TECH_STACK_ORBITS = [
     surface: '#111b33',
     ringColor: 'rgba(167, 139, 250, 0.22)',
     accent: '#a78bfa',
-    items: [
-      {
-        label: 'Git',
-        summary: 'Source control for branching and collaboration.',
-        icon: siGit,
-      },
-      {
-        label: 'GitHub',
-        summary: 'Repository hosting and collaborative versioning.',
-        icon: siGithub,
-      },
-      {
-        label: 'Docker',
-        summary: 'Containerization for consistent local and production builds.',
-        icon: siDocker,
-      },
-      {
-        label: 'Postman',
-        summary: 'API testing and workflow validation tool.',
-        icon: siPostman,
-      },
-      {
-        label: 'Kubernetes',
-        summary: 'Container orchestration for scalable deployments.',
-        icon: siKubernetes,
-      },
-      {
-        label: 'Nginx',
-        summary: 'Web server and reverse proxy for production delivery.',
-        icon: siNginx,
-      },
-      {
-        label: 'Figma',
-        summary: 'Interface design, wireframing, and prototyping tool.',
-        icon: siFigma,
-      },
-      {
-        label: 'Adobe Photoshop',
-        summary: 'Visual editing and asset preparation tool.',
-        monogram: 'PS',
-      },
-    ],
   },
 ];
 
@@ -464,11 +296,7 @@ function buildTechStackOrbits(stacks) {
     ? stacks.filter((stack) => stack && stack.active !== false && stack.category && stack.label && stack.summary)
     : [];
 
-  if (!activeStacks.length) {
-    return TECH_STACK_ORBITS;
-  }
-
-  return TECH_STACK_ORBITS.map((group) => {
+  return TECH_STACK_ORBIT_LAYOUT.map((group, orbitIndex) => {
     const items = activeStacks
       .filter((stack) => stack.category === group.label)
       .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0) || String(a.label).localeCompare(String(b.label)))
@@ -476,6 +304,7 @@ function buildTechStackOrbits(stacks) {
 
     return {
       ...group,
+      orbitIndex,
       items,
     };
   });
@@ -2024,6 +1853,7 @@ function Skills({ techStacks = [] }) {
   const [revealRef, visible] = useInView(0.1);
   const [running, setRunning] = useState(false);
   const orbitGroups = useMemo(() => buildTechStackOrbits(techStacks), [techStacks]);
+  const hasTechStacks = orbitGroups.some((group) => Array.isArray(group.items) && group.items.length > 0);
 
   useEffect(() => {
     if (visible) setRunning(true);
@@ -2042,7 +1872,14 @@ function Skills({ techStacks = [] }) {
           accent="Skills"
         />
         <div className="skills-layout">
-          <SolarSystem running={running} orbitGroups={orbitGroups} />
+          {hasTechStacks ? (
+            <SolarSystem running={running} orbitGroups={orbitGroups} />
+          ) : (
+            <div className="empty-content-state">
+              <h3>No tech stacks yet</h3>
+              <p>Add tech stacks in the admin panel to show them here.</p>
+            </div>
+          )}
         </div>
       </div>
     </section>
