@@ -4074,5 +4074,5 @@ function Home() {
   );
 }
 
-export { FloatingAiAgent, PricingPage, ProjectsPage };
+export { FloatingAiAgent, PricingPage, ProjectsPage, ReviewPage };
 export default Home;

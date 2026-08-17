@@ -1493,8 +1493,8 @@ function Admin() {
     }
   };
 
-  const handleReviewDelete = async () => {
-    if (!selectedReviewId) return;
+  const handleReviewDelete = async (reviewId = selectedReviewId) => {
+    if (!reviewId) return;
     if (!window.confirm('Delete this review? This cannot be undone.')) return;
 
     setReviewSaving(true);
@@ -1503,7 +1503,7 @@ function Admin() {
     setReviewStatus('');
 
     try {
-      await apiRequest(`/api/admin/reviews/${selectedReviewId}`, { method: 'DELETE' });
+      await apiRequest(`/api/admin/reviews/${reviewId}`, { method: 'DELETE' });
       setReviewStatus('Review removed.');
       setSelectedReviewId('');
       setReviewForm({ ...emptyReviewForm });
@@ -2142,6 +2142,8 @@ function Admin() {
   const summaryCards = [
     { label: 'Messages', value: stats.messages, tone: 'blue' },
     { label: 'Unread', value: stats.unread, tone: 'cyan' },
+    { label: 'Reviews', value: stats.reviews, tone: 'teal' },
+    { label: 'Pending Reviews', value: stats.pendingReviews, tone: 'indigo' },
     { label: 'Visits', value: stats.visits, tone: 'teal' },
     { label: 'Projects', value: stats.projects, tone: 'indigo' },
     { label: 'Pricing', value: stats.pricingPackages, tone: 'blue' },
@@ -2217,6 +2219,7 @@ function Admin() {
                 {activeTab === 'messages' && 'Messages'}
                 {activeTab === 'visits' && 'Visits'}
                 {activeTab === 'projects' && 'Projects'}
+                {activeTab === 'reviews' && 'Reviews'}
                 {activeTab === 'pricing' && 'Pricing'}
                 {activeTab === 'techStacks' && 'Tech Stacks'}
                 {activeTab === 'content' && 'Work Experience & Content'}
@@ -2226,6 +2229,7 @@ function Admin() {
                 {activeTab === 'messages' && 'WhatsApp-style inbox for user submissions.'}
                 {activeTab === 'visits' && 'Table of website visit records captured from public page loads.'}
                 {activeTab === 'projects' && 'Create, edit, and remove portfolio projects.'}
+                {activeTab === 'reviews' && 'Moderate client reviews, approve testimonials, and manage public feedback.'}
                 {activeTab === 'pricing' && 'Manage website and mobile app services, packages, prices, and feature lists.'}
                 {activeTab === 'techStacks' && 'Manage the technical skills used in the galaxy section from one CMS editor.'}
                 {activeTab === 'content' && 'Manage work experience, education, and certificate entries from one place.'}
@@ -2988,6 +2992,244 @@ function Admin() {
                         </button>
                         {selectedProjectId ? (
                           <button type="button" className="admin-danger-button" onClick={handleProjectDelete} disabled={projectSaving}>
+                            <Icon name="trash" size={14} />
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </form>
+                  </article>
+                </div>
+              ) : null}
+            </section>
+          ) : null}
+
+          {activeTab === 'reviews' ? (
+            <section className="admin-content-workspace">
+              <div className="admin-card admin-message-table-card">
+                <div className="admin-card-header">
+                  <div>
+                    <p className="admin-card-label">Reviews</p>
+                    <h2>Client testimonials</h2>
+                  </div>
+                  <div className="admin-list-actions">
+                    <button
+                      type="button"
+                      className="admin-primary-button"
+                      onClick={() => { handleReviewNew(); setIsEditingReview(true); }}
+                    >
+                      <Icon name="plus" size={14} />
+                      New review
+                    </button>
+                    <button type="button" className="admin-secondary-button" onClick={loadReviews} disabled={reviewsLoading}>
+                      <Icon name="refresh" size={14} />
+                      Refresh
+                    </button>
+                  </div>
+                </div>
+
+                {reviewsError ? <div className="admin-inline-error">{reviewsError}</div> : null}
+
+                {reviewsLoading ? (
+                  <div className="admin-loading-panel">
+                    <span className="admin-spinner" aria-hidden="true" />
+                    Loading reviews...
+                  </div>
+                ) : reviews.length ? (
+                  <div className="admin-table-scroll">
+                    <table className="admin-message-table admin-review-table">
+                      <thead>
+                        <tr>
+                          <th>Status</th>
+                          <th>Name</th>
+                          <th>Project</th>
+                          <th>Service</th>
+                          <th>Stars</th>
+                          <th>Received</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {reviews.map((review) => {
+                          const approved = (review.status || 'pending') === 'approved';
+                          const statusPending = reviewActionPending === `status-${review.id}`;
+                          const deletePending = reviewActionPending === `delete-${review.id}`;
+                          const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+
+                          return (
+                            <tr key={review.id}>
+                              <td>
+                                <span className={`admin-status-badge ${approved ? 'is-read' : 'is-new'}`}>
+                                  {approved ? 'Approved' : 'Pending'}
+                                </span>
+                              </td>
+                              <td>
+                                <strong>{review.name}</strong>
+                              </td>
+                              <td>{review.projectName}</td>
+                              <td>{review.service}</td>
+                              <td>
+                                <span className="admin-review-rating" aria-label={`${rating} out of 5 stars`}>
+                                  {Array.from({ length: 5 }, (_, index) => (
+                                    <Icon key={`${review.id}-${index}`} name="star" size={11} className={index < rating ? 'is-filled' : 'is-muted'} />
+                                  ))}
+                                </span>
+                              </td>
+                              <td>{formatDate(review.createdAt)}</td>
+                              <td>
+                                <div className="admin-table-actions">
+                                  <button
+                                    type="button"
+                                    className="admin-secondary-button admin-compact-button"
+                                    onClick={() => {
+                                      setSelectedReviewId(String(review.id));
+                                      setReviewForm(reviewToForm(review));
+                                      setIsEditingReview(true);
+                                    }}
+                                  >
+                                    <Icon name="edit" size={14} />
+                                    Edit
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="admin-secondary-button admin-compact-button admin-status-action"
+                                    onClick={() => handleReviewStatusToggle(review)}
+                                    disabled={statusPending}
+                                  >
+                                    {statusPending ? 'Saving...' : approved ? 'Unapprove' : 'Approve'}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="admin-danger-button admin-icon-button"
+                                    onClick={() => handleReviewDelete(review.id)}
+                                    disabled={deletePending}
+                                    aria-label={`Delete review from ${review.name}`}
+                                  >
+                                    {deletePending ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="trash" size={14} />}
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <EmptyState
+                    icon="star"
+                    title="No reviews yet"
+                    description="Approved client feedback will appear here once it is submitted or created in the admin panel."
+                  />
+                )}
+              </div>
+
+              {isEditingReview ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingReview(false); setSelectedReviewId(''); }}>
+                  <article className="admin-modal admin-review-modal" role="dialog" aria-modal="true" aria-labelledby="admin-review-modal-title" onClick={(event) => event.stopPropagation()}>
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Editor</p>
+                        <h2 id="admin-review-modal-title">{selectedReviewId ? 'Edit review' : 'Create review'}</h2>
+                        {selectedReview ? (
+                          <span className={`admin-status-badge ${selectedReview.status === 'approved' ? 'is-read' : 'is-new'}`}>
+                            {selectedReview.status === 'approved' ? 'Approved' : 'Pending'}
+                          </span>
+                        ) : null}
+                      </div>
+                      <button
+                        type="button"
+                        className="admin-secondary-button admin-icon-button"
+                        onClick={() => { setIsEditingReview(false); setSelectedReviewId(''); }}
+                        aria-label="Close editor"
+                      >
+                        <Icon name="close" size={15} />
+                      </button>
+                    </div>
+
+                    <form className="admin-form" onSubmit={handleReviewSave}>
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Name</span>
+                          <input name="name" value={reviewForm.name} onChange={updateReviewForm} placeholder="Client name" required />
+                          <FieldError message={reviewFieldErrors.name} />
+                        </label>
+                        <label>
+                          <span>Email</span>
+                          <input name="email" type="email" value={reviewForm.email} onChange={updateReviewForm} placeholder="client@email.com" required />
+                          <FieldError message={reviewFieldErrors.email} />
+                        </label>
+                      </div>
+
+                      <div className="admin-grid-2">
+                        <label>
+                          <span>Project name</span>
+                          <input name="projectName" value={reviewForm.projectName} onChange={updateReviewForm} placeholder="Project or app name" required />
+                          <FieldError message={reviewFieldErrors.projectName} />
+                        </label>
+                        <label>
+                          <span>Service</span>
+                          <select name="service" value={reviewForm.service} onChange={updateReviewForm} required>
+                            {reviewServiceOptions.map((service) => (
+                              <option key={service} value={service}>
+                                {service}
+                              </option>
+                            ))}
+                          </select>
+                          <FieldError message={reviewFieldErrors.service} />
+                        </label>
+                      </div>
+
+                      <label>
+                        <span>Stars</span>
+                        <input
+                          name="rating"
+                          type="range"
+                          min="1"
+                          max="5"
+                          step="1"
+                          value={reviewForm.rating}
+                          onChange={updateReviewForm}
+                        />
+                        <div className="admin-review-rating admin-review-rating-large" aria-label={`${reviewForm.rating} out of 5 stars`}>
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <Icon key={`review-rating-${index}`} name="star" size={13} className={index < Number(reviewForm.rating) ? 'is-filled' : 'is-muted'} />
+                          ))}
+                        </div>
+                        <FieldError message={reviewFieldErrors.rating} />
+                      </label>
+
+                      <label>
+                        <span>Description</span>
+                        <textarea name="description" rows="6" value={reviewForm.description} onChange={updateReviewForm} placeholder="What did the client experience?" required />
+                        <FieldError message={reviewFieldErrors.description} />
+                      </label>
+
+                      {reviewError ? <div className="admin-inline-error">{reviewError}</div> : null}
+                      {reviewStatus ? <div className="admin-inline-success">{reviewStatus}</div> : null}
+
+                      <div className="admin-action-row">
+                        <button className="admin-primary-button" type="submit" disabled={reviewSaving}>
+                          {reviewSaving ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="save" size={14} />}
+                          {selectedReviewId ? 'Save changes' : 'Create review'}
+                        </button>
+                        <button type="button" className="admin-secondary-button" onClick={handleReviewNew}>
+                          <Icon name="plus" size={14} />
+                          Reset Form
+                        </button>
+                        {selectedReview ? (
+                          <button
+                            type="button"
+                            className="admin-secondary-button"
+                            onClick={() => handleReviewStatusToggle(selectedReview)}
+                            disabled={reviewActionPending === `status-${selectedReview.id}`}
+                          >
+                            <Icon name="check" size={14} />
+                            {reviewActionPending === `status-${selectedReview.id}` ? 'Saving...' : selectedReview.status === 'approved' ? 'Unapprove' : 'Approve'}
+                          </button>
+                        ) : null}
+                        {selectedReviewId ? (
+                          <button type="button" className="admin-danger-button" onClick={() => handleReviewDelete(selectedReviewId)} disabled={reviewSaving}>
                             <Icon name="trash" size={14} />
                             Delete
                           </button>
