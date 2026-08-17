@@ -3637,11 +3637,10 @@ function Home() {
         <Education educationItems={portfolioContent.education} certificateItems={portfolioContent.certificates} />
         <Contact />
       </main>
-      <FloatingContactMenu />
       <Footer />
     </div>
   );
 }
 
-export { PricingPage, ProjectsPage };
+export { FloatingAiAgent, PricingPage, ProjectsPage };
 export default Home;
