@@ -34,6 +34,8 @@ const config = {
     process.env.SUPABASE_SECRET_KEY ||
     requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
   supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY || '',
+  openaiApiKey: process.env.OPENAI_API_KEY || '',
+  openaiChatModel: process.env.OPENAI_CHAT_MODEL || 'gpt-4.1-mini',
   adminUsername: requireEnv('ADMIN_USERNAME'),
   adminPassword: requireEnv('ADMIN_PASSWORD'),
   sessionSecret: requireEnv('ADMIN_SESSION_SECRET'),

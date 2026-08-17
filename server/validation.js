@@ -74,6 +74,26 @@ function validateContactMessage(body) {
   };
 }
 
+function validateChatbotMessage(body = {}) {
+  const errors = {};
+
+  const message = normalizeMessage(body.message);
+
+  if (!message) {
+    errors.message = 'Message is required.';
+  } else if (message.length < 1 || message.length > 1000) {
+    errors.message = 'Message must be between 1 and 1000 characters.';
+  }
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors,
+    values: {
+      message,
+    },
+  };
+}
+
 function validateVisitPayload(body = {}) {
   const errors = {};
 
@@ -595,6 +615,7 @@ function validatePricingPackagePayload(body = {}) {
 
 module.exports = {
   validateAdminCredentials,
+  validateChatbotMessage,
   validateContactMessage,
   validateCertificatePayload,
   validateCollectionOrder,
