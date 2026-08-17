@@ -470,44 +470,522 @@ function Icon({ name, size = 16, className = '' }) {
   );
 }
 
-function FloatingContactMenu() {
-  const [open, setOpen] = useState(false);
-  const actions = [
-    { icon: 'phone', label: 'Call', href: `tel:${profile.phone}` },
-    { icon: 'whatsapp', label: 'WhatsApp', href: whatsappUrl },
-    { icon: 'mail', label: 'Email', href: `mailto:${profile.email}` },
-  ];
+const chatbotQuickPrompts = [
+  { id: 'services', label: 'What services do you offer?', intent: 'services' },
+  { id: 'website-pricing', label: 'What is the pricing for a website?', intent: 'website-pricing' },
+  { id: 'mobile-pricing', label: 'What is the pricing for a mobile app?', intent: 'mobile-pricing' },
+  { id: 'projects', label: 'Show me your projects', intent: 'projects' },
+  { id: 'contact', label: 'How can I contact you?', intent: 'contact' },
+];
 
-  return (
-    <div className={`floating-contact ${open ? 'is-open' : ''}`}>
-      <div className="floating-contact-actions" aria-label="Quick contact options" aria-hidden={!open}>
-        {actions.map((action, index) => (
-          <a
-            key={action.label}
-            className="floating-contact-action"
-            href={action.href}
-            target={action.href.startsWith('http') ? '_blank' : undefined}
-            rel={action.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-            style={{ '--contact-delay': `${index * 55}ms` }}
-            tabIndex={open ? 0 : -1}
-            aria-label={action.label}
+const chatbotWelcomeText =
+  'Hello, welcome to the ChamudithaPerera.Online Software Solutions. I am your AI assistant. How can I help you? Use the quick messages below to get started.';
+
+function createChatbotMessage(role, text, extra = {}) {
+  return {
+    id: `${role}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+    role,
+    text,
+    ...extra,
+  };
+}
+
+function normalizeChatbotInput(value) {
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/[^a-z0-9+\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function detectChatbotIntent(message) {
+  const text = normalizeChatbotInput(message);
+  const hasPricingLanguage = /(price|pricing|cost|quote|charges|estimate|package)/.test(text);
+
+  if (/(service|services|offer|do you build|what can you make|what do you do)/.test(text)) {
+    return 'services';
+  }
+
+  if (hasPricingLanguage && /(website|web|site|portfolio)/.test(text)) {
+    return 'website-pricing';
+  }
+
+  if (hasPricingLanguage && /(mobile|app|android|ios|flutter)/.test(text)) {
+    return 'mobile-pricing';
+  }
+
+  if (/(project|projects|portfolio|work samples|show me)/.test(text)) {
+    return 'projects';
+  }
+
+  if (/(contact|email|whatsapp|call|phone|get in touch|reach you)/.test(text)) {
+    return 'contact';
+  }
+
+  return null;
+}
+
+function buildLocalChatbotReply(intent) {
+  const replies = {
+    services: {
+      reply:
+        'I build Flutter mobile apps, React websites, full-stack systems, APIs, dashboards, and polished UI experiences. I can also help with admin panels and product implementation.',
+      actions: [
+        { label: 'View Projects', href: '/projects' },
+        { label: 'Contact Me', href: '/#contact' },
+      ],
+    },
+    'website-pricing': {
+      reply: 'You can check my website pricing on the pricing page. I am opening it now.',
+      autoNavigate: '/pricing',
+    },
+    'mobile-pricing': {
+      reply: 'You can check my mobile app pricing on the pricing page. I am opening it now.',
+      autoNavigate: '/pricing',
+    },
+    projects: {
+      reply: 'You can browse my selected projects now. I am opening the projects page.',
+      autoNavigate: '/projects',
+    },
+    contact: {
+      reply: 'You can reach me by email or WhatsApp. I am opening the contact section now.',
+      actions: [
+        { label: 'Email', href: `mailto:${profile.email}` },
+        { label: 'WhatsApp', href: whatsappUrl },
+      ],
+      autoNavigate: '/#contact',
+    },
+    fallback: {
+      reply:
+        'I can help with services, pricing, projects, and contact details. Try one of the quick messages below.',
+      actions: [
+        { label: 'View Projects', href: '/projects' },
+        { label: 'Pricing', href: '/pricing' },
+        { label: 'Contact', href: '/#contact' },
+      ],
+    },
+  };
+
+  return replies[intent] || replies.fallback;
+}
+
+function FloatingAiAgent() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const prefersReducedMotion = useFramerReducedMotion();
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState(() => [createChatbotMessage('assistant', chatbotWelcomeText, { chips: chatbotQuickPrompts })]);
+  const [draft, setDraft] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const panelRef = useRef(null);
+  const messageListRef = useRef(null);
+  const inputRef = useRef(null);
+  const launcherRef = useRef(null);
+  const restoreFocusRef = useRef(null);
+  const autoNavigateTimerRef = useRef(null);
+
+  const scrollToLatestMessage = () => {
+    const container = messageListRef.current;
+    if (!container) {
+      return;
+    }
+
+    const behavior = prefersReducedMotion ? 'auto' : 'smooth';
+    window.requestAnimationFrame(() => {
+      container.scrollTo({ top: container.scrollHeight, behavior });
+    });
+  };
+
+  const clearAutoNavigateTimer = () => {
+    if (autoNavigateTimerRef.current) {
+      window.clearTimeout(autoNavigateTimerRef.current);
+      autoNavigateTimerRef.current = null;
+    }
+  };
+
+  const closeChat = () => {
+    clearAutoNavigateTimer();
+    setOpen(false);
+  };
+
+  const openChat = () => {
+    if (!open) {
+      restoreFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      setOpen(true);
+    }
+  };
+
+  const appendMessage = (message) => {
+    setMessages((current) => [...current, message]);
+  };
+
+  const handleNavigate = (href) => {
+    if (!href) {
+      return;
+    }
+
+    if (href.startsWith('http')) {
+      window.open(href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    if (href.startsWith('mailto:') || href.startsWith('tel:')) {
+      window.location.href = href;
+      return;
+    }
+
+    navigate(href);
+  };
+
+  const handleIntentResponse = (intent, userText) => {
+    const response = buildLocalChatbotReply(intent);
+    const userMessage = createChatbotMessage('user', userText);
+    appendMessage(userMessage);
+    setDraft('');
+    setIsSending(true);
+    clearAutoNavigateTimer();
+
+    window.setTimeout(() => {
+      appendMessage(createChatbotMessage('assistant', response.reply, { actions: response.actions || [] }));
+      setIsSending(false);
+      if (response.autoNavigate) {
+        autoNavigateTimerRef.current = window.setTimeout(() => {
+          handleNavigate(response.autoNavigate);
+        }, prefersReducedMotion ? 0 : 650);
+      }
+    }, prefersReducedMotion ? 0 : 280);
+  };
+
+  const handleQuickPrompt = (prompt) => {
+    if (!prompt) {
+      return;
+    }
+
+    openChat();
+    handleIntentResponse(prompt.intent, prompt.label);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const value = draft.trim();
+
+    if (!value || isSending) {
+      return;
+    }
+
+    const localIntent = detectChatbotIntent(value);
+    if (localIntent) {
+      handleIntentResponse(localIntent, value);
+      return;
+    }
+
+    appendMessage(createChatbotMessage('user', value));
+    setDraft('');
+    setIsSending(true);
+    clearAutoNavigateTimer();
+
+    const typingDelay = prefersReducedMotion ? 0 : 240;
+    window.setTimeout(async () => {
+      try {
+        const response = await apiRequest('/api/chatbot/message', {
+          method: 'POST',
+          body: { message: value },
+        });
+
+        const reply = response?.reply || buildLocalChatbotReply('fallback').reply;
+        appendMessage(createChatbotMessage('assistant', reply, { actions: response?.actions || [] }));
+      } catch (error) {
+        void error;
+        const fallback = buildLocalChatbotReply('fallback');
+        appendMessage(createChatbotMessage('assistant', fallback.reply, { actions: fallback.actions || [] }));
+      } finally {
+        setIsSending(false);
+      }
+    }, typingDelay);
+  };
+
+  const handleMessageAction = (href) => {
+    handleNavigate(href);
+  };
+
+  useEffect(() => {
+    if (!open) {
+      return undefined;
+    }
+
+    const previousFocus = restoreFocusRef.current;
+    const timer = window.setTimeout(() => {
+      inputRef.current?.focus();
+    }, prefersReducedMotion ? 0 : 100);
+
+    return () => {
+      window.clearTimeout(timer);
+      if (previousFocus && typeof previousFocus.focus === 'function') {
+        previousFocus.focus();
+      }
+    };
+  }, [open, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!open) {
+      return undefined;
+    }
+
+    const lock = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = lock;
+    };
+  }, [open]);
+
+  useEffect(() => {
+    scrollToLatestMessage();
+  }, [messages, isSending, open]);
+
+  useEffect(() => {
+    if (!open) {
+      return undefined;
+    }
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeChat();
+        launcherRef.current?.focus();
+        return;
+      }
+
+      if (event.key !== 'Tab' || !panelRef.current) {
+        return;
+      }
+
+      const selectors = [
+        'button:not([disabled])',
+        'a[href]',
+        'input:not([disabled])',
+        'textarea:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])',
+      ];
+      const focusable = Array.from(panelRef.current.querySelectorAll(selectors.join(','))).filter(
+        (element) => element.offsetParent !== null || element === document.activeElement,
+      );
+
+      if (!focusable.length) {
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open]);
+
+  useEffect(() => {
+    if (location.pathname === '/' && location.hash === '#contact') {
+      const timer = window.setTimeout(() => {
+        const target = document.getElementById('contact');
+        if (target) {
+          target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+        }
+      }, prefersReducedMotion ? 0 : 180);
+
+      return () => window.clearTimeout(timer);
+    }
+
+    return undefined;
+  }, [location.pathname, location.hash, prefersReducedMotion]);
+
+  useEffect(() => () => clearAutoNavigateTimer(), []);
+
+  const panel = (
+    <AnimatePresence>
+      {open ? (
+        <>
+          <motion.button
+            type="button"
+            className="ai-agent-backdrop"
+            aria-label="Close AI assistant"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
+            onClick={closeChat}
+          />
+          <motion.section
+            ref={panelRef}
+            className="ai-agent-panel card-3d"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ai-agent-title"
+            aria-describedby="ai-agent-description"
+            initial={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 18, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 16, scale: 0.98 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Icon name={action.icon} size={22} />
-            <span>{action.label}</span>
-          </a>
-        ))}
-      </div>
+            <div className="ai-agent-panel-shell">
+              <div className="ai-agent-header">
+                <div className="ai-agent-title-wrap">
+                  <span className="ai-agent-orb" aria-hidden="true">
+                    <Icon name="sparkles" size={13} />
+                  </span>
+                  <div>
+                    <p className="ai-agent-eyebrow">AI Agent</p>
+                    <h3 id="ai-agent-title">Portfolio Assistant</h3>
+                  </div>
+                </div>
+                <div className="ai-agent-status">
+                  <span className="ai-agent-status-dot" />
+                  <span>Online</span>
+                </div>
+                <button
+                  type="button"
+                  className="ai-agent-close"
+                  onClick={closeChat}
+                  aria-label="Close AI assistant"
+                >
+                  <Icon name="close" size={16} />
+                </button>
+              </div>
+
+              <div className="ai-agent-body">
+                <div className="ai-agent-messages" ref={messageListRef} aria-live="polite" id="ai-agent-description">
+                  {messages.map((message) => {
+                    const isUser = message.role === 'user';
+                    return (
+                      <motion.div
+                        key={message.id}
+                        className={`ai-agent-message ${isUser ? 'is-user' : 'is-assistant'}`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: prefersReducedMotion ? 0 : 0.25 }}
+                      >
+                        {!isUser ? (
+                          <span className="ai-agent-avatar" aria-hidden="true">
+                            CP
+                          </span>
+                        ) : null}
+                        <div className="ai-agent-bubble">
+                          <p>{message.text}</p>
+                          {Array.isArray(message.actions) && message.actions.length ? (
+                            <div className="ai-agent-actions">
+                              {message.actions.map((action) => (
+                                <button
+                                  key={action.label}
+                                  type="button"
+                                  className="ai-agent-action"
+                                  onClick={() => handleMessageAction(action.href)}
+                                >
+                                  <Icon
+                                    name={action.href.startsWith('mailto:') || action.href.startsWith('tel:') ? 'mail' : 'arrowUpRight'}
+                                    size={12}
+                                  />
+                                  <span>{action.label}</span>
+                                </button>
+                              ))}
+                            </div>
+                          ) : null}
+                          {!isUser && Array.isArray(message.chips) && message.chips.length ? (
+                            <div className="ai-agent-chips">
+                              {message.chips.map((prompt) => (
+                                <button
+                                  key={prompt.id}
+                                  type="button"
+                                  className="ai-agent-chip"
+                                  onClick={() => handleQuickPrompt(prompt)}
+                                >
+                                  {prompt.label}
+                                </button>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+
+                  {isSending ? (
+                    <motion.div
+                      className="ai-agent-message is-assistant"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
+                    >
+                      <span className="ai-agent-avatar" aria-hidden="true">
+                        CP
+                      </span>
+                      <div className="ai-agent-bubble ai-agent-bubble-typing" aria-label="Assistant is typing">
+                        <span className="ai-agent-typing">
+                          <i />
+                          <i />
+                          <i />
+                        </span>
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </div>
+
+                <form className="ai-agent-composer" onSubmit={handleSubmit}>
+                  <label className="sr-only" htmlFor="ai-agent-input">
+                    Ask the AI assistant
+                  </label>
+                  <input
+                    ref={inputRef}
+                    id="ai-agent-input"
+                    type="text"
+                    value={draft}
+                    onChange={(event) => setDraft(event.target.value)}
+                    placeholder="Ask about services, pricing, projects, or contact..."
+                    autoComplete="off"
+                    spellCheck="false"
+                  />
+                  <button type="submit" className="ai-agent-send" disabled={!draft.trim() || isSending}>
+                    <Icon name="send" size={15} />
+                    <span>Send</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </motion.section>
+        </>
+      ) : null}
+    </AnimatePresence>
+  );
+
+  return createPortal(
+    <div className={`ai-agent-launcher-shell ${open ? 'is-open' : ''}`}>
+      {panel}
       <button
+        ref={launcherRef}
         type="button"
-        className="floating-contact-toggle"
-        onClick={() => setOpen((current) => !current)}
+        className="ai-agent-launcher"
+        onClick={open ? closeChat : openChat}
         aria-expanded={open}
-        aria-label={open ? 'Close quick contact options' : 'Open quick contact options'}
+        aria-controls="ai-agent-title"
+        aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
       >
-        <span className="floating-contact-pulse" aria-hidden="true" />
-        <Icon name={open ? 'close' : 'support'} size={28} />
+        <span className="ai-agent-launcher-glow" aria-hidden="true" />
+        <span className="ai-agent-launcher-icon" aria-hidden="true">
+          <Icon name={open ? 'close' : 'sparkles'} size={22} />
+        </span>
+        <span className="ai-agent-launcher-copy">
+          <strong>AI Agent</strong>
+          <small>{open ? 'Close chat' : 'Ask me anything'}</small>
+        </span>
       </button>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
