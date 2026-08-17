@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion as useFramerReducedMotion } from 'framer-motion';
 import {
   siDart,
   siDocker,
@@ -314,6 +314,64 @@ function buildTechStackOrbits(stacks) {
     };
   });
 }
+
+const heroFloatingTechBadges = [
+  {
+    key: 'flutter',
+    className: 'hero-tech-badge-flutter',
+    stack: {
+      ...TECH_STACK_GLYPH_LIBRARY.flutter,
+      glyphColor: '#7dd3fc',
+      surface: '#071d33',
+    },
+    motion: { duration: 8.5, delay: 0.1 },
+    style: { top: '6%', left: '-2.5%' },
+  },
+  {
+    key: 'react',
+    className: 'hero-tech-badge-react',
+    stack: {
+      ...TECH_STACK_GLYPH_LIBRARY.react,
+      glyphColor: '#67e8f9',
+      surface: '#071a2e',
+    },
+    motion: { duration: 9.5, delay: 0.7 },
+    style: { top: '3%', right: '-1.5%' },
+  },
+  {
+    key: 'spring-boot',
+    className: 'hero-tech-badge-spring',
+    stack: {
+      ...TECH_STACK_GLYPH_LIBRARY['spring-boot'],
+      glyphColor: '#6ee7b7',
+      surface: '#071f1a',
+    },
+    motion: { duration: 10.5, delay: 1.15 },
+    style: { top: '44%', left: '-5%' },
+  },
+  {
+    key: 'node',
+    className: 'hero-tech-badge-node',
+    stack: {
+      ...TECH_STACK_GLYPH_LIBRARY.node,
+      glyphColor: '#86efac',
+      surface: '#0a2015',
+    },
+    motion: { duration: 11.5, delay: 0.4 },
+    style: { bottom: '17%', left: '4%' },
+  },
+  {
+    key: 'mysql',
+    className: 'hero-tech-badge-mysql',
+    stack: {
+      ...TECH_STACK_GLYPH_LIBRARY.mysql,
+      glyphColor: '#60a5fa',
+      surface: '#07182b',
+    },
+    motion: { duration: 12.5, delay: 1.5 },
+    style: { bottom: '12%', right: '-1%' },
+  },
+];
 
 const GALAXY_PARTICLE_COUNT = 1400;
 const GALAXY_ARMS = 4;
@@ -741,6 +799,45 @@ function ShowcaseIdentity() {
   );
 }
 
+function FloatingTechBadge({ badge }) {
+  const prefersReducedMotion = useFramerReducedMotion();
+  const badgeMotion = prefersReducedMotion
+    ? undefined
+    : {
+        x: [0, 8, 0, -6, 0],
+        y: [0, -12, 0, 10, 0],
+        rotate: [-3, 4, -2, 5, -3],
+        scale: [1, 1.04, 1, 1.02, 1],
+      };
+
+  const BadgeTag = prefersReducedMotion ? 'div' : motion.div;
+
+  return (
+    <BadgeTag
+      className={`hero-tech-badge ${badge.className}`.trim()}
+      style={badge.style}
+      aria-hidden="true"
+      {...(prefersReducedMotion
+        ? {}
+        : {
+            animate: badgeMotion,
+            transition: {
+              duration: badge.motion.duration,
+              delay: badge.motion.delay,
+              repeat: Infinity,
+              repeatType: 'mirror',
+              ease: 'easeInOut',
+            },
+          })}
+    >
+      <span className="hero-tech-badge-shell">
+        <StackGlyph stack={badge.stack} size={20} decorative className="hero-tech-badge-glyph" />
+        <span className="hero-tech-badge-label">{badge.stack.label}</span>
+      </span>
+    </BadgeTag>
+  );
+}
+
 function Hero() {
   const role = useTypewriter(roles);
 
@@ -792,6 +889,11 @@ function Hero() {
         </div>
 
         <div className="hero-visual">
+          <div className="hero-tech-badges" aria-hidden="true">
+            {heroFloatingTechBadges.map((badge) => (
+              <FloatingTechBadge key={badge.key} badge={badge} />
+            ))}
+          </div>
           <ShowcaseIdentity />
           <span className="floating-label floating-label-a">
             <Icon name="code" size={12} /> Full-Stack
