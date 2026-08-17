@@ -1351,7 +1351,7 @@ html {
 }
 
 .review-carousel-header {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .review-carousel-role {
@@ -1359,11 +1359,16 @@ html {
 }
 
 .review-carousel-avatar {
-  border-radius: 999px;
+  border-radius: 0.75rem;
+  color: #eff6ff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .review-carousel-title-line h3 {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
 }
 
 .review-carousel-service {
@@ -1374,26 +1379,19 @@ html {
   color: #94a3b8;
 }
 
-.review-carousel-summary {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.review-carousel-stars {
-  color: #4b5563;
-}
-
-.review-carousel-stars .review-star {
-  color: #334155;
-}
-
 .review-carousel-description {
   margin: 0;
   color: #94a3b8;
   font-size: 0.875rem;
   line-height: 1.85;
+}
+
+.review-carousel-card.experience-card .review-carousel-description {
+  margin-bottom: 1.5rem;
+}
+
+.review-carousel-tags {
+  gap: 0.5rem;
 }
 
 .review-carousel-footer {

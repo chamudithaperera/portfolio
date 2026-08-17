@@ -3423,9 +3423,11 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
           </span>
         </div>
 
-        <div className="review-carousel-summary">
-          <ReviewStars value={rating} className="review-carousel-stars" />
-          <p className="review-carousel-description">“{description}”</p>
+        <p className="experience-description review-carousel-description">“{description}”</p>
+
+        <div className="tag-row experience-tags review-carousel-tags">
+          <span className="tech-tag">Review</span>
+          <span className="tech-tag colorful-tag">{service}</span>
         </div>
 
         <div className="experience-card-footer review-carousel-footer">
