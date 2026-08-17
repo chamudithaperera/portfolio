@@ -583,6 +583,7 @@ function FloatingAiAgent() {
   const launcherRef = useRef(null);
   const restoreFocusRef = useRef(null);
   const autoNavigateTimerRef = useRef(null);
+  const locationKeyRef = useRef(`${location.pathname}${location.search}${location.hash}`);
 
   const scrollToLatestMessage = useCallback(() => {
     const container = messageListRef.current;
@@ -626,6 +627,8 @@ function FloatingAiAgent() {
     if (!href) {
       return;
     }
+
+    closeChat();
 
     if (href.startsWith('http')) {
       window.open(href, '_blank', 'noopener,noreferrer');
@@ -809,6 +812,16 @@ function FloatingAiAgent() {
     return undefined;
   }, [location.pathname, location.hash, prefersReducedMotion]);
 
+  useEffect(() => {
+    const currentLocationKey = `${location.pathname}${location.search}${location.hash}`;
+
+    if (open && locationKeyRef.current !== currentLocationKey) {
+      closeChat();
+    }
+
+    locationKeyRef.current = currentLocationKey;
+  }, [location.pathname, location.search, location.hash, open, closeChat]);
+
   useEffect(() => () => clearAutoNavigateTimer(), []);
 
   const panel = (
@@ -847,6 +860,7 @@ function FloatingAiAgent() {
                   <div>
                     <p className="ai-agent-eyebrow">AI Agent</p>
                     <h3 id="ai-agent-title">Portfolio Assistant</h3>
+                    <p className="ai-agent-subtitle">Fast answers for pricing, projects, and contact.</p>
                   </div>
                 </div>
                 <div className="ai-agent-status">
@@ -979,13 +993,9 @@ function FloatingAiAgent() {
         aria-controls="ai-agent-panel"
         aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
       >
-        <span className="ai-agent-launcher-glow" aria-hidden="true" />
+        <span className="ai-agent-launcher-pulse" aria-hidden="true" />
         <span className="ai-agent-launcher-icon" aria-hidden="true">
           <Icon name={open ? 'close' : 'sparkles'} size={22} />
-        </span>
-        <span className="ai-agent-launcher-copy">
-          <strong>AI Agent</strong>
-          <small>{open ? 'Close chat' : 'Ask me anything'}</small>
         </span>
       </button>
     </div>,

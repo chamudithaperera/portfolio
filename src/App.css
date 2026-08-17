@@ -463,11 +463,11 @@ html {
   right: clamp(1rem, 2.5vw, 2rem);
   bottom: calc(clamp(1rem, 2.5vw, 2rem) + 5rem);
   z-index: 121;
-  width: min(28rem, calc(100vw - 2rem));
-  max-height: min(39rem, calc(100vh - 7rem));
+  width: min(31rem, calc(100vw - 2rem));
+  max-height: min(40rem, calc(100vh - 7rem));
   overflow: hidden;
   border: 1px solid rgba(96, 165, 250, 0.22);
-  border-radius: 1.5rem;
+  border-radius: 1.6rem;
   background:
     radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 38%),
     radial-gradient(circle at 85% 0%, rgba(14, 165, 233, 0.18), transparent 34%),
@@ -487,16 +487,17 @@ html {
 
 .ai-agent-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
-  padding: 1rem 1rem 0.9rem;
+  padding: 1rem 1rem 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
 }
 
 .ai-agent-title-wrap {
   display: flex;
   min-width: 0;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
   flex: 1 1 auto;
 }
@@ -533,6 +534,13 @@ html {
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.2;
+}
+
+.ai-agent-subtitle {
+  margin: 0.22rem 0 0;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  line-height: 1.3;
 }
 
 .ai-agent-status {
@@ -806,11 +814,12 @@ html {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.85rem;
-  min-height: 4.15rem;
-  padding: 0.85rem 1rem 0.85rem 0.95rem;
+  justify-content: center;
+  width: 4.15rem;
+  height: 4.15rem;
+  padding: 0;
   border: 0;
-  border-radius: 1.35rem;
+  border-radius: 999px;
   color: #f8fbff;
   background:
     radial-gradient(circle at 25% 22%, rgba(255, 255, 255, 0.32), transparent 34%),
@@ -831,9 +840,9 @@ html {
     0 0 0 1px rgba(255, 255, 255, 0.22) inset;
 }
 
-.ai-agent-launcher-glow {
+.ai-agent-launcher-pulse {
   position: absolute;
-  inset: 0.25rem;
+  inset: 0.35rem;
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: inherit;
   opacity: 0.55;
@@ -844,36 +853,13 @@ html {
   position: relative;
   z-index: 1;
   display: inline-flex;
-  width: 2.55rem;
-  height: 2.55rem;
+  width: 100%;
+  height: 100%;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  border-radius: 0.95rem;
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
-}
-
-.ai-agent-launcher-copy {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.ai-agent-launcher-copy strong {
-  font-size: 0.92rem;
-  font-weight: 800;
-  line-height: 1.1;
-}
-
-.ai-agent-launcher-copy small {
-  color: rgba(240, 249, 255, 0.86);
-  font-size: 0.72rem;
-  line-height: 1.1;
+  border-radius: 999px;
+  transition: transform 0.24s ease;
 }
 
 @keyframes launcherGlow {
@@ -7301,7 +7287,6 @@ textarea:focus-visible {
   .ai-agent-launcher-shell {
     right: 1rem;
     bottom: 1rem;
-    left: auto;
   }
 
   .ai-agent-panel {
@@ -7319,12 +7304,8 @@ textarea:focus-visible {
   }
 
   .ai-agent-launcher {
-    max-width: calc(100vw - 2rem);
-    min-height: 4rem;
-  }
-
-  .ai-agent-launcher-copy small {
-    display: none;
+    width: 3.8rem;
+    height: 3.8rem;
   }
 
   .pricing-hero {
@@ -7408,13 +7389,14 @@ textarea:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .ai-agent-launcher,
-  .ai-agent-launcher-glow,
+  .ai-agent-launcher-pulse,
   .ai-agent-panel,
   .ai-agent-backdrop,
   .ai-agent-action,
   .ai-agent-chip,
   .ai-agent-close,
   .ai-agent-send,
+  .ai-agent-launcher-icon,
   .ai-agent-typing i {
     transition: none;
     animation: none;
