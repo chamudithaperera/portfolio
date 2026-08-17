@@ -10,8 +10,6 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { A11y, Keyboard, Pagination } from 'swiper/modules';
 import {
   siDart,
   siDocker,
@@ -45,8 +43,6 @@ import {
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
 import { useTheme } from '../theme';
-import 'swiper/css';
-import 'swiper/css/pagination';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -3377,7 +3373,7 @@ function ReviewStars({ value = 0, onChange, interactive = false, size = 14, clas
   );
 }
 
-function ReviewCard({ review, index = 0 }) {
+function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onActivate, onKeyDown }) {
   const prefersReducedMotion = useFramerReducedMotion();
   const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
   const name = String(review.name || 'Anonymous reviewer');
@@ -3395,87 +3391,156 @@ function ReviewCard({ review, index = 0 }) {
 
   return (
     <motion.article
-      className="review-card review-card--swiper card-3d"
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+      className={`experience-card review-carousel-card card-3d ${positionClass}`.trim()}
+      role="button"
+      tabIndex={0}
+      aria-hidden={positionClass === 'is-hidden'}
+      onClick={onActivate}
+      onKeyDown={onKeyDown}
+      initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: prefersReducedMotion ? 0 : 0.45, delay: Math.min(index, 6) * 0.05 }}
-      whileHover={prefersReducedMotion ? undefined : { y: -5 }}
+      whileHover={prefersReducedMotion ? undefined : { y: -4 }}
     >
-      <div className="review-card-top">
-        <div className="review-card-avatar" aria-hidden="true">
-          {initials}
+      <span className="experience-card-accent" />
+      <div className="experience-card-body review-carousel-body">
+        <div className="experience-card-header review-carousel-header">
+          <div className="experience-role review-carousel-role">
+            <span className="experience-role-icon review-carousel-avatar" aria-hidden="true">
+              {initials}
+            </span>
+            <div>
+              <div className="experience-title-line review-carousel-title-line">
+                <h3>{name}</h3>
+                <span className="current-badge review-carousel-service">{service}</span>
+              </div>
+              <p>{projectName}</p>
+            </div>
+          </div>
+          <span className="experience-period review-carousel-rating">
+            <Icon name="star" size={12} />
+            {rating ? `${rating}/5` : 'No rating yet'}
+          </span>
         </div>
-        <div className="review-card-identity">
-          <strong>{name}</strong>
-          <span>{projectName}</span>
+
+        <div className="review-carousel-summary">
+          <ReviewStars value={rating} className="review-carousel-stars" />
+          <p className="review-carousel-description">“{description}”</p>
         </div>
-        <span className="review-card-service">{service}</span>
-      </div>
 
-      <div className="review-card-rating-row">
-        <ReviewStars value={rating} className="review-card-stars" />
-        <span className="review-card-rating-value">{rating ? `${rating}.0/5` : 'No rating yet'}</span>
+        <div className="experience-card-footer review-carousel-footer">
+          <div className="experience-count review-carousel-count">
+            <strong>{String(index + 1).padStart(2, '0')}</strong>
+            <span>/</span>
+            <small>{String(totalCount || 0).padStart(2, '0')}</small>
+            <em>· Public review</em>
+          </div>
+          <div className="slider-pulse" aria-hidden="true" />
+        </div>
       </div>
-
-      <p className="review-card-description">“{description}”</p>
     </motion.article>
   );
 }
 
-function ReviewSwiper({ reviews = [], className = '', slidesPerView = 1.05, spaceBetween = 18 }) {
-  const swiperRef = useRef(null);
-  const visibleReviews = Array.isArray(reviews) ? reviews : [];
-  const hasReviews = visibleReviews.length > 0;
+function ReviewTimeline({ reviews = [], className = '' }) {
+  const [activeReviewIndex, setActiveReviewIndex] = useState(0);
+  const safeReviews = Array.isArray(reviews) ? reviews : [];
+  const reviewCount = safeReviews.length;
 
-  if (!hasReviews) {
+  useEffect(() => {
+    if (activeReviewIndex >= reviewCount) {
+      setActiveReviewIndex(0);
+    }
+  }, [activeReviewIndex, reviewCount]);
+
+  if (!reviewCount) {
     return null;
   }
 
-  return (
-    <div className={`review-swiper-shell ${className}`.trim()}>
-      <div className="review-swiper-controls">
-        <button
-          type="button"
-          className="review-swiper-button"
-          onClick={() => swiperRef.current?.slidePrev()}
-          aria-label="Previous review"
-        >
-          <Icon name="arrowLeft" size={15} />
-        </button>
-        <button
-          type="button"
-          className="review-swiper-button"
-          onClick={() => swiperRef.current?.slideNext()}
-          aria-label="Next review"
-        >
-          <Icon name="arrowRight" size={15} />
-        </button>
-      </div>
+  const showPreviousReview = () => {
+    if (!reviewCount) return;
+    setActiveReviewIndex((current) => (current - 1 + reviewCount) % reviewCount);
+  };
 
-      <Swiper
-        className="review-swiper"
-        modules={[A11y, Keyboard, Pagination]}
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        slidesPerView={slidesPerView}
-        spaceBetween={spaceBetween}
-        breakpoints={{
-          640: { slidesPerView: 1.2, spaceBetween: 20 },
-          900: { slidesPerView: 1.8, spaceBetween: 22 },
-          1200: { slidesPerView: 2.35, spaceBetween: 24 },
-        }}
-        grabCursor
-        keyboard={{ enabled: true }}
-        pagination={{ clickable: true }}
-        watchOverflow
-      >
-        {visibleReviews.map((review, index) => (
-          <SwiperSlide key={review.id || `${review.email}-${index}`} className="review-swiper-slide">
-            <ReviewCard review={review} index={index} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+  const showNextReview = () => {
+    if (!reviewCount) return;
+    setActiveReviewIndex((current) => (current + 1) % reviewCount);
+  };
+
+  const activateReview = (index) => setActiveReviewIndex(index);
+
+  const getReviewOffset = (index) => {
+    if (!reviewCount) return 0;
+    const rawOffset = index - activeReviewIndex;
+    if (rawOffset > reviewCount / 2) {
+      return rawOffset - reviewCount;
+    }
+    if (rawOffset < -reviewCount / 2) {
+      return rawOffset + reviewCount;
+    }
+    return rawOffset;
+  };
+
+  return (
+    <div className={`review-timeline-shell ${className}`.trim()}>
+      <div className="slider-section slider-section--reviews">
+        <div className="slider-heading-row">
+          <div>
+            <p className="column-label">
+              <Icon name="star" size={13} /> Reviews
+            </p>
+            <h3>Client review timeline</h3>
+          </div>
+          <div className="slider-controls">
+            <button type="button" className="slider-button" aria-label="Previous review card" onClick={showPreviousReview}>
+              <Icon name="arrowLeft" size={15} />
+            </button>
+            <button type="button" className="slider-button" aria-label="Next review card" onClick={showNextReview}>
+              <Icon name="arrowRight" size={15} />
+            </button>
+          </div>
+        </div>
+
+        <div className="review-carousel" aria-label="Approved review cards slider">
+          <div className="review-carousel-stage">
+            {safeReviews.map((review, index) => {
+              const offset = getReviewOffset(index);
+              const positionClass =
+                offset === 0 ? 'is-active' : offset === -1 ? 'is-prev' : offset === 1 ? 'is-next' : 'is-hidden';
+
+              return (
+                <ReviewCard
+                  key={review.id || `${review.email}-${index}`}
+                  review={review}
+                  index={index}
+                  totalCount={reviewCount}
+                  positionClass={positionClass}
+                  onActivate={() => activateReview(index)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      activateReview(index);
+                    }
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="review-carousel-dots" aria-label="Review carousel pagination">
+          {safeReviews.map((review, index) => (
+            <button
+              key={`${review.id || review.email || 'review'}-dot`}
+              type="button"
+              className={`review-carousel-dot ${index === activeReviewIndex ? 'is-active' : ''}`}
+              aria-label={`Show ${review.name || `review ${index + 1}`}`}
+              aria-pressed={index === activeReviewIndex}
+              onClick={() => activateReview(index)}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -3501,7 +3566,7 @@ function ReviewSection({ reviews = [] }) {
         </div>
 
         {visibleReviews.length ? (
-          <ReviewSwiper reviews={visibleReviews} />
+          <ReviewTimeline reviews={visibleReviews} />
         ) : (
           <div className="review-empty-panel card-3d">
             <div>
@@ -3818,7 +3883,7 @@ function ReviewPage() {
                   Loading approved reviews...
                 </div>
               ) : reviews.length ? (
-                <ReviewSwiper reviews={reviews} className="review-swiper--page" slidesPerView={1.02} spaceBetween={20} />
+                <ReviewTimeline reviews={reviews} className="review-timeline--page" />
               ) : (
                 <div className="review-empty-panel card-3d">
                   <div>
