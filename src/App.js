@@ -90,13 +90,24 @@ function AppRoutes() {
   );
 }
 
+function AppContent() {
+  const location = useLocation();
+  const showAiAgent = !location.pathname.startsWith('/admin');
+
+  return (
+    <>
+      {showAiAgent ? <FloatingAiAgent /> : null}
+      <AppRoutes />
+    </>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider>
       <Router basename={process.env.PUBLIC_URL || '/'}>
         <VisitTracker />
-        <FloatingAiAgent />
-        <AppRoutes />
+        <AppContent />
       </Router>
     </ThemeProvider>
   );

@@ -1,27 +1,4 @@
 .admin-shell {
-  --admin-bg: #070d1f;
-  --admin-bg-soft: #040916;
-  --admin-sidebar: #00020a;
-  --admin-sidebar-soft: #070d1f;
-  --admin-panel: #070d1f;
-  --admin-panel-soft: #040916;
-  --admin-border: rgba(30, 58, 138, 0.25);
-  --admin-border-strong: rgba(30, 58, 138, 0.4);
-  --admin-text: #e8eeff;
-  --admin-muted: #94a3b8;
-  --admin-muted-strong: #cbd5e1;
-  --admin-accent: #2563eb;
-  --admin-accent-strong: #0ea5e9;
-  --admin-danger: #e11d48;
-  --admin-success: #10b981;
-  position: relative;
-  min-height: 100vh;
-  overflow: hidden;
-  color: var(--admin-text);
-  background: var(--admin-bg);
-}
-
-[data-theme='light'] .admin-shell {
   --admin-bg: #e9eef3;
   --admin-bg-soft: #f3f6fa;
   --admin-sidebar: #121212;
@@ -37,6 +14,11 @@
   --admin-accent-strong: #c2410c;
   --admin-danger: #e11d48;
   --admin-success: #168a52;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--admin-text);
+  background: var(--admin-bg);
 }
 
 .admin-shell::before,
