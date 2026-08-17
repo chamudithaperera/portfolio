@@ -8357,13 +8357,6 @@ textarea:focus-visible {
   }
 }
 
-/* Theme Switcher Button (Desktop & Mobile) */
-.theme-toggle-button {
-.theme-toggle-button,
-.mobile-theme-toggle {
-  display: none;
-}
-
 /* Light Theme Overrides */
 [data-theme='light'] {
   color-scheme: light;
@@ -8811,6 +8804,4 @@ textarea:focus-visible {
 
 [data-theme='light'] .timeline-dot {
   background: var(--slate-700);
-}
-
 }

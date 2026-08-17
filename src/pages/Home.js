@@ -1236,7 +1236,6 @@ function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('');
   const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
 
   const getNavHref = (href) => (href.startsWith('#') && location.pathname !== '/' ? `/${href}` : href);
   const homeHref = location.pathname === '/' ? '#hero' : '/#hero';
@@ -1322,19 +1321,6 @@ function Navigation() {
           {navItems.map((item) => renderNavItem(item))}
         </div>
 
-        <button
-          type="button"
-          className="theme-toggle-button"
-          onClick={toggleTheme}
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          aria-pressed={theme === 'light'}
-        >
-          <span className="theme-toggle-icon" aria-hidden="true">
-            <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
-          </span>
-          <span className="theme-toggle-label">{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>
-        </button>
-
         <a className="hire-button" href={contactHref}>
           Hire Me
         </a>
@@ -1354,16 +1340,6 @@ function Navigation() {
       {open ? (
         <div id="mobile-navigation" className="mobile-nav">
           {navItems.map((item) => renderNavItem(item))}
-          <button
-            type="button"
-            className="mobile-theme-toggle"
-            onClick={toggleTheme}
-            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            aria-pressed={theme === 'light'}
-          >
-            <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
-            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-          </button>
           <a href={contactHref} className="mobile-hire" onClick={() => setOpen(false)}>
             Hire Me
           </a>
