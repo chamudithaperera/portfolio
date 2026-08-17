@@ -72,7 +72,7 @@ const siteOrigin =
     .trim()
     .replace(/\/+$/, '') || 'https://chamudithaperera.online';
 const siteName = 'Chamuditha Perera';
-const socialImage = `${siteOrigin}/assets/imgs/header/edited-photo-cropped-720.png`;
+const socialImage = `${siteOrigin}/assets/imgs/header/coding-hero-v1.png`;
 const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteOrigin}/favicon.png`;
 const siteIcon = `${siteOrigin}/favicon.ico`;

@@ -97,7 +97,7 @@ const projectsPageDescription =
 const pricingPageTitle = 'Pricing | Chamuditha Perera';
 const pricingPageDescription =
   'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.';
-const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`;
+const socialImage = `${siteUrl}/assets/imgs/header/coding-hero-v1.png`;
 const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteUrl}/favicon.png`;
 const siteIcon = `${siteUrl}/favicon.ico`;
@@ -723,10 +723,10 @@ function ShowcaseIdentity() {
       <div className="hero-showcase-aura hero-showcase-aura-b" />
       <div className="hero-showcase-panel">
         <picture>
-          <source srcSet={withBase('/assets/imgs/header/edited-photo-cropped-720.webp')} type="image/webp" />
+          <source srcSet={withBase('/assets/imgs/header/coding-hero-v1.webp')} type="image/webp" />
           <img
             className="hero-showcase-image"
-            src={withBase('/assets/imgs/header/edited-photo-cropped-720.png')}
+            src={withBase('/assets/imgs/header/coding-hero-v1.png')}
             alt=""
             loading="eager"
             decoding="async"
