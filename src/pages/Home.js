@@ -1141,35 +1141,6 @@ function usePortfolioContent() {
   return content;
 }
 
-function useReviewContent() {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let active = true;
-
-    async function load() {
-      try {
-        const response = await apiRequest('/api/content/reviews');
-        if (!active || !response?.ok) return;
-        setReviews(Array.isArray(response.reviews) ? response.reviews : []);
-      } catch (error) {
-        void error;
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    }
-
-    load();
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  return { reviews, loading };
-}
 
 function usePricingContent() {
   const [services, setServices] = useState(emptyPricingServices);
@@ -3614,7 +3585,6 @@ function ReviewSection({ reviews = [] }) {
 }
 
 function ReviewPage() {
-  const { reviews, loading } = useReviewContent();
   const prefersReducedMotion = useFramerReducedMotion();
   const [form, setForm] = useState(() => ({ ...emptyReviewForm }));
   const [status, setStatus] = useState('idle');
@@ -3800,10 +3770,15 @@ function ReviewPage() {
                       <p className="review-tier">Review form</p>
                       <h2>Leave a public review</h2>
                     </div>
-                    <span className="review-form-note">
-                      <Icon name="sparkles" size={13} />
-                      Moderated feedback
-                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                      <span className="review-form-note">
+                        <Icon name="sparkles" size={13} />
+                        Moderated feedback
+                      </span>
+                      <Link className="secondary-button" to="/" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+                        Back to home
+                      </Link>
+                    </div>
                   </div>
 
                   <div className="review-grid-2">
@@ -3885,39 +3860,6 @@ function ReviewPage() {
                     {sending ? 'Submitting...' : 'Submit Review'}
                   </button>
                 </form>
-              )}
-            </div>
-
-            <div className="review-feed-panel">
-              <div className="review-feed-header">
-                <div>
-                  <p className="review-tier">Approved reviews</p>
-                  <h2>What clients say</h2>
-                  <p>
-                    These reviews appear only after approval, so visitors always see a trusted and curated set of
-                    feedback.
-                  </p>
-                </div>
-                <Link className="secondary-button" to="/">
-                  Back to home
-                </Link>
-              </div>
-
-              {loading ? (
-                <div className="review-loading-panel">
-                  <span className="spinner" aria-hidden="true" />
-                  Loading approved reviews...
-                </div>
-              ) : reviews.length ? (
-                <ReviewTimeline reviews={reviews} className="review-timeline--page" />
-              ) : (
-                <div className="review-empty-panel card-3d">
-                  <div>
-                    <p className="review-empty-kicker">No approved reviews yet</p>
-                    <h3>The first approved testimonial will appear here.</h3>
-                    <p>Submit your own review above, and I will approve it after checking the details.</p>
-                  </div>
-                </div>
               )}
             </div>
           </Reveal>
