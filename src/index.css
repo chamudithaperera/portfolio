@@ -16,8 +16,8 @@ html {
 body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
-  background: #080b14;
-  color: #e8eeff;
+  background: var(--background);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -11,6 +11,25 @@
   --slate-500: #64748b;
   --slate-600: #475569;
   --slate-700: #334155;
+  --border-color: rgba(30, 58, 138, 0.25);
+  --header-bg: rgba(0, 2, 10, 0.85);
+  --header-border: rgba(30, 58, 138, 0.2);
+}
+
+:root[data-theme='light'] {
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-dark: #f1f5f9;
+  --text: #0f172a;
+  --slate-200: #1e293b;
+  --slate-300: #334155;
+  --slate-400: #475569;
+  --slate-500: #64748b;
+  --slate-600: #94a3b8;
+  --slate-700: #cbd5e1;
+  --border-color: rgba(15, 23, 42, 0.08);
+  --header-bg: rgba(248, 250, 252, 0.85);
+  --header-border: rgba(15, 23, 42, 0.1);
 }
 
 html {
@@ -8349,3 +8368,210 @@ textarea:focus-visible {
     font-size: 0.625rem;
   }
 }
+
+/* Theme Switcher Button (Desktop & Mobile) */
+.theme-toggle-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  color: var(--slate-300);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle-button:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: rotate(15deg) scale(1.05);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.15);
+}
+
+.mobile-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: calc(100% - 2.5rem);
+  margin: 0.75rem auto;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  color: var(--slate-300);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-theme-toggle:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive Theme Toggler display rules */
+@media (max-width: 767px) {
+  .theme-toggle-button {
+    display: none;
+  }
+}
+
+/* Light Theme Overrides */
+[data-theme='light'] {
+  color-scheme: light;
+}
+
+[data-theme='light'] body,
+[data-theme='light'] .bolt-shell,
+[data-theme='light'] .page-transition-shell {
+  background: var(--background);
+  color: var(--text);
+}
+
+[data-theme='light'] .top-nav-scrolled {
+  background: var(--header-bg);
+  border-color: var(--header-border);
+}
+
+[data-theme='light'] .top-nav {
+  border-bottom-color: var(--header-border);
+}
+
+[data-theme='light'] .theme-toggle-button,
+[data-theme='light'] .mobile-theme-toggle {
+  color: var(--slate-600);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .theme-toggle-button:hover,
+[data-theme='light'] .mobile-theme-toggle:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Section Background Gradients Override */
+[data-theme='light'] .section-about {
+  background: linear-gradient(180deg, var(--background), var(--surface-dark));
+}
+[data-theme='light'] .section-experience {
+  background: linear-gradient(180deg, var(--surface-dark), var(--surface));
+}
+[data-theme='light'] .section-projects {
+  background: linear-gradient(180deg, var(--surface-dark), var(--background));
+}
+[data-theme='light'] .section-skills {
+  background: linear-gradient(180deg, var(--surface), var(--background));
+}
+[data-theme='light'] .section-education {
+  background: linear-gradient(180deg, var(--background), var(--surface-dark));
+}
+[data-theme='light'] .section-contact {
+  background: linear-gradient(180deg, var(--surface-dark), var(--background));
+}
+
+/* Card, Panel, List items, Bubbles styled backgrounds */
+[data-theme='light'] .experience-card,
+[data-theme='light'] .project-card,
+[data-theme='light'] .pricing-card,
+[data-theme='light'] .review-card,
+[data-theme='light'] .timeline-card,
+[data-theme='light'] .education-card,
+[data-theme='light'] .certification-card,
+[data-theme='light'] .available-card,
+[data-theme='light'] .skill-node-card,
+[data-theme='light'] .profile-card,
+[data-theme='light'] .hero-showcase-panel,
+[data-theme='light'] .ai-agent-panel,
+[data-theme='light'] .ai-agent-bubble.is-assistant {
+  background: var(--surface) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+}
+
+[data-theme='light'] .card:hover,
+[data-theme='light'] .experience-card:hover,
+[data-theme='light'] .project-card:hover,
+[data-theme='light'] .pricing-card:hover,
+[data-theme='light'] .review-card:hover,
+[data-theme='light'] .timeline-card:hover {
+  border-color: rgba(37, 99, 235, 0.25) !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme='light'] .desktop-nav a {
+  color: var(--slate-600);
+}
+
+[data-theme='light'] .desktop-nav a:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .desktop-nav a.active {
+  color: var(--blue);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+/* Form controls / inputs override */
+[data-theme='light'] input,
+[data-theme='light'] textarea,
+[data-theme='light'] select,
+[data-theme='light'] .ai-agent-composer {
+  background: var(--surface-dark) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text) !important;
+}
+
+[data-theme='light'] input:focus,
+[data-theme='light'] textarea:focus,
+[data-theme='light'] select:focus {
+  border-color: var(--blue) !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+}
+
+[data-theme='light'] .ai-agent-composer textarea {
+  background: transparent !important;
+}
+
+[data-theme='light'] .ai-agent-bubble.is-user {
+  background: var(--blue) !important;
+  color: #ffffff !important;
+}
+
+/* Reduced opacity for heavy glowing auror effects to keep it sleek */
+[data-theme='light'] .hero-showcase-aura,
+[data-theme='light'] .ai-agent-launcher-pulse {
+  opacity: 0.12 !important;
+}
+
+[data-theme='light'] .social-button {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: var(--slate-600);
+}
+
+[data-theme='light'] .social-button:hover {
+  color: var(--blue);
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+[data-theme='light'] .brand {
+  color: var(--text);
+}
+
+[data-theme='light'] .mobile-nav {
+  background: var(--background);
+  border-color: var(--border-color);
+}
+

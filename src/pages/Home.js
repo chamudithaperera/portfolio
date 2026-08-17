@@ -432,6 +432,20 @@ const GALAXY_PARTICLE_COUNT = 1400;
 const GALAXY_ARMS = 4;
 
 const iconPaths = {
+  sun: [
+    'M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0',
+    'M12 2v2',
+    'M12 20v2',
+    'M4.93 4.93l1.41 1.41',
+    'M17.66 17.66l1.41 1.41',
+    'M2 12h2',
+    'M20 12h2',
+    'M6.34 17.66l-1.41 1.41',
+    'M19.07 4.93l-1.41 1.41'
+  ],
+  moon: [
+    'M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'
+  ],
   code: ['M8 9l-4 3 4 3', 'M16 9l4 3-4 3', 'M14 5l-4 14'],
   menu: ['M4 7h16', 'M4 12h16', 'M4 17h16'],
   close: ['M6 6l12 12', 'M18 6 6 18'],
@@ -1220,7 +1234,16 @@ function Navigation() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('');
+  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'dark');
   const location = useLocation();
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+  };
+
   const getNavHref = (href) => (href.startsWith('#') && location.pathname !== '/' ? `/${href}` : href);
   const homeHref = location.pathname === '/' ? '#hero' : '/#hero';
   const contactHref = getNavHref('#contact');
@@ -1305,6 +1328,15 @@ function Navigation() {
           {navItems.map((item) => renderNavItem(item))}
         </div>
 
+        <button
+          type="button"
+          className="theme-toggle-button"
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
+        </button>
+
         <a className="hire-button" href={contactHref}>
           Hire Me
         </a>
@@ -1324,6 +1356,15 @@ function Navigation() {
       {open ? (
         <div id="mobile-navigation" className="mobile-nav">
           {navItems.map((item) => renderNavItem(item))}
+          <button
+            type="button"
+            className="mobile-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
+            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
           <a href={contactHref} className="mobile-hire" onClick={() => setOpen(false)}>
             Hire Me
           </a>

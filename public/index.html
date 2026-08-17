@@ -2,6 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script>
+      (function() {
+        const theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
     <link rel="icon" type="image/png" sizes="96x96" href="https://chamudithaperera.online/favicon.png" />
     <link rel="shortcut icon" type="image/x-icon" href="https://chamudithaperera.online/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="https://chamudithaperera.online/site-icon-192.png" />
