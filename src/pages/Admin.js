@@ -505,6 +505,29 @@ function techStackFormToBody(form) {
   };
 }
 
+function reviewToForm(item) {
+  if (!item) return emptyReviewForm;
+  return {
+    name: item.name || '',
+    email: item.email || '',
+    projectName: item.projectName || '',
+    service: item.service || reviewServiceOptions[0],
+    rating: Number(item.rating || 5),
+    description: item.description || '',
+  };
+}
+
+function reviewFormToBody(form) {
+  return {
+    name: form.name,
+    email: form.email,
+    projectName: form.projectName,
+    service: form.service,
+    rating: form.rating,
+    description: form.description,
+  };
+}
+
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -1044,6 +1067,17 @@ function Admin() {
   }, [selectedCertificate]);
 
   useEffect(() => {
+    if (selectedReview) {
+      setReviewForm(reviewToForm(selectedReview));
+    } else {
+      setReviewForm(emptyReviewForm);
+    }
+    setReviewFieldErrors({});
+    setReviewError('');
+    setReviewStatus('');
+  }, [selectedReview]);
+
+  useEffect(() => {
     setPricingServiceForm(pricingServiceToForm(selectedPricingService));
   }, [selectedPricingService]);
 
@@ -1420,9 +1454,101 @@ function Admin() {
     }
   };
 
+  const handleReviewNew = () => {
+    setSelectedReviewId('');
+    setReviewForm({ ...emptyReviewForm });
+    setReviewStatus('');
+    setReviewError('');
+    setReviewFieldErrors({});
+  };
+
+  const handleReviewSave = async (event) => {
+    event.preventDefault();
+    setReviewSaving(true);
+    setReviewError('');
+    setReviewFieldErrors({});
+    setReviewStatus('');
+
+    try {
+      const body = reviewFormToBody(reviewForm);
+      const response = selectedReviewId
+        ? await apiRequest(`/api/admin/reviews/${selectedReviewId}`, {
+            method: 'PUT',
+            body,
+          })
+        : await apiRequest('/api/admin/reviews', {
+            method: 'POST',
+            body,
+          });
+
+      setReviewStatus(selectedReviewId ? 'Review updated.' : 'Review created.');
+      setSelectedReviewId(String(response.review.id));
+      await Promise.allSettled([loadReviews(), loadDashboard()]);
+      setIsEditingReview(false);
+    } catch (error) {
+      setReviewFieldErrors(getApiFieldErrors(error));
+      setReviewError(error.message || 'Unable to save this review.');
+    } finally {
+      setReviewSaving(false);
+    }
+  };
+
+  const handleReviewDelete = async () => {
+    if (!selectedReviewId) return;
+    if (!window.confirm('Delete this review? This cannot be undone.')) return;
+
+    setReviewSaving(true);
+    setReviewError('');
+    setReviewFieldErrors({});
+    setReviewStatus('');
+
+    try {
+      await apiRequest(`/api/admin/reviews/${selectedReviewId}`, { method: 'DELETE' });
+      setReviewStatus('Review removed.');
+      setSelectedReviewId('');
+      setReviewForm({ ...emptyReviewForm });
+      await Promise.allSettled([loadReviews(), loadDashboard()]);
+      setIsEditingReview(false);
+    } catch (error) {
+      setReviewError(error.message || 'Unable to delete this review.');
+    } finally {
+      setReviewSaving(false);
+    }
+  };
+
+  const handleReviewStatusToggle = async (review) => {
+    if (!review?.id) return;
+    const approved = (review.status || 'pending') !== 'approved';
+    const pendingKey = `status-${review.id}`;
+    setReviewActionPending(pendingKey);
+    setReviewsError('');
+
+    try {
+      const response = await apiRequest(`/api/admin/reviews/${review.id}/status`, {
+        method: 'PATCH',
+        body: { approved },
+      });
+      const updated = response.review;
+      setReviews((current) => current.map((item) => (String(item.id) === String(review.id) ? { ...item, ...updated } : item)));
+      await loadDashboard();
+    } catch (error) {
+      setReviewsError(error.message || 'Unable to update this review.');
+    } finally {
+      setReviewActionPending('');
+    }
+  };
+
   const updateEducationForm = (event) => {
     const { name, value } = event.target;
     setEducationForm((current) => ({ ...current, [name]: value }));
+  };
+
+  const updateReviewForm = (event) => {
+    const { name, value } = event.target;
+    setReviewForm((current) => ({
+      ...current,
+      [name]: name === 'rating' ? Number(value) : value,
+    }));
   };
 
   const updateExperienceForm = (event) => {
