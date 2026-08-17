@@ -2,7 +2,7 @@ import './App.css';
 import './utils/basePath';
 import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import Admin from './pages/Admin';
 import Home, { FloatingAiAgent, PricingPage, ProjectsPage, ReviewPage } from './pages/Home';
 import { ThemeProvider } from './theme';
@@ -64,24 +64,6 @@ function VisitTracker() {
   return null;
 }
 
-function ScrollProgressBar() {
-  const { scrollYProgress } = useScroll();
-  const prefersReducedMotion = useReducedMotion();
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 140,
-    damping: 28,
-    mass: 0.1,
-  });
-
-  return (
-    <motion.div
-      className="scroll-progress"
-      aria-hidden="true"
-      style={{ scaleX: prefersReducedMotion ? scrollYProgress : smoothProgress }}
-    />
-  );
-}
-
 function AppRoutes() {
   const location = useLocation();
   const prefersReducedMotion = useReducedMotion();
@@ -112,7 +94,6 @@ function App() {
   return (
     <ThemeProvider>
       <Router basename={process.env.PUBLIC_URL || '/'}>
-        <ScrollProgressBar />
         <VisitTracker />
         <FloatingAiAgent />
         <AppRoutes />
