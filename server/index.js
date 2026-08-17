@@ -26,6 +26,7 @@ const {
 } = require('./auth');
 const {
   validateAdminCredentials,
+  validateChatbotMessage,
   validateCertificatePayload,
   validateContactMessage,
   validateEducationPayload,
@@ -61,6 +62,12 @@ const {
   updateRow,
   TABLES,
 } = require('./portfolioStore');
+const {
+  buildKnowledgeSummary,
+  buildScriptedChatbotReply,
+  detectChatbotIntent,
+  generateChatbotReply,
+} = require('./chatbot');
 const { listVisits, recordVisit } = require('./visitStore');
 
 const app = express();
@@ -72,6 +79,11 @@ const siteOrigin =
     .trim()
     .replace(/\/+$/, '') || 'https://chamudithaperera.online';
 const siteName = 'Chamuditha Perera';
+const chatbotContact = {
+  email: 'chamudithaperera.dev@gmail.com',
+  phone: '+94787250549',
+  whatsappUrl: 'https://wa.me/94787250549',
+};
 const socialImage = `${siteOrigin}/assets/imgs/header/coding-hero-v2.png`;
 const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteOrigin}/favicon.png`;
@@ -138,6 +150,12 @@ const seoPages = {
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+const chatbotLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -708,6 +726,69 @@ app.post('/api/contact/messages', contactLimiter, async (req, res) => {
     message: 'Message saved successfully.',
     data,
   });
+});
+
+app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
+  const result = validateChatbotMessage(req.body);
+
+  if (!result.ok) {
+    return fail(res, 400, 'Please send a valid message.', result.errors);
+  }
+
+  const userMessage = result.values.message;
+  const intent = detectChatbotIntent(userMessage);
+
+  if (intent) {
+    const scripted = buildScriptedChatbotReply(intent, { contact: chatbotContact });
+    return res.json({
+      ok: true,
+      reply: scripted.reply,
+      actions: scripted.actions || [],
+      autoNavigate: scripted.autoNavigate || '',
+      source: 'scripted',
+    });
+  }
+
+  try {
+    const [portfolioContent, pricingServices] = await Promise.all([listPortfolioContent(), listPricingServices(false)]);
+    const knowledge = buildKnowledgeSummary({
+      siteName,
+      siteOrigin,
+      contact: chatbotContact,
+      portfolioContent,
+      pricingServices,
+    });
+    const reply = await generateChatbotReply({ message: userMessage, knowledge });
+
+    if (!reply) {
+      const scripted = buildScriptedChatbotReply('fallback', { contact: chatbotContact });
+      return res.json({
+        ok: true,
+        reply: scripted.reply,
+        actions: scripted.actions || [],
+        autoNavigate: scripted.autoNavigate || '',
+        source: 'fallback',
+      });
+    }
+
+    return res.json({
+      ok: true,
+      reply,
+      actions: [],
+      autoNavigate: '',
+      source: 'ai',
+    });
+  } catch (error) {
+    console.error('Chatbot reply failed:', error);
+    const scripted = buildScriptedChatbotReply('fallback', { contact: chatbotContact });
+    return res.json({
+      ok: true,
+      reply: scripted.reply,
+      actions: scripted.actions || [],
+      autoNavigate: scripted.autoNavigate || '',
+      source: 'fallback',
+    });
+  }
 });
 
 app.post('/api/admin/login', adminLimiter, async (req, res) => {
