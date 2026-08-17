@@ -570,7 +570,7 @@ function buildLocalChatbotReply(intent) {
       reply:
         'I can help with services, pricing, projects, and contact details. Try one of the quick messages below.',
       actions: [
-  { label: 'Click here to see pricing', href: '/pricing' },
+        { label: 'Click here to see pricing', href: '/pricing' },
         { label: 'Click here to see projects', href: '/projects' },
         { label: 'Click here to contact me', href: '/#contact' },
       ],
