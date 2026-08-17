@@ -8,6 +8,7 @@ import Home, { PricingPage, ProjectsPage } from './pages/Home';
 function VisitTracker() {
   const location = useLocation();
   const lastTrackedPath = useRef('');
+  const lastTrackedUrl = useRef('');
 
   useEffect(() => {
     if (location.pathname.startsWith('/admin')) {
@@ -15,6 +16,7 @@ function VisitTracker() {
     }
 
     const fullPath = `${location.pathname}${location.search}${location.hash}`;
+    const fullUrl = window.location.href;
     const trackerState = window.__visitTrackerState || (window.__visitTrackerState = { path: '', at: 0 });
     const now = Date.now();
 
@@ -44,6 +46,17 @@ function VisitTracker() {
       body: JSON.stringify(payload),
       keepalive: true,
     }).catch(() => {});
+
+    if (typeof window.gtag === 'function' && lastTrackedUrl.current !== fullUrl) {
+      window.gtag('event', 'page_view', {
+        page_path: fullPath,
+        page_location: fullUrl,
+        page_referrer: lastTrackedUrl.current,
+        page_title: document.title || '',
+      });
+    }
+
+    lastTrackedUrl.current = fullUrl;
   }, [location]);
 
   return null;
