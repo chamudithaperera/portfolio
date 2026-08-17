@@ -472,8 +472,7 @@ function Icon({ name, size = 16, className = '' }) {
 
 const chatbotQuickPrompts = [
   { id: 'services', label: 'What services do you offer?', intent: 'services' },
-  { id: 'website-pricing', label: 'What is the pricing for a website?', intent: 'website-pricing' },
-  { id: 'mobile-pricing', label: 'What is the pricing for a mobile app?', intent: 'mobile-pricing' },
+  { id: 'pricing', label: 'What is the pricing for a website or mobile app?', intent: 'pricing' },
   { id: 'projects', label: 'Show me your projects', intent: 'projects' },
   { id: 'contact', label: 'How can I contact you?', intent: 'contact' },
 ];
@@ -506,12 +505,8 @@ function detectChatbotIntent(message) {
     return 'services';
   }
 
-  if (hasPricingLanguage && /(website|web|site|portfolio)/.test(text)) {
-    return 'website-pricing';
-  }
-
-  if (hasPricingLanguage && /(mobile|app|android|ios|flutter)/.test(text)) {
-    return 'mobile-pricing';
+  if (hasPricingLanguage && /(website|web|site|portfolio|mobile|app|android|ios|flutter)/.test(text)) {
+    return 'pricing';
   }
 
   if (/(project|projects|portfolio|work samples|show me)/.test(text)) {
@@ -535,13 +530,9 @@ function buildLocalChatbotReply(intent) {
         { label: 'Click here to contact me', href: '/#contact' },
       ],
     },
-    'website-pricing': {
-      reply: 'You can view the website pricing details on the pricing page.',
-      actions: [{ label: 'Click here to see prices', href: '/pricing' }],
-    },
-    'mobile-pricing': {
-      reply: 'You can view the mobile app packages on the pricing page.',
-      actions: [{ label: 'Click here to see packages', href: '/pricing' }],
+    pricing: {
+      reply: 'You can view the website and mobile app pricing details on the pricing page.',
+      actions: [{ label: 'Click here to see pricing', href: '/pricing' }],
     },
     projects: {
       reply: 'You can browse my selected projects on the projects page.',
@@ -559,7 +550,7 @@ function buildLocalChatbotReply(intent) {
       reply:
         'I can help with services, pricing, projects, and contact details. Try one of the quick messages below.',
       actions: [
-        { label: 'Click here to see prices', href: '/pricing' },
+  { label: 'Click here to see pricing', href: '/pricing' },
         { label: 'Click here to see projects', href: '/projects' },
         { label: 'Click here to contact me', href: '/#contact' },
       ],
