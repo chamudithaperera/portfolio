@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import Admin from './pages/Admin';
 import Home, { FloatingAiAgent, PricingPage, ProjectsPage, ReviewPage } from './pages/Home';
+import { ThemeProvider } from './theme';
 
 function VisitTracker() {
   const location = useLocation();
@@ -109,12 +110,14 @@ function AppRoutes() {
 
 function App() {
   return (
-    <Router basename={process.env.PUBLIC_URL || '/'}>
-      <ScrollProgressBar />
-      <VisitTracker />
-      <FloatingAiAgent />
-      <AppRoutes />
-    </Router>
+    <ThemeProvider>
+      <Router basename={process.env.PUBLIC_URL || '/'}>
+        <ScrollProgressBar />
+        <VisitTracker />
+        <FloatingAiAgent />
+        <AppRoutes />
+      </Router>
+    </ThemeProvider>
   );
 }
 

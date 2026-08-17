@@ -42,6 +42,7 @@ import {
 } from 'simple-icons';
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
+import { useTheme } from '../theme';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -1234,15 +1235,8 @@ function Navigation() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('');
-  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'dark');
   const location = useLocation();
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-    document.documentElement.setAttribute('data-theme', nextTheme);
-    localStorage.setItem('theme', nextTheme);
-  };
+  const { theme, toggleTheme } = useTheme();
 
   const getNavHref = (href) => (href.startsWith('#') && location.pathname !== '/' ? `/${href}` : href);
   const homeHref = location.pathname === '/' ? '#hero' : '/#hero';
@@ -1333,8 +1327,12 @@ function Navigation() {
           className="theme-toggle-button"
           onClick={toggleTheme}
           aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-pressed={theme === 'light'}
         >
-          <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
+          <span className="theme-toggle-icon" aria-hidden="true">
+            <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
+          </span>
+          <span className="theme-toggle-label">{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>
         </button>
 
         <a className="hire-button" href={contactHref}>
@@ -1361,6 +1359,7 @@ function Navigation() {
             className="mobile-theme-toggle"
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-pressed={theme === 'light'}
           >
             <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
             <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
