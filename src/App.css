@@ -3505,7 +3505,7 @@ textarea:focus-visible {
 
 .hero-tech-badges {
   position: absolute;
-  inset: -2% -9% -2% -10%;
+  inset: 0;
   z-index: 5;
   pointer-events: none;
 }
@@ -3517,14 +3517,14 @@ textarea:focus-visible {
 
 .hero-tech-badge-shell {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.6rem 0.9rem 0.6rem 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
   border: 1px solid rgba(96, 165, 250, 0.26);
-  border-radius: 999px;
+  border-radius: 50%;
   background:
-    linear-gradient(180deg, rgba(5, 10, 25, 0.94), rgba(6, 12, 26, 0.72));
+    linear-gradient(180deg, rgba(5, 10, 25, 0.88), rgba(6, 12, 26, 0.62));
   box-shadow:
     0 18px 32px rgba(2, 6, 23, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -3538,8 +3538,8 @@ textarea:focus-visible {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.12), transparent 42%);
-  opacity: 0.7;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.18), transparent 42%);
+  opacity: 0.55;
   pointer-events: none;
 }
 
@@ -3549,22 +3549,11 @@ textarea:focus-visible {
   flex: none;
 }
 
-.hero-tech-badge-label {
-  position: relative;
-  z-index: 1;
-  color: #eff6ff;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
 .hero-tech-badge-flutter .hero-tech-badge-shell {
   --badge-tilt: -8deg;
   box-shadow:
     0 0 0 1px rgba(96, 165, 250, 0.2),
-    0 20px 36px rgba(37, 99, 235, 0.18),
+    0 16px 28px rgba(37, 99, 235, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -3572,7 +3561,7 @@ textarea:focus-visible {
   --badge-tilt: 7deg;
   box-shadow:
     0 0 0 1px rgba(103, 232, 249, 0.2),
-    0 20px 36px rgba(8, 145, 178, 0.18),
+    0 16px 28px rgba(8, 145, 178, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -3580,7 +3569,7 @@ textarea:focus-visible {
   --badge-tilt: -5deg;
   box-shadow:
     0 0 0 1px rgba(110, 231, 183, 0.18),
-    0 20px 36px rgba(16, 185, 129, 0.16),
+    0 16px 28px rgba(16, 185, 129, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -3588,7 +3577,7 @@ textarea:focus-visible {
   --badge-tilt: 5deg;
   box-shadow:
     0 0 0 1px rgba(134, 239, 172, 0.18),
-    0 20px 36px rgba(34, 197, 94, 0.16),
+    0 16px 28px rgba(34, 197, 94, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -3596,7 +3585,7 @@ textarea:focus-visible {
   --badge-tilt: -4deg;
   box-shadow:
     0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 20px 36px rgba(14, 165, 233, 0.16),
+    0 16px 28px rgba(14, 165, 233, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -5584,11 +5573,11 @@ textarea:focus-visible {
   }
 
   .hero-tech-badges {
-    inset: 1% -2% -2% -2%;
+    inset: 0;
   }
 
   .hero-tech-badge {
-    transform: scale(0.84);
+    transform: scale(0.7);
   }
 
   .hero-tech-badge-spring,

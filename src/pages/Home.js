@@ -831,8 +831,7 @@ function FloatingTechBadge({ badge }) {
           })}
     >
       <span className="hero-tech-badge-shell">
-        <StackGlyph stack={badge.stack} size={20} decorative className="hero-tech-badge-glyph" />
-        <span className="hero-tech-badge-label">{badge.stack.label}</span>
+        <StackGlyph stack={badge.stack} size={14} decorative className="hero-tech-badge-glyph" />
       </span>
     </BadgeTag>
   );
