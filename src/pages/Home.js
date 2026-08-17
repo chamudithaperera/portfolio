@@ -3384,6 +3384,14 @@ function ReviewCard({ review, index = 0 }) {
   const projectName = String(review.projectName || 'Project feedback');
   const service = String(review.service || 'Review');
   const description = String(review.description || '');
+  const initials =
+    name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase() || 'RV';
 
   return (
     <motion.article
@@ -3396,13 +3404,7 @@ function ReviewCard({ review, index = 0 }) {
     >
       <div className="review-card-top">
         <div className="review-card-avatar" aria-hidden="true">
-          {name
-            .split(' ')
-            .filter(Boolean)
-            .slice(0, 2)
-            .map((part) => part[0])
-            .join('')
-            .toUpperCase()}
+          {initials}
         </div>
         <div className="review-card-identity">
           <strong>{name}</strong>
