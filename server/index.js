@@ -73,6 +73,7 @@ const siteOrigin =
     .replace(/\/+$/, '') || 'https://chamudithaperera.online';
 const siteName = 'Chamuditha Perera';
 const socialImage = `${siteOrigin}/assets/imgs/header/edited-photo-cropped-720.png`;
+const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteOrigin}/favicon.png`;
 const siteIcon = `${siteOrigin}/favicon.ico`;
 const siteTouchIcon = `${siteOrigin}/site-icon-192.png`;
@@ -317,8 +318,8 @@ function buildStructuredData(seo) {
         primaryImageOfPage: {
           '@type': 'ImageObject',
           url: socialImage,
-          width: 720,
-          height: 1136,
+          width: 1448,
+          height: 1086,
         },
         inLanguage: 'en',
       },
@@ -458,17 +459,17 @@ function renderSeoHtml(requestPath) {
   html = replaceOrInsertHeadTag(
     html,
     /<meta\s+property=["']og:image:width["'][^>]*>/i,
-    '<meta property="og:image:width" content="720"/>',
+    '<meta property="og:image:width" content="1448"/>',
   );
   html = replaceOrInsertHeadTag(
     html,
     /<meta\s+property=["']og:image:height["'][^>]*>/i,
-    '<meta property="og:image:height" content="1136"/>',
+    '<meta property="og:image:height" content="1086"/>',
   );
   html = replaceOrInsertHeadTag(
     html,
     /<meta\s+property=["']og:image:alt["'][^>]*>/i,
-    '<meta property="og:image:alt" content="Chamuditha Perera software engineer portfolio"/>',
+    `<meta property="og:image:alt" content="${escapeHtml(socialImageAlt)}"/>`,
   );
   html = replaceOrInsertHeadTag(
     html,
@@ -493,7 +494,7 @@ function renderSeoHtml(requestPath) {
   html = replaceOrInsertHeadTag(
     html,
     /<meta\s+name=["']twitter:image:alt["'][^>]*>/i,
-    '<meta name="twitter:image:alt" content="Chamuditha Perera software engineer portfolio"/>',
+    `<meta name="twitter:image:alt" content="${escapeHtml(socialImageAlt)}"/>`,
   );
   html = replaceOrInsertHeadTag(
     html,

@@ -98,7 +98,7 @@ const pricingPageTitle = 'Pricing | Chamuditha Perera';
 const pricingPageDescription =
   'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.';
 const socialImage = `${siteUrl}/assets/imgs/header/edited-photo-cropped-720.png`;
-const socialImageAlt = 'Chamuditha Perera software engineer portfolio';
+const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteUrl}/favicon.png`;
 const siteIcon = `${siteUrl}/favicon.ico`;
 const siteTouchIcon = `${siteUrl}/site-icon-192.png`;
@@ -716,34 +716,27 @@ function SocialLink({ icon, label, href }) {
   );
 }
 
-function OrbitIdentity() {
+function ShowcaseIdentity() {
   return (
-    <div className="hero-orbit-identity" aria-hidden="true">
-      <div className="hero-orbit-nebula" />
-      <div className="hero-orbit-ring hero-orbit-ring-outer" />
-      <div className="hero-orbit-ring hero-orbit-ring-middle" />
-      <div className="hero-orbit-ring hero-orbit-ring-inner" />
-      <div className="hero-orbit-core">
-        <span className="hero-orbit-highlight" />
+    <div className="hero-showcase" aria-hidden="true">
+      <div className="hero-showcase-aura hero-showcase-aura-a" />
+      <div className="hero-showcase-aura hero-showcase-aura-b" />
+      <div className="hero-showcase-panel">
         <picture>
           <source srcSet={withBase('/assets/imgs/header/edited-photo-cropped-720.webp')} type="image/webp" />
           <img
-            className="hero-orbit-photo"
+            className="hero-showcase-image"
             src={withBase('/assets/imgs/header/edited-photo-cropped-720.png')}
             alt=""
             loading="eager"
             decoding="async"
           />
         </picture>
-        <span className="hero-orbit-spark">
-          <Icon name="sparkles" size={14} />
-        </span>
-        <span className="hero-loop-ring" aria-hidden="true">
-          <span />
-        </span>
+        <span className="hero-showcase-sheen" />
       </div>
-      <span className="hero-orbit-dot hero-orbit-dot-a" />
-      <span className="hero-orbit-dot hero-orbit-dot-b" />
+      <span className="hero-showcase-orb hero-showcase-orb-a" />
+      <span className="hero-showcase-orb hero-showcase-orb-b" />
+      <span className="hero-showcase-grid" />
     </div>
   );
 }
@@ -799,7 +792,7 @@ function Hero() {
         </div>
 
         <div className="hero-visual">
-          <OrbitIdentity />
+          <ShowcaseIdentity />
           <span className="floating-label floating-label-a">
             <Icon name="code" size={12} /> Full-Stack
           </span>
@@ -1419,8 +1412,8 @@ function ProjectsPage() {
         <meta property="og:description" content={projectsPageDescription} />
         <meta property="og:image" content={socialImage} />
         <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="720" />
-        <meta property="og:image:height" content="1136" />
+        <meta property="og:image:width" content="1448" />
+        <meta property="og:image:height" content="1086" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
@@ -2647,8 +2640,8 @@ function PricingPage() {
         <meta property="og:description" content={pricingPageDescription} />
         <meta property="og:image" content={socialImage} />
         <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="720" />
-        <meta property="og:image:height" content="1136" />
+        <meta property="og:image:width" content="1448" />
+        <meta property="og:image:height" content="1086" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
@@ -2928,8 +2921,8 @@ function Home() {
         <meta property="og:description" content={siteDescription} />
         <meta property="og:image" content={socialImage} />
         <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="720" />
-        <meta property="og:image:height" content="1136" />
+        <meta property="og:image:width" content="1448" />
+        <meta property="og:image:height" content="1086" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
