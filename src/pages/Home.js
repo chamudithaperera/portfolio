@@ -657,7 +657,7 @@ function FloatingAiAgent() {
   };
 
   const handleQuickPrompt = (prompt) => {
-    if (!prompt) {
+    if (!prompt || isSending) {
       return;
     }
 
@@ -824,6 +824,7 @@ function FloatingAiAgent() {
           />
           <motion.section
             ref={panelRef}
+            id="ai-agent-panel"
             className="ai-agent-panel card-3d"
             role="dialog"
             aria-modal="true"
@@ -972,7 +973,7 @@ function FloatingAiAgent() {
         className="ai-agent-launcher"
         onClick={open ? closeChat : openChat}
         aria-expanded={open}
-        aria-controls="ai-agent-title"
+        aria-controls="ai-agent-panel"
         aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
       >
         <span className="ai-agent-launcher-glow" aria-hidden="true" />
@@ -2104,7 +2105,6 @@ function ProjectsPage() {
       <main>
         <Projects mode="page" projectsData={portfolioContent.projects} />
       </main>
-      <FloatingContactMenu />
     </div>
   );
 }
@@ -3462,7 +3462,6 @@ function PricingPage() {
         </section>
         <PricingContact />
       </main>
-      <FloatingContactMenu />
       <Footer />
     </div>
   );
