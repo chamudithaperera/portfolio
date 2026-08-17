@@ -72,7 +72,7 @@ const siteOrigin =
     .trim()
     .replace(/\/+$/, '') || 'https://chamudithaperera.online';
 const siteName = 'Chamuditha Perera';
-const socialImage = `${siteOrigin}/assets/imgs/header/coding-hero-v1.png`;
+const socialImage = `${siteOrigin}/assets/imgs/header/coding-hero-v2.png`;
 const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteOrigin}/favicon.png`;
 const siteIcon = `${siteOrigin}/favicon.ico`;
@@ -318,8 +318,8 @@ function buildStructuredData(seo) {
         primaryImageOfPage: {
           '@type': 'ImageObject',
           url: socialImage,
-          width: 1448,
-          height: 1086,
+          width: 1536,
+          height: 1024,
         },
         inLanguage: 'en',
       },
@@ -459,12 +459,12 @@ function renderSeoHtml(requestPath) {
   html = replaceOrInsertHeadTag(
     html,
     /<meta\s+property=["']og:image:width["'][^>]*>/i,
-    '<meta property="og:image:width" content="1448"/>',
+    '<meta property="og:image:width" content="1536"/>',
   );
   html = replaceOrInsertHeadTag(
     html,
     /<meta\s+property=["']og:image:height["'][^>]*>/i,
-    '<meta property="og:image:height" content="1086"/>',
+    '<meta property="og:image:height" content="1024"/>',
   );
   html = replaceOrInsertHeadTag(
     html,

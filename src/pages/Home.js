@@ -97,7 +97,7 @@ const projectsPageDescription =
 const pricingPageTitle = 'Pricing | Chamuditha Perera';
 const pricingPageDescription =
   'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.';
-const socialImage = `${siteUrl}/assets/imgs/header/coding-hero-v1.png`;
+const socialImage = `${siteUrl}/assets/imgs/header/coding-hero-v2.png`;
 const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteUrl}/favicon.png`;
 const siteIcon = `${siteUrl}/favicon.ico`;
@@ -723,10 +723,10 @@ function ShowcaseIdentity() {
       <div className="hero-showcase-aura hero-showcase-aura-b" />
       <div className="hero-showcase-panel">
         <picture>
-          <source srcSet={withBase('/assets/imgs/header/coding-hero-v1.webp')} type="image/webp" />
+          <source srcSet={withBase('/assets/imgs/header/coding-hero-v2.webp')} type="image/webp" />
           <img
             className="hero-showcase-image"
-            src={withBase('/assets/imgs/header/coding-hero-v1.png')}
+            src={withBase('/assets/imgs/header/coding-hero-v2.png')}
             alt=""
             loading="eager"
             decoding="async"
@@ -1412,8 +1412,8 @@ function ProjectsPage() {
         <meta property="og:description" content={projectsPageDescription} />
         <meta property="og:image" content={socialImage} />
         <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="1448" />
-        <meta property="og:image:height" content="1086" />
+        <meta property="og:image:width" content="1536" />
+        <meta property="og:image:height" content="1024" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
@@ -2640,8 +2640,8 @@ function PricingPage() {
         <meta property="og:description" content={pricingPageDescription} />
         <meta property="og:image" content={socialImage} />
         <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="1448" />
-        <meta property="og:image:height" content="1086" />
+        <meta property="og:image:width" content="1536" />
+        <meta property="og:image:height" content="1024" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
@@ -2921,8 +2921,8 @@ function Home() {
         <meta property="og:description" content={siteDescription} />
         <meta property="og:image" content={socialImage} />
         <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="1448" />
-        <meta property="og:image:height" content="1086" />
+        <meta property="og:image:width" content="1536" />
+        <meta property="og:image:height" content="1024" />
         <meta property="og:image:alt" content={socialImageAlt} />
         <meta property="og:site_name" content={siteName} />
         <meta name="twitter:card" content="summary_large_image" />
