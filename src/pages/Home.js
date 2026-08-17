@@ -10,6 +10,8 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { A11y, Keyboard, Pagination } from 'swiper/modules';
 import {
   siDart,
   siDocker,
@@ -43,6 +45,8 @@ import {
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
 import { useTheme } from '../theme';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -3334,11 +3338,16 @@ function PricingContact() {
 function ReviewStars({ value = 0, onChange, interactive = false, size = 14, className = '' }) {
   const prefersReducedMotion = useFramerReducedMotion();
   const stars = Array.from({ length: 5 }, (_, index) => index + 1);
+  const selectedValue = Math.max(0, Math.min(5, Number(value) || 0));
 
   return (
-    <div className={`review-stars ${interactive ? 'is-interactive' : 'is-readonly'} ${className}`.trim()}>
+    <div
+      className={`review-stars ${interactive ? 'is-interactive' : 'is-readonly'} ${className}`.trim()}
+      role={interactive ? 'radiogroup' : undefined}
+      aria-label={interactive ? 'Rating selector' : undefined}
+    >
       {stars.map((star) => {
-        const active = star <= value;
+        const active = star <= selectedValue;
 
         if (!interactive) {
           return (
@@ -3371,10 +3380,14 @@ function ReviewStars({ value = 0, onChange, interactive = false, size = 14, clas
 function ReviewCard({ review, index = 0 }) {
   const prefersReducedMotion = useFramerReducedMotion();
   const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+  const name = String(review.name || 'Anonymous reviewer');
+  const projectName = String(review.projectName || 'Project feedback');
+  const service = String(review.service || 'Review');
+  const description = String(review.description || '');
 
   return (
     <motion.article
-      className="review-card card-3d"
+      className="review-card review-card--swiper card-3d"
       initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -3382,17 +3395,87 @@ function ReviewCard({ review, index = 0 }) {
       whileHover={prefersReducedMotion ? undefined : { y: -5 }}
     >
       <div className="review-card-top">
-        <div className="review-card-identity">
-          <strong>{review.name}</strong>
-          <span>{review.projectName}</span>
+        <div className="review-card-avatar" aria-hidden="true">
+          {name
+            .split(' ')
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0])
+            .join('')
+            .toUpperCase()}
         </div>
-        <span className="review-card-service">{review.service}</span>
+        <div className="review-card-identity">
+          <strong>{name}</strong>
+          <span>{projectName}</span>
+        </div>
+        <span className="review-card-service">{service}</span>
       </div>
 
-      <ReviewStars value={rating} className="review-card-stars" />
+      <div className="review-card-rating-row">
+        <ReviewStars value={rating} className="review-card-stars" />
+        <span className="review-card-rating-value">{rating ? `${rating}.0/5` : 'No rating yet'}</span>
+      </div>
 
-      <p className="review-card-description">{review.description}</p>
+      <p className="review-card-description">“{description}”</p>
     </motion.article>
+  );
+}
+
+function ReviewSwiper({ reviews = [], className = '', slidesPerView = 1.05, spaceBetween = 18 }) {
+  const swiperRef = useRef(null);
+  const visibleReviews = Array.isArray(reviews) ? reviews : [];
+  const hasReviews = visibleReviews.length > 0;
+
+  if (!hasReviews) {
+    return null;
+  }
+
+  return (
+    <div className={`review-swiper-shell ${className}`.trim()}>
+      <div className="review-swiper-controls">
+        <button
+          type="button"
+          className="review-swiper-button"
+          onClick={() => swiperRef.current?.slidePrev()}
+          aria-label="Previous review"
+        >
+          <Icon name="arrowLeft" size={15} />
+        </button>
+        <button
+          type="button"
+          className="review-swiper-button"
+          onClick={() => swiperRef.current?.slideNext()}
+          aria-label="Next review"
+        >
+          <Icon name="arrowRight" size={15} />
+        </button>
+      </div>
+
+      <Swiper
+        className="review-swiper"
+        modules={[A11y, Keyboard, Pagination]}
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
+        }}
+        slidesPerView={slidesPerView}
+        spaceBetween={spaceBetween}
+        breakpoints={{
+          640: { slidesPerView: 1.2, spaceBetween: 20 },
+          900: { slidesPerView: 1.8, spaceBetween: 22 },
+          1200: { slidesPerView: 2.35, spaceBetween: 24 },
+        }}
+        grabCursor
+        keyboard={{ enabled: true }}
+        pagination={{ clickable: true }}
+        watchOverflow
+      >
+        {visibleReviews.map((review, index) => (
+          <SwiperSlide key={review.id || `${review.email}-${index}`} className="review-swiper-slide">
+            <ReviewCard review={review} index={index} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 }
 
@@ -3417,11 +3500,7 @@ function ReviewSection({ reviews = [] }) {
         </div>
 
         {visibleReviews.length ? (
-          <div className="review-grid">
-            {visibleReviews.map((review, index) => (
-              <ReviewCard key={review.id || `${review.email}-${index}`} review={review} index={index} />
-            ))}
-          </div>
+          <ReviewSwiper reviews={visibleReviews} />
         ) : (
           <div className="review-empty-panel card-3d">
             <div>
@@ -3681,11 +3760,13 @@ function ReviewPage() {
                     </label>
                   </div>
 
-                  <label className="review-rating-field">
+                  <div className="review-rating-field">
                     <span>Rating</span>
-                    <ReviewStars value={form.rating} onChange={setRating} interactive />
+                    <div className="review-rating-picker">
+                      <ReviewStars value={form.rating} onChange={setRating} interactive size={16} />
+                    </div>
                     {fieldErrors.rating ? <span className="review-field-error">{fieldErrors.rating}</span> : null}
-                  </label>
+                  </div>
 
                   <label>
                     <span>Description</span>
@@ -3736,11 +3817,7 @@ function ReviewPage() {
                   Loading approved reviews...
                 </div>
               ) : reviews.length ? (
-                <div className="review-grid review-grid-stack">
-                  {reviews.map((review, index) => (
-                    <ReviewCard key={review.id || `${review.email}-${index}`} review={review} index={index} />
-                  ))}
-                </div>
+                <ReviewSwiper reviews={reviews} className="review-swiper--page" slidesPerView={1.02} spaceBetween={20} />
               ) : (
                 <div className="review-empty-panel card-3d">
                   <div>
