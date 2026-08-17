@@ -3314,6 +3314,398 @@ function PricingContact() {
   );
 }
 
+function ReviewStars({ value = 0, onChange, interactive = false, size = 14, className = '' }) {
+  const prefersReducedMotion = useFramerReducedMotion();
+  const stars = Array.from({ length: 5 }, (_, index) => index + 1);
+
+  return (
+    <div className={`review-stars ${interactive ? 'is-interactive' : 'is-readonly'} ${className}`.trim()}>
+      {stars.map((star) => {
+        const active = star <= value;
+
+        if (!interactive) {
+          return (
+            <span key={star} className={`review-star ${active ? 'is-active' : ''}`} aria-hidden="true">
+              <Icon name="star" size={size} />
+            </span>
+          );
+        }
+
+        return (
+          <motion.button
+            key={star}
+            type="button"
+            className={`review-star ${active ? 'is-active' : ''}`}
+            onClick={() => onChange?.(star)}
+            aria-label={`Rate ${star} star${star === 1 ? '' : 's'}`}
+            aria-pressed={active}
+            whileHover={prefersReducedMotion ? undefined : { scale: 1.08, y: -1 }}
+            whileTap={prefersReducedMotion ? undefined : { scale: 0.94 }}
+          >
+            <Icon name="star" size={size} />
+          </motion.button>
+        );
+      })}
+      {interactive ? <span className="review-rating-label">{value ? `${value}/5` : 'Select rating'}</span> : null}
+    </div>
+  );
+}
+
+function ReviewCard({ review, index = 0 }) {
+  const prefersReducedMotion = useFramerReducedMotion();
+  const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+
+  return (
+    <motion.article
+      className="review-card card-3d"
+      initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.45, delay: Math.min(index, 6) * 0.05 }}
+      whileHover={prefersReducedMotion ? undefined : { y: -5 }}
+    >
+      <div className="review-card-top">
+        <div className="review-card-identity">
+          <strong>{review.name}</strong>
+          <span>{review.projectName}</span>
+        </div>
+        <span className="review-card-service">{review.service}</span>
+      </div>
+
+      <ReviewStars value={rating} className="review-card-stars" />
+
+      <p className="review-card-description">{review.description}</p>
+    </motion.article>
+  );
+}
+
+function ReviewSection({ reviews = [] }) {
+  const visibleReviews = Array.isArray(reviews) ? reviews : [];
+
+  return (
+    <section id="reviews" className="section review-section">
+      <div className="section-divider" />
+      <Reveal className="section-inner review-section-layout">
+        <div className="review-section-header">
+          <SectionHeading
+            index="06. Client Reviews"
+            title="Trusted"
+            accent="Feedback"
+            align="left"
+            description="Approved reviews from people who have worked with me on websites, apps, and custom software."
+          />
+          <a className="primary-button review-section-cta" href="/review">
+            Leave a Review <Icon name="arrowUpRight" size={15} />
+          </a>
+        </div>
+
+        {visibleReviews.length ? (
+          <div className="review-grid">
+            {visibleReviews.map((review, index) => (
+              <ReviewCard key={review.id || `${review.email}-${index}`} review={review} index={index} />
+            ))}
+          </div>
+        ) : (
+          <div className="review-empty-panel card-3d">
+            <div>
+              <p className="review-empty-kicker">Be the first to share feedback</p>
+              <h3>No approved reviews yet.</h3>
+              <p>
+                Once reviews are approved in the admin panel, they will appear here. You can still leave a new
+                review from the dedicated review page.
+              </p>
+            </div>
+            <a className="secondary-button" href="/review">
+              Write a Review <Icon name="arrowUpRight" size={15} />
+            </a>
+          </div>
+        )}
+      </Reveal>
+    </section>
+  );
+}
+
+function ReviewPage() {
+  const { reviews, loading } = useReviewContent();
+  const prefersReducedMotion = useFramerReducedMotion();
+  const [form, setForm] = useState(() => ({ ...emptyReviewForm }));
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
+  const sending = status === 'sending';
+  const sent = status === 'success';
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') {
+      return;
+    }
+
+    try {
+      window.scrollTo(0, 0);
+    } catch (scrollError) {
+      void scrollError;
+    }
+  }, []);
+
+  const update = (event) => {
+    const { name, value } = event.target;
+    setForm((current) => ({
+      ...current,
+      [name]: name === 'rating' ? Number(value) : value,
+    }));
+  };
+
+  const setRating = (rating) => {
+    setForm((current) => ({ ...current, rating }));
+  };
+
+  const reset = () => {
+    setStatus('idle');
+    setError('');
+    setForm({ ...emptyReviewForm });
+  };
+
+  const submit = async (event) => {
+    event.preventDefault();
+    setStatus('sending');
+    setError('');
+
+    try {
+      await apiRequest('/api/reviews', {
+        method: 'POST',
+        body: form,
+      });
+      setStatus('success');
+      setForm({ ...emptyReviewForm });
+    } catch (submissionError) {
+      setStatus('error');
+      setError(submissionError.message || 'Something went wrong. Please try again.');
+    }
+  };
+
+  return (
+    <div className="bolt-shell review-page-shell">
+      <Helmet>
+        <title>Reviews | Chamuditha Perera</title>
+        <meta
+          name="description"
+          content="Leave a review for Chamuditha Perera's web, mobile, and software projects, and read approved client feedback."
+        />
+        <meta name="keywords" content={`${siteKeywords}, reviews, testimonials`} />
+        <meta name="author" content={siteName} />
+        <meta name="application-name" content={siteName} />
+        <meta name="apple-mobile-web-app-title" content={siteName} />
+        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+        <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+        <link rel="canonical" href={`${siteUrl}/review`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${siteUrl}/review`} />
+        <meta property="og:title" content="Reviews | Chamuditha Perera" />
+        <meta
+          property="og:description"
+          content="Leave a review for Chamuditha Perera's web, mobile, and software projects."
+        />
+        <meta property="og:image" content={socialImage} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1536" />
+        <meta property="og:image:height" content="1024" />
+        <meta property="og:image:alt" content={socialImageAlt} />
+        <meta property="og:site_name" content={siteName} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Reviews | Chamuditha Perera" />
+        <meta
+          name="twitter:description"
+          content="Leave a review for Chamuditha Perera's web, mobile, and software projects."
+        />
+        <meta name="twitter:image" content={socialImage} />
+        <meta name="twitter:image:alt" content={socialImageAlt} />
+        <meta name="theme-color" content="#00020a" />
+        <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
+        <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
+        <link rel="apple-touch-icon" href={siteTouchIcon} />
+      </Helmet>
+
+      <div className="noise" aria-hidden="true" />
+      <Navigation />
+
+      <main className="review-main">
+        <section className="review-hero">
+          <div className="hero-grid-mask" aria-hidden="true" />
+          <div className="hero-glow hero-glow-a" aria-hidden="true" />
+          <div className="hero-glow hero-glow-b" aria-hidden="true" />
+          <div className="section-inner review-hero-inner">
+            <motion.div
+              className="review-hero-copy"
+              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 24 }}
+              animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <p className="hero-eyebrow">Reviews</p>
+              <h1>Share your experience working with me.</h1>
+              <p>
+                Tell me what we built together, which service I delivered, and how the result felt for your project.
+              </p>
+              <div className="review-hero-points" aria-label="Review summary">
+                <span>Moderated before appearing publicly</span>
+                <span>Clean, professional feedback only</span>
+                <span>Rating and project details required</span>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="section review-form-section">
+          <div className="section-divider" />
+          <Reveal className="section-inner review-page-layout">
+            <div className="review-form-panel card-3d">
+              {sent ? (
+                <div className="review-success-state" role="status">
+                  <span className="review-success-icon">
+                    <Icon name="check" size={24} />
+                  </span>
+                  <div>
+                    <p className="review-success-kicker">Review submitted</p>
+                    <h2>Thanks for sharing your feedback.</h2>
+                    <p>Your review is waiting for approval before it appears publicly.</p>
+                  </div>
+                  <div className="review-success-actions">
+                    <button type="button" className="primary-button" onClick={reset}>
+                      Submit another review
+                    </button>
+                    <Link to="/" className="secondary-button">
+                      Back to home
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <form className="review-form" onSubmit={submit}>
+                  <div className="review-form-header">
+                    <div>
+                      <p className="review-tier">Review form</p>
+                      <h2>Leave a public review</h2>
+                    </div>
+                    <span className="review-form-note">
+                      <Icon name="sparkles" size={13} />
+                      Moderated feedback
+                    </span>
+                  </div>
+
+                  <div className="review-grid-2">
+                    <label>
+                      <span>Name</span>
+                      <input name="name" value={form.name} onChange={update} required placeholder="Your name" />
+                    </label>
+                    <label>
+                      <span>Email</span>
+                      <input
+                        name="email"
+                        type="email"
+                        value={form.email}
+                        onChange={update}
+                        required
+                        placeholder="you@example.com"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="review-grid-2">
+                    <label>
+                      <span>Project name</span>
+                      <input
+                        name="projectName"
+                        value={form.projectName}
+                        onChange={update}
+                        required
+                        placeholder="Project or app name"
+                      />
+                    </label>
+                    <label>
+                      <span>Service</span>
+                      <select name="service" value={form.service} onChange={update}>
+                        {reviewServiceOptions.map((service) => (
+                          <option key={service} value={service}>
+                            {service}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <label className="review-rating-field">
+                    <span>Rating</span>
+                    <ReviewStars value={form.rating} onChange={setRating} interactive />
+                  </label>
+
+                  <label>
+                    <span>Description</span>
+                    <textarea
+                      name="description"
+                      rows="6"
+                      value={form.description}
+                      onChange={update}
+                      required
+                      placeholder="Share what was delivered and how the experience felt..."
+                    />
+                  </label>
+
+                  {error ? (
+                    <div className="review-form-error" role="alert">
+                      {error}
+                    </div>
+                  ) : null}
+
+                  <button className="primary-button review-submit-button" type="submit" disabled={sending}>
+                    {sending ? <span className="spinner" aria-label="Submitting" /> : <Icon name="send" size={15} />}
+                    {sending ? 'Submitting...' : 'Submit Review'}
+                  </button>
+                </form>
+              )}
+            </div>
+
+            <div className="review-feed-panel">
+              <div className="review-feed-header">
+                <div>
+                  <p className="review-tier">Approved reviews</p>
+                  <h2>What clients say</h2>
+                  <p>
+                    These reviews appear only after approval, so visitors always see a trusted and curated set of
+                    feedback.
+                  </p>
+                </div>
+                <Link className="secondary-button" to="/">
+                  Back to home
+                </Link>
+              </div>
+
+              {loading ? (
+                <div className="review-loading-panel">
+                  <span className="spinner" aria-hidden="true" />
+                  Loading approved reviews...
+                </div>
+              ) : reviews.length ? (
+                <div className="review-grid review-grid-stack">
+                  {reviews.map((review, index) => (
+                    <ReviewCard key={review.id || `${review.email}-${index}`} review={review} index={index} />
+                  ))}
+                </div>
+              ) : (
+                <div className="review-empty-panel card-3d">
+                  <div>
+                    <p className="review-empty-kicker">No approved reviews yet</p>
+                    <h3>The first approved testimonial will appear here.</h3>
+                    <p>Submit your own review above, and I will approve it after checking the details.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Reveal>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
+
 function PricingPage() {
   const { services: pricingServices, loading: pricingLoading } = usePricingContent();
   const [activeServiceId, setActiveServiceId] = useState('');
@@ -3674,6 +4066,7 @@ function Home() {
         <Projects projectsData={portfolioContent.projects} />
         <Skills techStacks={portfolioContent.techStacks} />
         <Education educationItems={portfolioContent.education} certificateItems={portfolioContent.certificates} />
+        <ReviewSection reviews={portfolioContent.reviews} />
         <Contact />
       </main>
       <Footer />
