@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import Admin from './pages/Admin';
-import Home, { FloatingAiAgent, PricingPage, ProjectsPage } from './pages/Home';
+import Home, { FloatingAiAgent, PricingPage, ProjectsPage, ReviewPage } from './pages/Home';
 
 function VisitTracker() {
   const location = useLocation();
@@ -99,6 +99,7 @@ function AppRoutes() {
           <Route path="/admin/*" element={<Admin />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/review" element={<ReviewPage />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </motion.div>

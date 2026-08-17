@@ -8,6 +8,7 @@ const tabItems = [
   { id: 'messages', label: 'Messages', description: 'User inquiries', icon: 'messages' },
   { id: 'visits', label: 'Visits', description: 'Visitor analytics', icon: 'globe' },
   { id: 'projects', label: 'Projects', description: 'CRUD portfolio projects', icon: 'project' },
+  { id: 'reviews', label: 'Reviews', description: 'Client testimonials and approvals', icon: 'star' },
   { id: 'pricing', label: 'Pricing', description: 'Edit services and packages', icon: 'pricing' },
   { id: 'techStacks', label: 'Tech Stacks', description: 'Manage the galaxy items', icon: 'spark' },
   { id: 'content', label: 'Content', description: 'Manage experience and education', icon: 'education' },
@@ -53,6 +54,24 @@ const emptyCertificateForm = {
   image: '',
   detail: '',
   displayOrder: '',
+};
+
+const reviewServiceOptions = [
+  'Website Development',
+  'Mobile App Development',
+  'Full Stack System',
+  'UI/UX Design',
+  'Maintenance & Support',
+  'Other',
+];
+
+const emptyReviewForm = {
+  name: '',
+  email: '',
+  projectName: '',
+  service: reviewServiceOptions[0],
+  rating: 5,
+  description: '',
 };
 
 const emptyPricingServiceForm = {
@@ -176,6 +195,7 @@ const iconPaths = {
   phone: ['M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 5.2 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9 10.9a16 16 0 0 0 4.1 4.1l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .6 2.9.7a2 2 0 0 1 1.7 2z'],
   pricing: ['M12 2v20', 'M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6'],
   project: ['M4 7h16v10H4z', 'M8 7V4h8v3', 'M4 11h16'],
+  star: ['M12 2.8 15 9l6.8 1-4.9 4.8 1.2 6.8L12 17.4 5.9 21.6l1.2-6.8L2.2 10 9 9z'],
   refresh: ['M21 12a9 9 0 1 1-3-6.7', 'M21 3v6h-6'],
   save: ['M5 5h11l3 3v11H5z', 'M8 5v6h8V5', 'M8 16h8'],
   search: ['M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z', 'm16 16 5 5'],
@@ -563,6 +583,18 @@ function Admin() {
   const [selectedMessageId, setSelectedMessageId] = useState('');
   const [messageActionPending, setMessageActionPending] = useState('');
 
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewsError, setReviewsError] = useState('');
+  const [selectedReviewId, setSelectedReviewId] = useState('');
+  const [reviewForm, setReviewForm] = useState(emptyReviewForm);
+  const [reviewSaving, setReviewSaving] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+  const [reviewFieldErrors, setReviewFieldErrors] = useState({});
+  const [reviewStatus, setReviewStatus] = useState('');
+  const [reviewActionPending, setReviewActionPending] = useState('');
+  const [isEditingReview, setIsEditingReview] = useState(false);
+
   const [visits, setVisits] = useState([]);
   const [visitsLoading, setVisitsLoading] = useState(false);
   const [visitsError, setVisitsError] = useState('');
@@ -667,6 +699,11 @@ function Admin() {
     [certificates, selectedCertificateId],
   );
 
+  const selectedReview = useMemo(
+    () => reviews.find((item) => String(item.id) === String(selectedReviewId)) || null,
+    [reviews, selectedReviewId],
+  );
+
   const selectedPricingService = useMemo(
     () => pricingServices.find((item) => String(item.recordId || item.id) === String(selectedPricingServiceId)) || null,
     [pricingServices, selectedPricingServiceId],
@@ -693,9 +730,11 @@ function Admin() {
       certificates: counts.certificates ?? certificates.length,
       pricingPackages: counts.pricingPackages ?? pricingPackages.length,
       techStacks: counts.techStacks ?? techStacks.length,
+      reviews: counts.reviews ?? reviews.length,
+      pendingReviews: counts.pendingReviews ?? reviews.filter((item) => (item.status || 'pending') === 'pending').length,
       unread: messages.filter((item) => (item.status || 'new') === 'new').length,
     };
-  }, [certificates.length, dashboard, education.length, experience.length, messages, pricingPackages.length, projects.length, techStacks.length, visits.length]);
+  }, [certificates.length, dashboard, education.length, experience.length, messages, pricingPackages.length, projects.length, reviews, techStacks.length, visits.length]);
 
   async function loadDashboard() {
     setDashboardLoading(true);
@@ -722,6 +761,23 @@ function Admin() {
       setMessagesError(error.message || 'Unable to load messages.');
     } finally {
       setMessagesLoading(false);
+    }
+  }
+
+  async function loadReviews() {
+    setReviewsLoading(true);
+    setReviewsError('');
+    try {
+      const response = await apiRequest('/api/admin/reviews');
+      const loaded = response.reviews || [];
+      setReviews(loaded);
+      setSelectedReviewId((current) => (current && loaded.some((item) => String(item.id) === String(current)) ? current : ''));
+    } catch (error) {
+      setReviewsError(error.message || 'Unable to load reviews.');
+      setReviews([]);
+      setSelectedReviewId('');
+    } finally {
+      setReviewsLoading(false);
     }
   }
 
@@ -881,6 +937,7 @@ function Admin() {
     await Promise.allSettled([
       loadDashboard(),
       loadMessages(messageSearch),
+      loadReviews(),
       loadVisits(),
       loadProjects(),
       loadExperience(),

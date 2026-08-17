@@ -2881,7 +2881,7 @@ function Contact() {
       <div className="contact-glow contact-glow-b" aria-hidden="true" />
       <Reveal className="section-inner">
         <SectionHeading
-          index="06. Get In Touch"
+          index="07. Get In Touch"
           title="Let's"
           accent="Connect"
           description="Whether you have a project, want to collaborate, or just want to say hello — my inbox is always open."
