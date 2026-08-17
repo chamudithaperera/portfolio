@@ -213,6 +213,7 @@ function mapPricingPackage(row) {
 }
 
 function mapReview(row) {
+  const status = normalizeString(row.status).toLowerCase();
   return {
     id: row.id,
     name: row.name,
@@ -221,7 +222,7 @@ function mapReview(row) {
     service: row.service,
     rating: row.rating ?? 0,
     description: row.description,
-    status: row.status || 'pending',
+    status: status || (row.approved_at ? 'approved' : 'pending'),
     approvedAt: row.approved_at || null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -559,16 +560,17 @@ async function listReviews(admin = false) {
     .order('created_at', { ascending: false })
     .order('id', { ascending: false });
 
-  if (!admin) {
-    query = query.eq('status', 'approved');
-  }
-
   const { data, error } = await query;
   if (error) {
     throw error;
   }
 
-  return (data || []).map(mapReview);
+  const reviews = (data || []).map(mapReview);
+  if (admin) {
+    return reviews;
+  }
+
+  return reviews.filter((review) => review.status === 'approved' || Boolean(review.approvedAt));
 }
 
 async function safeListReviews(admin = false) {

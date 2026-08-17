@@ -3396,9 +3396,8 @@ function ReviewCard({ review, index = 0 }) {
   return (
     <motion.article
       className="review-card review-card--swiper card-3d"
-      initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: prefersReducedMotion ? 0 : 0.45, delay: Math.min(index, 6) * 0.05 }}
       whileHover={prefersReducedMotion ? undefined : { y: -5 }}
     >
