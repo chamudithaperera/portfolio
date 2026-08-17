@@ -122,6 +122,15 @@ const reviewServiceOptions = [
   'Other',
 ];
 
+const emptyReviewForm = {
+  name: '',
+  email: '',
+  projectName: '',
+  service: reviewServiceOptions[0],
+  rating: 5,
+  description: '',
+};
+
 const emptyPricingServices = [];
 
 const pricingImportantInfo = [
@@ -1101,6 +1110,7 @@ function usePortfolioContent() {
           education: response.education ?? [],
           certificates: response.certificates ?? [],
           techStacks: response.techStacks ?? [],
+          reviews: response.reviews ?? [],
         });
       } catch (error) {
         void error;
@@ -1114,6 +1124,36 @@ function usePortfolioContent() {
   }, []);
 
   return content;
+}
+
+function useReviewContent() {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      try {
+        const response = await apiRequest('/api/content/reviews');
+        if (!active || !response?.ok) return;
+        setReviews(Array.isArray(response.reviews) ? response.reviews : []);
+      } catch (error) {
+        void error;
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    load();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return { reviews, loading };
 }
 
 function usePricingContent() {
