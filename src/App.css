@@ -25,6 +25,23 @@ html {
   background: var(--background);
 }
 
+.page-transition-shell {
+  min-height: 100vh;
+}
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 80;
+  height: 3px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #2563eb, #38bdf8, #22d3ee);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.28);
+  pointer-events: none;
+}
+
 .noise {
   position: fixed;
   inset: 0;
@@ -809,6 +826,7 @@ html {
 .reveal {
   opacity: 0;
   transform: translateY(2.5rem);
+  will-change: opacity, transform;
   transition:
     opacity 0.7s ease,
     transform 0.7s ease;
@@ -822,6 +840,13 @@ html {
 .section-heading {
   margin-bottom: 5rem;
   text-align: center;
+}
+
+.section-heading,
+.hero-copy,
+.hero-visual,
+.pricing-hero-copy {
+  transform-style: preserve-3d;
 }
 
 .section-heading-left {

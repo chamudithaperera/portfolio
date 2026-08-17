@@ -2,7 +2,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence, useReducedMotion as useFramerReducedMotion } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion as useFramerReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
 import {
   siDart,
   siDocker,
@@ -159,6 +166,35 @@ const emptyPortfolioContent = {
 };
 
 const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+const revealMotion = {
+  hidden: { opacity: 0, y: 28, scale: 0.985 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const sectionHeadingItem = {
+  hidden: { opacity: 0, y: 14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const staggerChildren = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.05,
+    },
+  },
+};
 
 function getReadableIconColor(hex, fallback) {
   if (!hex) {
@@ -553,11 +589,20 @@ function useTypewriter(items, typingSpeed = 75, pause = 2200) {
 }
 
 function Reveal({ as: Tag = 'div', className = '', children, threshold = 0.1 }) {
-  const [ref, visible] = useInView(threshold);
+  const prefersReducedMotion = useFramerReducedMotion();
+  const MotionTag = Tag === 'section' ? motion.section : Tag === 'article' ? motion.article : motion.div;
+
   return (
-    <Tag ref={ref} className={`reveal ${visible ? 'is-visible' : ''} ${className}`.trim()}>
+    <MotionTag
+      className={`reveal ${className}`.trim()}
+      style={prefersReducedMotion ? { opacity: 1, transform: 'none' } : undefined}
+      initial={prefersReducedMotion ? false : 'hidden'}
+      whileInView="visible"
+      viewport={{ once: true, amount: threshold }}
+      variants={revealMotion}
+    >
       {children}
-    </Tag>
+    </MotionTag>
   );
 }
 
@@ -624,13 +669,23 @@ function usePricingContent() {
 
 function SectionHeading({ index, title, accent, description, align = 'center' }) {
   return (
-    <div className={`section-heading section-heading-${align}`}>
-      <p>{index}</p>
-      <h2>
+    <motion.div
+      className={`section-heading section-heading-${align}`}
+      variants={staggerChildren}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.45 }}
+    >
+      <motion.p variants={sectionHeadingItem}>{index}</motion.p>
+      <motion.h2 variants={sectionHeadingItem}>
         {title} <span className="gradient-text">{accent}</span>
-      </h2>
-      {description ? <div className="section-description">{description}</div> : null}
-    </div>
+      </motion.h2>
+      {description ? (
+        <motion.div className="section-description" variants={sectionHeadingItem}>
+          {description}
+        </motion.div>
+      ) : null}
+    </motion.div>
   );
 }
 
@@ -838,7 +893,19 @@ function FloatingTechBadge({ badge }) {
 }
 
 function Hero() {
+  const prefersReducedMotion = useFramerReducedMotion();
+  const { scrollY } = useScroll();
   const role = useTypewriter(roles);
+  const copyYOffset = useSpring(useTransform(scrollY, [0, 700], [0, -20]), {
+    stiffness: 120,
+    damping: 24,
+    mass: 0.2,
+  });
+  const visualYOffset = useSpring(useTransform(scrollY, [0, 700], [0, -46]), {
+    stiffness: 120,
+    damping: 24,
+    mass: 0.2,
+  });
 
   return (
     <section id="hero" className="hero-section hero-reference">
@@ -847,7 +914,13 @@ function Hero() {
       <div className="hero-glow hero-glow-b" aria-hidden="true" />
 
       <div className="hero-inner">
-        <div className="hero-copy">
+        <motion.div
+          className="hero-copy"
+          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 28 }}
+          animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          style={prefersReducedMotion ? undefined : { y: copyYOffset }}
+        >
           <div>
             <p className="hero-eyebrow">Hello, I'm</p>
             <h1>
@@ -885,9 +958,15 @@ function Hero() {
               <SocialLink icon="mail" label="Email" href={`mailto:${profile.email}`} />
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="hero-visual">
+        <motion.div
+          className="hero-visual"
+          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 30, scale: 0.985 }}
+          animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.9, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+          style={prefersReducedMotion ? undefined : { y: visualYOffset }}
+        >
           <div className="hero-tech-badges" aria-hidden="true">
             {heroFloatingTechBadges.map((badge) => (
               <FloatingTechBadge key={badge.key} badge={badge} />
@@ -909,7 +988,7 @@ function Hero() {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <div className="hero-marquee" aria-label="Technology stack">
@@ -1174,7 +1253,8 @@ function Experience({ experienceItems = [] }) {
   );
 }
 
-function ProjectCard({ project, featured = false, onOpen }) {
+function ProjectCard({ project, featured = false, onOpen, index = 0 }) {
+  const prefersReducedMotion = useFramerReducedMotion();
   const handleKeyDown = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -1183,13 +1263,19 @@ function ProjectCard({ project, featured = false, onOpen }) {
   };
 
   return (
-    <div
+    <motion.div
       role="button"
       tabIndex={0}
       className={`${featured ? 'featured-project' : 'project-card'} project-card-button card-3d`}
       aria-label={`Open details for ${project.title}`}
       onClick={() => onOpen(project)}
       onKeyDown={handleKeyDown}
+      initial={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 24, scale: 0.985 }}
+      whileInView={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.65, delay: Math.min(index, 6) * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={prefersReducedMotion ? undefined : { y: -8 }}
+      whileTap={prefersReducedMotion ? undefined : { scale: 0.99 }}
     >
       <div className="project-image">
         <img src={withBase(project.image)} alt={project.title} />
@@ -1226,11 +1312,12 @@ function ProjectCard({ project, featured = false, onOpen }) {
           </a>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 function ProjectModal({ project, onClose }) {
+  const prefersReducedMotion = useFramerReducedMotion();
   useEffect(() => {
     if (!project) {
       return undefined;
@@ -1262,13 +1349,24 @@ function ProjectModal({ project, onClose }) {
   }
 
   return createPortal(
-    <div className="project-modal-backdrop" role="presentation" onClick={onClose}>
-      <article
+    <motion.div
+      className="project-modal-backdrop"
+      role="presentation"
+      onClick={onClose}
+      initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+      animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1 }}
+      exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.24 }}
+    >
+      <motion.article
         className="project-modal card-3d"
         role="dialog"
         aria-modal="true"
         aria-labelledby={modalId}
         onClick={(event) => event.stopPropagation()}
+        initial={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 24, scale: 0.96 }}
+        animate={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: 'spring', damping: 26, stiffness: 280 }}
       >
         <button type="button" className="project-modal-close" aria-label="Close project details" onClick={onClose}>
           <Icon name="close" size={18} />
@@ -1326,8 +1424,8 @@ function ProjectModal({ project, onClose }) {
             </div>
           </div>
         </div>
-      </article>
-    </div>
+      </motion.article>
+    </motion.div>
     ,
     document.body,
   );
@@ -1461,8 +1559,8 @@ function Projects({ mode = 'home', projectsData = [] }) {
         )}
         {projectItems.length ? (
           <div className={`project-grid ${mode === 'page' ? 'project-grid-page' : ''}`}>
-            {projectItems.map((project) => (
-              <ProjectCard key={project.id || project.title} project={project} onOpen={setActiveProject} />
+            {projectItems.map((project, index) => (
+              <ProjectCard key={project.id || project.title} project={project} onOpen={setActiveProject} index={index} />
             ))}
           </div>
         ) : (
@@ -2430,12 +2528,13 @@ function Contact() {
 }
 
 function PricingTabs({ services, activeServiceId, onChange }) {
+  const prefersReducedMotion = useFramerReducedMotion();
   return (
     <div className="pricing-tabs" role="tablist" aria-label="Pricing service type">
       {services.map((service) => {
         const selected = service.id === activeServiceId;
         return (
-          <button
+          <motion.button
             key={service.id}
             id={`pricing-tab-${service.id}`}
             type="button"
@@ -2444,22 +2543,32 @@ function PricingTabs({ services, activeServiceId, onChange }) {
             aria-selected={selected}
             aria-controls={`pricing-panel-${service.id}`}
             onClick={() => onChange(service.id)}
+            whileHover={prefersReducedMotion ? undefined : { y: -2 }}
+            whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
           >
             <Icon name={service.icon} size={15} />
             <span>{service.label}</span>
-          </button>
+          </motion.button>
         );
       })}
     </div>
   );
 }
 
-function PricingCard({ plan }) {
+function PricingCard({ plan, index = 0 }) {
+  const prefersReducedMotion = useFramerReducedMotion();
   const featured = Boolean(plan.badge);
   const unavailable = Array.isArray(plan.unavailable) ? plan.unavailable : [];
 
   return (
-    <article className={`pricing-card card-3d ${featured ? 'pricing-card-featured' : ''}`}>
+    <motion.article
+      className={`pricing-card card-3d ${featured ? 'pricing-card-featured' : ''}`}
+      initial={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 24, scale: 0.985 }}
+      whileInView={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.68, delay: Math.min(index, 4) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={prefersReducedMotion ? undefined : { y: -6 }}
+    >
       <span className="pricing-card-accent" aria-hidden="true" />
       <div className="pricing-card-header">
         <div>
@@ -2521,7 +2630,7 @@ function PricingCard({ plan }) {
           {plan.button} <Icon name="arrowUpRight" size={14} />
         </a>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -2690,6 +2799,7 @@ function PricingContact() {
 function PricingPage() {
   const { services: pricingServices, loading: pricingLoading } = usePricingContent();
   const [activeServiceId, setActiveServiceId] = useState('');
+  const prefersReducedMotion = useFramerReducedMotion();
   const activeService = pricingServices.find((service) => service.id === activeServiceId) || pricingServices[0] || null;
   const websiteService = pricingServices.find((service) => service.id === 'websites') || pricingServices[0];
   const mobileService = pricingServices.find((service) => service.id === 'mobile-apps') || pricingServices[1];
@@ -2760,7 +2870,12 @@ function PricingPage() {
           <div className="hero-glow hero-glow-a" aria-hidden="true" />
           <div className="hero-glow hero-glow-b" aria-hidden="true" />
           <div className="section-inner pricing-hero-inner">
-            <div className="pricing-hero-copy">
+            <motion.div
+              className="pricing-hero-copy"
+              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 24 }}
+              animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
               <p className="hero-eyebrow">Pricing</p>
               <h1>Simple Pricing for Websites and Apps</h1>
               <p>
@@ -2779,7 +2894,7 @@ function PricingPage() {
                   <span key={item}>{item}</span>
                 ))}
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -2801,8 +2916,8 @@ function PricingPage() {
                   role="tabpanel"
                   aria-labelledby={`pricing-tab-${activeService.id}`}
                 >
-                  {activeService.packages.map((plan) => (
-                    <PricingCard key={plan.id || plan.title} plan={plan} />
+                  {activeService.packages.map((plan, index) => (
+                    <PricingCard key={plan.id || plan.title} plan={plan} index={index} />
                   ))}
                 </div>
               </>

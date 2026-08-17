@@ -2,6 +2,7 @@ import './App.css';
 import './utils/basePath';
 import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import Admin from './pages/Admin';
 import Home, { PricingPage, ProjectsPage } from './pages/Home';
 
@@ -62,16 +63,55 @@ function VisitTracker() {
   return null;
 }
 
+function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const prefersReducedMotion = useReducedMotion();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 28,
+    mass: 0.1,
+  });
+
+  return (
+    <motion.div
+      className="scroll-progress"
+      aria-hidden="true"
+      style={{ scaleX: prefersReducedMotion ? scrollYProgress : smoothProgress }}
+    />
+  );
+}
+
+function AppRoutes() {
+  const location = useLocation();
+  const prefersReducedMotion = useReducedMotion();
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={`${location.pathname}${location.search}`}
+        className="page-transition-shell"
+        initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 18, scale: 0.995 }}
+        animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+        exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: -14, scale: 0.995 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <Routes location={location}>
+          <Route path="/admin/*" element={<Admin />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function App() {
   return (
     <Router basename={process.env.PUBLIC_URL || '/'}>
+      <ScrollProgressBar />
       <VisitTracker />
-      <Routes>
-        <Route path="/admin/*" element={<Admin />} />
-        <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/pricing" element={<PricingPage />} />
-        <Route path="*" element={<Home />} />
-      </Routes>
+      <AppRoutes />
     </Router>
   );
 }
