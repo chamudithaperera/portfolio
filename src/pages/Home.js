@@ -531,37 +531,37 @@ function buildLocalChatbotReply(intent) {
       reply:
         'I build Flutter mobile apps, React websites, full-stack systems, APIs, dashboards, and polished UI experiences. I can also help with admin panels and product implementation.',
       actions: [
-        { label: 'View Projects', href: '/projects' },
-        { label: 'Contact Me', href: '/#contact' },
+        { label: 'Click here to see projects', href: '/projects' },
+        { label: 'Click here to contact me', href: '/#contact' },
       ],
     },
     'website-pricing': {
-      reply: 'You can check my website pricing on the pricing page. I am opening it now.',
-      autoNavigate: '/pricing',
+      reply: 'You can view the website pricing details on the pricing page.',
+      actions: [{ label: 'Click here to see prices', href: '/pricing' }],
     },
     'mobile-pricing': {
-      reply: 'You can check my mobile app pricing on the pricing page. I am opening it now.',
-      autoNavigate: '/pricing',
+      reply: 'You can view the mobile app packages on the pricing page.',
+      actions: [{ label: 'Click here to see packages', href: '/pricing' }],
     },
     projects: {
-      reply: 'You can browse my selected projects now. I am opening the projects page.',
-      autoNavigate: '/projects',
+      reply: 'You can browse my selected projects on the projects page.',
+      actions: [{ label: 'Click here to see projects', href: '/projects' }],
     },
     contact: {
-      reply: 'You can reach me by email or WhatsApp. I am opening the contact section now.',
+      reply: 'You can reach me through the contact section, email, or WhatsApp.',
       actions: [
-        { label: 'Email', href: `mailto:${profile.email}` },
-        { label: 'WhatsApp', href: whatsappUrl },
+        { label: 'Click here to contact me', href: '/#contact' },
+        { label: 'Email me', href: `mailto:${profile.email}` },
+        { label: 'WhatsApp me', href: whatsappUrl },
       ],
-      autoNavigate: '/#contact',
     },
     fallback: {
       reply:
         'I can help with services, pricing, projects, and contact details. Try one of the quick messages below.',
       actions: [
-        { label: 'View Projects', href: '/projects' },
-        { label: 'Pricing', href: '/pricing' },
-        { label: 'Contact', href: '/#contact' },
+        { label: 'Click here to see prices', href: '/pricing' },
+        { label: 'Click here to see projects', href: '/projects' },
+        { label: 'Click here to contact me', href: '/#contact' },
       ],
     },
   };
@@ -654,11 +654,6 @@ function FloatingAiAgent() {
     window.setTimeout(() => {
       appendMessage(createChatbotMessage('assistant', response.reply, { actions: response.actions || [] }));
       setIsSending(false);
-      if (response.autoNavigate) {
-        autoNavigateTimerRef.current = window.setTimeout(() => {
-          handleNavigate(response.autoNavigate);
-        }, prefersReducedMotion ? 0 : 650);
-      }
     }, prefersReducedMotion ? 0 : 280);
   };
 
@@ -854,18 +849,8 @@ function FloatingAiAgent() {
             <div className="ai-agent-panel-shell">
               <div className="ai-agent-header">
                 <div className="ai-agent-title-wrap">
-                  <span className="ai-agent-orb" aria-hidden="true">
-                    <Icon name="sparkles" size={13} />
-                  </span>
-                  <div>
-                    <p className="ai-agent-eyebrow">AI Agent</p>
-                    <h3 id="ai-agent-title">Portfolio Assistant</h3>
-                    <p className="ai-agent-subtitle">Fast answers for pricing, projects, and contact.</p>
-                  </div>
-                </div>
-                <div className="ai-agent-status">
-                  <span className="ai-agent-status-dot" />
-                  <span>Online</span>
+                  <h3 id="ai-agent-title">Portfolio Assistant</h3>
+                  <span className="ai-agent-status-dot" aria-hidden="true" />
                 </div>
                 <button
                   type="button"
