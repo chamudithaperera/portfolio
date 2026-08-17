@@ -43,7 +43,6 @@ import {
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
 import { useTheme } from '../theme';
-import { useTheme } from '../theme';
 
 const navItems = [
   { label: 'About', href: '#about' },

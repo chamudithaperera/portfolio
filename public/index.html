@@ -4,7 +4,12 @@
     <meta charset="utf-8" />
     <script>
       (function() {
-        const theme = localStorage.getItem('theme') || 'dark';
+        let theme = 'dark';
+        try {
+          theme = localStorage.getItem('theme') || 'dark';
+        } catch (error) {
+          void error;
+        }
         const root = document.documentElement;
         const themeColor = theme === 'light' ? '#f8fafc' : '#00020a';
 
