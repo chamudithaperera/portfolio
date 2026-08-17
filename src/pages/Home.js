@@ -995,7 +995,7 @@ function FloatingAiAgent() {
       >
         <span className="ai-agent-launcher-pulse" aria-hidden="true" />
         <span className="ai-agent-launcher-icon" aria-hidden="true">
-          <Icon name={open ? 'close' : 'sparkles'} size={22} />
+          <Icon name={open ? 'close' : 'support'} size={22} />
         </span>
       </button>
     </div>,

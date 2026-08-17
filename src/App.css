@@ -815,38 +815,71 @@ html {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 4.15rem;
-  height: 4.15rem;
+  width: 4.35rem;
+  height: 4.35rem;
   padding: 0;
   border: 0;
   border-radius: 999px;
-  color: #f8fbff;
+  color: #fff;
   background:
-    radial-gradient(circle at 25% 22%, rgba(255, 255, 255, 0.32), transparent 34%),
-    linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.56), transparent 28%),
+    radial-gradient(circle at 50% 42%, rgba(96, 165, 250, 1) 0%, rgba(37, 99, 235, 1) 58%, rgba(30, 64, 175, 1) 100%);
   box-shadow:
-    0 20px 42px rgba(14, 165, 233, 0.32),
-    0 0 0 1px rgba(255, 255, 255, 0.16) inset;
+    0 0 0 0.18rem rgba(255, 255, 255, 0.06),
+    0 0 0 0.46rem rgba(59, 130, 246, 0.12),
+    0 20px 42px rgba(37, 99, 235, 0.32),
+    inset 0 0 0 0.08rem rgba(255, 255, 255, 0.2),
+    inset 0 -0.45rem 0.95rem rgba(15, 23, 42, 0.18);
   cursor: pointer;
   pointer-events: auto;
   overflow: hidden;
+}
+
+.ai-agent-launcher::before,
+.ai-agent-launcher::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.ai-agent-launcher::before {
+  inset: 0.32rem;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    inset 0 0 0 0.2rem rgba(255, 255, 255, 0.08),
+    inset 0 0 1.2rem rgba(255, 255, 255, 0.08);
+  opacity: 0.86;
+}
+
+.ai-agent-launcher::after {
+  inset: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 0 0 0.2rem rgba(255, 255, 255, 0.04),
+    inset 0 0 0.7rem rgba(255, 255, 255, 0.1);
+  opacity: 0.95;
 }
 
 .ai-agent-launcher:hover,
 .ai-agent-launcher:focus-visible {
   transform: translateY(-2px);
   box-shadow:
-    0 26px 54px rgba(14, 165, 233, 0.42),
-    0 0 0 1px rgba(255, 255, 255, 0.22) inset;
+    0 0 0 0.18rem rgba(255, 255, 255, 0.06),
+    0 0 0 0.5rem rgba(59, 130, 246, 0.16),
+    0 24px 48px rgba(37, 99, 235, 0.42),
+    inset 0 0 0 0.08rem rgba(255, 255, 255, 0.24),
+    inset 0 -0.45rem 0.95rem rgba(15, 23, 42, 0.18);
 }
 
 .ai-agent-launcher-pulse {
   position: absolute;
-  inset: 0.35rem;
+  inset: 0.46rem;
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: inherit;
-  opacity: 0.55;
-  animation: launcherGlow 2.4s ease-in-out infinite;
+  opacity: 0.8;
+  animation: launcherGlow 2.8s ease-in-out infinite;
 }
 
 .ai-agent-launcher-icon {
@@ -862,16 +895,22 @@ html {
   transition: transform 0.24s ease;
 }
 
+.ai-agent-launcher-icon svg {
+  width: 1.55rem;
+  height: 1.55rem;
+  stroke-width: 1.9;
+}
+
 @keyframes launcherGlow {
   0%,
   100% {
-    opacity: 0.45;
-    transform: scale(1);
+    opacity: 0.55;
+    transform: scale(0.98);
   }
 
   50% {
-    opacity: 0.75;
-    transform: scale(1.015);
+    opacity: 0.98;
+    transform: scale(1.06);
   }
 }
 
