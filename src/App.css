@@ -7301,7 +7301,7 @@ textarea:focus-visible {
   .ai-agent-launcher-shell {
     right: 1rem;
     bottom: 1rem;
-    left: 1rem;
+    left: auto;
   }
 
   .ai-agent-panel {
@@ -7319,13 +7319,12 @@ textarea:focus-visible {
   }
 
   .ai-agent-launcher {
-    width: 100%;
-    justify-content: center;
+    max-width: calc(100vw - 2rem);
     min-height: 4rem;
   }
 
-  .ai-agent-launcher-copy {
-    flex: 1 1 auto;
+  .ai-agent-launcher-copy small {
+    display: none;
   }
 
   .pricing-hero {

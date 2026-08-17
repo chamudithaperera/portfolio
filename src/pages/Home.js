@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -584,7 +584,7 @@ function FloatingAiAgent() {
   const restoreFocusRef = useRef(null);
   const autoNavigateTimerRef = useRef(null);
 
-  const scrollToLatestMessage = () => {
+  const scrollToLatestMessage = useCallback(() => {
     const container = messageListRef.current;
     if (!container) {
       return;
@@ -594,7 +594,7 @@ function FloatingAiAgent() {
     window.requestAnimationFrame(() => {
       container.scrollTo({ top: container.scrollHeight, behavior });
     });
-  };
+  }, [prefersReducedMotion]);
 
   const clearAutoNavigateTimer = () => {
     if (autoNavigateTimerRef.current) {
@@ -603,10 +603,13 @@ function FloatingAiAgent() {
     }
   };
 
-  const closeChat = () => {
-    clearAutoNavigateTimer();
+  const closeChat = useCallback(() => {
+    if (autoNavigateTimerRef.current) {
+      window.clearTimeout(autoNavigateTimerRef.current);
+      autoNavigateTimerRef.current = null;
+    }
     setOpen(false);
-  };
+  }, []);
 
   const openChat = () => {
     if (!open) {
@@ -741,7 +744,7 @@ function FloatingAiAgent() {
 
   useEffect(() => {
     scrollToLatestMessage();
-  }, [messages, isSending, open]);
+  }, [messages, isSending, open, scrollToLatestMessage]);
 
   useEffect(() => {
     if (!open) {
@@ -789,7 +792,7 @@ function FloatingAiAgent() {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [open]);
+  }, [open, closeChat]);
 
   useEffect(() => {
     if (location.pathname === '/' && location.hash === '#contact') {
