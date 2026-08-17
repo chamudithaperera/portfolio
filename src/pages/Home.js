@@ -113,6 +113,15 @@ const siteTouchIcon = `${siteUrl}/site-icon-192.png`;
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
 
+const reviewServiceOptions = [
+  'Website Development',
+  'Mobile App Development',
+  'Full Stack System',
+  'UI/UX Design',
+  'Maintenance & Support',
+  'Other',
+];
+
 const emptyPricingServices = [];
 
 const pricingImportantInfo = [
@@ -163,6 +172,7 @@ const emptyPortfolioContent = {
   education: [],
   certificates: [],
   techStacks: [],
+  reviews: [],
 };
 
 const slugify = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -421,6 +431,7 @@ const iconPaths = {
   mail: ['M4 4h16v16H4z', 'm4 6 8 6 8-6'],
   external: ['M14 3h7v7', 'M10 14 21 3', 'M21 14v7H3V3h7'],
   phone: ['M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 5.2 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L9 10.9a16 16 0 0 0 4.1 4.1l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .6 2.9.7a2 2 0 0 1 1.7 2z'],
+  star: ['M12 2.8 15 9l6.8 1-4.9 4.8 1.2 6.8L12 17.4 5.9 21.6l1.2-6.8L2.2 10 9 9z'],
   support: [
     'M4 13v-1a8 8 0 0 1 16 0v1',
     'M6 13h2v5H6a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2z',

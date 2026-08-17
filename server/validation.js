@@ -74,6 +74,73 @@ function validateContactMessage(body) {
   };
 }
 
+const REVIEW_SERVICE_OPTIONS = [
+  'Website Development',
+  'Mobile App Development',
+  'Full Stack System',
+  'UI/UX Design',
+  'Maintenance & Support',
+  'Other',
+];
+
+function validateReviewPayload(body = {}) {
+  const errors = {};
+
+  const name = normalizeText(body.name);
+  const email = normalizeText(body.email);
+  const projectName = normalizeText(body.projectName || body.project_name);
+  const service = normalizeText(body.service);
+  const rating = Number.parseInt(String(body.rating ?? ''), 10);
+  const description = normalizeMessage(body.description);
+
+  if (!name) {
+    errors.name = 'Name is required.';
+  } else if (name.length < 2 || name.length > 120) {
+    errors.name = 'Name must be between 2 and 120 characters.';
+  }
+
+  if (!email) {
+    errors.email = 'Email is required.';
+  } else if (!validateEmail(email)) {
+    errors.email = 'Enter a valid email address.';
+  }
+
+  if (!projectName) {
+    errors.projectName = 'Project name is required.';
+  } else if (projectName.length < 2 || projectName.length > 120) {
+    errors.projectName = 'Project name must be between 2 and 120 characters.';
+  }
+
+  if (!service) {
+    errors.service = 'Service is required.';
+  } else if (!REVIEW_SERVICE_OPTIONS.includes(service)) {
+    errors.service = 'Select a valid service.';
+  }
+
+  if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+    errors.rating = 'Rating must be between 1 and 5.';
+  }
+
+  if (!description) {
+    errors.description = 'Description is required.';
+  } else if (description.length < 20 || description.length > 2000) {
+    errors.description = 'Description must be between 20 and 2000 characters.';
+  }
+
+  return {
+    ok: Object.keys(errors).length === 0,
+    errors,
+    values: {
+      name,
+      email,
+      projectName,
+      service,
+      rating: Number.isFinite(rating) ? rating : 0,
+      description,
+    },
+  };
+}
+
 function validateChatbotMessage(body = {}) {
   const errors = {};
 
@@ -621,6 +688,7 @@ module.exports = {
   validateCollectionOrder,
   validateEducationPayload,
   validateExperiencePayload,
+  validateReviewPayload,
   validatePricingPackagePayload,
   validatePricingServicePayload,
   validateProjectPayload,

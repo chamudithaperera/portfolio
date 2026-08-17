@@ -6,6 +6,7 @@ const TABLES = {
   education: 'portfolio_education',
   messages: 'contact_messages',
   experience: 'portfolio_experience',
+  reviews: 'portfolio_reviews',
   pricingPackages: 'portfolio_pricing_packages',
   pricingServices: 'portfolio_pricing_services',
   projects: 'portfolio_projects',
@@ -211,6 +212,22 @@ function mapPricingPackage(row) {
   };
 }
 
+function mapReview(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    projectName: row.project_name,
+    service: row.service,
+    rating: row.rating ?? 0,
+    description: row.description,
+    status: row.status || 'pending',
+    approvedAt: row.approved_at || null,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 function mapVisit(row) {
   return {
     id: row.id,
@@ -365,6 +382,24 @@ function pricingPackagePayload(input = {}) {
   };
 }
 
+function reviewPayload(input = {}, options = {}) {
+  const status = options.status || input.status || 'pending';
+  const approvedAt = Object.prototype.hasOwnProperty.call(options, 'approvedAt')
+    ? options.approvedAt
+    : input.approvedAt || input.approved_at || null;
+
+  return {
+    name: normalizeString(input.name),
+    email: normalizeString(input.email),
+    project_name: normalizeString(input.projectName || input.project_name),
+    service: normalizeString(input.service),
+    rating: toInteger(input.rating, 0),
+    description: normalizeString(input.description),
+    status: normalizeString(status) || 'pending',
+    approved_at: approvedAt,
+  };
+}
+
 async function listRows(table, mapper) {
   const { data, error } = await supabase
     .from(table)
@@ -429,16 +464,17 @@ async function safeCountRows(table) {
 }
 
 async function listPortfolioContent() {
-  const [projects, experience, education, certificates, pricingServices, techStacks] = await Promise.all([
+  const [projects, experience, education, certificates, pricingServices, techStacks, reviews] = await Promise.all([
     listRows(TABLES.projects, mapProject),
     safeListRows(TABLES.experience, mapExperience),
     listRows(TABLES.education, mapEducation),
     listRows(TABLES.certificates, mapCertificate),
     safeListPricingServices(false),
     safeListTechStacks(false),
+    safeListReviews(false),
   ]);
 
-  return { projects, experience, education, certificates, pricingServices, techStacks };
+  return { projects, experience, education, certificates, pricingServices, techStacks, reviews };
 }
 
 async function listPricingServices(admin = false) {
@@ -516,8 +552,36 @@ async function safeListTechStacks(admin = false) {
   }
 }
 
+async function listReviews(admin = false) {
+  let query = supabase
+    .from(TABLES.reviews)
+    .select('*')
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false });
+
+  if (!admin) {
+    query = query.eq('status', 'approved');
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    throw error;
+  }
+
+  return (data || []).map(mapReview);
+}
+
+async function safeListReviews(admin = false) {
+  try {
+    return await listReviews(admin);
+  } catch (error) {
+    console.error(`Unable to list reviews:`, error.message || error);
+    return [];
+  }
+}
+
 async function getDashboardSummary() {
-  const [messages, projects, experience, education, certificates, pricingPackages, techStacks, visitRows] = await Promise.all([
+  const [messages, projects, experience, education, certificates, pricingPackages, techStacks, reviews, visitRows] = await Promise.all([
     safeCountRows(TABLES.messages),
     safeCountRows(TABLES.projects),
     safeCountRows(TABLES.experience),
@@ -525,8 +589,23 @@ async function getDashboardSummary() {
     safeCountRows(TABLES.certificates),
     safeCountRows(TABLES.pricingPackages),
     safeCountRows(TABLES.techStacks),
+    safeCountRows(TABLES.reviews),
     listVisits(1),
   ]);
+
+  let pendingReviews = 0;
+  try {
+    const { count, error } = await supabase
+      .from(TABLES.reviews)
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pending');
+    if (error) {
+      throw error;
+    }
+    pendingReviews = count || 0;
+  } catch (error) {
+    console.error(`Unable to load pending reviews:`, error.message || error);
+  }
 
   let latestMessage = null;
   try {
@@ -539,6 +618,20 @@ async function getDashboardSummary() {
     latestMessage = data || null;
   } catch (error) {
     console.error(`Unable to load latest message:`, error.message || error);
+  }
+
+  let latestReview = null;
+  try {
+    const { data } = await supabase
+      .from(TABLES.reviews)
+      .select('id, name, project_name, service, rating, status, created_at')
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    latestReview = data || null;
+  } catch (error) {
+    console.error(`Unable to load latest review:`, error.message || error);
   }
 
   let latestVisit = null;
@@ -558,8 +651,11 @@ async function getDashboardSummary() {
     certificates,
     pricingPackages,
     techStacks,
+    reviews,
+    pendingReviews,
     visits,
     latestMessage: latestMessage || null,
+    latestReview,
     latestVisit,
   };
 }
@@ -601,15 +697,19 @@ module.exports = {
   mapExperience,
   mapPricingPackage,
   mapPricingService,
+  mapReview,
   mapTechStack,
   mapProject,
   mapVisit,
   listPricingServices,
+  listReviews,
   listTechStacks,
   listVisitRows,
   projectPayload,
   pricingPackagePayload,
   pricingServicePayload,
+  reviewPayload,
+  safeListReviews,
   safeListTechStacks,
   safeListVisitRows,
   techStackPayload,

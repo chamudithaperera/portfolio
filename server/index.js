@@ -31,6 +31,7 @@ const {
   validateContactMessage,
   validateEducationPayload,
   validateExperiencePayload,
+  validateReviewPayload,
   validatePricingPackagePayload,
   validatePricingServicePayload,
   validateProjectPayload,
@@ -47,17 +48,20 @@ const {
   insertRow,
   listPortfolioContent,
   listPricingServices,
+  listReviews,
   listTechStacks,
   mapCertificate,
   mapEducation,
   mapExperience,
   mapPricingPackage,
   mapPricingService,
+  mapReview,
   mapTechStack,
   mapProject,
   pricingPackagePayload,
   pricingServicePayload,
   projectPayload,
+  reviewPayload,
   techStackPayload,
   updateRow,
   TABLES,
@@ -137,6 +141,18 @@ const seoPages = {
     ],
     robots: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
   },
+  review: {
+    title: 'Reviews | Chamuditha Perera',
+    description: 'Share a review about working with Chamuditha Perera and see approved client feedback on the portfolio.',
+    keywords: `${defaultKeywords}, client reviews, portfolio testimonials, leave a review`,
+    canonicalPath: '/review',
+    fallbackHeading: 'Leave a Review',
+    fallbackParagraphs: [
+      'Share your experience working with Chamuditha Perera on a website, mobile app, or custom software project.',
+      'Approved reviews appear on the portfolio homepage and help other clients understand the quality of the work.',
+    ],
+    robots: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+  },
   admin: {
     title: 'Admin Dashboard | Chamuditha Portfolio',
     description: 'Private administration area for Chamuditha Perera portfolio content.',
@@ -156,6 +172,12 @@ const contactLimiter = rateLimit({
 const chatbotLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+const reviewLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 8,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -221,6 +243,18 @@ async function getCertificateImageRecord(id) {
   return data || null;
 }
 
+async function getReviewRecord(id) {
+  const { data, error } = await supabase
+    .from(TABLES.reviews)
+    .select('id, status, approved_at')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) {
+    throw error;
+  }
+  return data || null;
+}
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, status: 'healthy' });
 });
@@ -247,6 +281,10 @@ function getSeoPage(requestPath) {
 
   if (cleanPath === '/pricing' || cleanPath.startsWith('/pricing/')) {
     return seoPages.pricing;
+  }
+
+  if (cleanPath === '/review' || cleanPath.startsWith('/review/')) {
+    return seoPages.review;
   }
 
   if (cleanPath === '/admin' || cleanPath.startsWith('/admin/')) {
@@ -363,7 +401,8 @@ function renderFallbackContent(seo) {
     '<nav aria-label="Portfolio pages">',
     `<a href="${siteOrigin}/">Home</a> | `,
     `<a href="${siteOrigin}/projects">Projects</a> | `,
-    `<a href="${siteOrigin}/pricing">Pricing</a>`,
+    `<a href="${siteOrigin}/pricing">Pricing</a> | `,
+    `<a href="${siteOrigin}/review">Review</a>`,
     '</nav>',
     '</main>',
   ].join('');
@@ -380,7 +419,8 @@ function renderNoScriptContent(seo) {
     '<nav aria-label="Portfolio pages without JavaScript">',
     `<a href="${siteOrigin}/">Home</a> | `,
     `<a href="${siteOrigin}/projects">Projects</a> | `,
-    `<a href="${siteOrigin}/pricing">Pricing</a>`,
+    `<a href="${siteOrigin}/pricing">Pricing</a> | `,
+    `<a href="${siteOrigin}/review">Review</a>`,
     '</nav>',
     '</main>',
     '</noscript>',
@@ -548,6 +588,19 @@ app.get('/api/content/pricing', async (_req, res) => {
   } catch (error) {
     console.error('Pricing content lookup failed:', error);
     return fail(res, 500, 'We could not load pricing content right now.');
+  }
+});
+
+app.get('/api/content/reviews', async (_req, res) => {
+  try {
+    const reviews = await listReviews(false);
+    return res.json({
+      ok: true,
+      reviews,
+    });
+  } catch (error) {
+    console.error('Review content lookup failed:', error);
+    return fail(res, 500, 'We could not load reviews right now.');
   }
 });
 
@@ -726,6 +779,31 @@ app.post('/api/contact/messages', contactLimiter, async (req, res) => {
     message: 'Message saved successfully.',
     data,
   });
+});
+
+app.post('/api/reviews', reviewLimiter, async (req, res) => {
+  const result = validateReviewPayload(req.body);
+
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the highlighted review fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(
+      TABLES.reviews,
+      reviewPayload(result.values, { status: 'pending', approvedAt: null }),
+      mapReview,
+    );
+
+    return res.status(201).json({
+      ok: true,
+      message: 'Review saved successfully.',
+      review: created,
+    });
+  } catch (error) {
+    console.error('Review insert failed:', error);
+    return fail(res, 500, 'We could not save your review right now.');
+  }
 });
 
 app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
@@ -930,6 +1008,118 @@ app.get('/api/admin/content', requireAdmin, async (_req, res) => {
   } catch (error) {
     console.error('Admin content load failed:', error);
     return fail(res, 500, 'We could not load the portfolio content right now.');
+  }
+});
+
+app.get('/api/admin/reviews', requireAdmin, async (_req, res) => {
+  try {
+    const reviews = await listReviews(true);
+    return res.json({ ok: true, reviews });
+  } catch (error) {
+    console.error('Review admin load failed:', error);
+    return fail(res, 500, 'We could not load reviews right now.');
+  }
+});
+
+app.post('/api/admin/reviews', requireAdmin, async (req, res) => {
+  const result = validateReviewPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the review form fields.', result.errors);
+  }
+
+  try {
+    const created = await insertRow(
+      TABLES.reviews,
+      reviewPayload(result.values, { status: 'pending', approvedAt: null }),
+      mapReview,
+    );
+    return res.status(201).json({ ok: true, review: created });
+  } catch (error) {
+    console.error('Review create failed:', error);
+    return fail(res, 500, 'We could not save that review right now.');
+  }
+});
+
+app.put('/api/admin/reviews/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'A valid review id is required.');
+  }
+
+  const result = validateReviewPayload(req.body);
+  if (!result.ok) {
+    return fail(res, 400, 'Please fix the review form fields.', result.errors);
+  }
+
+  try {
+    const existing = await getReviewRecord(id);
+    if (!existing) {
+      return fail(res, 404, 'That review was not found.');
+    }
+
+    const updated = await updateRow(
+      TABLES.reviews,
+      id,
+      {
+        ...reviewPayload(result.values, {
+          status: existing.status || 'pending',
+          approvedAt: existing.approved_at || null,
+        }),
+      },
+      mapReview,
+    );
+
+    return res.json({ ok: true, review: updated });
+  } catch (error) {
+    console.error('Review update failed:', error);
+    return fail(res, 500, 'We could not update that review right now.');
+  }
+});
+
+app.patch('/api/admin/reviews/:id/status', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'A valid review id is required.');
+  }
+
+  const approved = Boolean(req.body?.approved);
+  const status = approved ? 'approved' : 'pending';
+  const approvedAt = approved ? new Date().toISOString() : null;
+
+  try {
+    const { data, error } = await supabase
+      .from(TABLES.reviews)
+      .update({
+        status,
+        approved_at: approvedAt,
+      })
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return res.json({ ok: true, review: mapReview(data) });
+  } catch (error) {
+    console.error('Review status update failed:', error);
+    return fail(res, 500, 'We could not update that review status right now.');
+  }
+});
+
+app.delete('/api/admin/reviews/:id', requireAdmin, async (req, res) => {
+  const id = parseNumericId(req.params.id);
+  if (!id) {
+    return fail(res, 400, 'A valid review id is required.');
+  }
+
+  try {
+    await deleteRow(TABLES.reviews, id);
+    return res.json({ ok: true, deleted: true });
+  } catch (error) {
+    console.error('Review delete failed:', error);
+    return fail(res, 500, 'We could not delete that review right now.');
   }
 });
 
