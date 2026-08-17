@@ -43,6 +43,7 @@ import {
 import withBase from '../utils/basePath';
 import { apiRequest } from '../utils/api';
 import { useTheme } from '../theme';
+import { useTheme } from '../theme';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -2136,6 +2137,7 @@ function Projects({ mode = 'home', projectsData = [] }) {
 
 function ProjectsPage() {
   const portfolioContent = usePortfolioContent();
+  const { themeColor } = useTheme();
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
@@ -2176,7 +2178,7 @@ function ProjectsPage() {
         <meta name="twitter:description" content={projectsPageDescription} />
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
-        <meta name="theme-color" content="#00020a" />
+        <meta name="theme-color" content={themeColor} />
         <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
         <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
         <link rel="apple-touch-icon" href={siteTouchIcon} />
@@ -3474,6 +3476,7 @@ function ReviewPage() {
   const [fieldErrors, setFieldErrors] = useState({});
   const sending = status === 'sending';
   const sent = status === 'success';
+  const { themeColor } = useTheme();
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
@@ -3586,7 +3589,7 @@ function ReviewPage() {
         />
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
-        <meta name="theme-color" content="#00020a" />
+        <meta name="theme-color" content={themeColor} />
         <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
         <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
         <link rel="apple-touch-icon" href={siteTouchIcon} />
@@ -3789,6 +3792,7 @@ function PricingPage() {
   const activeService = pricingServices.find((service) => service.id === activeServiceId) || pricingServices[0] || null;
   const websiteService = pricingServices.find((service) => service.id === 'websites') || pricingServices[0];
   const mobileService = pricingServices.find((service) => service.id === 'mobile-apps') || pricingServices[1];
+  const { themeColor } = useTheme();
   const pricingHighlights = [
     websiteService?.packages?.[0] ? `${websiteService.label} from ${websiteService.packages[0].price}` : '',
     mobileService?.packages?.[0] ? `${mobileService.label} from ${mobileService.packages[0].price}` : '',
@@ -3843,7 +3847,7 @@ function PricingPage() {
         <meta name="twitter:description" content={pricingPageDescription} />
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
-        <meta name="theme-color" content="#00020a" />
+        <meta name="theme-color" content={themeColor} />
         <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
         <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
         <link rel="apple-touch-icon" href={siteTouchIcon} />
@@ -4097,6 +4101,7 @@ function Footer() {
 
 function Home() {
   const portfolioContent = usePortfolioContent();
+  const { themeColor } = useTheme();
 
   return (
     <div className="bolt-shell">
@@ -4128,7 +4133,7 @@ function Home() {
         <meta name="twitter:description" content={siteDescription} />
         <meta name="twitter:image" content={socialImage} />
         <meta name="twitter:image:alt" content={socialImageAlt} />
-        <meta name="theme-color" content="#00020a" />
+        <meta name="theme-color" content={themeColor} />
         <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
         <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
         <link rel="apple-touch-icon" href={siteTouchIcon} />

@@ -5,7 +5,16 @@
     <script>
       (function() {
         const theme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
+        const root = document.documentElement;
+        const themeColor = theme === 'light' ? '#f8fafc' : '#00020a';
+
+        root.setAttribute('data-theme', theme);
+        root.style.colorScheme = theme;
+
+        const themeColorMeta = document.querySelector("meta[name='theme-color']");
+        if (themeColorMeta) {
+          themeColorMeta.setAttribute('content', themeColor);
+        }
       })();
     </script>
     <link rel="icon" type="image/png" sizes="96x96" href="https://chamudithaperera.online/favicon.png" />
