@@ -3446,14 +3446,32 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
 
 function ReviewTimeline({ reviews = [], className = '' }) {
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
+  const [visibleCards, setVisibleCards] = useState(3);
   const safeReviews = Array.isArray(reviews) ? reviews : [];
   const reviewCount = safeReviews.length;
 
   useEffect(() => {
-    if (activeReviewIndex >= reviewCount) {
-      setActiveReviewIndex(0);
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setVisibleCards(1);
+      } else if (window.innerWidth < 1024) {
+        setVisibleCards(2);
+      } else {
+        setVisibleCards(3);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const maxIndex = Math.max(0, reviewCount - visibleCards);
+
+  useEffect(() => {
+    if (activeReviewIndex > maxIndex) {
+      setActiveReviewIndex(maxIndex);
     }
-  }, [activeReviewIndex, reviewCount]);
+  }, [activeReviewIndex, maxIndex]);
 
   if (!reviewCount) {
     return null;
@@ -3461,27 +3479,26 @@ function ReviewTimeline({ reviews = [], className = '' }) {
 
   const showPreviousReview = () => {
     if (!reviewCount) return;
-    setActiveReviewIndex((current) => (current - 1 + reviewCount) % reviewCount);
+    setActiveReviewIndex((current) => {
+      if (current === 0) return maxIndex;
+      return current - 1;
+    });
   };
 
   const showNextReview = () => {
     if (!reviewCount) return;
-    setActiveReviewIndex((current) => (current + 1) % reviewCount);
+    setActiveReviewIndex((current) => {
+      if (current >= maxIndex) return 0;
+      return current + 1;
+    });
   };
 
   const activateReview = (index) => setActiveReviewIndex(index);
 
-  const getReviewOffset = (index) => {
-    if (!reviewCount) return 0;
-    const rawOffset = index - activeReviewIndex;
-    if (rawOffset > reviewCount / 2) {
-      return rawOffset - reviewCount;
-    }
-    if (rawOffset < -reviewCount / 2) {
-      return rawOffset + reviewCount;
-    }
-    return rawOffset;
-  };
+  const dotIndexes = [];
+  for (let i = 0; i <= maxIndex; i++) {
+    dotIndexes.push(i);
+  }
 
   return (
     <div className={`review-timeline-shell ${className}`.trim()}>
@@ -3493,55 +3510,62 @@ function ReviewTimeline({ reviews = [], className = '' }) {
             </p>
             <h3>Client review timeline</h3>
           </div>
-          <div className="slider-controls">
-            <button type="button" className="slider-button" aria-label="Previous review card" onClick={showPreviousReview}>
-              <Icon name="arrowLeft" size={15} />
-            </button>
-            <button type="button" className="slider-button" aria-label="Next review card" onClick={showNextReview}>
-              <Icon name="arrowRight" size={15} />
-            </button>
-          </div>
+          {reviewCount > visibleCards && (
+            <div className="slider-controls">
+              <button type="button" className="slider-button" aria-label="Previous review card" onClick={showPreviousReview}>
+                <Icon name="arrowLeft" size={15} />
+              </button>
+              <button type="button" className="slider-button" aria-label="Next review card" onClick={showNextReview}>
+                <Icon name="arrowRight" size={15} />
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="review-carousel" aria-label="Approved review cards slider">
-          <div className="review-carousel-stage">
+          <div 
+            className="review-carousel-stage"
+            style={{ transform: `translate3d(-${activeReviewIndex * (100 / visibleCards)}%, 0, 0)` }}
+          >
             {safeReviews.map((review, index) => {
-              const offset = getReviewOffset(index);
-              const positionClass =
-                offset === 0 ? 'is-active' : offset === -1 ? 'is-prev' : offset === 1 ? 'is-next' : 'is-hidden';
+              const isActive = index >= activeReviewIndex && index < activeReviewIndex + visibleCards;
+              const positionClass = isActive ? 'is-active' : 'is-inactive';
 
               return (
-                <ReviewCard
-                  key={review.id || `${review.email}-${index}`}
-                  review={review}
-                  index={index}
-                  totalCount={reviewCount}
-                  positionClass={positionClass}
-                  onActivate={() => activateReview(index)}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      activateReview(index);
-                    }
-                  }}
-                />
+                <div key={review.id || `${review.email}-${index}`} className="review-carousel-slide">
+                  <ReviewCard
+                    review={review}
+                    index={index}
+                    totalCount={reviewCount}
+                    positionClass={positionClass}
+                    onActivate={() => activateReview(index)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        activateReview(index);
+                      }
+                    }}
+                  />
+                </div>
               );
             })}
           </div>
         </div>
 
-        <div className="review-carousel-dots" aria-label="Review carousel pagination">
-          {safeReviews.map((review, index) => (
-            <button
-              key={`${review.id || review.email || 'review'}-dot`}
-              type="button"
-              className={`review-carousel-dot ${index === activeReviewIndex ? 'is-active' : ''}`}
-              aria-label={`Show ${review.name || `review ${index + 1}`}`}
-              aria-pressed={index === activeReviewIndex}
-              onClick={() => activateReview(index)}
-            />
-          ))}
-        </div>
+        {maxIndex > 0 && (
+          <div className="review-carousel-dots" aria-label="Review carousel pagination">
+            {dotIndexes.map((idx) => (
+              <button
+                key={`review-dot-${idx}`}
+                type="button"
+                className={`review-carousel-dot ${idx === activeReviewIndex ? 'is-active' : ''}`}
+                aria-label={`Show review slide starting from ${safeReviews[idx]?.name || `review ${idx + 1}`}`}
+                aria-pressed={idx === activeReviewIndex}
+                onClick={() => activateReview(idx)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
