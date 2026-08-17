@@ -123,8 +123,8 @@ function validateReviewPayload(body = {}) {
 
   if (!description) {
     errors.description = 'Description is required.';
-  } else if (description.length < 20 || description.length > 2000) {
-    errors.description = 'Description must be between 20 and 2000 characters.';
+  } else if (description.length < 10 || description.length > 2000) {
+    errors.description = 'Description must be between 10 and 2000 characters.';
   }
 
   return {

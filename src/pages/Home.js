@@ -3431,6 +3431,7 @@ function ReviewPage() {
   const [form, setForm] = useState(() => ({ ...emptyReviewForm }));
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const sending = status === 'sending';
   const sent = status === 'success';
 
@@ -3452,15 +3453,34 @@ function ReviewPage() {
       ...current,
       [name]: name === 'rating' ? Number(value) : value,
     }));
+    setFieldErrors((current) => {
+      if (!current[name]) {
+        return current;
+      }
+
+      const next = { ...current };
+      delete next[name];
+      return next;
+    });
   };
 
   const setRating = (rating) => {
     setForm((current) => ({ ...current, rating }));
+    setFieldErrors((current) => {
+      if (!current.rating) {
+        return current;
+      }
+
+      const next = { ...current };
+      delete next.rating;
+      return next;
+    });
   };
 
   const reset = () => {
     setStatus('idle');
     setError('');
+    setFieldErrors({});
     setForm({ ...emptyReviewForm });
   };
 
@@ -3468,6 +3488,7 @@ function ReviewPage() {
     event.preventDefault();
     setStatus('sending');
     setError('');
+    setFieldErrors({});
 
     try {
       await apiRequest('/api/reviews', {
@@ -3475,10 +3496,17 @@ function ReviewPage() {
         body: form,
       });
       setStatus('success');
+      setFieldErrors({});
       setForm({ ...emptyReviewForm });
     } catch (submissionError) {
       setStatus('error');
-      setError(submissionError.message || 'Something went wrong. Please try again.');
+      const details = submissionError?.data?.details;
+      if (details && typeof details === 'object') {
+        setFieldErrors(details);
+        setError('Please fix the highlighted fields and try again.');
+      } else {
+        setError(submissionError.message || 'Something went wrong. Please try again.');
+      }
     }
   };
 
@@ -3592,7 +3620,8 @@ function ReviewPage() {
                   <div className="review-grid-2">
                     <label>
                       <span>Name</span>
-                      <input name="name" value={form.name} onChange={update} required placeholder="Your name" />
+                      <input name="name" value={form.name} onChange={update} required minLength={2} placeholder="Your name" />
+                      {fieldErrors.name ? <span className="review-field-error">{fieldErrors.name}</span> : null}
                     </label>
                     <label>
                       <span>Email</span>
@@ -3604,6 +3633,7 @@ function ReviewPage() {
                         required
                         placeholder="you@example.com"
                       />
+                      {fieldErrors.email ? <span className="review-field-error">{fieldErrors.email}</span> : null}
                     </label>
                   </div>
 
@@ -3615,24 +3645,28 @@ function ReviewPage() {
                         value={form.projectName}
                         onChange={update}
                         required
+                        minLength={2}
                         placeholder="Project or app name"
                       />
+                      {fieldErrors.projectName ? <span className="review-field-error">{fieldErrors.projectName}</span> : null}
                     </label>
                     <label>
                       <span>Service</span>
-                      <select name="service" value={form.service} onChange={update}>
+                      <select name="service" value={form.service} onChange={update} required>
                         {reviewServiceOptions.map((service) => (
                           <option key={service} value={service}>
                             {service}
                           </option>
                         ))}
                       </select>
+                      {fieldErrors.service ? <span className="review-field-error">{fieldErrors.service}</span> : null}
                     </label>
                   </div>
 
                   <label className="review-rating-field">
                     <span>Rating</span>
                     <ReviewStars value={form.rating} onChange={setRating} interactive />
+                    {fieldErrors.rating ? <span className="review-field-error">{fieldErrors.rating}</span> : null}
                   </label>
 
                   <label>
@@ -3643,8 +3677,10 @@ function ReviewPage() {
                       value={form.description}
                       onChange={update}
                       required
+                      minLength={10}
                       placeholder="Share what was delivered and how the experience felt..."
                     />
+                    {fieldErrors.description ? <span className="review-field-error">{fieldErrors.description}</span> : null}
                   </label>
 
                   {error ? (

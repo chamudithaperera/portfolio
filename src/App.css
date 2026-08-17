@@ -1635,6 +1635,12 @@ html {
   line-height: 1.55;
 }
 
+.review-field-error {
+  color: #fca5a5;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
 .review-submit-button {
   width: 100%;
   min-height: 3.2rem;
