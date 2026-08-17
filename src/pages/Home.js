@@ -894,9 +894,6 @@ function Hero() {
             ))}
           </div>
           <ShowcaseIdentity />
-          <span className="floating-label floating-label-a">
-            <Icon name="code" size={12} /> Full-Stack
-          </span>
           <span className="floating-label floating-label-b">
             <Icon name="sparkles" size={12} /> Available
           </span>
