@@ -28,6 +28,10 @@ function detectChatbotIntent(message) {
     return 'latest-project';
   }
 
+  if (/(what is your name|who are you|your name|what are you|who is this|what is this bot|bot name|identify yourself)/.test(text)) {
+    return 'bot-identity';
+  }
+
   if (/(who is chamuditha|how is chamuditha|about chamuditha|tell me about chamuditha|chamuditha's bio|chamuditha perera)/.test(text)) {
     return 'about-chamuditha';
   }
@@ -106,6 +110,14 @@ function buildScriptedChatbotReply(intent, context = {}) {
         : 'You can browse my latest projects on the projects page.',
       actions: [
         { label: 'View Projects', href: '/projects' },
+      ],
+    },
+    'bot-identity': {
+      reply: "I'm the AI assistant of ChamudithaPerera.Online Software Solutions. how can i help you",
+      actions: [
+        { label: 'View Projects', href: '/projects' },
+        { label: 'Pricing', href: '/pricing' },
+        { label: 'Contact', href: '/#contact' },
       ],
     },
     'about-chamuditha': {

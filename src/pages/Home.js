@@ -544,6 +544,10 @@ function detectChatbotIntent(message) {
     return 'social-profiles';
   }
 
+  if (/(what is your name|who are you|your name|what are you|who is this|what is this bot|bot name|identify yourself)/.test(text)) {
+    return 'bot-identity';
+  }
+
   if (/(service|services|offer|do you build|what can you make|what do you do)/.test(text)) {
     return 'services';
   }
@@ -584,6 +588,14 @@ function buildLocalChatbotReply(intent) {
         { label: 'WhatsApp me', href: whatsappUrl },
         { label: 'LinkedIn', href: 'https://linkedin.com/in/chamudithaperera' },
         { label: 'GitHub', href: 'https://github.com/chamudithaperera' },
+      ],
+    },
+    'bot-identity': {
+      reply: "I'm the AI assistant of ChamudithaPerera.Online Software Solutions. how can i help you",
+      actions: [
+        { label: 'Click here to see projects', href: '/projects' },
+        { label: 'Click here to see pricing', href: '/pricing' },
+        { label: 'Click here to contact me', href: '/#contact' },
       ],
     },
     services: {
