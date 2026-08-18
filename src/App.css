@@ -531,16 +531,62 @@ html {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
   flex: 1 1 auto;
+}
+
+.ai-agent-header-avatar-wrap {
+  position: relative;
+  display: inline-flex;
+  width: 2.3rem;
+  height: 2.3rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.36), transparent 32%),
+    linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(14, 165, 233, 0.86));
+  box-shadow: 0 8px 16px rgba(14, 165, 233, 0.14);
+}
+
+.ai-agent-header-avatar {
+  width: 1.7rem;
+  height: 1.7rem;
+  object-fit: contain;
+}
+
+.ai-agent-header-avatar-wrap .ai-agent-status-dot {
+  position: absolute;
+  right: -0.05rem;
+  bottom: -0.05rem;
+  border: 2px solid #080c16;
+  box-shadow: none;
+}
+
+.ai-agent-header-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.15rem;
 }
 
 .ai-agent-header h3 {
   margin: 0;
   color: #f8fbff;
-  font-size: 0.98rem;
+  font-size: 0.88rem;
   font-weight: 700;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ai-agent-subtitle {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .ai-agent-status-dot {

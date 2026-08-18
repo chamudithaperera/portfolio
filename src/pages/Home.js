@@ -941,8 +941,14 @@ function FloatingAiAgent() {
             <div className="ai-agent-panel-shell">
               <div className="ai-agent-header">
                 <div className="ai-agent-title-wrap">
-                  <h3 id="ai-agent-title">Portfolio Assistant</h3>
-                  <span className="ai-agent-status-dot" aria-hidden="true" />
+                  <div className="ai-agent-header-avatar-wrap">
+                    <img src="/assets/imgs/chatbot-launcher.png" alt="AI Agent" className="ai-agent-header-avatar" />
+                    <span className="ai-agent-status-dot" aria-hidden="true" />
+                  </div>
+                  <div className="ai-agent-header-text">
+                    <h3 id="ai-agent-title">ChamudithaPerera.Online Portfolio Assistant</h3>
+                    <span className="ai-agent-subtitle">AI powered chatbot</span>
+                  </div>
                 </div>
                 <button
                   type="button"
