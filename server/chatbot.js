@@ -333,17 +333,29 @@ async function generateChatbotReply({ message, knowledge }) {
     return null;
   }
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
+  const modelName = (!config.openaiChatModel || config.openaiChatModel === 'gpt-4.1-mini')
+    ? 'gpt-4o-mini'
+    : config.openaiChatModel;
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${config.openaiApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: config.openaiChatModel,
-      instructions: buildKnowledgePrompt(knowledge),
-      input: message,
-      max_output_tokens: 180,
+      model: modelName,
+      messages: [
+        {
+          role: 'system',
+          content: buildKnowledgePrompt(knowledge),
+        },
+        {
+          role: 'user',
+          content: message,
+        },
+      ],
+      max_tokens: 180,
     }),
   });
 
@@ -353,7 +365,7 @@ async function generateChatbotReply({ message, knowledge }) {
   }
 
   const data = await response.json();
-  const reply = extractResponseText(data);
+  const reply = data.choices?.[0]?.message?.content?.trim() || '';
 
   if (!reply) {
     return null;
