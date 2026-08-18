@@ -32,7 +32,7 @@ function detectChatbotIntent(message) {
     return 'about-chamuditha';
   }
 
-  if (/(tech stack|technologies|what languages|frameworks|programming language|databases|use in projects|what stacks|what does he use)/.test(text)) {
+  if (/(tech stack|technologies|technology|what languages|frameworks|programming language|programming languages|program language|program languages|databases|use in projects|what stacks|what does he use|tools|what tools)/.test(text)) {
     return 'tech-stacks';
   }
 
