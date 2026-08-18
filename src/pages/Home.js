@@ -1101,7 +1101,11 @@ function FloatingAiAgent() {
       >
         <span className="ai-agent-launcher-pulse" aria-hidden="true" />
         <span className="ai-agent-launcher-icon" aria-hidden="true">
-          <Icon name={open ? 'close' : 'support'} size={22} />
+          {open ? (
+            <Icon name="close" size={22} />
+          ) : (
+            <img src="/assets/imgs/chatbot-launcher.png" alt="AI Assistant" />
+          )}
         </span>
       </button>
     </div>,
