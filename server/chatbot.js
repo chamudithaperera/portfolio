@@ -151,9 +151,7 @@ function buildScriptedChatbotReply(intent, context = {}) {
       ],
     },
     reviews: {
-      reply: context.reviews && context.reviews.length > 0
-        ? `Here is what clients say about Chamuditha:\n${context.reviews.map(r => `• "${r.review}" — ${r.name}`).join('\n')}\n\nYou can read all testimonials in the reviews section of the home page.`
-        : 'Clients appreciate Chamuditha for his speed, clean code, design aesthetic, and proactive communication. You can read testimonials on the home page.',
+      reply: 'You can check my client reviews and testimonials in the reviews section of the home screen.',
       actions: [
         { label: 'Click here to see reviews', href: '/#reviews' },
         { label: 'Write a Review', href: '/#reviews' },
