@@ -755,36 +755,41 @@
 
 .admin-review-table th:nth-child(1),
 .admin-review-table td:nth-child(1) {
-  width: 7.75rem;
+  width: 3rem;
 }
 
 .admin-review-table th:nth-child(2),
 .admin-review-table td:nth-child(2) {
-  width: 12.5rem;
+  width: 7.75rem;
 }
 
 .admin-review-table th:nth-child(3),
 .admin-review-table td:nth-child(3) {
-  width: 12rem;
+  width: 12.5rem;
 }
 
 .admin-review-table th:nth-child(4),
 .admin-review-table td:nth-child(4) {
-  width: 14rem;
+  width: 12rem;
 }
 
 .admin-review-table th:nth-child(5),
 .admin-review-table td:nth-child(5) {
-  width: 8.75rem;
+  width: 14rem;
 }
 
 .admin-review-table th:nth-child(6),
 .admin-review-table td:nth-child(6) {
-  width: 11rem;
+  width: 8.75rem;
 }
 
 .admin-review-table th:nth-child(7),
 .admin-review-table td:nth-child(7) {
+  width: 11rem;
+}
+
+.admin-review-table th:nth-child(8),
+.admin-review-table td:nth-child(8) {
   width: 14rem;
 }
 
