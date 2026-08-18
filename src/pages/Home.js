@@ -3420,35 +3420,36 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
       initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: prefersReducedMotion ? 0 : 0.45, delay: Math.min(index, 6) * 0.05 }}
-      whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+      whileHover={prefersReducedMotion ? undefined : { y: -6 }}
     >
       <span className="experience-card-accent" />
+      <span className="review-quote-mark" aria-hidden="true">“</span>
+      
       <div className="experience-card-body review-carousel-body">
         <div className="experience-card-header review-carousel-header">
           <div className="experience-role review-carousel-role">
-            <span className="experience-role-icon review-carousel-avatar" aria-hidden="true">
+            <span className="review-carousel-avatar" aria-hidden="true">
               {initials}
             </span>
             <div>
               <div className="experience-title-line review-carousel-title-line">
                 <h3>{name}</h3>
-                <span className="current-badge review-carousel-service">{service}</span>
+                <span className="review-carousel-service">{service}</span>
               </div>
-              <p>{projectName}</p>
+              <p className="review-carousel-project">
+                <Icon name="briefcase" size={12} />
+                {projectName}
+              </p>
             </div>
           </div>
-          <span className="experience-period review-carousel-rating">
-            <Icon name="star" size={12} />
-            {rating ? `${rating}/5` : 'No rating yet'}
-          </span>
+          <div className="review-card-stars-container">
+            <ReviewStars value={rating} size={13} className="review-card-stars" />
+          </div>
         </div>
 
         <p className="experience-description review-carousel-description">“{description}”</p>
 
-        <div className="tag-row experience-tags review-carousel-tags">
-          <span className="tech-tag">Review</span>
-          <span className="tech-tag colorful-tag">{service}</span>
-        </div>
+        <div className="review-card-divider" />
 
         <div className="experience-card-footer review-carousel-footer">
           <div className="experience-count review-carousel-count">
