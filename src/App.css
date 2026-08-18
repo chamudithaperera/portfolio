@@ -4875,13 +4875,13 @@ textarea:focus-visible {
   align-items: flex-end;
   gap: 1.5rem;
   width: 100%;
-  max-width: 700px;
+  max-width: 620px;
   margin-left: auto;
 }
 
 .hero-showcase {
   position: relative;
-  width: 100%;
+  width: min(92%, 620px);
   aspect-ratio: 1.42;
   margin: 0 auto;
   filter: drop-shadow(0 26px 60px rgba(2, 6, 23, 0.3));
@@ -7000,7 +7000,7 @@ textarea:focus-visible {
   .hero-reference .hero-visual {
     display: block;
     align-items: center;
-    max-width: min(100%, 560px);
+    max-width: min(100%, 500px);
     margin-inline: auto;
   }
 
@@ -7058,6 +7058,7 @@ textarea:focus-visible {
   }
 
   .hero-showcase {
+    width: min(94%, 460px);
     aspect-ratio: 1.18;
   }
 
