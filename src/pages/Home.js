@@ -616,7 +616,7 @@ function buildLocalChatbotReply(intent) {
     },
     fallback: {
       reply:
-        'I can help with services, pricing, projects, and contact details. Try one of the quick messages below.',
+        'I can only respond to inquiries regarding services, pricing, portfolio projects, and contact information. Please select one of the options below or ask a relevant question.',
       actions: [
         { label: 'Click here to see pricing', href: '/pricing' },
         { label: 'Click here to see projects', href: '/projects' },

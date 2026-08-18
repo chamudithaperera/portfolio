@@ -1,7 +1,7 @@
 const config = require('./config');
 
 const FALLBACK_REPLY =
-  'I can help with services, pricing, projects, and contact details. Try one of the quick messages below.';
+  'I can only respond to inquiries regarding services, pricing, portfolio projects, and contact information. Please select one of the options below or ask a relevant question.';
 
 function normalizeChatbotText(value) {
   return String(value ?? '')
