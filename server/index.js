@@ -817,7 +817,25 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
   const intent = detectChatbotIntent(userMessage);
 
   if (intent) {
-    const scripted = buildScriptedChatbotReply(intent, { contact: chatbotContact });
+    let latestProject = null;
+    if (intent === 'latest-project') {
+      try {
+        const content = await listPortfolioContent();
+        if (content && Array.isArray(content.projects) && content.projects.length > 0) {
+          const sorted = [...content.projects].sort((a, b) => {
+            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            if (timeA !== timeB) return timeB - timeA;
+            return b.id - a.id;
+          });
+          latestProject = sorted[0];
+        }
+      } catch (e) {
+        console.error('Failed to retrieve latest project for chatbot intent response:', e);
+      }
+    }
+
+    const scripted = buildScriptedChatbotReply(intent, { contact: chatbotContact, latestProject });
     return res.json({
       ok: true,
       reply: scripted.reply,

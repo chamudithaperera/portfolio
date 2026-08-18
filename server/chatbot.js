@@ -20,6 +20,14 @@ function detectChatbotIntent(message) {
 
   const hasPricingLanguage = /(price|pricing|cost|quote|charges|estimate|package)/.test(text);
 
+  if (/^(hi|hello|hey|greetings|good morning|good afternoon|good evening|yo)(\s|$)/.test(text)) {
+    return 'greeting';
+  }
+
+  if (/(latest project|newest project|recent project|last project|what did you build recently|latest work)/.test(text)) {
+    return 'latest-project';
+  }
+
   if (/(service|services|offer|do you build|what can you make|what do you do)/.test(text)) {
     return 'services';
   }
@@ -60,6 +68,22 @@ function buildScriptedChatbotReply(intent, context = {}) {
   const contact = normalizeContact(context.contact);
 
   const replies = {
+    greeting: {
+      reply: 'HI welcome to the ChamudithaPerera.Online Software Solutions. I am your AI assistant. How can I help you?',
+      actions: [
+        { label: 'View Projects', href: '/projects' },
+        { label: 'Pricing', href: '/pricing' },
+        { label: 'Contact', href: '/#contact' },
+      ],
+    },
+    'latest-project': {
+      reply: context.latestProject
+        ? `Our latest project is ${context.latestProject.title} and you can see all the projects via the link below.`
+        : 'You can browse my latest projects on the projects page.',
+      actions: [
+        { label: 'View Projects', href: '/projects' },
+      ],
+    },
     services: {
       reply:
         'I build Flutter mobile apps, React websites, full-stack systems, APIs, dashboards, and polished UI experiences. I can also help with admin panels and product implementation.',

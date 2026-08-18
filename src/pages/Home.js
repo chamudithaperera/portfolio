@@ -536,6 +536,10 @@ function detectChatbotIntent(message) {
   const text = normalizeChatbotInput(message);
   const hasPricingLanguage = /(price|pricing|cost|quote|charges|estimate|package)/.test(text);
 
+  if (/^(hi|hello|hey|greetings|good morning|good afternoon|good evening|yo)(\s|$)/.test(text)) {
+    return 'greeting';
+  }
+
   if (/(service|services|offer|do you build|what can you make|what do you do)/.test(text)) {
     return 'services';
   }
@@ -557,6 +561,14 @@ function detectChatbotIntent(message) {
 
 function buildLocalChatbotReply(intent) {
   const replies = {
+    greeting: {
+      reply: 'HI welcome to the ChamudithaPerera.Online Software Solutions. I am your AI assistant. How can I help you?',
+      actions: [
+        { label: 'Click here to see projects', href: '/projects' },
+        { label: 'Click here to see pricing', href: '/pricing' },
+        { label: 'Click here to contact me', href: '/#contact' },
+      ],
+    },
     services: {
       reply:
         'I build Flutter mobile apps, React websites, full-stack systems, APIs, dashboards, and polished UI experiences. I can also help with admin panels and product implementation.',
