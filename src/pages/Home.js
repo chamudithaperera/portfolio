@@ -110,7 +110,6 @@ const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React
 const siteLogo = `${siteUrl}/favicon.png`;
 const siteIcon = `${siteUrl}/favicon.ico`;
 const siteTouchIcon = `${siteUrl}/site-icon-192.png`;
-const aiAgentAvatarSrc = withBase('/assets/imgs/chatbot-button.png');
 
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
@@ -1026,9 +1025,6 @@ function FloatingAiAgent() {
             transition={{ type: 'spring', stiffness: 320, damping: 24 }}
             onClick={openChat}
           >
-            <span className="ai-agent-greeting-avatar" aria-hidden="true">
-              <img src={aiAgentAvatarSrc} alt="" />
-            </span>
             <span className="ai-agent-greeting-copy">
               <span className="ai-agent-greeting-text">
                 Hello <span className="ai-agent-greeting-wave">👋</span>
