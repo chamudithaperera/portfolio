@@ -110,6 +110,7 @@ const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React
 const siteLogo = `${siteUrl}/favicon.png`;
 const siteIcon = `${siteUrl}/favicon.ico`;
 const siteTouchIcon = `${siteUrl}/site-icon-192.png`;
+const aiAgentAvatarSrc = withBase('/assets/imgs/chatbot-button.png');
 
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
@@ -604,7 +605,7 @@ function FloatingAiAgent() {
   const [draft, setDraft] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [showGreeting, setShowGreeting] = useState(false);
-  const [animateButton, setAnimateButton] = useState(true);
+  const [showLauncher, setShowLauncher] = useState(false);
   const panelRef = useRef(null);
   const messageListRef = useRef(null);
   const inputRef = useRef(null);
@@ -614,28 +615,28 @@ function FloatingAiAgent() {
   const locationKeyRef = useRef(`${location.pathname}${location.search}${location.hash}`);
 
   useEffect(() => {
-    // 1. Play button entry animation on mount, then remove the class after 1000ms
-    // to allow standard hover/focus states to work.
+    // Introduce the launcher after the greeting starts so it feels like the
+    // popup is coming from the button rather than appearing all at once.
     const buttonTimer = window.setTimeout(() => {
-      setAnimateButton(false);
-    }, 1000);
+      setShowLauncher(true);
+    }, prefersReducedMotion ? 0 : 420);
 
-    // 2. Show greeting bubble shortly after page loads/refreshes.
+    // Show the greeting bubble shortly after page loads/refreshes.
     const bubbleTimer = window.setTimeout(() => {
       setShowGreeting(true);
-    }, 800);
+    }, prefersReducedMotion ? 0 : 120);
 
-    // 3. Automatically dismiss greeting bubble after 6.5s.
+    // Keep the greeting visible for about three seconds.
     const hideTimer = window.setTimeout(() => {
       setShowGreeting(false);
-    }, 7300);
+    }, 3000);
 
     return () => {
       window.clearTimeout(buttonTimer);
       window.clearTimeout(bubbleTimer);
       window.clearTimeout(hideTimer);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   const scrollToLatestMessage = useCallback(() => {
     const container = messageListRef.current;
@@ -894,6 +895,7 @@ function FloatingAiAgent() {
             aria-modal="true"
             aria-labelledby="ai-agent-title"
             aria-describedby="ai-agent-description"
+            style={{ transformOrigin: 'calc(100% - 1.25rem) calc(100% - 1rem)' }}
             initial={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 18, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 16, scale: 0.98 }}
@@ -1029,11 +1031,17 @@ function FloatingAiAgent() {
             initial={{ opacity: 0, scale: 0.7, x: 30, y: 5 }}
             animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, x: 15, y: 5 }}
-            transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 24 }}
             onClick={openChat}
           >
-            <Icon name="sparkles" className="ai-agent-greeting-sparkle" size={15} />
-            <span className="ai-agent-greeting-text">Hello 👋 Ask me anything!</span>
+            <span className="ai-agent-greeting-avatar" aria-hidden="true">
+              <img src={aiAgentAvatarSrc} alt="" />
+            </span>
+            <span className="ai-agent-greeting-copy">
+              <span className="ai-agent-greeting-text">
+                Hello <span className="ai-agent-greeting-wave">👋</span>
+              </span>
+            </span>
             <button
               type="button"
               className="ai-agent-greeting-close"
@@ -1051,7 +1059,7 @@ function FloatingAiAgent() {
       <button
         ref={launcherRef}
         type="button"
-        className={`ai-agent-launcher ${animateButton ? 'entrance-animate' : ''}`}
+        className={`ai-agent-launcher ${showLauncher ? 'entrance-animate is-ready' : ''} ${open ? 'is-open' : ''}`}
         onClick={open ? closeChat : openChat}
         aria-expanded={open}
         aria-controls="ai-agent-panel"
@@ -1059,7 +1067,7 @@ function FloatingAiAgent() {
       >
         <span className="ai-agent-launcher-pulse" aria-hidden="true" />
         <span className="ai-agent-launcher-icon" aria-hidden="true">
-          <Icon name={open ? 'close' : 'support'} size={22} />
+          {open ? <Icon name="close" size={22} /> : <img src={aiAgentAvatarSrc} alt="" />}
         </span>
       </button>
     </div>,
