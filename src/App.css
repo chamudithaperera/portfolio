@@ -1713,6 +1713,10 @@ html {
   filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.5));
 }
 
+.review-card-stars .review-star.is-active svg {
+  fill: currentColor;
+}
+
 .review-carousel-tags {
   gap: 0.5rem;
 }
@@ -1897,6 +1901,10 @@ html {
 .review-star.is-active {
   color: #fbbf24;
   filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.22));
+}
+
+.review-star.is-active svg {
+  fill: currentColor;
 }
 
 .review-stars.is-interactive .review-star {
