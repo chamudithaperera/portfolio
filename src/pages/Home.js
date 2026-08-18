@@ -552,6 +552,10 @@ function detectChatbotIntent(message) {
     return 'pricing';
   }
 
+  if (/(review|reviews|feedback|testimonial|testimonials|what do clients say|rating|ratings|client reviews)/.test(text)) {
+    return 'reviews';
+  }
+
   if (/(project|projects|portfolio|work samples|show me)/.test(text)) {
     return 'projects';
   }
@@ -593,6 +597,10 @@ function buildLocalChatbotReply(intent) {
     pricing: {
       reply: 'You can view the website and mobile app pricing details on the pricing page.',
       actions: [{ label: 'Click here to see pricing', href: '/pricing' }],
+    },
+    reviews: {
+      reply: 'You can check my client reviews and testimonials in the reviews section of the home screen.',
+      actions: [{ label: 'Click here to see reviews', href: '/#reviews' }],
     },
     projects: {
       reply: 'You can browse my selected projects on the projects page.',
