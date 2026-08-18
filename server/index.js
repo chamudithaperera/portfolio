@@ -947,6 +947,29 @@ app.get('/api/admin/visits', requireAdmin, async (_req, res) => {
   });
 });
 
+app.post('/api/admin/visits/bulk-delete', requireAdmin, async (req, res) => {
+  const { ids } = req.body;
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return fail(res, 400, 'Invalid or empty ids array.');
+  }
+
+  try {
+    const { error } = await supabase
+      .from(TABLES.visits)
+      .delete()
+      .in('id', ids);
+
+    if (error) {
+      throw error;
+    }
+
+    return res.json({ ok: true, deletedCount: ids.length });
+  } catch (error) {
+    console.error('Bulk delete visits failed:', error);
+    return fail(res, 500, 'We could not delete those visits right now.');
+  }
+});
+
 app.patch('/api/admin/messages/:id/status', requireAdmin, async (req, res) => {
   const id = parseNumericId(req.params.id);
   const status = String(req.body?.status || '').trim().toLowerCase();

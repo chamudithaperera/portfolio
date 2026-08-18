@@ -623,6 +623,9 @@ function Admin() {
   const [visitsLoading, setVisitsLoading] = useState(false);
   const [visitsError, setVisitsError] = useState('');
   const [selectedVisitId, setSelectedVisitId] = useState('');
+  const [selectedVisitIds, setSelectedVisitIds] = useState([]);
+  const [visitsFilter, setVisitsFilter] = useState('all');
+  const [visitsActionPending, setVisitsActionPending] = useState(false);
 
   const [projects, setProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(false);
@@ -819,6 +822,53 @@ function Admin() {
       setSelectedVisitId('');
     } finally {
       setVisitsLoading(false);
+    }
+  }
+
+  const filteredVisits = useMemo(() => {
+    if (visitsFilter === 'all') return visits;
+    
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const oneWeekAgo = now.getTime() - 7 * 24 * 60 * 60 * 1000;
+    const oneMonthAgo = now.getTime() - 30 * 24 * 60 * 60 * 1000;
+
+    return visits.filter((visit) => {
+      if (!visit.createdAt) return false;
+      const visitTime = new Date(visit.createdAt).getTime();
+      if (visitsFilter === 'today') {
+        return visitTime >= todayStart;
+      }
+      if (visitsFilter === 'week') {
+        return visitTime >= oneWeekAgo;
+      }
+      if (visitsFilter === 'month') {
+        return visitTime >= oneMonthAgo;
+      }
+      return true;
+    });
+  }, [visits, visitsFilter]);
+
+  async function handleBulkDeleteVisits() {
+    if (selectedVisitIds.length === 0) return;
+    if (!window.confirm(`Are you sure you want to delete ${selectedVisitIds.length} visit record(s)?`)) {
+      return;
+    }
+
+    setVisitsActionPending(true);
+    try {
+      const response = await apiRequest('/api/admin/visits/bulk-delete', {
+        method: 'POST',
+        body: { ids: selectedVisitIds },
+      });
+      if (response.ok) {
+        setVisits((prev) => prev.filter((v) => !selectedVisitIds.includes(String(v.id))));
+        setSelectedVisitIds([]);
+      }
+    } catch (err) {
+      setVisitsError(err.message || 'Failed to delete visit records.');
+    } finally {
+      setVisitsActionPending(false);
     }
   }
 
@@ -2553,10 +2603,31 @@ function Admin() {
                     <p className="admin-card-label">Public page loads</p>
                     <h2>Website visits</h2>
                   </div>
-                  <button type="button" className="admin-secondary-button" onClick={loadVisits} disabled={visitsLoading}>
-                    <Icon name="refresh" size={14} />
-                    Refresh
-                  </button>
+                  <div className="admin-list-actions">
+                    {selectedVisitIds.length > 0 ? (
+                      <button
+                        type="button"
+                        className="admin-danger-button"
+                        onClick={handleBulkDeleteVisits}
+                        disabled={visitsActionPending}
+                      >
+                        <Icon name="trash" size={14} />
+                        Delete Selected ({selectedVisitIds.length})
+                      </button>
+                    ) : null}
+                    <label className="admin-select" style={{ minWidth: '150px' }}>
+                      <select value={visitsFilter} onChange={(e) => setVisitsFilter(e.target.value)}>
+                        <option value="all">All Visits</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                      </select>
+                    </label>
+                    <button type="button" className="admin-secondary-button" onClick={loadVisits} disabled={visitsLoading}>
+                      <Icon name="refresh" size={14} />
+                      Refresh
+                    </button>
+                  </div>
                 </div>
 
                 {visitsError ? <div className="admin-inline-error">{visitsError}</div> : null}
@@ -2566,11 +2637,24 @@ function Admin() {
                     <span className="admin-spinner" aria-hidden="true" />
                     Loading visits...
                   </div>
-                ) : visits.length ? (
+                ) : filteredVisits.length ? (
                   <div className="admin-table-scroll">
                     <table className="admin-visit-table">
                       <thead>
                         <tr>
+                          <th style={{ width: '30px', textAlign: 'center' }}>
+                            <input
+                              type="checkbox"
+                              checked={filteredVisits.length > 0 && selectedVisitIds.length === filteredVisits.length}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedVisitIds(filteredVisits.map((v) => String(v.id)));
+                                } else {
+                                  setSelectedVisitIds([]);
+                                }
+                              }}
+                            />
+                          </th>
                           <th>Page</th>
                           <th>Referrer</th>
                           <th>IP</th>
@@ -2582,40 +2666,56 @@ function Admin() {
                         </tr>
                       </thead>
                       <tbody>
-                        {visits.map((visit) => (
-                          <tr key={visit.id}>
-                            <td>
-                              <strong>{visit.pageTitle || visit.path}</strong>
-                              <div className="admin-visit-path">{visit.path}</div>
-                            </td>
-                            <td className="admin-visit-muted">{truncateText(visit.referrer || 'Direct', 42)}</td>
-                            <td className="admin-visit-muted">{visit.ipAddress || 'Unknown'}</td>
-                            <td>{formatVisitLocation(visit)}</td>
-                            <td className="admin-visit-muted">{truncateText(visit.userAgent || 'Unknown', 54)}</td>
-                            <td>{visit.screen || visit.viewport || 'Unknown'}</td>
-                            <td>{formatDate(visit.createdAt)}</td>
-                            <td>
-                              <div className="admin-table-actions">
-                                <button
-                                  type="button"
-                                  className="admin-secondary-button admin-compact-button"
-                                  onClick={() => setSelectedVisitId(String(visit.id))}
-                                >
-                                  <Icon name="eye" size={14} />
-                                  View
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
+                        {filteredVisits.map((visit) => {
+                          const isSelected = selectedVisitIds.includes(String(visit.id));
+                          return (
+                            <tr key={visit.id} className={isSelected ? 'is-selected' : ''}>
+                              <td style={{ width: '30px', textAlign: 'center' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedVisitIds((prev) => [...prev, String(visit.id)]);
+                                    } else {
+                                      setSelectedVisitIds((prev) => prev.filter((id) => id !== String(visit.id)));
+                                    }
+                                  }}
+                                />
+                              </td>
+                              <td>
+                                <strong>{visit.pageTitle || visit.path}</strong>
+                                <div className="admin-visit-path">{visit.path}</div>
+                              </td>
+                              <td className="admin-visit-muted">{truncateText(visit.referrer || 'Direct', 42)}</td>
+                              <td className="admin-visit-muted">{visit.ipAddress || 'Unknown'}</td>
+                              <td>{formatVisitLocation(visit)}</td>
+                              <td className="admin-visit-muted">{truncateText(visit.userAgent || 'Unknown', 54)}</td>
+                              <td>{visit.screen || visit.viewport || 'Unknown'}</td>
+                              <td>{formatDate(visit.createdAt)}</td>
+                              <td>
+                                <div className="admin-table-actions">
+                                  <button
+                                    type="button"
+                                    className="admin-secondary-button admin-compact-button"
+                                    onClick={() => setSelectedVisitId(String(visit.id))}
+                                  >
+                                    <Icon name="eye" size={14} />
+                                    View
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
                 ) : (
                   <EmptyState
                     icon="globe"
-                    title="No visits found"
-                    description="Public page loads will appear here once the visit logger is active."
+                    title={visitsFilter !== 'all' ? 'No visits in this period' : 'No visits found'}
+                    description={visitsFilter !== 'all' ? 'Try changing the time filter option.' : 'Public page loads will appear here once the visit logger is active.'}
                   />
                 )}
               </div>
