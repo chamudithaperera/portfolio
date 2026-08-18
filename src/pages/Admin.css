@@ -1804,3 +1804,41 @@
   border-style: dashed;
   background: var(--admin-border);
 }
+
+/* Custom Select dropdown styles for Admin filters */
+.admin-select {
+  position: relative;
+  display: inline-block;
+}
+
+.admin-select select {
+  width: 100%;
+  padding: 0.45rem 2rem 0.45rem 0.75rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  color: var(--admin-text);
+  background: #ffffff;
+  outline: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f5865' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 0.8rem;
+}
+
+.admin-select select:focus {
+  border-color: rgba(154, 52, 31, 0.55);
+  box-shadow: 0 0 0 3px rgba(154, 52, 31, 0.12);
+}
+
+/* Custom checkbox styling for table checklists */
+.admin-visit-table input[type="checkbox"] {
+  width: 0.95rem;
+  height: 0.95rem;
+  cursor: pointer;
+  accent-color: var(--admin-accent);
+}

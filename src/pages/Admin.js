@@ -556,14 +556,30 @@ function FieldError({ message }) {
   return message ? <small className="admin-field-error">{message}</small> : null;
 }
 
-function TabButton({ active, icon, label, description, onClick }) {
+function TabButton({ active, icon, label, description, onClick, showDot }) {
   return (
     <button type="button" className={`admin-tab-button ${active ? 'is-active' : ''}`} onClick={onClick}>
       <span className="admin-tab-icon">
         <Icon name={icon} size={15} />
       </span>
       <span className="admin-tab-copy">
-        <strong>{label}</strong>
+        <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {label}
+          {showDot && (
+            <span 
+              className="admin-tab-notification-dot" 
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#10b981', // emerald green color
+                display: 'inline-block',
+                boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)'
+              }}
+              title="Pending reviews require approval"
+            />
+          )}
+        </strong>
         <small>{description}</small>
       </span>
     </button>
@@ -2233,16 +2249,22 @@ function Admin() {
           </div>
 
           <nav className="admin-tabs" aria-label="Admin sections">
-            {tabItems.map((tab) => (
-              <TabButton
-                key={tab.id}
-                active={activeTab === tab.id}
-                icon={tab.icon}
-                label={tab.label}
-                description={tab.description}
-                onClick={() => setActiveTab(tab.id)}
-              />
-            ))}
+            {tabItems.map((tab) => {
+              const isReviewsTab = tab.id === 'reviews';
+              const hasPendingReviews = isReviewsTab && reviews.some((r) => (r.status || 'pending') === 'pending');
+
+              return (
+                <TabButton
+                  key={tab.id}
+                  active={activeTab === tab.id}
+                  icon={tab.icon}
+                  label={tab.label}
+                  description={tab.description}
+                  onClick={() => setActiveTab(tab.id)}
+                  showDot={hasPendingReviews}
+                />
+              );
+            })}
           </nav>
 
           <div className="admin-sidebar-footer">
