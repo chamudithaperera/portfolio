@@ -133,9 +133,19 @@ function buildScriptedChatbotReply(intent, context = {}) {
       ],
     },
     'education-qualifications': {
-      reply: context.educationQualifications && context.educationQualifications.length > 0
-        ? `Chamuditha's academic achievements and professional qualifications include:\n${context.educationQualifications.map(q => `• ${q}`).join('\n')}`
-        : 'Chamuditha holds professional software engineering degrees/diplomas along with certificates specializing in mobile app development and full-stack solutions.',
+      reply: (() => {
+        const textParts = [];
+        if (Array.isArray(context.education) && context.education.length > 0) {
+          textParts.push(`Education:\n${context.education.map(e => `• ${e}`).join('\n')}`);
+        }
+        if (Array.isArray(context.certificates) && context.certificates.length > 0) {
+          textParts.push(`Certifications:\n${context.certificates.map(c => `• ${c}`).join('\n')}`);
+        }
+        if (textParts.length > 0) {
+          return `Chamuditha's academic achievements and professional qualifications:\n\n${textParts.join('\n\n')}`;
+        }
+        return 'Chamuditha holds professional software engineering degrees/diplomas along with certificates specializing in mobile app development and full-stack solutions.';
+      })(),
       actions: [
         { label: 'View Certificates', href: '/#about' },
       ],

@@ -820,7 +820,8 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
     let latestProject = null;
     let techStacks = [];
     let experience = [];
-    let educationQualifications = [];
+    let education = [];
+    let certificates = [];
     let reviews = [];
 
     if (['latest-project', 'tech-stacks', 'experience', 'education-qualifications', 'reviews'].includes(intent)) {
@@ -840,9 +841,8 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
           } else if (intent === 'experience' && Array.isArray(content.experience)) {
             experience = content.experience.map(e => `${e.role} at ${e.org}`);
           } else if (intent === 'education-qualifications') {
-            const edu = Array.isArray(content.education) ? content.education.map(ed => `${ed.title} at ${ed.org}`) : [];
-            const certs = Array.isArray(content.certificates) ? content.certificates.map(c => `${c.title} (${c.org})`) : [];
-            educationQualifications = [...edu, ...certs];
+            education = Array.isArray(content.education) ? content.education.map(ed => `${ed.title} at ${ed.org}`) : [];
+            certificates = Array.isArray(content.certificates) ? content.certificates.map(c => `${c.title} (${c.org})`) : [];
           } else if (intent === 'reviews' && Array.isArray(content.reviews)) {
             reviews = content.reviews.filter(r => r.status === 'approved').slice(0, 3);
           }
@@ -857,7 +857,8 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
       latestProject,
       techStacks,
       experience,
-      educationQualifications,
+      education,
+      certificates,
       reviews,
     });
     return res.json({
