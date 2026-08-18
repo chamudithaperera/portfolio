@@ -14,9 +14,10 @@
   --border-color: rgba(30, 58, 138, 0.25);
   --header-bg: rgba(0, 2, 10, 0.85);
   --header-border: rgba(30, 58, 138, 0.2);
-  --greeting-bg: rgba(7, 13, 31, 0.85);
-  --greeting-border: rgba(59, 130, 246, 0.2);
+  --greeting-bg: #070d1f;
+  --greeting-border: rgba(37, 99, 235, 0.25);
   --greeting-text: #e8eeff;
+  --greeting-sparkle: #60a5fa;
 }
 
 :root[data-theme='light'] {
@@ -33,9 +34,10 @@
   --border-color: rgba(15, 23, 42, 0.08);
   --header-bg: rgba(245, 247, 251, 0.86);
   --header-border: rgba(15, 23, 42, 0.08);
-  --greeting-bg: rgba(255, 255, 255, 0.88);
+  --greeting-bg: #ffffff;
   --greeting-border: rgba(15, 23, 42, 0.08);
   --greeting-text: #0f172a;
+  --greeting-sparkle: #2563eb;
 }
 
 html {
@@ -880,37 +882,30 @@ html {
   bottom: 0.65rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 0.95rem 0.65rem 1.15rem;
-  /* Google Gemini gradient border effect using transparent border + padding-box/border-box gradients */
-  background:
-    linear-gradient(var(--greeting-bg), var(--greeting-bg)) padding-box,
-    linear-gradient(135deg, #4285f4 0%, #9b72cb 35%, #d96570 70%, #f1a95c 100%) border-box;
-  border: 1px solid transparent;
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  /* Google Gemini design uses fully rounded pill-like shape */
+  gap: 0.65rem;
+  padding: 0.6rem 0.9rem 0.6rem 1.1rem;
+  background: var(--greeting-bg);
+  border: 1px solid var(--greeting-border);
   border-radius: 999px;
   box-shadow:
-    0 10px 30px -10px rgba(0, 0, 0, 0.25),
-    0 1px 3px rgba(0, 0, 0, 0.05);
+    0 4px 18px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.03);
   pointer-events: auto;
   cursor: pointer;
   white-space: nowrap;
   z-index: 10;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
 }
 
 .ai-agent-greeting-bubble:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
   box-shadow:
-    0 12px 35px -8px rgba(0, 0, 0, 0.3),
-    0 1px 4px rgba(0, 0, 0, 0.08);
+    0 6px 22px rgba(0, 0, 0, 0.12),
+    0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .ai-agent-greeting-sparkle {
-  color: #4285f4;
-  animation: geminiSparkle 3.5s ease-in-out infinite;
+  color: var(--greeting-sparkle);
   flex-shrink: 0;
   display: inline-flex;
 }
@@ -947,25 +942,6 @@ html {
   width: 0.65rem;
   height: 0.65rem;
   stroke-width: 2.5;
-}
-
-/* Gemini shimmer keyframes for the sparkle */
-@keyframes geminiSparkle {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-    filter: drop-shadow(0 0 2px rgba(66, 133, 244, 0.3));
-    color: #4285f4;
-  }
-  33% {
-    transform: scale(1.15) rotate(15deg);
-    filter: drop-shadow(0 0 6px rgba(155, 114, 203, 0.6));
-    color: #9b72cb;
-  }
-  66% {
-    transform: scale(1.05) rotate(-10deg);
-    filter: drop-shadow(0 0 5px rgba(217, 101, 112, 0.5));
-    color: #d96570;
-  }
 }
 
 /* Smooth, elastic launcher entrance keyframe (Gemini style) */
