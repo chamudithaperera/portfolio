@@ -946,7 +946,7 @@ function FloatingAiAgent() {
                     <span className="ai-agent-status-dot" aria-hidden="true" />
                   </div>
                   <div className="ai-agent-header-text">
-                    <h3 id="ai-agent-title">ChamudithaPerera.Online Portfolio Assistant</h3>
+                    <h3 id="ai-agent-title">Chamuditha Perera Portfolio Assistant</h3>
                     <span className="ai-agent-subtitle">AI powered chatbot</span>
                   </div>
                 </div>
