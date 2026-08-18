@@ -3099,37 +3099,42 @@ function Admin() {
                                 <div className="admin-table-actions">
                                   <button
                                     type="button"
-                                    className="admin-secondary-button admin-compact-button"
+                                    className="admin-secondary-button admin-icon-button"
                                     onClick={() => setViewingReview(review)}
+                                    title="View Review Details"
+                                    aria-label={`View review details from ${review.name}`}
                                   >
                                     <Icon name="eye" size={14} />
-                                    View
                                   </button>
                                   <button
                                     type="button"
-                                    className="admin-secondary-button admin-compact-button"
+                                    className="admin-secondary-button admin-icon-button"
                                     onClick={() => {
                                       setSelectedReviewId(String(review.id));
                                       setReviewForm(reviewToForm(review));
                                       setIsEditingReview(true);
                                     }}
+                                    title="Edit Review"
+                                    aria-label={`Edit review from ${review.name}`}
                                   >
                                     <Icon name="edit" size={14} />
-                                    Edit
                                   </button>
                                   <button
                                     type="button"
-                                    className="admin-secondary-button admin-compact-button admin-status-action"
+                                    className={`admin-secondary-button admin-icon-button admin-status-action ${approved ? 'is-approved' : ''}`}
                                     onClick={() => handleReviewStatusToggle(review)}
                                     disabled={statusPending}
+                                    title={approved ? 'Unapprove Review' : 'Approve Review'}
+                                    aria-label={approved ? `Unapprove review from ${review.name}` : `Approve review from ${review.name}`}
                                   >
-                                    {statusPending ? 'Saving...' : approved ? 'Unapprove' : 'Approve'}
+                                    {statusPending ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="check" size={14} />}
                                   </button>
                                   <button
                                     type="button"
                                     className="admin-danger-button admin-icon-button"
                                     onClick={() => handleReviewDelete(review.id)}
                                     disabled={deletePending}
+                                    title="Delete Review"
                                     aria-label={`Delete review from ${review.name}`}
                                   >
                                     {deletePending ? <span className="admin-spinner" aria-hidden="true" /> : <Icon name="trash" size={14} />}
