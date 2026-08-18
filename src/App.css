@@ -882,11 +882,15 @@ html {
   align-items: center;
   gap: 0.75rem;
   padding: 0.65rem 0.95rem 0.65rem 1.15rem;
-  background: var(--greeting-bg);
-  border: 1px solid var(--greeting-border);
+  /* Google Gemini gradient border effect using transparent border + padding-box/border-box gradients */
+  background:
+    linear-gradient(var(--greeting-bg), var(--greeting-bg)) padding-box,
+    linear-gradient(135deg, #4285f4 0%, #9b72cb 35%, #d96570 70%, #f1a95c 100%) border-box;
+  border: 1px solid transparent;
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+  /* Google Gemini design uses fully rounded pill-like shape */
+  border-radius: 999px;
   box-shadow:
     0 10px 30px -10px rgba(0, 0, 0, 0.25),
     0 1px 3px rgba(0, 0, 0, 0.05);
@@ -904,21 +908,16 @@ html {
     0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
-.ai-agent-greeting-bubble::after {
-  content: '';
-  position: absolute;
-  bottom: 0.75rem;
-  right: -0.4rem;
-  width: 0;
-  height: 0;
-  border-top: 0.4rem solid transparent;
-  border-bottom: 0.4rem solid transparent;
-  border-left: 0.4rem solid var(--greeting-bg);
+.ai-agent-greeting-sparkle {
+  color: #4285f4;
+  animation: geminiSparkle 3.5s ease-in-out infinite;
+  flex-shrink: 0;
+  display: inline-flex;
 }
 
 .ai-agent-greeting-text {
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 550;
   color: var(--greeting-text);
   user-select: none;
@@ -950,29 +949,45 @@ html {
   stroke-width: 2.5;
 }
 
-/* Bouncy entrance keyframe */
+/* Gemini shimmer keyframes for the sparkle */
+@keyframes geminiSparkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 2px rgba(66, 133, 244, 0.3));
+    color: #4285f4;
+  }
+  33% {
+    transform: scale(1.15) rotate(15deg);
+    filter: drop-shadow(0 0 6px rgba(155, 114, 203, 0.6));
+    color: #9b72cb;
+  }
+  66% {
+    transform: scale(1.05) rotate(-10deg);
+    filter: drop-shadow(0 0 5px rgba(217, 101, 112, 0.5));
+    color: #d96570;
+  }
+}
+
+/* Smooth, elastic launcher entrance keyframe (Gemini style) */
 @keyframes launcherEntrance {
   0% {
-    transform: scale(0) rotate(-45deg);
+    transform: scale(0);
     opacity: 0;
   }
-  50% {
-    transform: scale(1.15) rotate(15deg);
-  }
-  65% {
-    transform: scale(0.95) rotate(-10deg);
+  60% {
+    transform: scale(1.12);
   }
   80% {
-    transform: scale(1.05) rotate(5deg);
+    transform: scale(0.95);
   }
   100% {
-    transform: scale(1) rotate(0);
+    transform: scale(1);
     opacity: 1;
   }
 }
 
 .ai-agent-launcher.entrance-animate {
-  animation: launcherEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: launcherEntrance 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 @keyframes launcherGlow {
@@ -8366,10 +8381,6 @@ textarea:focus-visible {
     right: 4.65rem;
     bottom: 0.4rem;
     padding: 0.55rem 0.8rem 0.55rem 1rem;
-  }
-
-  .ai-agent-greeting-bubble::after {
-    bottom: 0.65rem;
   }
 
   .ai-agent-greeting-text {

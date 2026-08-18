@@ -1026,13 +1026,14 @@ function FloatingAiAgent() {
         {showGreeting && (
           <motion.div
             className="ai-agent-greeting-bubble"
-            initial={{ opacity: 0, scale: 0.8, x: 20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.8, x: 10 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
+            initial={{ opacity: 0, scale: 0.7, x: 30, y: 5 }}
+            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, x: 15, y: 5 }}
+            transition={{ type: 'spring', stiffness: 280, damping: 22 }}
             onClick={openChat}
           >
-            <span className="ai-agent-greeting-text">Hello 👋</span>
+            <Icon name="sparkles" className="ai-agent-greeting-sparkle" size={15} />
+            <span className="ai-agent-greeting-text">Hello 👋 Ask me anything!</span>
             <button
               type="button"
               className="ai-agent-greeting-close"
