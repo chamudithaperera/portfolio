@@ -968,7 +968,7 @@ function FloatingAiAgent() {
                       >
                         {!isUser ? (
                           <span className="ai-agent-avatar" aria-hidden="true">
-                            CP
+                            <img src="/assets/imgs/chatbot-launcher.png" alt="AI" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '0.2rem' }} />
                           </span>
                         ) : null}
                         <div className="ai-agent-bubble">
@@ -1018,7 +1018,7 @@ function FloatingAiAgent() {
                       transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
                     >
                       <span className="ai-agent-avatar" aria-hidden="true">
-                        CP
+                        <img src="/assets/imgs/chatbot-launcher.png" alt="AI" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '0.2rem' }} />
                       </span>
                       <div className="ai-agent-bubble ai-agent-bubble-typing" aria-label="Assistant is typing">
                         <span className="ai-agent-typing">
