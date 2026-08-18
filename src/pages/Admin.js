@@ -556,7 +556,7 @@ function FieldError({ message }) {
   return message ? <small className="admin-field-error">{message}</small> : null;
 }
 
-function TabButton({ active, icon, label, description, onClick, showDot }) {
+function TabButton({ active, icon, label, description, onClick, showDot, dotTitle }) {
   return (
     <button type="button" className={`admin-tab-button ${active ? 'is-active' : ''}`} onClick={onClick}>
       <span className="admin-tab-icon">
@@ -576,7 +576,7 @@ function TabButton({ active, icon, label, description, onClick, showDot }) {
                 display: 'inline-block',
                 boxShadow: '0 0 0 2px rgba(16, 185, 129, 0.2)'
               }}
-              title="Pending reviews require approval"
+              title={dotTitle || "New notifications"}
             />
           )}
         </strong>
@@ -2251,7 +2251,9 @@ function Admin() {
           <nav className="admin-tabs" aria-label="Admin sections">
             {tabItems.map((tab) => {
               const isReviewsTab = tab.id === 'reviews';
+              const isMessagesTab = tab.id === 'messages';
               const hasPendingReviews = isReviewsTab && reviews.some((r) => (r.status || 'pending') === 'pending');
+              const hasNewMessages = isMessagesTab && messages.some((m) => (m.status || 'new') === 'new');
 
               return (
                 <TabButton
@@ -2261,7 +2263,8 @@ function Admin() {
                   label={tab.label}
                   description={tab.description}
                   onClick={() => setActiveTab(tab.id)}
-                  showDot={hasPendingReviews}
+                  showDot={hasPendingReviews || hasNewMessages}
+                  dotTitle={isReviewsTab ? "Pending reviews require approval" : isMessagesTab ? "Unread customer messages" : "New items"}
                 />
               );
             })}
