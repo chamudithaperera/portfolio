@@ -4002,7 +4002,7 @@ function PricingPage() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             >
               <p className="hero-eyebrow">Pricing</p>
-              <h1>Simple Pricing for Websites and Apps</h1>
+              <h1>Flexible Pricing for Web & Mobile Projects</h1>
               <p>
                 Pick a starting package, then request a quote with your exact features, deadline, and budget.
               </p>
