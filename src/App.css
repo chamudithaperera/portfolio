@@ -814,8 +814,6 @@ html {
   border: 0;
   border-radius: 999px;
   color: #fff;
-  opacity: 0;
-  transform: translateY(14px) scale(0.78);
   background:
     radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.56), transparent 28%),
     radial-gradient(circle at 50% 42%, rgba(96, 165, 250, 1) 0%, rgba(37, 99, 235, 1) 58%, rgba(30, 64, 175, 1) 100%);
@@ -826,7 +824,7 @@ html {
     inset 0 0 0 0.08rem rgba(255, 255, 255, 0.2),
     inset 0 -0.45rem 0.95rem rgba(15, 23, 42, 0.18);
   cursor: pointer;
-  pointer-events: none;
+  pointer-events: auto;
   overflow: hidden;
 }
 
@@ -866,10 +864,6 @@ html {
     0 24px 48px rgba(37, 99, 235, 0.42),
     inset 0 0 0 0.08rem rgba(255, 255, 255, 0.24),
     inset 0 -0.45rem 0.95rem rgba(15, 23, 42, 0.18);
-}
-
-.ai-agent-launcher.is-ready {
-  pointer-events: auto;
 }
 
 .ai-agent-launcher-pulse {
@@ -8606,6 +8600,7 @@ textarea:focus-visible {
   .ai-agent-launcher {
     opacity: 1;
     transform: none;
+    pointer-events: auto;
   }
 
   .ai-agent-launcher:hover,

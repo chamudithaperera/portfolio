@@ -605,7 +605,6 @@ function FloatingAiAgent() {
   const [draft, setDraft] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [showGreeting, setShowGreeting] = useState(false);
-  const [showLauncher, setShowLauncher] = useState(false);
   const panelRef = useRef(null);
   const messageListRef = useRef(null);
   const inputRef = useRef(null);
@@ -615,12 +614,6 @@ function FloatingAiAgent() {
   const locationKeyRef = useRef(`${location.pathname}${location.search}${location.hash}`);
 
   useEffect(() => {
-    // Introduce the launcher after the greeting starts so it feels like the
-    // popup is coming from the button rather than appearing all at once.
-    const buttonTimer = window.setTimeout(() => {
-      setShowLauncher(true);
-    }, prefersReducedMotion ? 0 : 420);
-
     // Show the greeting bubble shortly after page loads/refreshes.
     const bubbleTimer = window.setTimeout(() => {
       setShowGreeting(true);
@@ -632,7 +625,6 @@ function FloatingAiAgent() {
     }, 3000);
 
     return () => {
-      window.clearTimeout(buttonTimer);
       window.clearTimeout(bubbleTimer);
       window.clearTimeout(hideTimer);
     };
@@ -1059,7 +1051,7 @@ function FloatingAiAgent() {
       <button
         ref={launcherRef}
         type="button"
-        className={`ai-agent-launcher ${showLauncher ? 'entrance-animate is-ready' : ''} ${open ? 'is-open' : ''}`}
+        className="ai-agent-launcher"
         onClick={open ? closeChat : openChat}
         aria-expanded={open}
         aria-controls="ai-agent-panel"
@@ -1067,7 +1059,7 @@ function FloatingAiAgent() {
       >
         <span className="ai-agent-launcher-pulse" aria-hidden="true" />
         <span className="ai-agent-launcher-icon" aria-hidden="true">
-          {open ? <Icon name="close" size={22} /> : <img src={aiAgentAvatarSrc} alt="" />}
+          <Icon name={open ? 'close' : 'support'} size={22} />
         </span>
       </button>
     </div>,
