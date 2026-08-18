@@ -556,15 +556,24 @@ async function safeListTechStacks(admin = false) {
 }
 
 async function listReviews(admin = false) {
-  let query = supabase
+  let { data, error } = await supabase
     .from(TABLES.reviews)
     .select('*')
     .order('display_order', { ascending: true })
     .order('id', { ascending: true });
 
-  const { data, error } = await query;
   if (error) {
-    throw error;
+    // Fallback: table might not have display_order column yet. Order by created_at.
+    const fallback = await supabase
+      .from(TABLES.reviews)
+      .select('*')
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false });
+
+    if (fallback.error) {
+      throw fallback.error;
+    }
+    data = fallback.data;
   }
 
   const reviews = (data || []).map(mapReview);
