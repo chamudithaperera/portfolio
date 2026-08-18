@@ -617,6 +617,7 @@ function Admin() {
   const [reviewStatus, setReviewStatus] = useState('');
   const [reviewActionPending, setReviewActionPending] = useState('');
   const [isEditingReview, setIsEditingReview] = useState(false);
+  const [viewingReview, setViewingReview] = useState(null);
 
   const [visits, setVisits] = useState([]);
   const [visitsLoading, setVisitsLoading] = useState(false);
@@ -3081,6 +3082,14 @@ function Admin() {
                                   <button
                                     type="button"
                                     className="admin-secondary-button admin-compact-button"
+                                    onClick={() => setViewingReview(review)}
+                                  >
+                                    <Icon name="eye" size={14} />
+                                    View
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="admin-secondary-button admin-compact-button"
                                     onClick={() => {
                                       setSelectedReviewId(String(review.id));
                                       setReviewForm(reviewToForm(review));
@@ -3123,6 +3132,107 @@ function Admin() {
                   />
                 )}
               </div>
+
+              {viewingReview ? (
+                <div className="admin-modal-backdrop" role="presentation" onClick={() => setViewingReview(null)}>
+                  <article className="admin-modal admin-review-detail-modal" role="dialog" aria-modal="true" aria-labelledby="admin-review-detail-title" onClick={(event) => event.stopPropagation()}>
+                    <div className="admin-card-header">
+                      <div>
+                        <p className="admin-card-label">Review Details</p>
+                        <h2 id="admin-review-detail-title">Testimonial from {viewingReview.name}</h2>
+                        <p className="admin-muted">
+                          Received on {formatDate(viewingReview.createdAt)}
+                        </p>
+                      </div>
+                      <button type="button" className="admin-secondary-button admin-icon-button" onClick={() => setViewingReview(null)} aria-label="Close review details">
+                        <Icon name="close" size={15} />
+                      </button>
+                    </div>
+
+                    <div className="admin-contact-grid" style={{ marginBottom: '1.5rem' }}>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="mail" size={12} />
+                          Email
+                        </span>
+                        <a href={`mailto:${viewingReview.email}`}>{viewingReview.email}</a>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="project" size={12} />
+                          Project
+                        </span>
+                        <span>{viewingReview.projectName}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="certificate" size={12} />
+                          Service
+                        </span>
+                        <span>{viewingReview.service}</span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="star" size={12} />
+                          Rating
+                        </span>
+                        <span className="admin-review-rating" style={{ marginTop: '0.2rem' }}>
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <Icon 
+                              key={`view-stars-${index}`} 
+                              name="star" 
+                              size={12} 
+                              className={index < Math.max(0, Math.min(5, Number(viewingReview.rating) || 0)) ? 'is-filled' : 'is-muted'} 
+                            />
+                          ))}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="admin-contact-label">
+                          <Icon name="tag" size={12} />
+                          Status
+                        </span>
+                        <span className={`admin-status-badge ${(viewingReview.status || 'pending') === 'approved' ? 'is-read' : 'is-new'}`}>
+                          {(viewingReview.status || 'pending') === 'approved' ? 'Approved' : 'Pending'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="admin-chat-thread">
+                      <div className="admin-chat-note" style={{ background: 'rgba(30, 41, 59, 0.4)' }}>
+                        <span className="admin-chat-note-label">Review Description</span>
+                        <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', fontSize: '0.92rem', color: 'var(--text)', fontStyle: 'italic', margin: '0.5rem 0 0 0' }}>
+                          “{viewingReview.description}”
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="admin-action-row" style={{ marginTop: '1.5rem', justifyContent: 'flex-end' }}>
+                      <button
+                        type="button"
+                        className="admin-secondary-button"
+                        onClick={() => {
+                          const rev = viewingReview;
+                          setViewingReview(null);
+                          setSelectedReviewId(String(rev.id));
+                          setReviewForm(reviewToForm(rev));
+                          setIsEditingReview(true);
+                        }}
+                      >
+                        <Icon name="edit" size={14} />
+                        Edit Review
+                      </button>
+                      <button
+                        type="button"
+                        className="admin-secondary-button"
+                        onClick={() => setViewingReview(null)}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </article>
+                </div>
+              ) : null}
 
               {isEditingReview ? (
                 <div className="admin-modal-backdrop" role="presentation" onClick={() => { setIsEditingReview(false); setSelectedReviewId(''); }}>
