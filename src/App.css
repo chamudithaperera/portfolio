@@ -3160,15 +3160,21 @@ a.contact-item:hover {
   color: #60a5fa;
 }
 
-.projects-page-shell .section-projects {
+.projects-page-shell .section-projects,
+.pricing-page-shell .pricing-page-section,
+.review-page-shell .review-page-section {
   padding-top: 8.5rem;
 }
 
-.projects-page-grid {
+.projects-page-grid,
+.pricing-page-section,
+.review-page-section {
   padding-top: 0;
 }
 
-.projects-page-header {
+.projects-page-header,
+.pricing-page-header,
+.review-page-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -4472,7 +4478,9 @@ textarea:focus-visible {
     padding-block: 7.25rem 4rem;
   }
 
-  .projects-page-header {
+  .projects-page-header,
+  .pricing-page-header,
+  .review-page-header {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -4620,7 +4628,9 @@ textarea:focus-visible {
     flex-direction: column;
   }
 
-  .projects-page-header {
+  .projects-page-header,
+  .pricing-page-header,
+  .review-page-header {
     margin-bottom: 2rem;
   }
 

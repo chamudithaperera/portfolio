@@ -3635,7 +3635,6 @@ function ReviewSection({ reviews = [] }) {
 }
 
 function ReviewPage() {
-  const prefersReducedMotion = useFramerReducedMotion();
   const [form, setForm] = useState(() => ({ ...emptyReviewForm }));
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
@@ -3765,152 +3764,141 @@ function ReviewPage() {
       <Navigation />
 
       <main className="review-main">
-        <section className="review-hero">
-          <div className="hero-grid-mask" aria-hidden="true" />
-          <div className="hero-glow hero-glow-a" aria-hidden="true" />
-          <div className="hero-glow hero-glow-b" aria-hidden="true" />
-          <div className="section-inner review-hero-inner">
-            <motion.div
-              className="review-hero-copy"
-              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 24 }}
-              animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="hero-eyebrow">Reviews</p>
-              <h1>Share your experience working with me.</h1>
-              <p>
-                Tell me what we built together, which service I delivered, and how the result felt for your project.
-              </p>
-              <div className="review-hero-points" aria-label="Review summary">
-                <span>Moderated before appearing publicly</span>
-                <span>Clean, professional feedback only</span>
-                <span>Rating and project details required</span>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        <section className="section review-form-section">
-          <div className="section-divider" />
-          <Reveal className="section-inner review-page-layout">
-            <div className="review-form-panel card-3d">
-              {sent ? (
-                <div className="review-success-state" role="status">
-                  <span className="review-success-icon">
-                    <Icon name="check" size={24} />
-                  </span>
-                  <div>
-                    <p className="review-success-kicker">Review submitted</p>
-                    <h2>Thanks for sharing your feedback.</h2>
-                    <p>Your review is waiting for approval before it appears publicly.</p>
-                  </div>
-                  <div className="review-success-actions">
-                    <button type="button" className="primary-button" onClick={reset}>
-                      Submit another review
-                    </button>
-                    <Link to="/" className="secondary-button">
-                      Back to home
-                    </Link>
-                  </div>
-                </div>
-              ) : (
-                <form className="review-form" onSubmit={submit}>
-                  <div className="review-form-header">
+        <section className="section review-page-section">
+          <Reveal className="section-inner">
+            <div className="review-page-header">
+              <SectionHeading
+                index="06. Client Reviews"
+                title="Leave a"
+                accent="Review"
+                description="Share your experience working with me. Your review will be moderated before appearing publicly."
+                align="left"
+              />
+              <Link className="projects-back-button" to="/">
+                <Icon name="arrowLeft" size={14} />
+                Back to Home
+              </Link>
+            </div>
+            <div className="review-page-layout">
+              <div className="review-form-panel card-3d">
+                {sent ? (
+                  <div className="review-success-state" role="status">
+                    <span className="review-success-icon">
+                      <Icon name="check" size={24} />
+                    </span>
                     <div>
-                      <p className="review-tier">Review form</p>
-                      <h2>Leave a public review</h2>
+                      <p className="review-success-kicker">Review submitted</p>
+                      <h2>Thanks for sharing your feedback.</h2>
+                      <p>Your review is waiting for approval before it appears publicly.</p>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
-                      <span className="review-form-note">
-                        <Icon name="sparkles" size={13} />
-                        Moderated feedback
-                      </span>
-                      <Link className="secondary-button" to="/" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+                    <div className="review-success-actions">
+                      <button type="button" className="primary-button" onClick={reset}>
+                        Submit another review
+                      </button>
+                      <Link to="/" className="secondary-button">
                         Back to home
                       </Link>
                     </div>
                   </div>
+                ) : (
+                  <form className="review-form" onSubmit={submit}>
+                    <div className="review-form-header">
+                      <div>
+                        <p className="review-tier">Review form</p>
+                        <h2>Leave a public review</h2>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                        <span className="review-form-note">
+                          <Icon name="sparkles" size={13} />
+                          Moderated feedback
+                        </span>
+                        <Link className="secondary-button" to="/" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+                          Back to home
+                        </Link>
+                      </div>
+                    </div>
 
-                  <div className="review-grid-2">
+                    <div className="review-grid-2">
+                      <label>
+                        <span>Name</span>
+                        <input name="name" value={form.name} onChange={update} required minLength={2} placeholder="Your name" />
+                        {fieldErrors.name ? <span className="review-field-error">{fieldErrors.name}</span> : null}
+                      </label>
+                      <label>
+                        <span>Email</span>
+                        <input
+                          name="email"
+                          type="email"
+                          value={form.email}
+                          onChange={update}
+                          required
+                          placeholder="you@example.com"
+                        />
+                        {fieldErrors.email ? <span className="review-field-error">{fieldErrors.email}</span> : null}
+                      </label>
+                    </div>
+
+                    <div className="review-grid-2">
+                      <label>
+                        <span>Project name</span>
+                        <input
+                          name="projectName"
+                          value={form.projectName}
+                          onChange={update}
+                          required
+                          minLength={2}
+                          placeholder="Project or app name"
+                        />
+                        {fieldErrors.projectName ? <span className="review-field-error">{fieldErrors.projectName}</span> : null}
+                      </label>
+                      <label>
+                        <span>Service</span>
+                        <select name="service" value={form.service} onChange={update} required>
+                          {reviewServiceOptions.map((service) => (
+                            <option key={service} value={service}>
+                              {service}
+                            </option>
+                          ))}
+                        </select>
+                        {fieldErrors.service ? <span className="review-field-error">{fieldErrors.service}</span> : null}
+                      </label>
+                    </div>
+
+                    <div className="review-rating-field">
+                      <span>Rating</span>
+                      <div className="review-rating-picker">
+                        <ReviewStars value={form.rating} onChange={setRating} interactive size={16} />
+                      </div>
+                      {fieldErrors.rating ? <span className="review-field-error">{fieldErrors.rating}</span> : null}
+                    </div>
+
                     <label>
-                      <span>Name</span>
-                      <input name="name" value={form.name} onChange={update} required minLength={2} placeholder="Your name" />
-                      {fieldErrors.name ? <span className="review-field-error">{fieldErrors.name}</span> : null}
-                    </label>
-                    <label>
-                      <span>Email</span>
-                      <input
-                        name="email"
-                        type="email"
-                        value={form.email}
+                      <span>Description</span>
+                      <textarea
+                        name="description"
+                        rows="6"
+                        value={form.description}
                         onChange={update}
                         required
-                        placeholder="you@example.com"
+                        minLength={10}
+                        placeholder="Share what was delivered and how the experience felt..."
                       />
-                      {fieldErrors.email ? <span className="review-field-error">{fieldErrors.email}</span> : null}
+                      {fieldErrors.description ? <span className="review-field-error">{fieldErrors.description}</span> : null}
                     </label>
-                  </div>
 
-                  <div className="review-grid-2">
-                    <label>
-                      <span>Project name</span>
-                      <input
-                        name="projectName"
-                        value={form.projectName}
-                        onChange={update}
-                        required
-                        minLength={2}
-                        placeholder="Project or app name"
-                      />
-                      {fieldErrors.projectName ? <span className="review-field-error">{fieldErrors.projectName}</span> : null}
-                    </label>
-                    <label>
-                      <span>Service</span>
-                      <select name="service" value={form.service} onChange={update} required>
-                        {reviewServiceOptions.map((service) => (
-                          <option key={service} value={service}>
-                            {service}
-                          </option>
-                        ))}
-                      </select>
-                      {fieldErrors.service ? <span className="review-field-error">{fieldErrors.service}</span> : null}
-                    </label>
-                  </div>
+                    {error ? (
+                      <div className="review-form-error" role="alert">
+                        {error}
+                      </div>
+                    ) : null}
 
-                  <div className="review-rating-field">
-                    <span>Rating</span>
-                    <div className="review-rating-picker">
-                      <ReviewStars value={form.rating} onChange={setRating} interactive size={16} />
-                    </div>
-                    {fieldErrors.rating ? <span className="review-field-error">{fieldErrors.rating}</span> : null}
-                  </div>
-
-                  <label>
-                    <span>Description</span>
-                    <textarea
-                      name="description"
-                      rows="6"
-                      value={form.description}
-                      onChange={update}
-                      required
-                      minLength={10}
-                      placeholder="Share what was delivered and how the experience felt..."
-                    />
-                    {fieldErrors.description ? <span className="review-field-error">{fieldErrors.description}</span> : null}
-                  </label>
-
-                  {error ? (
-                    <div className="review-form-error" role="alert">
-                      {error}
-                    </div>
-                  ) : null}
-
-                  <button className="primary-button review-submit-button" type="submit" disabled={sending}>
-                    {sending ? <span className="spinner" aria-label="Submitting" /> : <Icon name="send" size={15} />}
-                    {sending ? 'Submitting...' : 'Submit Review'}
-                  </button>
-                </form>
-              )}
+                    <button className="primary-button review-submit-button" type="submit" disabled={sending}>
+                      {sending ? <span className="spinner" aria-label="Submitting" /> : <Icon name="send" size={15} />}
+                      {sending ? 'Submitting...' : 'Submit Review'}
+                    </button>
+                  </form>
+                )}
+              </div>
             </div>
           </Reveal>
         </section>
@@ -3924,16 +3912,8 @@ function ReviewPage() {
 function PricingPage() {
   const { services: pricingServices, loading: pricingLoading } = usePricingContent();
   const [activeServiceId, setActiveServiceId] = useState('');
-  const prefersReducedMotion = useFramerReducedMotion();
   const activeService = pricingServices.find((service) => service.id === activeServiceId) || pricingServices[0] || null;
-  const websiteService = pricingServices.find((service) => service.id === 'websites') || pricingServices[0];
-  const mobileService = pricingServices.find((service) => service.id === 'mobile-apps') || pricingServices[1];
   const { themeColor } = useTheme();
-  const pricingHighlights = [
-    websiteService?.packages?.[0] ? `${websiteService.label} from ${websiteService.packages[0].price}` : '',
-    mobileService?.packages?.[0] ? `${mobileService.label} from ${mobileService.packages[0].price}` : '',
-    pricingServices.length ? 'Support included' : '',
-  ].filter(Boolean);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
@@ -3991,48 +3971,21 @@ function PricingPage() {
       <div className="noise" aria-hidden="true" />
       <Navigation />
       <main className="pricing-main">
-        <section className="pricing-hero">
-          <div className="hero-grid-mask" aria-hidden="true" />
-          <div className="hero-glow hero-glow-a" aria-hidden="true" />
-          <div className="hero-glow hero-glow-b" aria-hidden="true" />
-          <div className="section-inner pricing-hero-inner">
-            <motion.div
-              className="pricing-hero-copy"
-              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 24 }}
-              animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="hero-eyebrow">Pricing</p>
-              <h1>Flexible Pricing for Web & Mobile Projects</h1>
-              <p>
-                Pick a starting package, then request a quote with your exact features, deadline, and budget.
-              </p>
-              <div className="pricing-hero-actions">
-                <a className="primary-button" href="#pricing-options">
-                  Explore Packages <Icon name="arrowDown" size={15} />
-                </a>
-                <a className="secondary-button" href="#pricing-contact">
-                  Request a Quote <Icon name="arrowUpRight" size={15} />
-                </a>
-              </div>
-              <div className="pricing-hero-points" aria-label="Pricing summary">
-                {pricingHighlights.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        <section id="pricing-options" className="section pricing-packages-section">
-          <div className="section-divider" />
+        <section id="pricing-options" className="section pricing-page-section">
           <Reveal className="section-inner">
-            <SectionHeading
-              index="01. Choose Your Service"
-              title="Flexible"
-              accent="Packages"
-              description={activeService?.intro || 'Pricing packages can be added and edited from the admin panel.'}
-            />
+            <div className="pricing-page-header">
+              <SectionHeading
+                index="05. Pricing Packages"
+                title="Flexible"
+                accent="Packages"
+                description="Pick a starting package, then request a quote with your exact features, deadline, and budget."
+                align="left"
+              />
+              <Link className="projects-back-button" to="/">
+                <Icon name="arrowLeft" size={14} />
+                Back to Home
+              </Link>
+            </div>
             {pricingServices.length ? (
               <>
                 <PricingTabs services={pricingServices} activeServiceId={activeServiceId} onChange={setActiveServiceId} />
