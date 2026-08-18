@@ -224,6 +224,7 @@ function mapReview(row) {
     description: row.description,
     status: status || (row.approved_at ? 'approved' : 'pending'),
     approvedAt: row.approved_at || null,
+    displayOrder: row.display_order ?? 0,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -398,6 +399,7 @@ function reviewPayload(input = {}, options = {}) {
     description: normalizeString(input.description),
     status: normalizeString(status) || 'pending',
     approved_at: approvedAt,
+    display_order: toInteger(input.displayOrder, 0),
   };
 }
 
@@ -557,8 +559,8 @@ async function listReviews(admin = false) {
   let query = supabase
     .from(TABLES.reviews)
     .select('*')
-    .order('created_at', { ascending: false })
-    .order('id', { ascending: false });
+    .order('display_order', { ascending: true })
+    .order('id', { ascending: true });
 
   const { data, error } = await query;
   if (error) {

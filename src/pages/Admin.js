@@ -1611,6 +1611,10 @@ function Admin() {
       list = [...techStacks];
       setList = setTechStacks;
       dbTable = 'portfolio_tech_stacks';
+    } else if (listType === 'reviews') {
+      list = [...reviews];
+      setList = setReviews;
+      dbTable = 'portfolio_reviews';
     }
 
     if (!list) return;
@@ -3041,6 +3045,7 @@ function Admin() {
                     <table className="admin-message-table admin-review-table">
                       <thead>
                         <tr>
+                          <th style={{ width: '30px' }}></th>
                           <th>Status</th>
                           <th>Name</th>
                           <th>Project</th>
@@ -3051,14 +3056,27 @@ function Admin() {
                         </tr>
                       </thead>
                       <tbody>
-                        {reviews.map((review) => {
+                        {reviews.map((review, index) => {
                           const approved = (review.status || 'pending') === 'approved';
                           const statusPending = reviewActionPending === `status-${review.id}`;
                           const deletePending = reviewActionPending === `delete-${review.id}`;
                           const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
 
                           return (
-                            <tr key={review.id}>
+                            <tr 
+                              key={review.id}
+                              draggable="true"
+                              onDragStart={handleDragStart('reviews', index)}
+                              onDragOver={handleDragOver(index)}
+                              onDrop={handleDrop('reviews', index)}
+                              onDragEnd={handleDragEnd}
+                              className={draggedItem && draggedItem.listType === 'reviews' && draggedItem.index === index ? 'is-dragging' : ''}
+                            >
+                              <td style={{ width: '30px', textAlign: 'center' }}>
+                                <div className="admin-drag-handle" title="Drag to reorder" onClick={(e) => e.stopPropagation()} style={{ cursor: 'grab' }}>
+                                  <Icon name="drag" size={14} />
+                                </div>
+                              </td>
                               <td>
                                 <span className={`admin-status-badge ${approved ? 'is-read' : 'is-new'}`}>
                                   {approved ? 'Approved' : 'Pending'}
