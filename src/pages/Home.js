@@ -540,6 +540,10 @@ function detectChatbotIntent(message) {
     return 'greeting';
   }
 
+  if (/(github|linkedin|social|profiles|phone|whatsapp|email|contact info|phone number|whatsapp number|git|link in)/.test(text)) {
+    return 'social-profiles';
+  }
+
   if (/(service|services|offer|do you build|what can you make|what do you do)/.test(text)) {
     return 'services';
   }
@@ -567,6 +571,15 @@ function buildLocalChatbotReply(intent) {
         { label: 'Click here to see projects', href: '/projects' },
         { label: 'Click here to see pricing', href: '/pricing' },
         { label: 'Click here to contact me', href: '/#contact' },
+      ],
+    },
+    'social-profiles': {
+      reply: `You can reach Chamuditha or view his work online at:\n• Email: ${profile.email}\n• Phone: ${profile.phone}\n• GitHub: github.com/chamudithaperera\n• LinkedIn: linkedin.com/in/chamudithaperera`,
+      actions: [
+        { label: 'Email me', href: `mailto:${profile.email}` },
+        { label: 'WhatsApp me', href: whatsappUrl },
+        { label: 'LinkedIn', href: 'https://linkedin.com/in/chamudithaperera' },
+        { label: 'GitHub', href: 'https://github.com/chamudithaperera' },
       ],
     },
     services: {

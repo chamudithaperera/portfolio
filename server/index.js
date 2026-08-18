@@ -818,24 +818,48 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
 
   if (intent) {
     let latestProject = null;
-    if (intent === 'latest-project') {
+    let techStacks = [];
+    let experience = [];
+    let educationQualifications = [];
+    let reviews = [];
+
+    if (['latest-project', 'tech-stacks', 'experience', 'education-qualifications', 'reviews'].includes(intent)) {
       try {
         const content = await listPortfolioContent();
-        if (content && Array.isArray(content.projects) && content.projects.length > 0) {
-          const sorted = [...content.projects].sort((a, b) => {
-            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-            if (timeA !== timeB) return timeB - timeA;
-            return b.id - a.id;
-          });
-          latestProject = sorted[0];
+        if (content) {
+          if (intent === 'latest-project' && Array.isArray(content.projects) && content.projects.length > 0) {
+            const sorted = [...content.projects].sort((a, b) => {
+              const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+              const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+              if (timeA !== timeB) return timeB - timeA;
+              return b.id - a.id;
+            });
+            latestProject = sorted[0];
+          } else if (intent === 'tech-stacks' && Array.isArray(content.techStacks)) {
+            techStacks = content.techStacks.filter(t => t.active).map(t => t.label);
+          } else if (intent === 'experience' && Array.isArray(content.experience)) {
+            experience = content.experience.map(e => `${e.role} at ${e.org}`);
+          } else if (intent === 'education-qualifications') {
+            const edu = Array.isArray(content.education) ? content.education.map(ed => `${ed.title} at ${ed.org}`) : [];
+            const certs = Array.isArray(content.certificates) ? content.certificates.map(c => `${c.title} (${c.org})`) : [];
+            educationQualifications = [...edu, ...certs];
+          } else if (intent === 'reviews' && Array.isArray(content.reviews)) {
+            reviews = content.reviews.filter(r => r.status === 'approved').slice(0, 3);
+          }
         }
       } catch (e) {
-        console.error('Failed to retrieve latest project for chatbot intent response:', e);
+        console.error(`Failed to retrieve details for chatbot intent (${intent}):`, e);
       }
     }
 
-    const scripted = buildScriptedChatbotReply(intent, { contact: chatbotContact, latestProject });
+    const scripted = buildScriptedChatbotReply(intent, {
+      contact: chatbotContact,
+      latestProject,
+      techStacks,
+      experience,
+      educationQualifications,
+      reviews,
+    });
     return res.json({
       ok: true,
       reply: scripted.reply,

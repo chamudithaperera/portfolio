@@ -28,6 +28,30 @@ function detectChatbotIntent(message) {
     return 'latest-project';
   }
 
+  if (/(who is chamuditha|how is chamuditha|about chamuditha|tell me about chamuditha|chamuditha's bio|chamuditha perera)/.test(text)) {
+    return 'about-chamuditha';
+  }
+
+  if (/(tech stack|technologies|what languages|frameworks|programming language|databases|use in projects|what stacks|what does he use)/.test(text)) {
+    return 'tech-stacks';
+  }
+
+  if (/(experience|work history|where did he work|job|career|employment|previous company|ex-employee)/.test(text)) {
+    return 'experience';
+  }
+
+  if (/(education|degree|qualification|qualifications|university|college|school|certified|certification|certifications|certificate|certificates)/.test(text)) {
+    return 'education-qualifications';
+  }
+
+  if (/(review|reviews|feedback|testimonial|testimonials|what do clients say|rating|ratings|client reviews)/.test(text)) {
+    return 'reviews';
+  }
+
+  if (/(github|linkedin|social|profiles|phone|whatsapp|email|contact info|phone number|whatsapp number|git|link in)/.test(text)) {
+    return 'social-profiles';
+  }
+
   if (/(service|services|offer|do you build|what can you make|what do you do)/.test(text)) {
     return 'services';
   }
@@ -83,6 +107,55 @@ function buildScriptedChatbotReply(intent, context = {}) {
       actions: [
         { label: 'View Projects', href: '/projects' },
       ],
+    },
+    'about-chamuditha': {
+      reply: 'Chamuditha Perera is a dedicated Software Engineer specializing in mobile and web software solutions. He is the founder of ChamudithaPerera.Online Software Solutions, helping clients turn ideas into production-ready platforms using modern tools like Flutter, React, Spring Boot, and Node.js.',
+      actions: [
+        { label: 'View Projects', href: '/projects' },
+        { label: 'Contact Me', href: '/#contact' },
+      ],
+    },
+    'tech-stacks': {
+      reply: context.techStacks && context.techStacks.length > 0
+        ? `Chamuditha works with a modern technology stack including: ${context.techStacks.join(', ')}.`
+        : 'Chamuditha designs software using a modern stack featuring Flutter (iOS & Android), React & Next.js (Web), Spring Boot (Java), Node.js, Spring Cloud, PostgreSQL, MongoDB, and Tailwind CSS.',
+      actions: [
+        { label: 'View Projects', href: '/projects' },
+      ],
+    },
+    experience: {
+      reply: context.experience && context.experience.length > 0
+        ? `Chamuditha's professional work experience includes:\n${context.experience.map(exp => `• ${exp}`).join('\n')}`
+        : 'Chamuditha has professional industry experience as a Software Engineer building production web applications, mobile apps, and robust microservices.',
+      actions: [
+        { label: 'View Projects', href: '/projects' },
+        { label: 'Contact Me', href: '/#contact' },
+      ],
+    },
+    'education-qualifications': {
+      reply: context.educationQualifications && context.educationQualifications.length > 0
+        ? `Chamuditha's academic achievements and professional qualifications include:\n${context.educationQualifications.map(q => `• ${q}`).join('\n')}`
+        : 'Chamuditha holds professional software engineering degrees/diplomas along with certificates specializing in mobile app development and full-stack solutions.',
+      actions: [
+        { label: 'View Certificates', href: '/#about' },
+      ],
+    },
+    reviews: {
+      reply: context.reviews && context.reviews.length > 0
+        ? `Here is what clients say about Chamuditha:\n${context.reviews.map(r => `• "${r.review}" — ${r.name}`).join('\n')}`
+        : 'Clients appreciate Chamuditha for his speed, clean code, design aesthetic, and proactive communication. You can read testimonials on the home page.',
+      actions: [
+        { label: 'Write a Review', href: '/#reviews' },
+      ],
+    },
+    'social-profiles': {
+      reply: `You can reach Chamuditha or view his work online at:\n• Email: ${contact.email || 'chamudithaperera.dev@gmail.com'}\n• Phone: ${contact.phone || '+94787250549'}\n• GitHub: github.com/chamudithaperera\n• LinkedIn: linkedin.com/in/chamudithaperera`,
+      actions: [
+        contact.email ? { label: 'Email', href: `mailto:${contact.email}` } : null,
+        contact.whatsappUrl ? { label: 'WhatsApp', href: contact.whatsappUrl } : null,
+        { label: 'LinkedIn', href: 'https://linkedin.com/in/chamudithaperera' },
+        { label: 'GitHub', href: 'https://github.com/chamudithaperera' },
+      ].filter(Boolean),
     },
     services: {
       reply:
