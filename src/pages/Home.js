@@ -603,6 +603,8 @@ function FloatingAiAgent() {
   const [messages, setMessages] = useState(() => [createChatbotMessage('assistant', chatbotWelcomeText, { chips: chatbotQuickPrompts })]);
   const [draft, setDraft] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(false);
+  const [animateButton, setAnimateButton] = useState(true);
   const panelRef = useRef(null);
   const messageListRef = useRef(null);
   const inputRef = useRef(null);
@@ -610,6 +612,30 @@ function FloatingAiAgent() {
   const restoreFocusRef = useRef(null);
   const autoNavigateTimerRef = useRef(null);
   const locationKeyRef = useRef(`${location.pathname}${location.search}${location.hash}`);
+
+  useEffect(() => {
+    // 1. Play button entry animation on mount, then remove the class after 1000ms
+    // to allow standard hover/focus states to work.
+    const buttonTimer = window.setTimeout(() => {
+      setAnimateButton(false);
+    }, 1000);
+
+    // 2. Show greeting bubble shortly after page loads/refreshes.
+    const bubbleTimer = window.setTimeout(() => {
+      setShowGreeting(true);
+    }, 800);
+
+    // 3. Automatically dismiss greeting bubble after 6.5s.
+    const hideTimer = window.setTimeout(() => {
+      setShowGreeting(false);
+    }, 7300);
+
+    return () => {
+      window.clearTimeout(buttonTimer);
+      window.clearTimeout(bubbleTimer);
+      window.clearTimeout(hideTimer);
+    };
+  }, []);
 
   const scrollToLatestMessage = useCallback(() => {
     const container = messageListRef.current;
@@ -642,6 +668,7 @@ function FloatingAiAgent() {
     if (!open) {
       restoreFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setOpen(true);
+      setShowGreeting(false);
     }
   };
 
@@ -995,10 +1022,35 @@ function FloatingAiAgent() {
   return createPortal(
     <div className={`ai-agent-launcher-shell ${open ? 'is-open' : ''}`}>
       {panel}
+      <AnimatePresence>
+        {showGreeting && (
+          <motion.div
+            className="ai-agent-greeting-bubble"
+            initial={{ opacity: 0, scale: 0.8, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.8, x: 10 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            onClick={openChat}
+          >
+            <span className="ai-agent-greeting-text">Hello 👋</span>
+            <button
+              type="button"
+              className="ai-agent-greeting-close"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowGreeting(false);
+              }}
+              aria-label="Dismiss greeting"
+            >
+              <Icon name="close" size={10} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <button
         ref={launcherRef}
         type="button"
-        className="ai-agent-launcher"
+        className={`ai-agent-launcher ${animateButton ? 'entrance-animate' : ''}`}
         onClick={open ? closeChat : openChat}
         aria-expanded={open}
         aria-controls="ai-agent-panel"
