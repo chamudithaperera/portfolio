@@ -653,6 +653,7 @@ html {
   color: #dbeafe;
   font-size: 0.92rem;
   line-height: 1.52;
+  white-space: pre-line;
 }
 
 .ai-agent-message.is-user .ai-agent-bubble p {
