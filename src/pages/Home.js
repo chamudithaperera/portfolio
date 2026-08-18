@@ -871,9 +871,10 @@ function FloatingAiAgent() {
   }, [open, closeChat]);
 
   useEffect(() => {
-    if (location.pathname === '/' && location.hash === '#contact') {
+    if (location.pathname === '/' && location.hash.startsWith('#')) {
+      const targetId = location.hash.slice(1);
       const timer = window.setTimeout(() => {
-        const target = document.getElementById('contact');
+        const target = document.getElementById(targetId);
         if (target) {
           target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
         }
