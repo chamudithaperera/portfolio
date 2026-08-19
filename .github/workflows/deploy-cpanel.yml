@@ -71,7 +71,7 @@ jobs:
           username: ${{ secrets.CPANEL_FTP_USERNAME }}
           password: ${{ secrets.CPANEL_FTP_PASSWORD }}
           port: ${{ steps.cpanel.outputs.ftp-port }}
-          protocol: ftps
+          protocol: ftp
           local-dir: ./cpanel-deploy/
           server-dir: ${{ steps.cpanel.outputs.remote-dir }}
           security: loose
