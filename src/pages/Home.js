@@ -1114,6 +1114,7 @@ function FloatingAiAgent() {
           )}
         </span>
       </button>
+      {!open && <span className="ai-agent-launcher-status-dot" aria-hidden="true" />}
     </div>,
     document.body,
   );

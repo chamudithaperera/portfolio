@@ -9713,3 +9713,35 @@ textarea:focus-visible {
 [data-theme='light'] .timeline-dot {
   background: var(--slate-700);
 }
+
+/* AI Agent Launcher Online Status Dot */
+.ai-agent-launcher-status-dot {
+  position: absolute;
+  bottom: 0.15rem;
+  right: 0.15rem;
+  width: 0.95rem;
+  height: 0.95rem;
+  background-color: #10b981;
+  border: 2px solid var(--background);
+  border-radius: 50%;
+  z-index: 122;
+  pointer-events: none;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: onlinePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes onlinePulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
