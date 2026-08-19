@@ -64,16 +64,39 @@ jobs:
           echo "remote-dir=${remote_dir}" >> "$GITHUB_OUTPUT"
           echo "ftp-port=${ftp_port}" >> "$GITHUB_OUTPUT"
 
-      - name: Deploy to Namecheap
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.CPANEL_FTP_SERVER }}
-          username: ${{ secrets.CPANEL_FTP_USERNAME }}
-          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
-          port: ${{ steps.cpanel.outputs.ftp-port }}
-          protocol: ftp
-          local-dir: ./cpanel-deploy/
-          server-dir: ${{ steps.cpanel.outputs.remote-dir }}
-          security: loose
-          timeout: 120000
-          log-level: verbose
+      - name: Deploy to Namecheap via LFTP
+        run: |
+          set -euo pipefail
+          sudo apt-get update && sudo apt-get install -y lftp
+          
+          PORT="${{ steps.cpanel.outputs.ftp-port }}"
+          SERVER="${{ secrets.CPANEL_FTP_SERVER }}"
+          USERNAME="${{ secrets.CPANEL_FTP_USERNAME }}"
+          PASSWORD="${{ secrets.CPANEL_FTP_PASSWORD }}"
+          REMOTE_DIR="${{ steps.cpanel.outputs.remote-dir }}"
+          
+          # Clean up any potential leading/trailing quotes from secrets
+          SERVER=$(echo "$SERVER" | sed -e 's/^"//' -e 's/"$//')
+          USERNAME=$(echo "$USERNAME" | sed -e 's/^"//' -e 's/"$//')
+          PASSWORD=$(echo "$PASSWORD" | sed -e 's/^"//' -e 's/"$//')
+          
+          if [ "$PORT" = "21098" ] || [ "$PORT" = "22" ]; then
+            echo "Connecting via SFTP on port $PORT..."
+            lftp -e "
+              set sftp:auto-confirm yes;
+              open sftp://${USERNAME}:${PASSWORD}@${SERVER}:${PORT};
+              mirror -R --delete --verbose ./cpanel-deploy/ ${REMOTE_DIR};
+              quit
+            "
+          else
+            echo "Connecting via FTP/FTPS on port $PORT..."
+            lftp -e "
+              set ssl:verify-certificate no;
+              set ftp:ssl-allow yes;
+              set ftp:passive-mode yes;
+              open -u \"${USERNAME}\",\"${PASSWORD}\" -p ${PORT} ${SERVER};
+              mirror -R --delete --verbose ./cpanel-deploy/ ${REMOTE_DIR};
+              quit
+            "
+          fi
+
