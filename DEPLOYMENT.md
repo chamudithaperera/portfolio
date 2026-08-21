@@ -7,6 +7,7 @@ Recommended path:
 1. Create a Render Web Service from this repository.
 2. Use the settings in `render.yaml`.
 3. Add these environment variables in Render:
+   - `OPENAI_API_KEY`
    - `SUPABASE_URL`
    - `SUPABASE_PUBLISHABLE_KEY`
    - `SUPABASE_SECRET_KEY`
