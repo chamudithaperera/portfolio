@@ -1,7 +1,7 @@
 const config = require('./config');
 
 const FALLBACK_REPLY =
-  'I can only respond to inquiries regarding services, pricing, portfolio projects, and contact information. Please select one of the options below or ask a relevant question.';
+  'I can help with services, pricing, projects, contact details, and questions about Chamuditha or the portfolio.';
 
 function normalizeChatbotText(value) {
   return String(value ?? '')
@@ -227,18 +227,55 @@ function summarizeList(items, mapper, fallbackLabel) {
   return items.map((item) => `- ${mapper(item)}`).filter(Boolean);
 }
 
-function buildKnowledgeSummary({ siteName, siteOrigin, contact = {}, portfolioContent = {}, pricingServices = [] }) {
+function buildKnowledgeSummary({
+  siteName,
+  siteOrigin,
+  profileSummary = '',
+  contact = {},
+  portfolioContent = {},
+  pricingServices = [],
+}) {
   const normalizedContact = normalizeContact(contact);
+  const techStacks = summarizeList(
+    Array.isArray(portfolioContent.techStacks) ? portfolioContent.techStacks.slice(0, 8) : [],
+    (item) => `${item.label}${item.category ? ` (${item.category})` : ''}${item.summary ? `: ${item.summary}` : ''}`,
+    'No tech stacks are currently available.',
+  );
+
   const projects = summarizeList(
     Array.isArray(portfolioContent.projects) ? portfolioContent.projects.slice(0, 6) : [],
-    (project) => `${project.title}${project.category ? ` (${project.category})` : ''}: ${project.summary}`,
+    (project) => {
+      const highlights = Array.isArray(project.highlights) && project.highlights.length
+        ? ` Highlights: ${project.highlights.slice(0, 3).join('; ')}.`
+        : '';
+      const tags = Array.isArray(project.tags) && project.tags.length ? ` Tags: ${project.tags.slice(0, 5).join(', ')}.` : '';
+      return `${project.title}${project.category ? ` (${project.category})` : ''}: ${project.summary}${highlights}${tags}`;
+    },
     'No projects are currently available.',
   );
 
   const experience = summarizeList(
     Array.isArray(portfolioContent.experience) ? portfolioContent.experience.slice(0, 4) : [],
-    (item) => `${item.role} at ${item.org}: ${item.detail}`,
+    (item) => `${item.role} at ${item.org}${item.period ? ` (${item.period})` : ''}: ${item.detail}`,
     'No experience entries are currently available.',
+  );
+
+  const education = summarizeList(
+    Array.isArray(portfolioContent.education) ? portfolioContent.education.slice(0, 4) : [],
+    (item) => `${item.title}${item.org ? ` at ${item.org}` : ''}${item.period ? ` (${item.period})` : ''}: ${item.detail}`,
+    'No education entries are currently available.',
+  );
+
+  const certificates = summarizeList(
+    Array.isArray(portfolioContent.certificates) ? portfolioContent.certificates.slice(0, 4) : [],
+    (item) => `${item.title}${item.org ? ` from ${item.org}` : ''}${item.year ? ` (${item.year})` : ''}${item.detail ? `: ${item.detail}` : ''}`,
+    'No certificates are currently available.',
+  );
+
+  const reviews = summarizeList(
+    Array.isArray(portfolioContent.reviews) ? portfolioContent.reviews.slice(0, 4) : [],
+    (item) => `${item.name} rated ${item.rating}/5 for ${item.projectName}${item.service ? ` (${item.service})` : ''}: ${item.description}`,
+    'No client reviews are currently available.',
   );
 
   const services = summarizeList(
@@ -258,14 +295,19 @@ function buildKnowledgeSummary({ siteName, siteOrigin, contact = {}, portfolioCo
   return {
     siteName,
     siteOrigin,
+    profileSummary: profileSummary ? `- ${profileSummary}` : '',
     contact: normalizedContact,
+    techStacks,
     projects,
     experience,
+    education,
+    certificates,
+    reviews,
     services,
   };
 }
 
-function buildKnowledgePrompt(knowledge) {
+function buildKnowledgePrompt(knowledge, intent = '') {
   const contactLines = [
     knowledge.contact.email ? `Email: ${knowledge.contact.email}` : null,
     knowledge.contact.phone ? `Phone: ${knowledge.contact.phone}` : null,
@@ -273,12 +315,31 @@ function buildKnowledgePrompt(knowledge) {
     knowledge.siteOrigin ? `Website: ${knowledge.siteOrigin}` : null,
   ].filter(Boolean);
 
+  const intentGuidance = {
+    'latest-project': 'The user wants a recent project summary. Mention the newest project if one exists and keep the tone concise.',
+    'bot-identity': 'If the user asks who you are, say you are the AI assistant for Chamuditha Perera\'s portfolio.',
+    'about-chamuditha': 'If the user asks about Chamuditha, answer with a short professional bio and mention relevant strengths.',
+    'tech-stacks': 'If the user asks about skills or technology, summarize the tech stack naturally.',
+    experience: 'If the user asks about work history, summarize the experience entries clearly.',
+    'education-qualifications': 'If the user asks about education or certificates, summarize those facts clearly.',
+    reviews: 'If the user asks about reviews, summarize client feedback naturally and keep it balanced.',
+    projects: 'If the user asks about projects, describe the most relevant projects and invite them to view the projects page.',
+  }[intent] || '';
+
   return [
     `You are the friendly AI assistant for ${knowledge.siteName}.`,
-    'Answer only using the facts below.',
-    'Keep replies short, professional, and helpful.',
-    'Never invent prices or services that are not in the facts.',
-    'If the user asks something outside the facts, say you can help with services, pricing, projects, and contact details.',
+    'Answer naturally in a conversational, helpful tone.',
+    'Use the facts below to answer questions about Chamuditha Perera and the portfolio.',
+    'Do not invent facts, dates, prices, clients, or credentials.',
+    'If a detail is missing, say it is not listed in the portfolio yet.',
+    'If the user asks whether you are an AI bot, say that you are the AI assistant for the portfolio.',
+    intentGuidance,
+    '',
+    'Profile:',
+    knowledge.profileSummary ? knowledge.profileSummary : '- No profile summary is currently available.',
+    '',
+    'Profile and skills:',
+    ...knowledge.techStacks,
     '',
     'Services and pricing:',
     ...knowledge.services,
@@ -288,6 +349,15 @@ function buildKnowledgePrompt(knowledge) {
     '',
     'Experience:',
     ...knowledge.experience,
+    '',
+    'Education:',
+    ...knowledge.education,
+    '',
+    'Certificates:',
+    ...knowledge.certificates,
+    '',
+    'Reviews:',
+    ...knowledge.reviews,
     '',
     'Contact:',
     ...contactLines.map((line) => `- ${line}`),
@@ -328,34 +398,49 @@ function extractResponseText(response) {
   return '';
 }
 
-async function generateChatbotReply({ message, knowledge }) {
+function buildAiActions(intent) {
+  const actionsByIntent = {
+    'latest-project': [{ label: 'View Projects', href: '/projects' }, { label: 'Contact Me', href: '/#contact' }],
+    'bot-identity': [
+      { label: 'View Projects', href: '/projects' },
+      { label: 'Contact Me', href: '/#contact' },
+    ],
+    'about-chamuditha': [
+      { label: 'View Projects', href: '/projects' },
+      { label: 'Contact Me', href: '/#contact' },
+    ],
+    'tech-stacks': [{ label: 'View Projects', href: '/projects' }],
+    experience: [
+      { label: 'View Projects', href: '/projects' },
+      { label: 'Contact Me', href: '/#contact' },
+    ],
+    'education-qualifications': [{ label: 'View Certificates', href: '/#about' }],
+    reviews: [
+      { label: 'View Reviews', href: '/#reviews' },
+      { label: 'Write a Review', href: '/review' },
+    ],
+    projects: [{ label: 'View Projects', href: '/projects' }],
+  };
+
+  return actionsByIntent[intent] || [];
+}
+
+async function generateChatbotReply({ message, knowledge, intent = '' }) {
   if (!config.openaiApiKey) {
     return null;
   }
 
-  const modelName = (!config.openaiChatModel || config.openaiChatModel === 'gpt-4.1-mini')
-    ? 'gpt-4o-mini'
-    : config.openaiChatModel;
-
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${config.openaiApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: modelName,
-      messages: [
-        {
-          role: 'system',
-          content: buildKnowledgePrompt(knowledge),
-        },
-        {
-          role: 'user',
-          content: message,
-        },
-      ],
-      max_tokens: 180,
+      model: config.openaiChatModel || 'gpt-4.1-mini',
+      instructions: buildKnowledgePrompt(knowledge, intent),
+      input: message,
+      max_output_tokens: 240,
     }),
   });
 
@@ -385,6 +470,7 @@ async function generateChatbotReply({ message, knowledge }) {
 
 module.exports = {
   buildKnowledgeSummary,
+  buildAiActions,
   buildScriptedChatbotReply,
   detectChatbotIntent,
   generateChatbotReply,

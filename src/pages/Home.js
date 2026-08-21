@@ -628,7 +628,7 @@ function buildLocalChatbotReply(intent) {
     },
     fallback: {
       reply:
-        'I can only respond to inquiries regarding services, pricing, portfolio projects, and contact information. Please select one of the options below or ask a relevant question.',
+        'I can help with services, pricing, projects, contact details, and questions about Chamuditha or the portfolio.',
       actions: [
         { label: 'Click here to see pricing', href: '/pricing' },
         { label: 'Click here to see projects', href: '/projects' },
@@ -765,7 +765,8 @@ function FloatingAiAgent() {
     }
 
     const localIntent = detectChatbotIntent(value);
-    if (localIntent) {
+    const scriptedIntents = new Set(['greeting', 'services', 'pricing', 'contact', 'social-profiles']);
+    if (localIntent && scriptedIntents.has(localIntent)) {
       handleIntentResponse(localIntent, value);
       return;
     }

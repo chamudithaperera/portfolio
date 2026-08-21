@@ -68,6 +68,7 @@ const {
 } = require('./portfolioStore');
 const {
   buildKnowledgeSummary,
+  buildAiActions,
   buildScriptedChatbotReply,
   detectChatbotIntent,
   generateChatbotReply,
@@ -88,6 +89,14 @@ const chatbotContact = {
   phone: '+94787250549',
   whatsappUrl: 'https://wa.me/94787250549',
 };
+const scriptedChatbotIntents = new Set([
+  'greeting',
+  'services',
+  'website-pricing',
+  'mobile-pricing',
+  'contact',
+  'social-profiles',
+]);
 const socialImage = `${siteOrigin}/assets/imgs/header/coding-hero-v2.png`;
 const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteOrigin}/favicon.png`;
@@ -816,7 +825,7 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
   const userMessage = result.values.message;
   const intent = detectChatbotIntent(userMessage);
 
-  if (intent) {
+  if (intent && scriptedChatbotIntents.has(intent)) {
     let latestProject = null;
     let techStacks = [];
     let experience = [];
@@ -875,11 +884,12 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
     const knowledge = buildKnowledgeSummary({
       siteName,
       siteOrigin,
+      profileSummary: defaultDescription,
       contact: chatbotContact,
       portfolioContent,
       pricingServices,
     });
-    const reply = await generateChatbotReply({ message: userMessage, knowledge });
+    const reply = await generateChatbotReply({ message: userMessage, knowledge, intent });
 
     if (!reply) {
       const scripted = buildScriptedChatbotReply('fallback', { contact: chatbotContact });
@@ -895,7 +905,7 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
     return res.json({
       ok: true,
       reply,
-      actions: [],
+      actions: buildAiActions(intent),
       autoNavigate: '',
       source: 'ai',
     });
