@@ -450,7 +450,7 @@ async function generateChatbotReply({ message, knowledge, intent = '' }) {
   }
 
   const data = await response.json();
-  const reply = data.choices?.[0]?.message?.content?.trim() || '';
+  const reply = extractResponseText(data);
 
   if (!reply) {
     return null;
