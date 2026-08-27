@@ -145,6 +145,9 @@ function validateChatbotMessage(body = {}) {
   const errors = {};
 
   const message = normalizeMessage(body.message);
+  const previousResponseId = normalizeText(body.previousResponseId);
+  const pagePath = normalizeText(body.pageContext?.path);
+  const pageTitle = normalizeText(body.pageContext?.title);
 
   if (!message) {
     errors.message = 'Message is required.';
@@ -152,11 +155,24 @@ function validateChatbotMessage(body = {}) {
     errors.message = 'Message must be between 1 and 1000 characters.';
   }
 
+  if (previousResponseId && (previousResponseId.length > 256 || !/^resp_[A-Za-z0-9_-]+$/.test(previousResponseId))) {
+    errors.previousResponseId = 'Conversation state is invalid.';
+  }
+
+  if (pagePath.length > 300 || pageTitle.length > 200) {
+    errors.pageContext = 'Page context is too long.';
+  }
+
   return {
     ok: Object.keys(errors).length === 0,
     errors,
     values: {
       message,
+      previousResponseId,
+      pageContext: {
+        path: pagePath,
+        title: pageTitle,
+      },
     },
   };
 }

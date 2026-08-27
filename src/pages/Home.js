@@ -41,7 +41,7 @@ import {
   siCss,
 } from 'simple-icons';
 import withBase from '../utils/basePath';
-import { apiRequest } from '../utils/api';
+import { apiRequest, streamApiRequest } from '../utils/api';
 import { useTheme } from '../theme';
 
 const navItems = [
@@ -524,121 +524,8 @@ function createChatbotMessage(role, text, extra = {}) {
   };
 }
 
-function normalizeChatbotInput(value) {
-  return String(value ?? '')
-    .toLowerCase()
-    .replace(/[^a-z0-9+\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function detectChatbotIntent(message) {
-  const text = normalizeChatbotInput(message);
-  const hasPricingLanguage = /(price|pricing|cost|quote|charges|estimate|package)/.test(text);
-
-  if (/^(hi|hello|hey|greetings|good morning|good afternoon|good evening|yo)(\s|$)/.test(text)) {
-    return 'greeting';
-  }
-
-  if (/(github|linkedin|social|profiles|phone|whatsapp|email|contact info|phone number|whatsapp number|git|link in)/.test(text)) {
-    return 'social-profiles';
-  }
-
-  if (/(what is your name|who are you|your name|what are you|who is this|what is this bot|bot name|identify yourself)/.test(text)) {
-    return 'bot-identity';
-  }
-
-  if (/(service|services|offer|do you build|what can you make|what do you do)/.test(text)) {
-    return 'services';
-  }
-
-  if (hasPricingLanguage && /(website|web|site|portfolio|mobile|app|android|ios|flutter)/.test(text)) {
-    return 'pricing';
-  }
-
-  if (/(review|reviews|feedback|testimonial|testimonials|what do clients say|rating|ratings|client reviews)/.test(text)) {
-    return 'reviews';
-  }
-
-  if (/(project|projects|portfolio|work samples|show me)/.test(text)) {
-    return 'projects';
-  }
-
-  if (/(contact|email|whatsapp|call|phone|get in touch|reach you)/.test(text)) {
-    return 'contact';
-  }
-
-  return null;
-}
-
-function buildLocalChatbotReply(intent) {
-  const replies = {
-    greeting: {
-      reply: 'HI welcome to the ChamudithaPerera.Online Software Solutions. I am your AI assistant. How can I help you?',
-      actions: [
-        { label: 'Click here to see projects', href: '/projects' },
-        { label: 'Click here to see pricing', href: '/pricing' },
-        { label: 'Click here to contact me', href: '/#contact' },
-      ],
-    },
-    'social-profiles': {
-      reply: `You can reach Chamuditha or view his work online at:\n• Email: ${profile.email}\n• Phone: ${profile.phone}\n• GitHub: github.com/chamudithaperera\n• LinkedIn: linkedin.com/in/chamudithaperera`,
-      actions: [
-        { label: 'Email me', href: `mailto:${profile.email}` },
-        { label: 'WhatsApp me', href: whatsappUrl },
-        { label: 'LinkedIn', href: 'https://linkedin.com/in/chamudithaperera' },
-        { label: 'GitHub', href: 'https://github.com/chamudithaperera' },
-      ],
-    },
-    'bot-identity': {
-      reply: "I'm the AI assistant of ChamudithaPerera.Online Software Solutions. how can i help you",
-      actions: [
-        { label: 'Click here to see projects', href: '/projects' },
-        { label: 'Click here to see pricing', href: '/pricing' },
-        { label: 'Click here to contact me', href: '/#contact' },
-      ],
-    },
-    services: {
-      reply:
-        'I build Flutter mobile apps, React websites, full-stack systems, APIs, dashboards, and polished UI experiences. I can also help with admin panels and product implementation.',
-      actions: [
-        { label: 'Click here to see projects', href: '/projects' },
-        { label: 'Click here to contact me', href: '/#contact' },
-      ],
-    },
-    pricing: {
-      reply: 'You can view the website and mobile app pricing details on the pricing page.',
-      actions: [{ label: 'Click here to see pricing', href: '/pricing' }],
-    },
-    reviews: {
-      reply: 'You can check my client reviews and testimonials in the reviews section of the home screen.',
-      actions: [{ label: 'Click here to see reviews', href: '/#reviews' }],
-    },
-    projects: {
-      reply: 'You can browse my selected projects on the projects page.',
-      actions: [{ label: 'Click here to see projects', href: '/projects' }],
-    },
-    contact: {
-      reply: 'You can reach me through the contact section, email, or WhatsApp.',
-      actions: [
-        { label: 'Click here to contact me', href: '/#contact' },
-        { label: 'Email me', href: `mailto:${profile.email}` },
-        { label: 'WhatsApp me', href: whatsappUrl },
-      ],
-    },
-    fallback: {
-      reply:
-        'I can help with services, pricing, projects, contact details, and questions about Chamuditha or the portfolio.',
-      actions: [
-        { label: 'Click here to see pricing', href: '/pricing' },
-        { label: 'Click here to see projects', href: '/projects' },
-        { label: 'Click here to contact me', href: '/#contact' },
-      ],
-    },
-  };
-
-  return replies[intent] || replies.fallback;
-}
+const chatbotFallbackText =
+  'I can help with services, pricing, projects, contact details, and questions about Chamuditha or the portfolio.';
 
 function FloatingAiAgent() {
   const location = useLocation();
@@ -648,6 +535,7 @@ function FloatingAiAgent() {
   const [messages, setMessages] = useState(() => [createChatbotMessage('assistant', chatbotWelcomeText, { chips: chatbotQuickPrompts })]);
   const [draft, setDraft] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [showChatbotTyping, setShowChatbotTyping] = useState(false);
   const [showGreeting, setShowGreeting] = useState(false);
   const panelRef = useRef(null);
   const messageListRef = useRef(null);
@@ -656,6 +544,8 @@ function FloatingAiAgent() {
   const restoreFocusRef = useRef(null);
   const autoNavigateTimerRef = useRef(null);
   const locationKeyRef = useRef(`${location.pathname}${location.search}${location.hash}`);
+  const previousResponseIdRef = useRef('');
+  const streamAbortRef = useRef(null);
 
   useEffect(() => {
     // Show the greeting bubble shortly after page loads/refreshes.
@@ -733,18 +623,71 @@ function FloatingAiAgent() {
     navigate(href);
   };
 
-  const handleIntentResponse = (intent, userText) => {
-    const response = buildLocalChatbotReply(intent);
-    const userMessage = createChatbotMessage('user', userText);
-    appendMessage(userMessage);
+  const sendChatbotMessage = async (value) => {
+    if (!value || isSending) return;
+
+    appendMessage(createChatbotMessage('user', value));
     setDraft('');
     setIsSending(true);
+    setShowChatbotTyping(true);
     clearAutoNavigateTimer();
 
-    window.setTimeout(() => {
-      appendMessage(createChatbotMessage('assistant', response.reply, { actions: response.actions || [] }));
+    const controller = new AbortController();
+    streamAbortRef.current = controller;
+    const assistantId = `assistant-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    let receivedText = '';
+    let assistantAdded = false;
+
+    const updateAssistant = (updates) => {
+      setMessages((current) =>
+        current.map((message) => (message.id === assistantId ? { ...message, ...updates } : message)),
+      );
+    };
+
+    try {
+      await streamApiRequest('/api/chatbot/stream', {
+        signal: controller.signal,
+        body: {
+          message: value,
+          previousResponseId: previousResponseIdRef.current,
+          pageContext: {
+            path: `${location.pathname}${location.search}${location.hash}`,
+            title: document.title,
+          },
+        },
+        onEvent(event, data) {
+          if (event === 'delta' && typeof data?.delta === 'string') {
+            receivedText += data.delta;
+            if (!assistantAdded) {
+              assistantAdded = true;
+              appendMessage({ id: assistantId, role: 'assistant', text: receivedText });
+              setShowChatbotTyping(false);
+            } else {
+              updateAssistant({ text: receivedText });
+            }
+          } else if (event === 'done') {
+            previousResponseIdRef.current = data?.responseId || '';
+            if (assistantAdded) updateAssistant({ actions: data?.actions || [] });
+          } else if (event === 'error') {
+            throw new Error(data?.message || 'The response was interrupted.');
+          }
+        },
+      });
+
+      if (!assistantAdded) appendMessage({ id: assistantId, role: 'assistant', text: chatbotFallbackText });
+    } catch (error) {
+      if (error?.name !== 'AbortError') {
+        if (assistantAdded) {
+          updateAssistant({ text: `${receivedText}\n\nThe response was interrupted. Please try again.` });
+        } else {
+          appendMessage({ id: assistantId, role: 'assistant', text: chatbotFallbackText });
+        }
+      }
+    } finally {
+      if (streamAbortRef.current === controller) streamAbortRef.current = null;
       setIsSending(false);
-    }, prefersReducedMotion ? 0 : 280);
+      setShowChatbotTyping(false);
+    }
   };
 
   const handleQuickPrompt = (prompt) => {
@@ -753,7 +696,7 @@ function FloatingAiAgent() {
     }
 
     openChat();
-    handleIntentResponse(prompt.intent, prompt.label);
+    void sendChatbotMessage(prompt.label);
   };
 
   const handleSubmit = async (event) => {
@@ -764,36 +707,7 @@ function FloatingAiAgent() {
       return;
     }
 
-    const localIntent = detectChatbotIntent(value);
-    const scriptedIntents = new Set(['greeting', 'services', 'pricing', 'contact', 'social-profiles']);
-    if (localIntent && scriptedIntents.has(localIntent)) {
-      handleIntentResponse(localIntent, value);
-      return;
-    }
-
-    appendMessage(createChatbotMessage('user', value));
-    setDraft('');
-    setIsSending(true);
-    clearAutoNavigateTimer();
-
-    const typingDelay = prefersReducedMotion ? 0 : 240;
-    window.setTimeout(async () => {
-      try {
-        const response = await apiRequest('/api/chatbot/message', {
-          method: 'POST',
-          body: { message: value },
-        });
-
-        const reply = response?.reply || buildLocalChatbotReply('fallback').reply;
-        appendMessage(createChatbotMessage('assistant', reply, { actions: response?.actions || [] }));
-      } catch (error) {
-        void error;
-        const fallback = buildLocalChatbotReply('fallback');
-        appendMessage(createChatbotMessage('assistant', fallback.reply, { actions: fallback.actions || [] }));
-      } finally {
-        setIsSending(false);
-      }
-    }, typingDelay);
+    void sendChatbotMessage(value);
   };
 
   const handleMessageAction = (href) => {
@@ -909,7 +823,13 @@ function FloatingAiAgent() {
     locationKeyRef.current = currentLocationKey;
   }, [location.pathname, location.search, location.hash, open, closeChat]);
 
-  useEffect(() => () => clearAutoNavigateTimer(), []);
+  useEffect(
+    () => () => {
+      clearAutoNavigateTimer();
+      streamAbortRef.current?.abort();
+    },
+    [],
+  );
 
   const panel = (
     <AnimatePresence>
@@ -1017,7 +937,7 @@ function FloatingAiAgent() {
                     );
                   })}
 
-                  {isSending ? (
+                  {showChatbotTyping ? (
                     <motion.div
                       className="ai-agent-message is-assistant"
                       initial={{ opacity: 0, y: 10 }}

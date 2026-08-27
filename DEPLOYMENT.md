@@ -8,6 +8,7 @@ Recommended path:
 2. Use the settings in `render.yaml`.
 3. Add these environment variables in Render:
    - `OPENAI_API_KEY`
+   - `OPENAI_CHAT_MODEL` (optional, defaults to `gpt-4.1-mini`)
    - `SUPABASE_URL`
    - `SUPABASE_PUBLISHABLE_KEY`
    - `SUPABASE_SECRET_KEY`

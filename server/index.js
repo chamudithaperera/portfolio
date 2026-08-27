@@ -73,6 +73,7 @@ const {
   detectChatbotIntent,
   generateChatbotReply,
 } = require('./chatbot');
+const { runChatbotAgent } = require('./chatbotAgent');
 const { listVisits, recordVisit } = require('./visitStore');
 
 const app = express();
@@ -89,14 +90,6 @@ const chatbotContact = {
   phone: '+94787250549',
   whatsappUrl: 'https://wa.me/94787250549',
 };
-const scriptedChatbotIntents = new Set([
-  'greeting',
-  'services',
-  'website-pricing',
-  'mobile-pricing',
-  'contact',
-  'social-profiles',
-]);
 const socialImage = `${siteOrigin}/assets/imgs/header/coding-hero-v2.png`;
 const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteOrigin}/favicon.png`;
@@ -822,77 +815,26 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
     return fail(res, 400, 'Please send a valid message.', result.errors);
   }
 
-  const userMessage = result.values.message;
+  const { message: userMessage, previousResponseId, pageContext } = result.values;
   const intent = detectChatbotIntent(userMessage);
 
-  if (intent && scriptedChatbotIntents.has(intent)) {
-    let latestProject = null;
-    let techStacks = [];
-    let experience = [];
-    let education = [];
-    let certificates = [];
-    let reviews = [];
-
-    if (['latest-project', 'tech-stacks', 'experience', 'education-qualifications', 'reviews'].includes(intent)) {
-      try {
-        const content = await listPortfolioContent();
-        if (content) {
-          if (intent === 'latest-project' && Array.isArray(content.projects) && content.projects.length > 0) {
-            const sorted = [...content.projects].sort((a, b) => {
-              const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-              const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-              if (timeA !== timeB) return timeB - timeA;
-              return b.id - a.id;
-            });
-            latestProject = sorted[0];
-          } else if (intent === 'tech-stacks' && Array.isArray(content.techStacks)) {
-            techStacks = content.techStacks.filter(t => t.active).map(t => t.label);
-          } else if (intent === 'experience' && Array.isArray(content.experience)) {
-            experience = content.experience.map(e => `${e.role} at ${e.org}`);
-          } else if (intent === 'education-qualifications') {
-            education = Array.isArray(content.education) ? content.education.map(ed => `${ed.title} at ${ed.org}`) : [];
-            certificates = Array.isArray(content.certificates) ? content.certificates.map(c => `${c.title} (${c.org})`) : [];
-          } else if (intent === 'reviews' && Array.isArray(content.reviews)) {
-            reviews = content.reviews.filter(r => r.status === 'approved').slice(0, 3);
-          }
-        }
-      } catch (e) {
-        console.error(`Failed to retrieve details for chatbot intent (${intent}):`, e);
-      }
-    }
-
-    const scripted = buildScriptedChatbotReply(intent, {
-      contact: chatbotContact,
-      latestProject,
-      techStacks,
-      experience,
-      education,
-      certificates,
-      reviews,
-    });
-    return res.json({
-      ok: true,
-      reply: scripted.reply,
-      actions: scripted.actions || [],
-      autoNavigate: scripted.autoNavigate || '',
-      source: 'scripted',
-    });
-  }
-
   try {
-    const [portfolioContent, pricingServices] = await Promise.all([listPortfolioContent(), listPricingServices(false)]);
-    const knowledge = buildKnowledgeSummary({
+    const agentReply = await runChatbotAgent({
+      apiKey: config.openaiApiKey,
+      model: config.openaiChatModel,
+      message: userMessage,
+      previousResponseId,
       siteName,
       siteOrigin,
       profileSummary: defaultDescription,
       contact: chatbotContact,
-      portfolioContent,
-      pricingServices,
+      pageContext,
+      loadPortfolioContent: listPortfolioContent,
+      loadPricingServices: () => listPricingServices(false),
     });
-    const reply = await generateChatbotReply({ message: userMessage, knowledge, intent });
 
-    if (!reply) {
-      const scripted = buildScriptedChatbotReply('fallback', { contact: chatbotContact });
+    if (!agentReply?.reply) {
+      const scripted = buildScriptedChatbotReply(intent || 'fallback', { contact: chatbotContact });
       return res.json({
         ok: true,
         reply: scripted.reply,
@@ -904,10 +846,14 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
 
     return res.json({
       ok: true,
-      reply,
-      actions: buildAiActions(intent),
+      reply: agentReply.reply,
+      responseId: agentReply.responseId,
+      citations: agentReply.citations,
+      actions: [...buildAiActions(intent), ...(agentReply.actions || [])].filter(
+        (action, index, items) => items.findIndex((item) => item.href === action.href) === index,
+      ).slice(0, 5),
       autoNavigate: '',
-      source: 'ai',
+      source: agentReply.source,
     });
   } catch (error) {
     console.error('Chatbot reply failed:', error);
@@ -920,6 +866,91 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
       source: 'fallback',
     });
   }
+});
+
+function sendChatbotEvent(res, event, data) {
+  if (res.writableEnded) return;
+  res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+  if (typeof res.flush === 'function') res.flush();
+}
+
+app.post('/api/chatbot/stream', chatbotLimiter, async (req, res) => {
+  const result = validateChatbotMessage(req.body);
+  if (!result.ok) return fail(res, 400, 'Please send a valid message.', result.errors);
+
+  res.status(200);
+  res.set({
+    'Content-Type': 'text/event-stream; charset=utf-8',
+    'Cache-Control': 'no-cache, no-transform',
+    Connection: 'keep-alive',
+    'X-Accel-Buffering': 'no',
+  });
+  res.flushHeaders();
+
+  const { message, previousResponseId, pageContext } = result.values;
+  const intent = detectChatbotIntent(message);
+  let streamedText = '';
+
+  try {
+    const agentReply = await runChatbotAgent({
+      apiKey: config.openaiApiKey,
+      model: config.openaiChatModel,
+      message,
+      previousResponseId,
+      siteName,
+      siteOrigin,
+      profileSummary: defaultDescription,
+      contact: chatbotContact,
+      pageContext,
+      loadPortfolioContent: listPortfolioContent,
+      loadPricingServices: () => listPricingServices(false),
+      onDelta(delta) {
+        streamedText += delta;
+        sendChatbotEvent(res, 'delta', { delta });
+      },
+      onStatus(status) {
+        sendChatbotEvent(res, 'status', { status });
+      },
+    });
+
+    if (!agentReply?.reply) {
+      const scripted = buildScriptedChatbotReply(intent || 'fallback', { contact: chatbotContact });
+      sendChatbotEvent(res, 'delta', { delta: scripted.reply });
+      sendChatbotEvent(res, 'done', {
+        responseId: '',
+        citations: [],
+        actions: scripted.actions || [],
+        source: 'fallback',
+      });
+      return res.end();
+    }
+
+    const actions = [...buildAiActions(intent), ...(agentReply.actions || [])]
+      .filter((action, index, items) => items.findIndex((item) => item.href === action.href) === index)
+      .slice(0, 5);
+    sendChatbotEvent(res, 'done', {
+      responseId: agentReply.responseId,
+      citations: agentReply.citations,
+      actions,
+      source: agentReply.source,
+    });
+  } catch (error) {
+    console.error('Chatbot stream failed:', error);
+    if (!streamedText) {
+      const scripted = buildScriptedChatbotReply(intent || 'fallback', { contact: chatbotContact });
+      sendChatbotEvent(res, 'delta', { delta: scripted.reply });
+      sendChatbotEvent(res, 'done', {
+        responseId: '',
+        citations: [],
+        actions: scripted.actions || [],
+        source: 'fallback',
+      });
+    } else {
+      sendChatbotEvent(res, 'error', { message: 'The response was interrupted. Please try again.' });
+    }
+  }
+
+  return res.end();
 });
 
 app.post('/api/admin/login', adminLimiter, async (req, res) => {
