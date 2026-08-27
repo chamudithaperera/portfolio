@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 
 const {
   PORTFOLIO_TOOLS,
+  buildWebSearchTool,
   createPortfolioToolExecutor,
   extractCitations,
   normalizePreviousResponseId,
@@ -24,6 +25,11 @@ test('portfolio tools use strict JSON schemas', () => {
     assert.equal(tool.strict, true);
     assert.equal(tool.parameters.additionalProperties, false);
   });
+});
+
+test('web search uses the compatible tool generation for the configured model', () => {
+  assert.equal(buildWebSearchTool('gpt-4.1-mini').type, 'web_search_preview');
+  assert.equal(buildWebSearchTool('gpt-5.4-mini').type, 'web_search');
 });
 
 test('project search ranks matching portfolio data and limits its result', async () => {

@@ -103,6 +103,11 @@ function normalizePreviousResponseId(value) {
   return responseId;
 }
 
+function buildWebSearchTool(model) {
+  const type = /^gpt-4\.1(?:-|$)/i.test(normalizeText(model)) ? 'web_search_preview' : 'web_search';
+  return { type, search_context_size: 'low' };
+}
+
 function buildAgentInstructions({ siteName, siteOrigin, profileSummary, contact = {}, pageContext = {} }) {
   const currentPath = normalizeText(pageContext.path).slice(0, 300) || '/';
   const currentTitle = normalizeText(pageContext.title).slice(0, 200);
@@ -404,7 +409,7 @@ async function streamOpenAiResponse({ apiKey, model, instructions, input, previo
     model,
     instructions,
     input,
-    tools: [{ type: 'web_search', search_context_size: 'low' }, ...PORTFOLIO_TOOLS],
+    tools: [buildWebSearchTool(model), ...PORTFOLIO_TOOLS],
     tool_choice: 'auto',
     parallel_tool_calls: true,
     include: ['web_search_call.action.sources'],
@@ -549,6 +554,7 @@ async function runChatbotAgent({
 module.exports = {
   PORTFOLIO_TOOLS,
   buildAgentInstructions,
+  buildWebSearchTool,
   createPortfolioToolExecutor,
   extractCitations,
   extractFunctionCalls,
