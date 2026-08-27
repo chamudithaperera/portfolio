@@ -714,6 +714,10 @@ html {
   margin-top: 0.78rem;
 }
 
+.ai-agent-bubble > .ai-agent-actions:first-child {
+  margin-top: 0;
+}
+
 .ai-agent-action,
 .ai-agent-chip,
 .ai-agent-send {

@@ -667,7 +667,14 @@ function FloatingAiAgent() {
             }
           } else if (event === 'done') {
             previousResponseIdRef.current = data?.responseId || '';
-            if (assistantAdded) updateAssistant({ actions: data?.actions || [] });
+            const actions = data?.actions || [];
+            if (assistantAdded) {
+              updateAssistant({ actions });
+            } else if (actions.length) {
+              assistantAdded = true;
+              appendMessage({ id: assistantId, role: 'assistant', text: '', actions });
+              setShowChatbotTyping(false);
+            }
           } else if (event === 'error') {
             throw new Error(data?.message || 'The response was interrupted.');
           }
@@ -899,7 +906,7 @@ function FloatingAiAgent() {
                           </span>
                         ) : null}
                         <div className="ai-agent-bubble">
-                          <p>{message.text}</p>
+                          {message.text ? <p>{message.text}</p> : null}
                           {Array.isArray(message.actions) && message.actions.length ? (
                             <div className="ai-agent-actions">
                               {message.actions.map((action) => (

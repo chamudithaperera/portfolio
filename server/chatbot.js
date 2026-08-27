@@ -187,12 +187,12 @@ function buildScriptedChatbotReply(intent, context = {}) {
       ],
     },
     'website-pricing': {
-      reply: 'You can check my website pricing on the pricing page. I’m opening it now.',
-      autoNavigate: '/pricing',
+      reply: '',
+      actions: [{ label: 'Click to see prices', href: '/pricing' }],
     },
     'mobile-pricing': {
-      reply: 'You can check my mobile app pricing on the pricing page. I’m opening it now.',
-      autoNavigate: '/pricing',
+      reply: '',
+      actions: [{ label: 'Click to see prices', href: '/pricing' }],
     },
     projects: {
       reply: 'You can browse my selected projects now. I’m opening the projects page.',
