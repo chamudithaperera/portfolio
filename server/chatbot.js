@@ -115,6 +115,10 @@ function detectChatbotIntent(message) {
     return 'mobile-pricing';
   }
 
+  if (/\b(show(?: me)?(?: the)? prices?|prices?)\b/.test(text)) {
+    return 'website-pricing';
+  }
+
   if (
     /\b(who are you|what are you|what is your name|what s your name|your name|name of this bot|name of the bot|bot name|assistant name|identify yourself|introduce yourself|are you a bot|are you a chatbot|are you an ai|are you an assistant|what should i call you)\b/.test(
       text,

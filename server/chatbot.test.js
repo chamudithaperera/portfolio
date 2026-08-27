@@ -47,7 +47,7 @@ test('intent detection catches natural wording, variations, and common misspelli
     reviews: ['What do customers say?', 'Show client testimonials', 'Any customer feedback?'],
     'social-profiles': ['Open Git Hub', 'Connect with you on Linked In', 'Show social media links'],
     services: ['What can you develop?', 'Show available services', 'What software solutions do you offer?'],
-    'website-pricing': ['How much is a landing page?', 'Website development fees', 'E-commerce package prices'],
+    'website-pricing': ['How much is a landing page?', 'Website development fees', 'E-commerce package prices', 'Show the prices', 'Show prices', 'Prices?'],
     'mobile-pricing': ['Cost for a Flutter application', 'iOS app quotation', 'Mobile development rates'],
     projects: ['Show your case studies', 'Previous work samples', 'What have you built?'],
     contact: ['Send me your email address', 'How do I get in touch?', 'I want to request a quote'],
