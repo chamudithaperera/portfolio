@@ -67,7 +67,7 @@ const {
   TABLES,
 } = require('./portfolioStore');
 const {
-  CHATBOT_ACTION_ONLY_INTENTS,
+  CHATBOT_DESTINATION_INTENTS,
   buildKnowledgeSummary,
   buildAiActions,
   buildScriptedChatbotReply,
@@ -819,11 +819,11 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
   const { message: userMessage, previousResponseId, pageContext } = result.values;
   const intent = detectChatbotIntent(userMessage);
 
-  if (CHATBOT_ACTION_ONLY_INTENTS.has(intent)) {
+  if (CHATBOT_DESTINATION_INTENTS.has(intent)) {
     const scripted = buildScriptedChatbotReply(intent, { contact: chatbotContact });
     return res.json({
       ok: true,
-      reply: '',
+      reply: scripted.reply,
       responseId: '',
       citations: [],
       actions: scripted.actions || [],
@@ -905,8 +905,9 @@ app.post('/api/chatbot/stream', chatbotLimiter, async (req, res) => {
   const intent = detectChatbotIntent(message);
   let streamedText = '';
 
-  if (CHATBOT_ACTION_ONLY_INTENTS.has(intent)) {
+  if (CHATBOT_DESTINATION_INTENTS.has(intent)) {
     const scripted = buildScriptedChatbotReply(intent, { contact: chatbotContact });
+    sendChatbotEvent(res, 'delta', { delta: scripted.reply });
     sendChatbotEvent(res, 'done', {
       responseId: '',
       citations: [],

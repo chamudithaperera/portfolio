@@ -3,21 +3,65 @@ const config = require('./config');
 const FALLBACK_REPLY =
   'I can help with services, pricing, projects, contact details, and questions about Chamuditha or the portfolio.';
 
-const CHATBOT_ACTION_ONLY_DESTINATIONS = Object.freeze({
-  'latest-project': { label: 'Click to see projects', href: '/projects' },
-  'about-chamuditha': { label: 'Click to see about me', href: '/#about' },
-  'tech-stacks': { label: 'Click to see skills', href: '/#skills' },
-  experience: { label: 'Click to see experience', href: '/#experience' },
-  'education-qualifications': { label: 'Click to see education', href: '/#education' },
-  reviews: { label: 'Click to see reviews', href: '/#reviews' },
-  services: { label: 'Click to see services', href: '/pricing' },
-  'website-pricing': { label: 'Click to see prices', href: '/pricing' },
-  'mobile-pricing': { label: 'Click to see prices', href: '/pricing' },
-  projects: { label: 'Click to see projects', href: '/projects' },
-  contact: { label: 'Click to contact me', href: '/#contact' },
+const CHATBOT_DESTINATIONS = Object.freeze({
+  'latest-project': {
+    description: 'Explore my selected software projects and latest work.',
+    label: 'Click to see projects',
+    href: '/projects',
+  },
+  'about-chamuditha': {
+    description: 'Learn more about me, my background, and what I build.',
+    label: 'Click to see about me',
+    href: '/#about',
+  },
+  'tech-stacks': {
+    description: 'Explore the technologies, frameworks, and tools I work with.',
+    label: 'Click to see skills',
+    href: '/#skills',
+  },
+  experience: {
+    description: 'View my professional experience and software engineering background.',
+    label: 'Click to see experience',
+    href: '/#experience',
+  },
+  'education-qualifications': {
+    description: 'See my education, qualifications, and certifications.',
+    label: 'Click to see education',
+    href: '/#education',
+  },
+  reviews: {
+    description: 'Read feedback and testimonials from my clients.',
+    label: 'Click to see reviews',
+    href: '/#reviews',
+  },
+  services: {
+    description: 'Explore the software services and packages I offer.',
+    label: 'Click to see services',
+    href: '/pricing',
+  },
+  'website-pricing': {
+    description: 'Compare my website development packages and prices.',
+    label: 'Click to see prices',
+    href: '/pricing',
+  },
+  'mobile-pricing': {
+    description: 'Compare my mobile app development packages and prices.',
+    label: 'Click to see prices',
+    href: '/pricing',
+  },
+  projects: {
+    description: 'Explore my selected software projects and latest work.',
+    label: 'Click to see projects',
+    href: '/projects',
+  },
+  contact: {
+    description: 'Get in touch to discuss your project or request a quote.',
+    label: 'Click to contact me',
+    href: '/#contact',
+  },
 });
 
-const CHATBOT_ACTION_ONLY_INTENTS = new Set(Object.keys(CHATBOT_ACTION_ONLY_DESTINATIONS));
+const CHATBOT_DESTINATION_INTENTS = new Set(Object.keys(CHATBOT_DESTINATIONS));
 
 function normalizeChatbotText(value) {
   return String(value ?? '')
@@ -34,62 +78,121 @@ function detectChatbotIntent(message) {
     return null;
   }
 
-  const hasPricingLanguage = /(price|pricing|cost|quote|charges|estimate|package)/.test(text);
+  const hasPricingLanguage =
+    /\b(price|prices|pricing|cost|costs|quote|quotes|quotation|quotations|charge|charges|fee|fees|rate|rates|budget|estimate|estimates|package|packages|plan|plans|subscription|subscriptions)\b|\bhow much\b/.test(
+      text,
+    );
+  const hasWebsiteLanguage =
+    /\b(website|websites|web site|web sites|webpage|webpages|web page|web pages|web app|web apps|landing page|landing pages|ecommerce|e commerce|online store|online shop|portfolio site|business site)\b/.test(
+      text,
+    );
+  const hasMobileAppLanguage =
+    /\b(mobile|mobile app|mobile apps|app|apps|application|applications|android|ios|iphone|ipad|flutter|native app|cross platform)\b/.test(
+      text,
+    );
 
-  if (/^(hi|hello|hey|greetings|good morning|good afternoon|good evening|yo)(\s|$)/.test(text)) {
+  if (
+    /^(hi+|hai|hello+|helo|hey+|greetings?|howdy|yo+|sup|good morning|good afternoon|good evening|good day)( there| bot| chatbot| assistant)?$/.test(
+      text,
+    )
+  ) {
     return 'greeting';
   }
 
-  if (/(latest project|newest project|recent project|last project|what did you build recently|latest work)/.test(text)) {
+  if (
+    /\b(latest|newest|most recent|recent|current|last|new) (project|projects|work|build|case study)\b|\b(what did you build recently|what have you built recently|recently completed|recently built|last thing you built)\b/.test(
+      text,
+    )
+  ) {
     return 'latest-project';
   }
 
-  if (/(what is your name|who are you|your name|what are you$|who is this|what is this bot|bot name|identify yourself)/.test(text)) {
-    return 'bot-identity';
-  }
-
-  if (/(who is chamuditha|how is chamuditha|about chamuditha|tell me about chamuditha|chamuditha's bio|chamuditha perera)/.test(text)) {
-    return 'about-chamuditha';
-  }
-
-  if (/(tech stack|technologies|technology|what languages|frameworks|programming language|programming languages|program language|program languages|databases|use in projects|what stacks|what does he use|tools|what tools)/.test(text)) {
-    return 'tech-stacks';
-  }
-
-  if (/(experience|work history|where did he work|job|career|employment|previous company|ex-employee)/.test(text)) {
-    return 'experience';
-  }
-
-  if (/(education|degree|qualification|qualifications|university|college|school|certified|certification|certifications|certificate|certificates)/.test(text)) {
-    return 'education-qualifications';
-  }
-
-  if (/(review|reviews|feedback|testimonial|testimonials|what do clients say|rating|ratings|client reviews)/.test(text)) {
-    return 'reviews';
-  }
-
-  if (/(github|linkedin|social|profiles|phone|whatsapp|email|contact info|phone number|whatsapp number|git|link in)/.test(text)) {
-    return 'social-profiles';
-  }
-
-  if (/(service|services|offer|do you build|what can you make|what do you do)/.test(text)) {
-    return 'services';
-  }
-
-  if (hasPricingLanguage && /(website|web|site|portfolio)/.test(text)) {
+  if (hasPricingLanguage && hasWebsiteLanguage) {
     return 'website-pricing';
   }
 
-  if (hasPricingLanguage && /(mobile|app|android|ios|flutter)/.test(text)) {
+  if (hasPricingLanguage && hasMobileAppLanguage) {
     return 'mobile-pricing';
   }
 
-  if (/(project|projects|portfolio|work samples|show me)/.test(text)) {
+  if (
+    /\b(who are you|what are you|what is your name|what s your name|your name|name of this bot|name of the bot|bot name|assistant name|identify yourself|introduce yourself|are you a bot|are you a chatbot|are you an ai|are you an assistant|what should i call you)\b/.test(
+      text,
+    )
+  ) {
+    return 'bot-identity';
+  }
+
+  if (
+    /\b(tech stack|technology stack|technologies|technology|technical skills|coding skills|developer skills|programming skills|skills|programming language|programming languages|coding language|coding languages|framework|frameworks|library|libraries|database|databases|frontend stack|front end stack|backend stack|back end stack|development tools|developer tools|tools you use|tools he uses|what stack|which stack|what does he use|what do you use|built with)\b/.test(
+      text,
+    )
+  ) {
+    return 'tech-stacks';
+  }
+
+  if (
+    /\b(work experience|professional experience|industry experience|experience|work history|employment history|career history|career|employment|previous role|previous roles|past role|past roles|job history|companies worked|where did he work|where did you work|years of experience|resume|cv|curriculum vitae|ex employee|former employer|previous company|professional background)\b/.test(
+      text,
+    )
+  ) {
+    return 'experience';
+  }
+
+  if (
+    /\b(education|educational background|academic background|academics|degree|degrees|diploma|diplomas|qualification|qualifications|university|college|school|certified|certification|certifications|certificate|certificates|course|courses|field of study|study history|what did you study|where did you study|training|credential|credentials)\b/.test(
+      text,
+    )
+  ) {
+    return 'education-qualifications';
+  }
+
+  if (
+    /\b(review|reviews|feedback|client feedback|customer feedback|testimonial|testimonials|rating|ratings|client reviews|customer reviews|what do clients say|what do customers say|success stories|recommendations|client opinions|customer opinions)\b/.test(
+      text,
+    )
+  ) {
+    return 'reviews';
+  }
+
+  if (
+    /\b(github|git hub|linkedin|linked in|social|social media|social profile|social profiles|social link|social links|online profile|online profiles|developer profile|developer profiles)\b/.test(
+      text,
+    )
+  ) {
+    return 'social-profiles';
+  }
+
+  if (
+    /\b(service|services|offer|offers|offering|offerings|what do you do|what can you build|what can you make|what can you create|what can you develop|what does he do|what does chamuditha do|do you build|do you make|do you create|do you develop|can you build|can you make|can you create|can you develop|software solutions|development services|available services|types of work|specialties|specialities|capabilities)\b/.test(
+      text,
+    )
+  ) {
+    return 'services';
+  }
+
+  if (
+    /\b(project|projects|portfolio|work sample|work samples|project sample|project samples|case study|case studies|showcase|previous work|past work|completed work|things you built|what have you built|apps you built|websites you built|sample app|sample apps|sample website|sample websites)\b/.test(
+      text,
+    )
+  ) {
     return 'projects';
   }
 
-  if (/(contact|email|whatsapp|call|phone|get in touch|reach you)/.test(text)) {
+  if (
+    /\b(contact|contact details|contact information|get in touch|reach you|reach him|reach chamuditha|talk to you|talk to him|speak to you|speak to him|message you|message him|email|email address|phone|phone number|mobile number|whatsapp|whats app|call you|call him|connect with you|connect with him|hire you|hire him|request a quote)\b/.test(
+      text,
+    )
+  ) {
     return 'contact';
+  }
+
+  if (
+    /\b(who is chamuditha|who s chamuditha|about chamuditha|tell me about chamuditha|introduce chamuditha|chamuditha s bio|chamuditha s biography|chamuditha s profile|chamuditha perera|about the developer|about the owner|owner profile|personal profile)\b/.test(
+      text,
+    )
+  ) {
+    return 'about-chamuditha';
   }
 
   return null;
@@ -110,12 +213,12 @@ function normalizeContact(contact = {}) {
 
 function buildScriptedChatbotReply(intent, context = {}) {
   const contact = normalizeContact(context.contact);
-  const destination = CHATBOT_ACTION_ONLY_DESTINATIONS[intent];
+  const destination = CHATBOT_DESTINATIONS[intent];
 
   if (destination) {
     return {
-      reply: '',
-      actions: [{ ...destination }],
+      reply: destination.description,
+      actions: [{ label: destination.label, href: destination.href }],
     };
   }
 
@@ -408,7 +511,7 @@ async function generateChatbotReply({ message, knowledge, intent = '' }) {
 }
 
 module.exports = {
-  CHATBOT_ACTION_ONLY_INTENTS,
+  CHATBOT_DESTINATION_INTENTS,
   buildKnowledgeSummary,
   buildAiActions,
   buildScriptedChatbotReply,
