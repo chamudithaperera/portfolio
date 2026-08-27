@@ -67,6 +67,7 @@ const {
   TABLES,
 } = require('./portfolioStore');
 const {
+  CHATBOT_ACTION_ONLY_INTENTS,
   buildKnowledgeSummary,
   buildAiActions,
   buildScriptedChatbotReply,
@@ -90,7 +91,6 @@ const chatbotContact = {
   phone: '+94787250549',
   whatsappUrl: 'https://wa.me/94787250549',
 };
-const chatbotActionOnlyIntents = new Set(['website-pricing', 'mobile-pricing']);
 const socialImage = `${siteOrigin}/assets/imgs/header/coding-hero-v2.png`;
 const socialImageAlt = 'Chamuditha Perera portfolio showcase with Flutter, React, Spring Boot, and TypeScript';
 const siteLogo = `${siteOrigin}/favicon.png`;
@@ -819,7 +819,7 @@ app.post('/api/chatbot/message', chatbotLimiter, async (req, res) => {
   const { message: userMessage, previousResponseId, pageContext } = result.values;
   const intent = detectChatbotIntent(userMessage);
 
-  if (chatbotActionOnlyIntents.has(intent)) {
+  if (CHATBOT_ACTION_ONLY_INTENTS.has(intent)) {
     const scripted = buildScriptedChatbotReply(intent, { contact: chatbotContact });
     return res.json({
       ok: true,
@@ -905,7 +905,7 @@ app.post('/api/chatbot/stream', chatbotLimiter, async (req, res) => {
   const intent = detectChatbotIntent(message);
   let streamedText = '';
 
-  if (chatbotActionOnlyIntents.has(intent)) {
+  if (CHATBOT_ACTION_ONLY_INTENTS.has(intent)) {
     const scripted = buildScriptedChatbotReply(intent, { contact: chatbotContact });
     sendChatbotEvent(res, 'done', {
       responseId: '',

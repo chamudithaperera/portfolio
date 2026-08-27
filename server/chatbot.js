@@ -3,6 +3,22 @@ const config = require('./config');
 const FALLBACK_REPLY =
   'I can help with services, pricing, projects, contact details, and questions about Chamuditha or the portfolio.';
 
+const CHATBOT_ACTION_ONLY_DESTINATIONS = Object.freeze({
+  'latest-project': { label: 'Click to see projects', href: '/projects' },
+  'about-chamuditha': { label: 'Click to see about me', href: '/#about' },
+  'tech-stacks': { label: 'Click to see skills', href: '/#skills' },
+  experience: { label: 'Click to see experience', href: '/#experience' },
+  'education-qualifications': { label: 'Click to see education', href: '/#education' },
+  reviews: { label: 'Click to see reviews', href: '/#reviews' },
+  services: { label: 'Click to see services', href: '/pricing' },
+  'website-pricing': { label: 'Click to see prices', href: '/pricing' },
+  'mobile-pricing': { label: 'Click to see prices', href: '/pricing' },
+  projects: { label: 'Click to see projects', href: '/projects' },
+  contact: { label: 'Click to contact me', href: '/#contact' },
+});
+
+const CHATBOT_ACTION_ONLY_INTENTS = new Set(Object.keys(CHATBOT_ACTION_ONLY_DESTINATIONS));
+
 function normalizeChatbotText(value) {
   return String(value ?? '')
     .toLowerCase()
@@ -28,7 +44,7 @@ function detectChatbotIntent(message) {
     return 'latest-project';
   }
 
-  if (/(what is your name|who are you|your name|what are you|who is this|what is this bot|bot name|identify yourself)/.test(text)) {
+  if (/(what is your name|who are you|your name|what are you$|who is this|what is this bot|bot name|identify yourself)/.test(text)) {
     return 'bot-identity';
   }
 
@@ -94,6 +110,14 @@ function normalizeContact(contact = {}) {
 
 function buildScriptedChatbotReply(intent, context = {}) {
   const contact = normalizeContact(context.contact);
+  const destination = CHATBOT_ACTION_ONLY_DESTINATIONS[intent];
+
+  if (destination) {
+    return {
+      reply: '',
+      actions: [{ ...destination }],
+    };
+  }
 
   const replies = {
     greeting: {
@@ -104,69 +128,12 @@ function buildScriptedChatbotReply(intent, context = {}) {
         { label: 'Contact', href: '/#contact' },
       ],
     },
-    'latest-project': {
-      reply: context.latestProject
-        ? `Our latest project is ${context.latestProject.title} and you can see all the projects via the link below.`
-        : 'You can browse my latest projects on the projects page.',
-      actions: [
-        { label: 'View Projects', href: '/projects' },
-      ],
-    },
     'bot-identity': {
       reply: "I'm the AI assistant of ChamudithaPerera.Online Software Solutions. how can i help you",
       actions: [
         { label: 'View Projects', href: '/projects' },
         { label: 'Pricing', href: '/pricing' },
         { label: 'Contact', href: '/#contact' },
-      ],
-    },
-    'about-chamuditha': {
-      reply: 'Chamuditha Perera is a dedicated Software Engineer specializing in mobile and web software solutions. He is the founder of ChamudithaPerera.Online Software Solutions, helping clients turn ideas into production-ready platforms using modern tools like Flutter, React, Spring Boot, and Node.js.',
-      actions: [
-        { label: 'View Projects', href: '/projects' },
-        { label: 'Contact Me', href: '/#contact' },
-      ],
-    },
-    'tech-stacks': {
-      reply: context.techStacks && context.techStacks.length > 0
-        ? `Chamuditha works with a modern technology stack including: ${context.techStacks.join(', ')}.`
-        : 'Chamuditha designs software using a modern stack featuring Flutter (iOS & Android), React & Next.js (Web), Spring Boot (Java), Node.js, Spring Cloud, PostgreSQL, MongoDB, and Tailwind CSS.',
-      actions: [
-        { label: 'View Projects', href: '/projects' },
-      ],
-    },
-    experience: {
-      reply: context.experience && context.experience.length > 0
-        ? `Chamuditha's professional work experience includes:\n${context.experience.map(exp => `• ${exp}`).join('\n')}`
-        : 'Chamuditha has professional industry experience as a Software Engineer building production web applications, mobile apps, and robust microservices.',
-      actions: [
-        { label: 'View Projects', href: '/projects' },
-        { label: 'Contact Me', href: '/#contact' },
-      ],
-    },
-    'education-qualifications': {
-      reply: (() => {
-        const textParts = [];
-        if (Array.isArray(context.education) && context.education.length > 0) {
-          textParts.push(`Education:\n${context.education.map(e => `• ${e}`).join('\n')}`);
-        }
-        if (Array.isArray(context.certificates) && context.certificates.length > 0) {
-          textParts.push(`Certifications:\n${context.certificates.map(c => `• ${c}`).join('\n')}`);
-        }
-        if (textParts.length > 0) {
-          return `Chamuditha's academic achievements and professional qualifications:\n\n${textParts.join('\n\n')}`;
-        }
-        return 'Chamuditha holds professional software engineering degrees/diplomas along with certificates specializing in mobile app development and full-stack solutions.';
-      })(),
-      actions: [
-        { label: 'View Certificates', href: '/#about' },
-      ],
-    },
-    reviews: {
-      reply: 'You can check my client reviews and testimonials in the reviews section of the home screen.',
-      actions: [
-        { label: 'Click here to see reviews', href: '/#reviews' },
-        { label: 'Write a Review', href: '/#reviews' },
       ],
     },
     'social-profiles': {
@@ -177,34 +144,6 @@ function buildScriptedChatbotReply(intent, context = {}) {
         { label: 'LinkedIn', href: 'https://linkedin.com/in/chamudithaperera' },
         { label: 'GitHub', href: 'https://github.com/chamudithaperera' },
       ].filter(Boolean),
-    },
-    services: {
-      reply:
-        'I build Flutter mobile apps, React websites, full-stack systems, APIs, dashboards, and polished UI experiences. I can also help with admin panels and product implementation.',
-      actions: [
-        { label: 'View Projects', href: '/projects' },
-        { label: 'Contact Me', href: '/#contact' },
-      ],
-    },
-    'website-pricing': {
-      reply: '',
-      actions: [{ label: 'Click to see prices', href: '/pricing' }],
-    },
-    'mobile-pricing': {
-      reply: '',
-      actions: [{ label: 'Click to see prices', href: '/pricing' }],
-    },
-    projects: {
-      reply: 'You can browse my selected projects now. I’m opening the projects page.',
-      autoNavigate: '/projects',
-    },
-    contact: {
-      reply: 'You can reach me by email or WhatsApp. I’m opening the contact section now.',
-      actions: [
-        contact.email ? { label: 'Email', href: `mailto:${contact.email}` } : null,
-        contact.whatsappUrl ? { label: 'WhatsApp', href: contact.whatsappUrl } : null,
-      ].filter(Boolean),
-      autoNavigate: '/#contact',
     },
     fallback: {
       reply: FALLBACK_REPLY,
@@ -469,6 +408,7 @@ async function generateChatbotReply({ message, knowledge, intent = '' }) {
 }
 
 module.exports = {
+  CHATBOT_ACTION_ONLY_INTENTS,
   buildKnowledgeSummary,
   buildAiActions,
   buildScriptedChatbotReply,
