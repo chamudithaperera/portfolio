@@ -3297,34 +3297,34 @@ function Admin() {
                       </button>
                     </div>
 
-                    <div className="admin-contact-grid" style={{ marginBottom: '1.5rem' }}>
-                      <div>
+                    <div className="admin-contact-grid admin-review-detail-grid">
+                      <div className="admin-review-detail-card">
                         <span className="admin-contact-label">
                           <Icon name="mail" size={12} />
                           Email
                         </span>
                         <a href={`mailto:${viewingReview.email}`}>{viewingReview.email}</a>
                       </div>
-                      <div>
+                      <div className="admin-review-detail-card">
                         <span className="admin-contact-label">
                           <Icon name="project" size={12} />
                           Project
                         </span>
                         <span>{viewingReview.projectName}</span>
                       </div>
-                      <div>
+                      <div className="admin-review-detail-card">
                         <span className="admin-contact-label">
                           <Icon name="certificate" size={12} />
                           Service
                         </span>
                         <span>{viewingReview.service}</span>
                       </div>
-                      <div>
+                      <div className="admin-review-detail-card">
                         <span className="admin-contact-label">
                           <Icon name="star" size={12} />
                           Rating
                         </span>
-                        <span className="admin-review-rating" style={{ marginTop: '0.2rem' }}>
+                        <span className="admin-review-rating admin-review-rating-display">
                           {Array.from({ length: 5 }, (_, index) => (
                             <Icon 
                               key={`view-stars-${index}`} 
@@ -3335,7 +3335,7 @@ function Admin() {
                           ))}
                         </span>
                       </div>
-                      <div>
+                      <div className="admin-review-detail-card">
                         <span className="admin-contact-label">
                           <Icon name="tag" size={12} />
                           Status
@@ -3346,16 +3346,16 @@ function Admin() {
                       </div>
                     </div>
 
-                    <div className="admin-chat-thread">
-                      <div className="admin-chat-note" style={{ background: 'rgba(30, 41, 59, 0.4)' }}>
+                    <div className="admin-review-description-panel">
+                      <div className="admin-review-description-card">
                         <span className="admin-chat-note-label">Review Description</span>
-                        <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', fontSize: '0.92rem', color: 'var(--text)', fontStyle: 'italic', margin: '0.5rem 0 0 0' }}>
+                        <p>
                           “{viewingReview.description}”
                         </p>
                       </div>
                     </div>
 
-                    <div className="admin-action-row" style={{ marginTop: '1.5rem', justifyContent: 'flex-end' }}>
+                    <div className="admin-action-row admin-review-detail-actions">
                       <button
                         type="button"
                         className="admin-secondary-button"
