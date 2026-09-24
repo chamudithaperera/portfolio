@@ -3425,21 +3425,24 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
                 <h3>{name}</h3>
                 <span className="review-carousel-service">{service}</span>
               </div>
-              <p className="review-carousel-project">
-                <Icon name="briefcase" size={12} />
-                {projectName}
-              </p>
-              {country ? (
-                <p className="review-carousel-country">
-                  <Icon name="pin" size={11} />
-                  {country}
-                </p>
-              ) : null}
+              <div className="review-carousel-meta-row">
+                <span className="review-carousel-project">
+                  <Icon name="briefcase" size={12} />
+                  {projectName}
+                </span>
+                {country ? (
+                  <span className="review-carousel-country">
+                    <Icon name="pin" size={11} />
+                    {country}
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
-          <div className="review-card-stars-container">
-            <ReviewStars value={rating} size={13} className="review-card-stars" />
-          </div>
+        </div>
+
+        <div className="review-card-stars-container">
+          <ReviewStars value={rating} size={13} className="review-card-stars" />
         </div>
 
         <p className="experience-description review-carousel-description">“{description}”</p>
@@ -3462,24 +3465,9 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
 
 function ReviewTimeline({ reviews = [], className = '' }) {
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
-  const [visibleCards, setVisibleCards] = useState(3);
+  const visibleCards = 1;
   const safeReviews = Array.isArray(reviews) ? reviews : [];
   const reviewCount = safeReviews.length;
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setVisibleCards(1);
-      } else if (window.innerWidth < 1024) {
-        setVisibleCards(2);
-      } else {
-        setVisibleCards(3);
-      }
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const maxIndex = Math.max(0, reviewCount - visibleCards);
 
