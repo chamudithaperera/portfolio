@@ -262,8 +262,9 @@ function createPortfolioToolExecutor({ loadPortfolioContent, loadPricingServices
         reviews: reviews
           .filter((review) => !keyword || normalizeText(review.service).toLowerCase().includes(keyword))
           .slice(0, limit)
-          .map(({ name: reviewer, projectName, service, rating, description }) => ({
+          .map(({ name: reviewer, country, projectName, service, rating, description }) => ({
             reviewer,
+            country,
             projectName,
             service,
             rating,

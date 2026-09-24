@@ -42,6 +42,7 @@ import {
 } from 'simple-icons';
 import withBase from '../utils/basePath';
 import { apiRequest, streamApiRequest } from '../utils/api';
+import { fallbackCountryOptions, loadCountryOptions } from '../utils/countries';
 import { useTheme } from '../theme';
 
 const navItems = [
@@ -126,6 +127,7 @@ const reviewServiceOptions = [
 const emptyReviewForm = {
   name: '',
   email: '',
+  country: '',
   projectName: '',
   service: reviewServiceOptions[0],
   rating: 5,
@@ -3385,6 +3387,7 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
   const name = String(review.name || 'Anonymous reviewer');
   const projectName = String(review.projectName || 'Project feedback');
   const service = String(review.service || 'Review');
+  const country = String(review.country || '').trim();
   const description = String(review.description || '');
   const initials =
     name
@@ -3426,6 +3429,12 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
                 <Icon name="briefcase" size={12} />
                 {projectName}
               </p>
+              {country ? (
+                <p className="review-carousel-country">
+                  <Icon name="pin" size={11} />
+                  {country}
+                </p>
+              ) : null}
             </div>
           </div>
           <div className="review-card-stars-container">
@@ -3628,6 +3637,7 @@ function ReviewPage() {
   const sending = status === 'sending';
   const sent = status === 'success';
   const { themeColor } = useTheme();
+  const [countryOptions, setCountryOptions] = useState(fallbackCountryOptions);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
@@ -3639,6 +3649,26 @@ function ReviewPage() {
     } catch (scrollError) {
       void scrollError;
     }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    loadCountryOptions()
+      .then((countries) => {
+        if (active && countries.length) {
+          setCountryOptions(countries);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setCountryOptions(fallbackCountryOptions);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const update = (event) => {
@@ -3823,6 +3853,26 @@ function ReviewPage() {
                         {fieldErrors.email ? <span className="review-field-error">{fieldErrors.email}</span> : null}
                       </label>
                     </div>
+
+                    <label className="review-country-field">
+                      <span>Country</span>
+                      <input
+                        name="country"
+                        value={form.country}
+                        onChange={update}
+                        list="review-country-options"
+                        required
+                        minLength={2}
+                        placeholder="Start typing your country"
+                        autoComplete="country-name"
+                      />
+                      <datalist id="review-country-options">
+                        {countryOptions.map((country) => (
+                          <option key={country} value={country} />
+                        ))}
+                      </datalist>
+                      {fieldErrors.country ? <span className="review-field-error">{fieldErrors.country}</span> : null}
+                    </label>
 
                     <div className="review-grid-2">
                       <label>

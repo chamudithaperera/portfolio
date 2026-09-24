@@ -88,6 +88,7 @@ function validateReviewPayload(body = {}) {
 
   const name = normalizeText(body.name);
   const email = normalizeText(body.email);
+  const country = normalizeText(body.country);
   const projectName = normalizeText(body.projectName || body.project_name);
   const service = normalizeText(body.service);
   const rating = Number.parseInt(String(body.rating ?? ''), 10);
@@ -103,6 +104,12 @@ function validateReviewPayload(body = {}) {
     errors.email = 'Email is required.';
   } else if (!validateEmail(email)) {
     errors.email = 'Enter a valid email address.';
+  }
+
+  if (!country) {
+    errors.country = 'Country is required.';
+  } else if (country.length < 2 || country.length > 80) {
+    errors.country = 'Country must be between 2 and 80 characters.';
   }
 
   if (!projectName) {
@@ -133,6 +140,7 @@ function validateReviewPayload(body = {}) {
     values: {
       name,
       email,
+      country,
       projectName,
       service,
       rating: Number.isFinite(rating) ? rating : 0,

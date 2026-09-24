@@ -218,6 +218,7 @@ function mapReview(row) {
     id: row.id,
     name: row.name,
     email: row.email,
+    country: row.country || '',
     projectName: row.project_name,
     service: row.service,
     rating: row.rating ?? 0,
@@ -393,6 +394,7 @@ function reviewPayload(input = {}, options = {}) {
   return {
     name: normalizeString(input.name),
     email: normalizeString(input.email),
+    country: normalizeString(input.country),
     project_name: normalizeString(input.projectName || input.project_name),
     service: normalizeString(input.service),
     rating: toInteger(input.rating, 0),

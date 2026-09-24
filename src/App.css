@@ -1692,6 +1692,25 @@ html {
   transition: color 0.2s ease;
 }
 
+.review-carousel-country {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  margin: 0.45rem 0 0;
+  padding: 0.28rem 0.6rem;
+  border: 1px solid rgba(96, 165, 250, 0.16);
+  border-radius: 999px;
+  color: #cbd5e1;
+  background: rgba(15, 23, 42, 0.52);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.review-carousel-country svg {
+  color: #38bdf8;
+}
+
 .review-carousel-card.experience-card:hover .review-carousel-project {
   color: #3b82f6;
 }
@@ -2299,6 +2318,10 @@ html {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.9rem;
+}
+
+.review-country-field {
+  margin-top: -0.15rem;
 }
 
 .review-form label {
@@ -9636,6 +9659,12 @@ textarea:focus-visible {
 
 [data-theme='light'] .review-carousel-project {
   color: #2563eb;
+}
+
+[data-theme='light'] .review-carousel-country {
+  color: var(--slate-600);
+  border-color: rgba(37, 99, 235, 0.14);
+  background: rgba(239, 246, 255, 0.86);
 }
 
 [data-theme='light'] .review-carousel-card.experience-card:hover .review-carousel-project {

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { apiRequest } from '../utils/api';
+import { fallbackCountryOptions, loadCountryOptions } from '../utils/countries';
 import './Admin.css';
 
 const tabItems = [
@@ -68,6 +69,7 @@ const reviewServiceOptions = [
 const emptyReviewForm = {
   name: '',
   email: '',
+  country: '',
   projectName: '',
   service: reviewServiceOptions[0],
   rating: 5,
@@ -510,6 +512,7 @@ function reviewToForm(item) {
   return {
     name: item.name || '',
     email: item.email || '',
+    country: item.country || '',
     projectName: item.projectName || '',
     service: item.service || reviewServiceOptions[0],
     rating: Number(item.rating || 5),
@@ -521,6 +524,7 @@ function reviewFormToBody(form) {
   return {
     name: form.name,
     email: form.email,
+    country: form.country,
     projectName: form.projectName,
     service: form.service,
     rating: form.rating,
@@ -634,6 +638,7 @@ function Admin() {
   const [reviewActionPending, setReviewActionPending] = useState('');
   const [isEditingReview, setIsEditingReview] = useState(false);
   const [viewingReview, setViewingReview] = useState(null);
+  const [countryOptions, setCountryOptions] = useState(fallbackCountryOptions);
 
   const [visits, setVisits] = useState([]);
   const [visitsLoading, setVisitsLoading] = useState(false);
@@ -1037,6 +1042,26 @@ function Admin() {
       loadTechStacks(),
     ]);
   }
+
+  useEffect(() => {
+    let active = true;
+
+    loadCountryOptions()
+      .then((countries) => {
+        if (active && countries.length) {
+          setCountryOptions(countries);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setCountryOptions(fallbackCountryOptions);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -3173,6 +3198,7 @@ function Admin() {
                           <th style={{ width: '30px' }}></th>
                           <th>Status</th>
                           <th>Name</th>
+                          <th>Country</th>
                           <th>Project</th>
                           <th>Service</th>
                           <th>Stars</th>
@@ -3210,6 +3236,7 @@ function Admin() {
                               <td>
                                 <strong>{review.name}</strong>
                               </td>
+                              <td>{review.country || '—'}</td>
                               <td>{review.projectName}</td>
                               <td>{review.service}</td>
                               <td>
@@ -3311,6 +3338,13 @@ function Admin() {
                           Project
                         </span>
                         <span>{viewingReview.projectName}</span>
+                      </div>
+                      <div className="admin-review-detail-card">
+                        <span className="admin-contact-label">
+                          <Icon name="globe" size={12} />
+                          Country
+                        </span>
+                        <span>{viewingReview.country || 'Not provided'}</span>
                       </div>
                       <div className="admin-review-detail-card">
                         <span className="admin-contact-label">
@@ -3418,6 +3452,25 @@ function Admin() {
                           <FieldError message={reviewFieldErrors.email} />
                         </label>
                       </div>
+
+                      <label>
+                        <span>Country</span>
+                        <input
+                          name="country"
+                          value={reviewForm.country}
+                          onChange={updateReviewForm}
+                          list="admin-review-country-options"
+                          placeholder="Start typing a country"
+                          autoComplete="country-name"
+                          required
+                        />
+                        <datalist id="admin-review-country-options">
+                          {countryOptions.map((country) => (
+                            <option key={country} value={country} />
+                          ))}
+                        </datalist>
+                        <FieldError message={reviewFieldErrors.country} />
+                      </label>
 
                       <div className="admin-grid-2">
                         <label>
