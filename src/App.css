@@ -1882,6 +1882,21 @@ html {
   margin-top: 1rem;
 }
 
+.review-carousel-bottom-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  margin-top: 0.9rem;
+  padding-right: 0.5rem;
+}
+
+.review-carousel-bottom-controls .slider-button {
+  width: 2.55rem;
+  height: 2.55rem;
+  border-color: rgba(96, 165, 250, 0.28);
+  border-radius: 0.8rem;
+}
+
 .review-carousel-dot {
   width: 0.55rem;
   height: 0.55rem;
@@ -4617,6 +4632,11 @@ textarea:focus-visible {
 
   .review-carousel-dots {
     margin-top: 1.2rem;
+  }
+
+  .review-carousel-bottom-controls {
+    justify-content: center;
+    padding-right: 0;
   }
 
   .review-grid,

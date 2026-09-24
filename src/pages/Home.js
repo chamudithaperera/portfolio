@@ -3530,16 +3530,6 @@ function ReviewTimeline({ reviews = [], className = '' }) {
             </p>
             <h3>Client review timeline</h3>
           </div>
-          {reviewCount > visibleCards && (
-            <div className="slider-controls">
-              <button type="button" className="slider-button" aria-label="Previous review card" onClick={showPreviousReview}>
-                <Icon name="arrowLeft" size={15} />
-              </button>
-              <button type="button" className="slider-button" aria-label="Next review card" onClick={showNextReview}>
-                <Icon name="arrowRight" size={15} />
-              </button>
-            </div>
-          )}
         </div>
 
         <div className="review-carousel" aria-label="Approved review cards slider">
@@ -3584,6 +3574,17 @@ function ReviewTimeline({ reviews = [], className = '' }) {
                 onClick={() => activateReview(idx)}
               />
             ))}
+          </div>
+        )}
+
+        {reviewCount > visibleCards && (
+          <div className="review-carousel-bottom-controls">
+            <button type="button" className="slider-button" aria-label="Previous review card" onClick={showPreviousReview}>
+              <Icon name="arrowLeft" size={15} />
+            </button>
+            <button type="button" className="slider-button" aria-label="Next review card" onClick={showNextReview}>
+              <Icon name="arrowRight" size={15} />
+            </button>
           </div>
         )}
       </div>
