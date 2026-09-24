@@ -2167,6 +2167,7 @@ function ProjectsPage() {
       <main>
         <Projects mode="page" projectsData={portfolioContent.projects} />
       </main>
+      <Footer />
     </div>
   );
 }
@@ -4058,6 +4059,9 @@ function Footer() {
   const resolveFooterHref = (href) => (href.startsWith('#') && location.pathname !== '/' ? `/${href}` : href);
   const homeHref = resolveFooterHref('#hero');
   const contactHref = resolveFooterHref('#contact');
+  const scrollToPageTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   const footerGroups = [
     {
       title: 'Navigate',
@@ -4163,9 +4167,9 @@ function Footer() {
             All rights reserved © 2026 ChamudithaPerera.Online
           </p>
           <div>
-            <a href={homeHref} aria-label="Back to top">
+            <button type="button" className="footer-back-to-top" aria-label="Back to top" onClick={scrollToPageTop}>
               <Icon name="arrowUp" size={15} />
-            </a>
+            </button>
           </div>
         </div>
       </div>

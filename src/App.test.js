@@ -255,7 +255,7 @@ test('renders the full portfolio structure and navigation anchors', async () => 
   expect(screen.getByText('Replies within 24h')).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Have a project in mind?' })).toBeInTheDocument();
   expect(screen.getByRole('link', { name: 'Start a Conversation' })).toHaveAttribute('href', '#contact');
-  expect(screen.getByRole('link', { name: 'Back to top' })).toHaveAttribute('href', '#hero');
+  expect(screen.getByRole('button', { name: 'Back to top' })).toBeInTheDocument();
 
   const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
   expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '#about');
@@ -344,15 +344,25 @@ test('opens a project detail modal and the projects page route', async () => {
 
 test('routes project-page navigation links back to the home page anchors', async () => {
   window.history.pushState({}, '', '/projects');
-  render(<App />);
-  await screen.findByRole('heading', { name: 'All Projects' });
+  const scrollToSpy = jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
-  const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
-  expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '/#about');
-  expect(within(navigation).getByRole('link', { name: 'Chamuditha Perera home' })).toHaveAttribute(
-    'href',
-    '/#hero',
-  );
+  try {
+    render(<App />);
+    await screen.findByRole('heading', { name: 'All Projects' });
+
+    const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
+    expect(within(navigation).getByRole('link', { name: 'About' })).toHaveAttribute('href', '/#about');
+    expect(within(navigation).getByRole('link', { name: 'Chamuditha Perera home' })).toHaveAttribute(
+      'href',
+      '/#hero',
+    );
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Back to top' }));
+    expect(scrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    expect(window.location.pathname).toBe('/projects');
+  } finally {
+    scrollToSpy.mockRestore();
+  }
 });
 
 test('shows the simulated contact success state and can reset it', () => {
