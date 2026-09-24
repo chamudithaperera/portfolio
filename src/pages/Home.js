@@ -3465,9 +3465,25 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
 
 function ReviewTimeline({ reviews = [], className = '' }) {
   const [activeReviewIndex, setActiveReviewIndex] = useState(0);
-  const visibleCards = 1;
+  const [visibleCards, setVisibleCards] = useState(3);
   const safeReviews = Array.isArray(reviews) ? reviews : [];
   const reviewCount = safeReviews.length;
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setVisibleCards(1);
+      } else if (window.innerWidth < 1024) {
+        setVisibleCards(2);
+      } else {
+        setVisibleCards(3);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const maxIndex = Math.max(0, reviewCount - visibleCards);
 
