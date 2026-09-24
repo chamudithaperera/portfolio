@@ -3387,16 +3387,9 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
   const name = String(review.name || 'Anonymous reviewer');
   const projectName = String(review.projectName || 'Project feedback');
   const service = String(review.service || 'Review');
+  const displayService = service.replace(/\s+development$/i, '').trim() || service;
   const country = String(review.country || '').trim();
   const description = String(review.description || '');
-  const initials =
-    name
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0])
-      .join('')
-      .toUpperCase() || 'RV';
 
   return (
     <motion.article
@@ -3412,14 +3405,10 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
       whileHover={prefersReducedMotion ? undefined : { y: -6 }}
     >
       <span className="experience-card-accent" />
-      <span className="review-quote-mark" aria-hidden="true">“</span>
       
       <div className="experience-card-body review-carousel-body">
         <div className="review-card-top">
           <div className="review-card-identity">
-            <span className="review-carousel-avatar" aria-hidden="true">
-              {initials}
-            </span>
             <div className="review-card-name-block">
               <div className="review-carousel-title-line">
                 <h3>{name}</h3>
@@ -3444,7 +3433,7 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
             <Icon name="briefcase" size={12} />
             {projectName}
           </span>
-          <span className="review-carousel-service">{service}</span>
+          <span className="review-carousel-service">{displayService}</span>
         </div>
 
         <p className="experience-description review-carousel-description">“{description}”</p>
@@ -3498,22 +3487,6 @@ function ReviewTimeline({ reviews = [], className = '' }) {
   if (!reviewCount) {
     return null;
   }
-
-  const showPreviousReview = () => {
-    if (!reviewCount) return;
-    setActiveReviewIndex((current) => {
-      if (current === 0) return maxIndex;
-      return current - 1;
-    });
-  };
-
-  const showNextReview = () => {
-    if (!reviewCount) return;
-    setActiveReviewIndex((current) => {
-      if (current >= maxIndex) return 0;
-      return current + 1;
-    });
-  };
 
   const activateReview = (index) => setActiveReviewIndex(index);
 
@@ -3579,16 +3552,6 @@ function ReviewTimeline({ reviews = [], className = '' }) {
           </div>
         )}
 
-        {reviewCount > visibleCards && (
-          <div className="review-carousel-bottom-controls">
-            <button type="button" className="slider-button" aria-label="Previous review card" onClick={showPreviousReview}>
-              <Icon name="arrowLeft" size={15} />
-            </button>
-            <button type="button" className="slider-button" aria-label="Next review card" onClick={showNextReview}>
-              <Icon name="arrowRight" size={15} />
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
