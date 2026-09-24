@@ -1636,21 +1636,10 @@ html {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.review-carousel-header {
-  align-items: flex-start;
-  margin-bottom: 1rem;
-}
-
-.review-carousel-role {
-  align-items: flex-start;
-  gap: 0.8rem;
-  min-width: 0;
-}
-
 .review-carousel-avatar {
   display: grid;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 3.05rem;
+  height: 3.05rem;
   place-items: center;
   border-radius: 50%;
   background: rgba(15, 29, 50, 0.96);
@@ -1666,22 +1655,50 @@ html {
   flex-shrink: 0;
 }
 
+.review-card-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.9rem;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.review-card-identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.review-card-name-block {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
 .review-carousel-title-line {
   display: block;
+  min-width: 0;
 }
 
 .review-carousel-title-line h3 {
-  margin: 0 0 0.4rem;
+  margin: 0;
   color: #f8fafc;
-  font-size: 1.08rem;
+  font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.22;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .review-carousel-service {
   display: inline-flex;
   align-items: center;
+  justify-self: end;
   width: fit-content;
   min-height: 1.35rem;
   max-width: 100%;
@@ -1695,15 +1712,19 @@ html {
   line-height: 1;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.review-carousel-meta-row {
-  display: flex;
-  flex-wrap: nowrap;
+.review-card-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
-  gap: 0.45rem;
-  margin-top: 1rem;
+  gap: 0.65rem;
   min-width: 0;
+  position: relative;
+  z-index: 2;
 }
 
 .review-carousel-project,
@@ -1726,11 +1747,12 @@ html {
 }
 
 .review-carousel-project {
-  max-width: min(11.5rem, 62%);
+  max-width: 100%;
 }
 
 .review-carousel-country {
-  max-width: min(8rem, 38%);
+  justify-self: end;
+  max-width: min(9.5rem, 42vw);
 }
 
 .review-carousel-project,
@@ -1805,10 +1827,14 @@ html {
   width: 100%;
 }
 
+.review-card-divider--top {
+  margin: 1.25rem 0 1rem;
+}
+
 .review-card-stars-container {
   display: flex;
   align-items: center;
-  margin-top: 0.15rem;
+  margin-top: 0;
 }
 
 .review-card-stars {
@@ -4621,8 +4647,20 @@ textarea:focus-visible {
     padding: 1.5rem;
   }
 
-  .review-carousel-meta-row {
-    flex-wrap: wrap;
+  .review-card-top {
+    grid-template-columns: 1fr;
+  }
+
+  .review-carousel-country {
+    justify-self: start;
+  }
+
+  .review-card-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .review-carousel-service {
+    justify-self: start;
   }
 
   .review-carousel-project,

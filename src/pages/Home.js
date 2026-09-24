@@ -3415,34 +3415,36 @@ function ReviewCard({ review, index = 0, totalCount = 0, positionClass = '', onA
       <span className="review-quote-mark" aria-hidden="true">“</span>
       
       <div className="experience-card-body review-carousel-body">
-        <div className="experience-card-header review-carousel-header">
-          <div className="experience-role review-carousel-role">
+        <div className="review-card-top">
+          <div className="review-card-identity">
             <span className="review-carousel-avatar" aria-hidden="true">
               {initials}
             </span>
-            <div>
-              <div className="experience-title-line review-carousel-title-line">
+            <div className="review-card-name-block">
+              <div className="review-carousel-title-line">
                 <h3>{name}</h3>
-                <span className="review-carousel-service">{service}</span>
               </div>
-              <div className="review-carousel-meta-row">
-                <span className="review-carousel-project">
-                  <Icon name="briefcase" size={12} />
-                  {projectName}
-                </span>
-                {country ? (
-                  <span className="review-carousel-country">
-                    <Icon name="pin" size={11} />
-                    {country}
-                  </span>
-                ) : null}
+              <div className="review-card-stars-container">
+                <ReviewStars value={rating} size={13} className="review-card-stars" />
               </div>
             </div>
           </div>
+          {country ? (
+            <span className="review-carousel-country">
+              <Icon name="pin" size={11} />
+              {country}
+            </span>
+          ) : null}
         </div>
 
-        <div className="review-card-stars-container">
-          <ReviewStars value={rating} size={13} className="review-card-stars" />
+        <div className="review-card-divider review-card-divider--top" />
+
+        <div className="review-card-meta-grid">
+          <span className="review-carousel-project">
+            <Icon name="briefcase" size={12} />
+            {projectName}
+          </span>
+          <span className="review-carousel-service">{service}</span>
         </div>
 
         <p className="experience-description review-carousel-description">“{description}”</p>
