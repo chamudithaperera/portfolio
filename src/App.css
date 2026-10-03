@@ -1391,7 +1391,45 @@ html {
 
 .section {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: 8rem 0;
+}
+
+.section::before,
+.pricing-hero::before,
+.review-hero::before,
+.review-form-section::before,
+.pricing-page-shell::before,
+.review-page-shell::before,
+.projects-page-shell::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: '';
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(96, 165, 250, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96, 165, 250, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at 50% 48%, rgba(23, 37, 84, 0.24), transparent 42%);
+  background-size:
+    68px 68px,
+    68px 68px,
+    100% 100%;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 8%, #000 94%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 8%, #000 94%, transparent 100%);
+  -webkit-mask-composite: source-in;
+}
+
+.section-inner,
+.section-divider {
+  position: relative;
+  z-index: 1;
 }
 
 .section-divider {
@@ -2254,6 +2292,7 @@ html {
 
 .review-hero-inner {
   position: relative;
+  z-index: 1;
   padding-block: 8rem 4.5rem;
 }
 
@@ -3302,6 +3341,17 @@ a.contact-item:hover {
 .pricing-page-shell .pricing-page-section,
 .review-page-shell .review-page-section {
   padding-top: 8.5rem;
+}
+
+.projects-page-shell,
+.pricing-page-shell,
+.review-page-shell,
+.pricing-hero,
+.review-hero,
+.review-form-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
 }
 
 .projects-page-grid,
@@ -9384,6 +9434,19 @@ textarea:focus-visible {
   background:
     radial-gradient(circle at top right, rgba(14, 165, 233, 0.05), transparent 32%),
     linear-gradient(180deg, #f8fbfe, #edf3fa);
+}
+
+[data-theme='light'] .section::before,
+[data-theme='light'] .pricing-hero::before,
+[data-theme='light'] .review-hero::before,
+[data-theme='light'] .review-form-section::before,
+[data-theme='light'] .pricing-page-shell::before,
+[data-theme='light'] .review-page-shell::before,
+[data-theme='light'] .projects-page-shell::before {
+  background:
+    linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 50% 48%, rgba(219, 234, 254, 0.34), transparent 42%);
 }
 
 [data-theme='light'] .section-divider {
