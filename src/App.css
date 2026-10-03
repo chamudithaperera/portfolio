@@ -49,10 +49,41 @@ html {
   min-height: 100vh;
   overflow-x: hidden;
   color: var(--text);
-  background: var(--background);
+  background:
+    radial-gradient(ellipse 70% 42% at 50% 0%, rgba(37, 99, 235, 0.16), transparent 66%),
+    radial-gradient(ellipse 52% 38% at 86% 24%, rgba(14, 165, 233, 0.08), transparent 68%),
+    radial-gradient(ellipse 46% 34% at 12% 58%, rgba(20, 184, 166, 0.055), transparent 70%),
+    linear-gradient(180deg, #00020a 0%, #020510 42%, #00020a 100%);
+}
+
+.bolt-shell::before,
+.bolt-shell::after {
+  position: fixed;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+}
+
+.bolt-shell::before {
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(96, 165, 250, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96, 165, 250, 0.045) 1px, transparent 1px);
+  background-size: 68px 68px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+}
+
+.bolt-shell::after {
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 35% 28% at 50% 28%, rgba(23, 37, 84, 0.28), transparent 70%),
+    radial-gradient(ellipse 42% 30% at 50% 72%, rgba(14, 165, 233, 0.045), transparent 72%),
+    linear-gradient(90deg, rgba(0, 2, 10, 0.72), transparent 20%, transparent 80%, rgba(0, 2, 10, 0.72));
 }
 
 .page-transition-shell {
+  position: relative;
   min-height: 100vh;
 }
 
@@ -239,7 +270,7 @@ html {
   min-height: 100vh;
   align-items: center;
   overflow: hidden;
-  background-color: #00020a;
+  background: transparent;
 }
 
 .dot-grid {
@@ -1396,36 +1427,6 @@ html {
   padding: 8rem 0;
 }
 
-.section::before,
-.pricing-hero::before,
-.review-hero::before,
-.review-form-section::before,
-.pricing-page-shell::before,
-.review-page-shell::before,
-.projects-page-shell::before {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  content: '';
-  pointer-events: none;
-  background:
-    linear-gradient(rgba(96, 165, 250, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(96, 165, 250, 0.045) 1px, transparent 1px),
-    radial-gradient(circle at 50% 48%, rgba(23, 37, 84, 0.24), transparent 42%);
-  background-size:
-    68px 68px,
-    68px 68px,
-    100% 100%;
-  mask-image:
-    linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%),
-    linear-gradient(180deg, transparent 0%, #000 8%, #000 94%, transparent 100%);
-  mask-composite: intersect;
-  -webkit-mask-image:
-    linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%),
-    linear-gradient(180deg, transparent 0%, #000 8%, #000 94%, transparent 100%);
-  -webkit-mask-composite: source-in;
-}
-
 .section-inner,
 .section-divider {
   position: relative;
@@ -1438,33 +1439,34 @@ html {
   right: 0;
   left: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.25), transparent);
+  opacity: 0;
+  background: transparent;
 }
 
 .section-about {
-  background: linear-gradient(180deg, #00020a, #020510);
+  background: transparent;
 }
 
 .section-experience {
   padding-block: 6rem;
-  background: linear-gradient(180deg, #020510, #040916);
+  background: transparent;
 }
 
 .section-projects {
-  background: linear-gradient(180deg, #020510, #00020a);
+  background: transparent;
 }
 
 .section-skills {
   overflow: hidden;
-  background: linear-gradient(180deg, #040916, #00020a);
+  background: transparent;
 }
 
 .section-education {
-  background: linear-gradient(180deg, #00020a, #020510);
+  background: transparent;
 }
 
 .section-contact {
-  background: linear-gradient(180deg, #040916, #00020a);
+  background: transparent;
 }
 
 .reveal {
@@ -1542,7 +1544,7 @@ html {
 .review-section {
   position: relative;
   overflow: visible;
-  background: linear-gradient(180deg, #00020a, #020510);
+  background: transparent;
 }
 
 .review-section::before,
@@ -2270,12 +2272,6 @@ html {
   text-transform: uppercase;
 }
 
-.review-page-shell {
-  background:
-    radial-gradient(circle at 20% 0%, rgba(37, 99, 235, 0.1), transparent 30%),
-    linear-gradient(180deg, #00020a 0%, #020510 45%, #00020a 100%);
-}
-
 .review-main {
   position: relative;
   z-index: 1;
@@ -2284,10 +2280,7 @@ html {
 .review-hero {
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 20% 20%, rgba(14, 165, 233, 0.16), transparent 38%),
-    radial-gradient(ellipse at 80% 0%, rgba(37, 99, 235, 0.14), transparent 32%),
-    linear-gradient(180deg, #020510, #040916);
+  background: transparent;
 }
 
 .review-hero-inner {
@@ -2337,9 +2330,7 @@ html {
 
 .review-form-section {
   padding-top: 0;
-  background:
-    linear-gradient(180deg, #040916, #00020a),
-    #00020a;
+  background: transparent;
 }
 
 .review-page-layout {
@@ -4266,8 +4257,8 @@ body.modal-open {
   justify-content: space-between;
   gap: 1.25rem;
   padding-block: 2.5rem;
-  border-top: 1px solid rgba(30, 58, 138, 0.15);
-  background: #00020a;
+  border-top: 0;
+  background: transparent;
 }
 
 .site-footer p {
@@ -4957,20 +4948,11 @@ textarea:focus-visible {
 
 .hero-reference {
   min-height: 100vh;
-  background: radial-gradient(ellipse at 25% 0%, #050a1f 0%, #00020a 60%);
+  background: transparent;
 }
 
 .hero-grid-mask {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  background-image:
-    linear-gradient(rgba(120, 170, 255, 0.6) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(120, 170, 255, 0.6) 1px, transparent 1px);
-  background-size: 64px 64px;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
-  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  display: none;
 }
 
 .hero-reference .hero-glow-a {
@@ -6931,7 +6913,7 @@ textarea:focus-visible {
   margin: 0;
   padding: 0;
   border: 0;
-  background: linear-gradient(180deg, #00020a, #00030d);
+  background: transparent;
 }
 
 .footer-top-line {
@@ -6940,7 +6922,8 @@ textarea:focus-visible {
   right: 0;
   left: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.5), transparent);
+  opacity: 0;
+  background: transparent;
 }
 
 .footer-glow {
@@ -8062,10 +8045,6 @@ textarea:focus-visible {
 }
 
 /* Pricing Page */
-.pricing-page-shell {
-  background: #00020a;
-}
-
 .pricing-main {
   position: relative;
   z-index: 2;
@@ -8077,10 +8056,7 @@ textarea:focus-visible {
   min-height: 68vh;
   align-items: center;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 28% 0%, rgba(37, 99, 235, 0.18), transparent 42%),
-    radial-gradient(ellipse at 82% 18%, rgba(20, 184, 166, 0.12), transparent 38%),
-    linear-gradient(180deg, #00020a, #020510 78%, #040916);
+  background: transparent;
 }
 
 .pricing-hero-inner {
@@ -8160,8 +8136,7 @@ textarea:focus-visible {
 }
 
 .pricing-packages-section {
-  background:
-    linear-gradient(180deg, #040916 0%, #020713 46%, #00020a 100%);
+  background: transparent;
 }
 
 .pricing-packages-section .section-description {
@@ -8493,7 +8468,7 @@ textarea:focus-visible {
 }
 
 .pricing-custom-section {
-  background: linear-gradient(180deg, #00020a, #020510);
+  background: transparent;
 }
 
 .pricing-custom-panel {
@@ -8527,13 +8502,11 @@ textarea:focus-visible {
 }
 
 .pricing-info-section {
-  background: linear-gradient(180deg, #020510, #00020a);
+  background: transparent;
 }
 
 .pricing-contact-section {
-  background:
-    radial-gradient(ellipse at 72% 12%, rgba(20, 184, 166, 0.12), transparent 36%),
-    linear-gradient(180deg, #00020a, #020510);
+  background: transparent;
 }
 
 .pricing-contact-layout {
@@ -8949,11 +8922,7 @@ textarea:focus-visible {
   min-height: 100vh;
   overflow: hidden;
   padding-block: 6rem;
-  background:
-    radial-gradient(ellipse 58% 82% at 50% 48%, rgba(20, 35, 62, 0.34), transparent 68%),
-    radial-gradient(ellipse 80% 62% at 50% 0%, rgba(37, 99, 235, 0.12), transparent 72%),
-    linear-gradient(90deg, rgba(0, 2, 10, 0.82), transparent 22%, transparent 78%, rgba(0, 2, 10, 0.82)),
-    linear-gradient(180deg, #040916, #00020a);
+  background: transparent;
 }
 
 .skills-reference .section-divider,
@@ -8978,13 +8947,8 @@ textarea:focus-visible {
   content: '';
   pointer-events: none;
   background:
-    linear-gradient(rgba(96, 165, 250, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(96, 165, 250, 0.055) 1px, transparent 1px),
     radial-gradient(circle at 50% 58%, rgba(23, 37, 84, 0.38), transparent 38%);
-  background-size:
-    68px 68px,
-    68px 68px,
-    100% 100%;
+  background-size: 100% 100%;
   mask-image:
     linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%),
     linear-gradient(180deg, transparent 0%, #000 10%, #000 92%, transparent 100%);
@@ -9371,10 +9335,31 @@ textarea:focus-visible {
 }
 
 [data-theme='light'] body,
-[data-theme='light'] .bolt-shell,
 [data-theme='light'] .page-transition-shell {
   background: var(--background);
   color: var(--text);
+}
+
+[data-theme='light'] .bolt-shell {
+  color: var(--text);
+  background:
+    radial-gradient(ellipse 70% 42% at 50% 0%, rgba(37, 99, 235, 0.075), transparent 66%),
+    radial-gradient(ellipse 52% 38% at 86% 24%, rgba(14, 165, 233, 0.05), transparent 68%),
+    radial-gradient(ellipse 46% 34% at 12% 58%, rgba(20, 184, 166, 0.04), transparent 70%),
+    linear-gradient(180deg, #f8fbff 0%, #eef4fb 45%, #f7f9fc 100%);
+}
+
+[data-theme='light'] .bolt-shell::before {
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+}
+
+[data-theme='light'] .bolt-shell::after {
+  background:
+    radial-gradient(ellipse 35% 28% at 50% 28%, rgba(219, 234, 254, 0.34), transparent 70%),
+    radial-gradient(ellipse 42% 30% at 50% 72%, rgba(14, 165, 233, 0.035), transparent 72%),
+    linear-gradient(90deg, rgba(248, 251, 255, 0.6), transparent 20%, transparent 80%, rgba(248, 251, 255, 0.6));
 }
 
 [data-theme='light'] .top-nav-scrolled {
@@ -9388,31 +9373,20 @@ textarea:focus-visible {
 
 /* Section Background Gradients Override */
 [data-theme='light'] .section-about {
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.05), transparent 32%),
-    linear-gradient(180deg, #f7f9fc, #edf4fb);
+  background: transparent;
 }
 [data-theme='light'] .section-experience {
-  background:
-    radial-gradient(circle at top right, rgba(14, 165, 233, 0.05), transparent 28%),
-    linear-gradient(180deg, #eef4fb, #ffffff);
+  background: transparent;
 }
 [data-theme='light'] .section-projects {
-  background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.05), transparent 30%),
-    linear-gradient(180deg, #ffffff, #edf3fa);
+  background: transparent;
 }
 [data-theme='light'] .section-skills {
-  background:
-    radial-gradient(circle at top right, rgba(96, 165, 250, 0.05), transparent 28%),
-    linear-gradient(180deg, #f5f8fd, #eef4fb);
+  background: transparent;
 }
 
 [data-theme='light'] .skills-reference::before {
-  background:
-    linear-gradient(rgba(37, 99, 235, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 235, 0.045) 1px, transparent 1px),
-    radial-gradient(circle at 50% 58%, rgba(219, 234, 254, 0.42), transparent 38%);
+  background: radial-gradient(circle at 50% 58%, rgba(219, 234, 254, 0.42), transparent 38%);
 }
 
 [data-theme='light'] .skills-reference::after {
@@ -9426,31 +9400,14 @@ textarea:focus-visible {
   opacity: 0.1;
 }
 [data-theme='light'] .section-education {
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.045), transparent 32%),
-    linear-gradient(180deg, #edf4fb, #f8fbfe);
+  background: transparent;
 }
 [data-theme='light'] .section-contact {
-  background:
-    radial-gradient(circle at top right, rgba(14, 165, 233, 0.05), transparent 32%),
-    linear-gradient(180deg, #f8fbfe, #edf3fa);
-}
-
-[data-theme='light'] .section::before,
-[data-theme='light'] .pricing-hero::before,
-[data-theme='light'] .review-hero::before,
-[data-theme='light'] .review-form-section::before,
-[data-theme='light'] .pricing-page-shell::before,
-[data-theme='light'] .review-page-shell::before,
-[data-theme='light'] .projects-page-shell::before {
-  background:
-    linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px),
-    radial-gradient(circle at 50% 48%, rgba(219, 234, 254, 0.34), transparent 42%);
+  background: transparent;
 }
 
 [data-theme='light'] .section-divider {
-  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.14), transparent);
+  background: transparent;
 }
 
 [data-theme='light'] .hero-copy h1,
@@ -9618,55 +9575,27 @@ textarea:focus-visible {
 
 /* Modal, Hero, Subpage Shells, Project/Pricing Card & Timeline Light Overrides */
 [data-theme='light'] .hero-section {
-  background:
-    radial-gradient(ellipse at top left, rgba(37, 99, 235, 0.08), transparent 36%),
-    radial-gradient(ellipse at 80% 10%, rgba(14, 165, 233, 0.06), transparent 30%),
-    linear-gradient(180deg, #f8fbff, #edf3fa);
+  background: transparent;
 }
 
 [data-theme='light'] .hero-reference {
-  background:
-    radial-gradient(ellipse at 25% 0%, rgba(37, 99, 235, 0.08) 0%, transparent 55%),
-    linear-gradient(180deg, #f8fbff, #eef4fb 60%, #f5f8fd);
-}
-
-[data-theme='light'] .projects-page-shell {
-  background: var(--background);
-}
-
-[data-theme='light'] .pricing-page-shell {
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.05), transparent 28%),
-    linear-gradient(180deg, #f8fbfe, #edf4fb);
-}
-
-[data-theme='light'] .review-page-shell {
-  background:
-    radial-gradient(circle at 20% 0%, rgba(37, 99, 235, 0.06), transparent 30%),
-    linear-gradient(180deg, #f8fbfe 0%, #eef4fb 45%, #f5f8fc 100%);
+  background: transparent;
 }
 
 [data-theme='light'] .review-hero {
-  background:
-    radial-gradient(ellipse at 20% 20%, rgba(14, 165, 233, 0.08), transparent 38%),
-    radial-gradient(ellipse at 80% 0%, rgba(37, 99, 235, 0.07), transparent 32%),
-    linear-gradient(180deg, #eef4fb, #ffffff);
+  background: transparent;
 }
 
 [data-theme='light'] .review-form-section {
-  background:
-    linear-gradient(180deg, #f5f8fd, #edf3fa),
-    #f5f8fd;
+  background: transparent;
 }
 
 [data-theme='light'] .site-footer {
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.04), transparent 28%),
-    linear-gradient(180deg, #f8fbff, #edf4fb);
+  background: transparent;
 }
 
 [data-theme='light'] .footer-top-line {
-  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.15), transparent);
+  background: transparent;
 }
 
 [data-theme='light'] .footer-glow {
@@ -9808,9 +9737,7 @@ textarea:focus-visible {
 }
 
 [data-theme='light'] .review-section {
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.045), transparent 32%),
-    linear-gradient(180deg, #edf4fb, #f8fbfe);
+  background: transparent;
 }
 
 [data-theme='light'] .review-section::before {
