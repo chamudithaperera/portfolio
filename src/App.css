@@ -498,10 +498,18 @@ html {
 }
 
 .skating-game-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
   display: block;
   width: 100vw;
   height: 100vh;
   cursor: pointer;
+  pointer-events: none;
+}
+
+.skating-game-canvas.is-playing {
+  pointer-events: auto;
 }
 
 .skating-hud {
@@ -547,7 +555,7 @@ html {
   position: fixed;
   top: max(1rem, env(safe-area-inset-top));
   right: max(1rem, env(safe-area-inset-right));
-  z-index: 4;
+  z-index: 24;
   padding: 0.45rem 1rem;
   color: #dbeafe;
   font-size: 0.82rem;
@@ -567,7 +575,7 @@ html {
 .skating-overlay {
   position: fixed;
   inset: 0;
-  z-index: 5;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -578,6 +586,7 @@ html {
   background:
     linear-gradient(180deg, rgba(5, 10, 22, 0.36), rgba(5, 10, 22, 0.76)),
     radial-gradient(circle at 50% 40%, rgba(37, 136, 255, 0.24), transparent 38%);
+  pointer-events: auto;
 }
 
 .skating-overlay h1 {

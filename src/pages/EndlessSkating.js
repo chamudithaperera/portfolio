@@ -509,6 +509,13 @@ function EndlessSkatingPage() {
     gameRef.current.inputHeld = false;
   }, []);
 
+  const handleOverlayAction = useCallback((event, action) => {
+    event.preventDefault();
+    event.stopPropagation();
+    release();
+    action();
+  }, [release]);
+
   useEffect(() => {
     resetGame('menu');
   }, [resetGame]);
@@ -590,7 +597,7 @@ function EndlessSkatingPage() {
     <main className="skating-game-page">
       <canvas
         ref={canvasRef}
-        className="skating-game-canvas"
+        className={`skating-game-canvas ${phase === 'playing' ? 'is-playing' : ''}`}
         aria-label="Sri Lankan endless skating game"
         onPointerDown={press}
         onPointerUp={release}
@@ -621,7 +628,12 @@ function EndlessSkatingPage() {
           <p className="hero-eyebrow">Sri Lankan Endless Skating Adventure</p>
           <h1>Endless Skating</h1>
           <p>Ride through Sigiriya sunsets, temple mist, Ella bridges, Colombo glow, and Sri Pada dawn.</p>
-          <button type="button" className="primary-button" onClick={() => resetGame('instructions')}>
+          <button
+            type="button"
+            className="primary-button"
+            onClick={() => resetGame('instructions')}
+            onPointerDown={(event) => handleOverlayAction(event, () => resetGame('instructions'))}
+          >
             Start
           </button>
         </section>
@@ -634,7 +646,12 @@ function EndlessSkatingPage() {
           <p>Press SPACE or tap the screen to jump.</p>
           <p>Hold while in the air to perform a backflip.</p>
           <p>Collect stars, avoid rocks, and travel as far as possible.</p>
-          <button type="button" className="primary-button" onClick={startRun}>
+          <button
+            type="button"
+            className="primary-button"
+            onClick={startRun}
+            onPointerDown={(event) => handleOverlayAction(event, startRun)}
+          >
             Begin Run
           </button>
         </section>
@@ -651,7 +668,12 @@ function EndlessSkatingPage() {
             <span>Best <strong>{finalStats.best}</strong></span>
           </div>
           <div className="skating-actions">
-            <button type="button" className="primary-button" onClick={() => resetGame('instructions')}>
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() => resetGame('instructions')}
+              onPointerDown={(event) => handleOverlayAction(event, () => resetGame('instructions'))}
+            >
               Restart
             </button>
             <Link className="secondary-button" to="/">
