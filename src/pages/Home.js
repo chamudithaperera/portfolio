@@ -1497,7 +1497,7 @@ function Hero() {
             <a className="secondary-button" href="#contact">
               Get In Touch <Icon name="arrowUpRight" size={15} />
             </a>
-            <a className="game-button" href="/game">
+            <a className="game-button" href="/Endless-Skating">
               <Icon name="gamepad" size={18} /> Bored? Play my game
             </a>
           </div>
