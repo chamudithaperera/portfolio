@@ -484,6 +484,13 @@ const iconPaths = {
   clock: ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 6v6l4 2'],
   sparkles: ['m12 3-1.2 3.2L8 7.5l2.8 1.3L12 12l1.2-3.2L16 7.5l-2.8-1.3L12 3z', 'm19 13-.8 2.2L16 16l2.2.8L19 19l.8-2.2L22 16l-2.2-.8L19 13z'],
   heart: ['M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.7-7.5 1.1-1.1a5.5 5.5 0 0 0 0-7.8z'],
+  gamepad: [
+    'M6 12h4',
+    'M8 10v4',
+    'M15 13h.01',
+    'M18 11h.01',
+    'M5.5 16h13a3.5 3.5 0 0 0 3.4-4.4l-.7-2.7A3.5 3.5 0 0 0 17.8 6H6.2a3.5 3.5 0 0 0-3.4 2.9l-.7 2.7A3.5 3.5 0 0 0 5.5 16z',
+  ],
 };
 
 function Icon({ name, size = 16, className = '' }) {
@@ -1489,6 +1496,9 @@ function Hero() {
             </a>
             <a className="secondary-button" href="#contact">
               Get In Touch <Icon name="arrowUpRight" size={15} />
+            </a>
+            <a className="game-button" href="/game">
+              <Icon name="gamepad" size={18} /> Bored? Play my game
             </a>
           </div>
 
