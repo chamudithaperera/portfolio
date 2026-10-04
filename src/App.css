@@ -517,9 +517,10 @@ html {
   top: max(1rem, env(safe-area-inset-top));
   left: 50%;
   z-index: 3;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
   justify-content: center;
+  align-items: center;
   gap: 0.625rem;
   width: min(760px, calc(100vw - 8rem));
   transform: translateX(-50%);
@@ -549,6 +550,25 @@ html {
 .skating-hud strong {
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
+}
+
+.skating-hud-distance {
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-height: 2.75rem;
+  padding-inline: 1.45rem;
+}
+
+.skating-hud-distance strong {
+  font-size: 1.35rem;
+}
+
+.skating-hud-secondary {
+  justify-self: center;
+}
+
+.skating-hud-score {
+  opacity: 0.64;
 }
 
 .skating-home-link {
@@ -5095,6 +5115,7 @@ textarea:focus-visible {
   .skating-hud {
     top: calc(max(0.75rem, env(safe-area-inset-top)) + 3.1rem);
     width: calc(100vw - 1.5rem);
+    grid-template-columns: repeat(3, auto);
     gap: 0.4rem;
   }
 
@@ -5102,6 +5123,10 @@ textarea:focus-visible {
     min-height: 2.1rem;
     padding: 0.35rem 0.55rem;
     font-size: 0.68rem;
+  }
+
+  .skating-hud-distance strong {
+    font-size: 1rem;
   }
 
   .skating-home-link {

@@ -56,6 +56,11 @@ const BACKGROUNDS = [
   backgroundSriPada,
 ];
 
+const PLAYER_X_RATIO = 0.28;
+const PLAYER_WHEEL_ANCHOR_Y = 0.9;
+const PLAYER_WHEEL_ANCHOR_X = 0.5;
+const FEEDBACK_DURATION = 1.35;
+
 const INITIAL_HUD = {
   score: 0,
   distance: 0,
@@ -68,10 +73,18 @@ const INITIAL_HUD = {
 };
 
 const terrainY = (worldX, height) => {
-  const base = height * 0.66;
-  const longWave = Math.sin(worldX / 620) * height * 0.075;
-  const shortWave = Math.sin(worldX / 245 + 1.8) * height * 0.038;
-  return base + longWave + shortWave;
+  const base = height * 0.74;
+  const chunk = Math.floor(worldX / 900);
+  const local = (worldX % 900) / 900;
+  const chunkShape = [
+    Math.sin(local * Math.PI) * -height * 0.035,
+    local < 0.58 ? local * height * 0.105 : (1 - local) * height * 0.145,
+    Math.sin(local * Math.PI * 2 - 0.7) * height * 0.052,
+    local < 0.42 ? -local * height * 0.16 : (local - 0.42) * height * 0.11,
+  ][Math.abs(chunk) % 4];
+  const longWave = Math.sin(worldX / 720) * height * 0.035;
+  const shortWave = Math.sin(worldX / 310 + 1.8) * height * 0.018;
+  return base + chunkShape + longWave + shortWave;
 };
 
 const terrainSlope = (worldX, height) => terrainY(worldX + 8, height) - terrainY(worldX - 8, height);
@@ -122,13 +135,15 @@ function createGameState(best = 0) {
     worldX: 0,
     speed: 345,
     player: {
-      xRatio: 0.25,
+      xRatio: PLAYER_X_RATIO,
       y: 0,
       velocityY: 0,
       grounded: true,
       rotation: 0,
       completedFlips: 0,
       state: 'push',
+      previousState: 'push',
+      stateBlend: 1,
       crashTimer: 0,
     },
     inputHeld: false,
@@ -143,36 +158,52 @@ function createGameState(best = 0) {
     trickScore: 0,
     lastTime: 0,
     sceneMood: 0,
+    feedback: null,
   };
 }
 
+function setPlayerState(player, state) {
+  if (player.state === state) {
+    return;
+  }
+  player.previousState = player.state;
+  player.state = state;
+  player.stateBlend = 0;
+}
+
 function addChunk(game, startX) {
-  const chunkWidth = 760;
+  const chunkWidth = 860;
   const pattern = Math.floor(startX / chunkWidth) % 4;
 
-  for (let i = 0; i < 8; i += 1) {
-    const x = startX + 110 + i * 72;
-    const arc = pattern === 1 ? Math.sin((i / 7) * Math.PI) * 120 : 0;
+  const starPatterns = [
+    [0, 0, 0, 0, 0, 0],
+    [0, 36, 86, 116, 86, 36],
+    [0, 58, 128, 190, 128, 58],
+    [58, 108, 128, 128, 108, 58],
+  ];
+  const offsets = starPatterns[pattern];
+  offsets.forEach((arc, index) => {
+    const x = startX + 160 + index * 96;
     game.stars.push({
       x,
-      yOffset: 118 + arc + (pattern === 2 && i % 2 ? 42 : 0),
+      yOffset: 112 + arc,
       collected: false,
-      pulse: (i * 0.37) % 1,
+      pulse: (index * 0.37) % 1,
     });
-  }
+  });
 
   if (pattern !== 3) {
     game.obstacles.push({
-      x: startX + 430,
-      size: 58 + (pattern % 2) * 10,
+      x: startX + 520,
+      size: 42 + (pattern % 2) * 14,
       hit: false,
     });
   }
 
   game.decor.push(
-    { type: pattern % 2 ? 'treeA' : 'treeB', x: startX + 170, layer: 'near', scale: 0.26 },
-    { type: pattern === 2 ? 'peacock' : 'deer', x: startX + 570, layer: 'near', scale: pattern === 2 ? 0.16 : 0.18 },
-    { type: pattern % 2 ? 'balloonA' : 'balloonB', x: startX + 300, layer: 'sky', scale: 0.13 }
+    { type: pattern % 2 ? 'treeA' : 'treeB', x: startX + 210, layer: 'mid', scale: 0.44 },
+    { type: pattern === 2 ? 'peacock' : 'deer', x: startX + 640, layer: 'wildlife', scale: pattern === 2 ? 0.18 : 0.25 },
+    { type: pattern % 2 ? 'balloonA' : 'balloonB', x: startX + 360, layer: 'sky', scale: 0.075 }
   );
 
   game.nextChunkX = startX + chunkWidth;
@@ -191,21 +222,47 @@ function drawCoverImage(ctx, image, x, y, width, height) {
   ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, x, y, width, height);
 }
 
-function drawSprite(ctx, image, x, y, width, height, rotation = 0, alpha = 1) {
+function drawSprite(ctx, image, x, y, width, height, rotation = 0, alpha = 1, filter = 'none') {
   if (!image) {
     return;
   }
 
   ctx.save();
   ctx.globalAlpha = alpha;
+  ctx.filter = filter;
   ctx.translate(x + width / 2, y + height / 2);
   ctx.rotate(rotation);
   ctx.drawImage(image, -width / 2, -height / 2, width, height);
   ctx.restore();
 }
 
+function drawAnchoredSprite(
+  ctx,
+  image,
+  anchorX,
+  anchorY,
+  width,
+  height,
+  anchorRatioX = 0.5,
+  anchorRatioY = 0.9,
+  rotation = 0,
+  alpha = 1,
+  filter = 'none'
+) {
+  if (!image) {
+    return;
+  }
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.filter = filter;
+  ctx.translate(anchorX, anchorY);
+  ctx.rotate(rotation);
+  ctx.drawImage(image, -width * anchorRatioX, -height * anchorRatioY, width, height);
+  ctx.restore();
+}
+
 function drawTerrain(ctx, game, width, height, playerWorldX) {
-  const horizon = height * 0.55;
   const points = [];
   for (let x = -32; x <= width + 48; x += 18) {
     const world = playerWorldX + x - width * game.player.xRatio;
@@ -216,29 +273,48 @@ function drawTerrain(ctx, game, width, height, playerWorldX) {
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   points.forEach(([x, y]) => ctx.lineTo(x, y));
-  ctx.lineTo(width + 60, height + 80);
-  ctx.lineTo(-60, height + 80);
+  [...points].reverse().forEach(([x, y]) => ctx.lineTo(x, y + 64));
   ctx.closePath();
-  const groundGradient = ctx.createLinearGradient(0, horizon, 0, height);
-  groundGradient.addColorStop(0, '#315f37');
-  groundGradient.addColorStop(0.45, '#1e4d30');
-  groundGradient.addColorStop(1, '#102517');
-  ctx.fillStyle = groundGradient;
+  const pathGradient = ctx.createLinearGradient(0, height * 0.58, 0, height);
+  pathGradient.addColorStop(0, 'rgba(169, 111, 50, 0.98)');
+  pathGradient.addColorStop(0.46, 'rgba(95, 71, 39, 0.96)');
+  pathGradient.addColorStop(1, 'rgba(38, 56, 37, 0.9)');
+  ctx.fillStyle = pathGradient;
+  ctx.shadowColor = 'rgba(43, 23, 8, 0.28)';
+  ctx.shadowBlur = 18;
   ctx.fill();
+  ctx.shadowBlur = 0;
 
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   points.forEach(([x, y]) => ctx.lineTo(x, y));
-  ctx.strokeStyle = 'rgba(250, 214, 129, 0.9)';
-  ctx.lineWidth = 5;
+  ctx.strokeStyle = 'rgba(250, 209, 122, 0.95)';
+  ctx.lineWidth = 6;
   ctx.stroke();
 
   ctx.beginPath();
-  ctx.moveTo(points[0][0], points[0][1] + 10);
-  points.forEach(([x, y]) => ctx.lineTo(x, y + 10));
-  ctx.strokeStyle = 'rgba(20, 83, 45, 0.7)';
-  ctx.lineWidth = 8;
+  ctx.moveTo(points[0][0], points[0][1] + 18);
+  points.forEach(([x, y]) => ctx.lineTo(x, y + 18));
+  ctx.strokeStyle = 'rgba(99, 56, 24, 0.65)';
+  ctx.lineWidth = 12;
   ctx.stroke();
+
+  ctx.beginPath();
+  points.forEach(([x, y], index) => {
+    const pebbleY = y + 28 + Math.sin((game.worldX + x) / 28) * 5;
+    if (index % 4 === 0) {
+      ctx.moveTo(x, pebbleY);
+      ctx.arc(x, pebbleY, 1.7, 0, Math.PI * 2);
+    }
+  });
+  ctx.fillStyle = 'rgba(248, 218, 143, 0.26)';
+  ctx.fill();
+
+  const fade = ctx.createLinearGradient(0, height * 0.7, 0, height);
+  fade.addColorStop(0, 'rgba(9, 34, 23, 0)');
+  fade.addColorStop(1, 'rgba(7, 25, 18, 0.38)');
+  ctx.fillStyle = fade;
+  ctx.fillRect(0, height * 0.72, width, height * 0.28);
   ctx.restore();
 }
 
@@ -276,7 +352,16 @@ function updateGame(game, dt, width, height) {
 
   const player = game.player;
   const playerWorldX = game.worldX + width * player.xRatio;
-  const groundY = terrainY(playerWorldX, height) - 66;
+  const groundY = terrainY(playerWorldX, height);
+
+  player.stateBlend = Math.min(1, player.stateBlend + dt / 0.08);
+  if (game.feedback) {
+    game.feedback.age += dt;
+    if (game.feedback.age > FEEDBACK_DURATION) {
+      game.feedback = null;
+      game.message = '';
+    }
+  }
 
   if (game.status === 'crashed') {
     player.crashTimer += dt;
@@ -299,19 +384,19 @@ function updateGame(game, dt, width, height) {
   if (player.grounded) {
     player.y = groundY;
     player.rotation = Math.atan2(slope, 16) * 0.22;
-    player.state = slope > 3.2 ? 'crouch' : game.speed < 380 ? 'push' : 'ride';
+    setPlayerState(player, slope > 3.2 ? 'crouch' : game.speed < 380 ? 'push' : 'ride');
   } else {
     player.velocityY += 1080 * dt;
     player.y += player.velocityY * dt;
     if (game.inputHeld) {
       player.rotation -= 7.2 * dt;
-      player.state = 'backflip';
+      setPlayerState(player, 'backflip');
     } else if (player.velocityY < -190) {
-      player.state = 'highAir';
+      setPlayerState(player, 'highAir');
     } else if (player.velocityY < 130) {
-      player.state = 'grab';
+      setPlayerState(player, 'grab');
     } else {
-      player.state = 'landing';
+      setPlayerState(player, 'landing');
     }
 
     const fullFlips = Math.floor(Math.abs(player.rotation) / (Math.PI * 2));
@@ -319,10 +404,11 @@ function updateGame(game, dt, width, height) {
 
     if (player.y >= groundY) {
       const normalizedRotation = Math.abs((((player.rotation % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
-      const landedCleanly = normalizedRotation < 0.72 || player.completedFlips > 0;
+      const landedCleanly = normalizedRotation < 0.72;
       if (!landedCleanly) {
         game.status = 'crashed';
         game.message = 'Bad landing';
+        game.feedback = { text: 'BAD LANDING', score: '', age: 0 };
         player.crashTimer = 0;
         return;
       }
@@ -330,13 +416,18 @@ function updateGame(game, dt, width, height) {
         game.combo = Math.min(8, game.combo + player.completedFlips);
         game.trickScore += 450 * player.completedFlips * game.combo;
         game.message = player.completedFlips > 1 ? 'Double backflip!' : 'Backflip!';
+        game.feedback = {
+          text: player.completedFlips > 1 ? 'DOUBLE BACKFLIP' : 'BACKFLIP',
+          score: `+${450 * player.completedFlips * game.combo}`,
+          age: 0,
+        };
       }
       player.grounded = true;
       player.y = groundY;
       player.velocityY = 0;
       player.rotation = 0;
       player.completedFlips = 0;
-      player.state = 'landing';
+      setPlayerState(player, 'landing');
     }
   }
 
@@ -359,6 +450,7 @@ function updateGame(game, dt, width, height) {
       if (game.starCount % 8 === 0) {
         game.combo = Math.min(8, game.combo + 1);
         game.message = 'Star combo!';
+        game.feedback = { text: 'STAR LINE', score: `x${game.combo}`, age: 0 };
       }
     }
   });
@@ -368,13 +460,13 @@ function updateGame(game, dt, width, height) {
       return;
     }
     const obstacleScreenX = obstacle.x - game.worldX;
-    const obstacleY = terrainY(obstacle.x, height) - obstacle.size * 0.64;
     const dx = obstacleScreenX - width * player.xRatio;
-    const dy = obstacleY - player.y;
-    if (Math.abs(dx) < 42 && Math.abs(dy) < 54 && player.grounded) {
+    const playerNearGround = player.y > terrainY(playerWorldX, height) - 34;
+    if (Math.abs(dx) < obstacle.size * 0.62 && playerNearGround) {
       obstacle.hit = true;
       game.status = 'crashed';
       game.message = 'You hit a rock';
+      game.feedback = { text: 'ROCK HIT', score: '', age: 0 };
       player.crashTimer = 0;
     }
   });
@@ -394,11 +486,22 @@ function renderGame(ctx, images, game, width, height) {
     if (!image) {
       return;
     }
-    const parallax = item.layer === 'sky' ? 0.18 : 0.72;
-    const screenX = item.x - game.worldX * parallax + (item.layer === 'sky' ? width * 0.2 : 0);
-    const ground = item.layer === 'sky' ? height * 0.18 : terrainY(item.x, height) - 92;
+    const parallax = item.layer === 'sky' ? 0.08 : item.layer === 'mid' ? 0.48 : 0.78;
+    const screenX = item.x - game.worldX * parallax + (item.layer === 'sky' ? width * 0.12 : 0);
     const size = Math.min(width, height) * item.scale;
-    drawSprite(ctx, image, screenX, ground, size * (image.width / image.height), size);
+    const spriteWidth = size * (image.width / image.height);
+    const pathY = terrainY(item.x, height);
+    const top =
+      item.layer === 'sky'
+        ? height * 0.16
+        : item.layer === 'mid'
+          ? pathY - size * 0.82
+          : pathY - size * 0.7;
+    const alpha = item.layer === 'sky' ? 0.48 : item.layer === 'mid' ? 0.74 : 0.82;
+    const filter = item.layer === 'sky'
+      ? 'saturate(0.62) contrast(0.9)'
+      : 'saturate(0.78) contrast(0.92)';
+    drawSprite(ctx, image, screenX, top, spriteWidth, size, 0, alpha, filter);
   });
 
   drawTerrain(ctx, game, width, height, game.worldX + width * game.player.xRatio);
@@ -409,9 +512,9 @@ function renderGame(ctx, images, game, width, height) {
       return;
     }
     const pulse = 1 + Math.sin((game.distance / 18) + star.pulse * Math.PI * 2) * 0.08;
-    const size = 34 * pulse;
+    const size = 28 * pulse;
     const starY = terrainY(star.x, height) - star.yOffset;
-    drawSprite(ctx, images.star, screenX - size / 2, starY - size / 2, size, size);
+    drawSprite(ctx, images.star, screenX - size / 2, starY - size / 2, size, size, 0, 0.84, 'saturate(0.82) contrast(0.95)');
   });
 
   game.obstacles.forEach((obstacle) => {
@@ -420,29 +523,56 @@ function renderGame(ctx, images, game, width, height) {
       return;
     }
     const size = obstacle.size;
-    drawSprite(ctx, images.rock, screenX - size / 2, terrainY(obstacle.x, height) - size * 0.88, size * 1.38, size);
+    drawSprite(ctx, images.rock, screenX - size / 2, terrainY(obstacle.x, height) - size * 0.78, size * 1.32, size, 0, 0.9, 'saturate(0.86) contrast(0.95)');
   });
 
   const player = game.player;
   const characterImage = images[player.state] || images.ride;
-  const playerHeight = Math.max(110, Math.min(172, height * 0.22));
+  const previousCharacterImage = images[player.previousState] || characterImage;
+  const playerHeight = Math.max(118, Math.min(166, height * 0.215));
   const playerWidth = playerHeight * 0.78;
-  drawSprite(
+  const playerX = width * player.xRatio;
+  if (player.stateBlend < 1 && previousCharacterImage !== characterImage) {
+    drawAnchoredSprite(
+      ctx,
+      previousCharacterImage,
+      playerX,
+      player.y,
+      playerWidth,
+      playerHeight,
+      PLAYER_WHEEL_ANCHOR_X,
+      PLAYER_WHEEL_ANCHOR_Y,
+      player.rotation,
+      1 - player.stateBlend
+    );
+  }
+  drawAnchoredSprite(
     ctx,
     characterImage,
-    width * player.xRatio - playerWidth / 2,
-    player.y - playerHeight + 18,
+    playerX,
+    player.y,
     playerWidth,
     playerHeight,
-    player.rotation
+    PLAYER_WHEEL_ANCHOR_X,
+    PLAYER_WHEEL_ANCHOR_Y,
+    player.rotation,
+    player.stateBlend
   );
 
-  if (game.message && game.status === 'playing') {
+  if (game.feedback && game.status === 'playing') {
+    const progress = Math.min(1, game.feedback.age / FEEDBACK_DURATION);
+    const alpha = Math.sin((1 - progress) * Math.PI * 0.5);
     ctx.save();
-    ctx.font = '700 24px Space Grotesk, sans-serif';
+    ctx.globalAlpha = alpha;
+    ctx.font = '800 22px Space Grotesk, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillStyle = 'rgba(255,255,255,0.92)';
-    ctx.fillText(game.message, width / 2, height * 0.18);
+    ctx.fillText(game.feedback.text, width / 2, height * 0.18 - progress * 18);
+    if (game.feedback.score) {
+      ctx.font = '700 16px Space Grotesk, sans-serif';
+      ctx.fillStyle = 'rgba(250, 204, 21, 0.92)';
+      ctx.fillText(game.feedback.score, width / 2, height * 0.18 + 24 - progress * 18);
+    }
     ctx.restore();
   }
 }
@@ -481,6 +611,7 @@ function EndlessSkatingPage() {
     const game = gameRef.current;
     game.status = 'playing';
     game.message = 'Ayubowan!';
+    game.feedback = { text: 'AYUBOWAN!', score: '', age: 0 };
     game.lastTime = performance.now();
     setPhase('playing');
   }, []);
@@ -491,11 +622,13 @@ function EndlessSkatingPage() {
       return;
     }
     if (game.player.grounded) {
+      const playerWorldX = game.worldX + window.innerWidth * game.player.xRatio;
+      const slopeBoost = Math.max(0, terrainSlope(playerWorldX, window.innerHeight)) * 11;
       game.player.grounded = false;
-      game.player.velocityY = -565;
+      game.player.velocityY = -540 - Math.min(120, slopeBoost) - Math.max(0, game.speed - 360) * 0.12;
       game.player.rotation = 0;
       game.player.completedFlips = 0;
-      game.player.state = 'jump';
+      setPlayerState(game.player, 'jump');
     }
   }, []);
 
@@ -509,16 +642,31 @@ function EndlessSkatingPage() {
     gameRef.current.inputHeld = false;
   }, []);
 
-  const handleOverlayAction = useCallback((event, action) => {
-    event.preventDefault();
-    event.stopPropagation();
-    release();
-    action();
-  }, [release]);
-
   useEffect(() => {
     resetGame('menu');
   }, [resetGame]);
+
+  useEffect(() => {
+    const onGameActionClick = (event) => {
+      const actionElement = event.target.closest?.('[data-skating-action]');
+      if (!actionElement) {
+        return;
+      }
+
+      const action = actionElement.getAttribute('data-skating-action');
+      if (action === 'instructions') {
+        resetGame('instructions');
+      }
+      if (action === 'start') {
+        startRun();
+      }
+    };
+
+    document.addEventListener('click', onGameActionClick);
+    return () => {
+      document.removeEventListener('click', onGameActionClick);
+    };
+  }, [resetGame, startRun]);
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -560,7 +708,7 @@ function EndlessSkatingPage() {
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       const game = gameRef.current;
       const playerWorldX = game.worldX + rect.width * game.player.xRatio;
-      game.player.y = terrainY(playerWorldX, rect.height) - 66;
+      game.player.y = terrainY(playerWorldX, rect.height);
     };
 
     const tick = (now) => {
@@ -606,10 +754,10 @@ function EndlessSkatingPage() {
       />
 
       <div className="skating-hud" aria-live="polite">
-        <span>Score <strong>{hud.score.toLocaleString()}</strong></span>
-        <span>Distance <strong>{hud.distance.toLocaleString()} m</strong></span>
-        <span>Stars <strong>{hud.stars}</strong></span>
-        <span>Combo <strong>x{hud.combo}</strong></span>
+        <span className="skating-hud-distance"><strong>{hud.distance.toLocaleString()} m</strong></span>
+        <span className="skating-hud-secondary">★ <strong>{hud.stars}</strong></span>
+        <span className="skating-hud-secondary">x<strong>{hud.combo}</strong></span>
+        <span className="skating-hud-score">Score <strong>{hud.score.toLocaleString()}</strong></span>
       </div>
 
       <Link className="skating-home-link" to="/">
@@ -631,8 +779,8 @@ function EndlessSkatingPage() {
           <button
             type="button"
             className="primary-button"
+            data-skating-action="instructions"
             onClick={() => resetGame('instructions')}
-            onPointerDown={(event) => handleOverlayAction(event, () => resetGame('instructions'))}
           >
             Start
           </button>
@@ -649,8 +797,8 @@ function EndlessSkatingPage() {
           <button
             type="button"
             className="primary-button"
+            data-skating-action="start"
             onClick={startRun}
-            onPointerDown={(event) => handleOverlayAction(event, startRun)}
           >
             Begin Run
           </button>
@@ -671,8 +819,8 @@ function EndlessSkatingPage() {
             <button
               type="button"
               className="primary-button"
+              data-skating-action="instructions"
               onClick={() => resetGame('instructions')}
-              onPointerDown={(event) => handleOverlayAction(event, () => resetGame('instructions'))}
             >
               Restart
             </button>
