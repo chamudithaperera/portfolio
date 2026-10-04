@@ -1,39 +1,59 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import withBase from '../utils/basePath';
-
-const asset = (name) => withBase(`/assets/imgs/game/${name}`);
+import characterRide from '../assets/game/character-ride.png';
+import characterCrouch from '../assets/game/character-crouch.png';
+import characterPush from '../assets/game/character-push.png';
+import characterJump from '../assets/game/character-jump.png';
+import characterHighAir from '../assets/game/character-high-air.png';
+import characterBackflip from '../assets/game/character-backflip.png';
+import characterGrab from '../assets/game/character-grab.png';
+import characterLanding from '../assets/game/character-landing.png';
+import characterManual from '../assets/game/character-manual.png';
+import characterCelebrate from '../assets/game/character-celebrate.png';
+import balloonA from '../assets/game/balloon-a.png';
+import balloonB from '../assets/game/balloon-b.png';
+import starSprite from '../assets/game/star.png';
+import treeA from '../assets/game/tree-a.png';
+import treeB from '../assets/game/tree-b.png';
+import rockSprite from '../assets/game/rock.png';
+import deerSprite from '../assets/game/deer.png';
+import peacockSprite from '../assets/game/peacock.png';
+import backgroundSigiriya from '../assets/game/background-sigiriya.png';
+import backgroundTemple from '../assets/game/background-temple.png';
+import backgroundElla from '../assets/game/background-ella.png';
+import backgroundColombo from '../assets/game/background-colombo.png';
+import backgroundSriPada from '../assets/game/background-sri-pada.png';
 
 const CHARACTER = {
-  ride: asset('ChatGPT Image Oct 4, 2026, 10_25_18 PM-1.png'),
-  crouch: asset('ChatGPT Image Oct 4, 2026, 10_25_19 PM-2.png'),
-  push: asset('ChatGPT Image Oct 4, 2026, 10_38_30 PM-1.png'),
-  jump: asset('ChatGPT Image Oct 4, 2026, 10_38_33 PM-3.png'),
-  highAir: asset('ChatGPT Image Oct 4, 2026, 10_38_35 PM-4.png'),
-  backflip: asset('ChatGPT Image Oct 4, 2026, 10_38_37 PM-5.png'),
-  grab: asset('ChatGPT Image Oct 4, 2026, 10_38_39 PM-6.png'),
-  landing: asset('ChatGPT Image Oct 4, 2026, 10_38_43 PM-8.png'),
-  manual: asset('ChatGPT Image Oct 4, 2026, 10_38_41 PM-7.png'),
-  celebrate: asset('ChatGPT Image Oct 4, 2026, 10_38_45 PM-9.png'),
+  ride: characterRide,
+  crouch: characterCrouch,
+  push: characterPush,
+  jump: characterJump,
+  highAir: characterHighAir,
+  backflip: characterBackflip,
+  grab: characterGrab,
+  landing: characterLanding,
+  manual: characterManual,
+  celebrate: characterCelebrate,
 };
 
 const SPRITES = {
-  balloonA: asset('ChatGPT Image Oct 4, 2026, 10_25_21 PM-3.png'),
-  balloonB: asset('ChatGPT Image Oct 4, 2026, 10_25_23 PM-4.png'),
-  star: asset('ChatGPT Image Oct 4, 2026, 10_25_25 PM-5.png'),
-  treeA: asset('ChatGPT Image Oct 4, 2026, 10_25_27 PM-6.png'),
-  treeB: asset('ChatGPT Image Oct 4, 2026, 10_25_28 PM-7.png'),
-  rock: asset('ChatGPT Image Oct 4, 2026, 10_25_31 PM-8.png'),
-  deer: asset('ChatGPT Image Oct 4, 2026, 10_25_32 PM-9.png'),
-  peacock: asset('ChatGPT Image Oct 4, 2026, 10_25_34 PM-10.png'),
+  balloonA,
+  balloonB,
+  star: starSprite,
+  treeA,
+  treeB,
+  rock: rockSprite,
+  deer: deerSprite,
+  peacock: peacockSprite,
 };
 
 const BACKGROUNDS = [
-  asset('ChatGPT Image Oct 4, 2026, 10_44_23 PM-1.png'),
-  asset('ChatGPT Image Oct 4, 2026, 10_44_25 PM-2.png'),
-  asset('ChatGPT Image Oct 4, 2026, 10_44_27 PM-3.png'),
-  asset('ChatGPT Image Oct 4, 2026, 10_44_29 PM-4.png'),
-  asset('ChatGPT Image Oct 4, 2026, 10_44_31 PM-5.png'),
+  backgroundSigiriya,
+  backgroundTemple,
+  backgroundElla,
+  backgroundColombo,
+  backgroundSriPada,
 ];
 
 const INITIAL_HUD = {
