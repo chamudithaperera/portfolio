@@ -60,6 +60,12 @@ const PLAYER_X_RATIO = 0.28;
 const PLAYER_WHEEL_ANCHOR_Y = 0.9;
 const PLAYER_WHEEL_ANCHOR_X = 0.5;
 const FEEDBACK_DURATION = 1.35;
+const TERRAIN_POINT_SPACING = 360;
+const GRAVITY = 1420;
+const TAKEOFF_DURATION = 0.1;
+const LANDING_DURATION = 0.14;
+const CRASH_DURATION = 0.68;
+const BACKFLIP_SPEED = Math.PI * 2.35;
 
 const INITIAL_HUD = {
   score: 0,
@@ -72,22 +78,45 @@ const INITIAL_HUD = {
       : Number(window.localStorage?.getItem('endless-skating-best') || 0),
 };
 
-const terrainY = (worldX, height) => {
+const smoothstep = (value) => value * value * (3 - 2 * value);
+
+const terrainControlY = (index, height) => {
   const base = height * 0.74;
-  const chunk = Math.floor(worldX / 900);
-  const local = (worldX % 900) / 900;
-  const chunkShape = [
-    Math.sin(local * Math.PI) * -height * 0.035,
-    local < 0.58 ? local * height * 0.105 : (1 - local) * height * 0.145,
-    Math.sin(local * Math.PI * 2 - 0.7) * height * 0.052,
-    local < 0.42 ? -local * height * 0.16 : (local - 0.42) * height * 0.11,
-  ][Math.abs(chunk) % 4];
-  const longWave = Math.sin(worldX / 720) * height * 0.035;
-  const shortWave = Math.sin(worldX / 310 + 1.8) * height * 0.018;
-  return base + chunkShape + longWave + shortWave;
+  const longWave = Math.sin(index * 0.72) * height * 0.065;
+  const rollingWave = Math.sin(index * 1.47 + 0.8) * height * 0.034;
+  const plannedFeature = [0, -height * 0.045, height * 0.085, -height * 0.07, height * 0.035][Math.abs(index) % 5];
+  return base + longWave + rollingWave + plannedFeature;
 };
 
-const terrainSlope = (worldX, height) => terrainY(worldX + 8, height) - terrainY(worldX - 8, height);
+const catmullRom = (p0, p1, p2, p3, t) => {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  return 0.5 * (
+    2 * p1
+    + (-p0 + p2) * t
+    + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2
+    + (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+  );
+};
+
+const terrainY = (worldX, height) => {
+  const point = worldX / TERRAIN_POINT_SPACING;
+  const index = Math.floor(point);
+  const t = smoothstep(point - index);
+  return catmullRom(
+    terrainControlY(index - 1, height),
+    terrainControlY(index, height),
+    terrainControlY(index + 1, height),
+    terrainControlY(index + 2, height),
+    t
+  );
+};
+
+const terrainAngle = (worldX, height) => {
+  const y1 = terrainY(worldX - 12, height);
+  const y2 = terrainY(worldX + 12, height);
+  return Math.atan2(y2 - y1, 24);
+};
 
 function useGameAssets() {
   const [loaded, setLoaded] = useState(false);
@@ -133,17 +162,21 @@ function createGameState(best = 0) {
     status: 'menu',
     message: '',
     worldX: 0,
-    speed: 345,
+    speed: 260,
     player: {
       xRatio: PLAYER_X_RATIO,
       y: 0,
       velocityY: 0,
       grounded: true,
       rotation: 0,
+      groundAngle: 0,
+      wheelSpin: 0,
       completedFlips: 0,
       state: 'push',
       previousState: 'push',
       stateBlend: 1,
+      movementPhase: 'ride',
+      phaseTimer: 0,
       crashTimer: 0,
     },
     inputHeld: false,
@@ -159,6 +192,11 @@ function createGameState(best = 0) {
     lastTime: 0,
     sceneMood: 0,
     feedback: null,
+    dust: [],
+    hasSeenInstructions:
+      typeof window === 'undefined'
+        ? false
+        : window.localStorage?.getItem('endless-skating-seen-instructions') === 'true',
   };
 }
 
@@ -169,6 +207,17 @@ function setPlayerState(player, state) {
   player.previousState = player.state;
   player.state = state;
   player.stateBlend = 0;
+}
+
+const normalizeRotation = (rotation) => {
+  const fullTurn = Math.PI * 2;
+  const wrapped = ((rotation % fullTurn) + fullTurn) % fullTurn;
+  return Math.min(wrapped, fullTurn - wrapped);
+};
+
+function startFeedback(game, text, score = '') {
+  game.message = text;
+  game.feedback = { text, score, age: 0 };
 }
 
 function addChunk(game, startX) {
@@ -264,7 +313,7 @@ function drawAnchoredSprite(
 
 function drawTerrain(ctx, game, width, height, playerWorldX) {
   const points = [];
-  for (let x = -32; x <= width + 48; x += 18) {
+  for (let x = -32; x <= width + 48; x += 10) {
     const world = playerWorldX + x - width * game.player.xRatio;
     points.push([x, terrainY(world, height)]);
   }
@@ -353,6 +402,7 @@ function updateGame(game, dt, width, height) {
   const player = game.player;
   const playerWorldX = game.worldX + width * player.xRatio;
   const groundY = terrainY(playerWorldX, height);
+  const targetGroundAngle = terrainAngle(playerWorldX, height);
 
   player.stateBlend = Math.min(1, player.stateBlend + dt / 0.08);
   if (game.feedback) {
@@ -365,8 +415,13 @@ function updateGame(game, dt, width, height) {
 
   if (game.status === 'crashed') {
     player.crashTimer += dt;
-    player.rotation += dt * 3.5;
-    if (player.crashTimer > 1) {
+    game.worldX += game.speed * dt * 0.34;
+    game.speed = Math.max(0, game.speed - 620 * dt);
+    player.y = groundY;
+    player.groundAngle += (targetGroundAngle - player.groundAngle) * 0.16;
+    player.rotation += dt * 5.4;
+    setPlayerState(player, 'landing');
+    if (player.crashTimer > CRASH_DURATION) {
       game.status = 'gameover';
       game.message = 'Game Over';
       game.best = Math.max(game.best, Math.floor(game.score));
@@ -375,21 +430,31 @@ function updateGame(game, dt, width, height) {
     return;
   }
 
-  game.speed = Math.min(560, game.speed + dt * 2.6);
+  game.speed = Math.min(500, game.speed + dt * 5.4);
   game.worldX += game.speed * dt;
-  game.distance = game.worldX / 10;
-  game.score = game.distance * 3 + game.starCount * 100 + game.trickScore;
+  game.distance = game.worldX / 52;
+  game.score = game.distance * 2 + game.starCount * 100 + game.trickScore;
 
-  const slope = terrainSlope(playerWorldX, height);
-  if (player.grounded) {
+  player.wheelSpin += game.speed * dt * 0.09;
+
+  if (player.movementPhase === 'takeoff') {
     player.y = groundY;
-    player.rotation = Math.atan2(slope, 16) * 0.22;
-    setPlayerState(player, slope > 3.2 ? 'crouch' : game.speed < 380 ? 'push' : 'ride');
-  } else {
-    player.velocityY += 1080 * dt;
+    player.groundAngle += (targetGroundAngle - player.groundAngle) * 0.16;
+    player.rotation = player.groundAngle;
+    player.phaseTimer += dt;
+    setPlayerState(player, 'crouch');
+    if (player.phaseTimer >= TAKEOFF_DURATION) {
+      player.movementPhase = 'air';
+      player.phaseTimer = 0;
+      player.grounded = false;
+      player.velocityY = player.takeoffVelocity || -600;
+      setPlayerState(player, 'jump');
+    }
+  } else if (!player.grounded) {
+    player.velocityY += GRAVITY * dt;
     player.y += player.velocityY * dt;
     if (game.inputHeld) {
-      player.rotation -= 7.2 * dt;
+      player.rotation -= BACKFLIP_SPEED * dt;
       setPlayerState(player, 'backflip');
     } else if (player.velocityY < -190) {
       setPlayerState(player, 'highAir');
@@ -403,33 +468,73 @@ function updateGame(game, dt, width, height) {
     player.completedFlips = Math.max(player.completedFlips, fullFlips);
 
     if (player.y >= groundY) {
-      const normalizedRotation = Math.abs((((player.rotation % (Math.PI * 2)) + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+      player.y = groundY;
+      player.velocityY = 0;
+      const normalizedRotation = normalizeRotation(player.rotation);
       const landedCleanly = normalizedRotation < 0.72;
       if (!landedCleanly) {
         game.status = 'crashed';
-        game.message = 'Bad landing';
-        game.feedback = { text: 'BAD LANDING', score: '', age: 0 };
+        startFeedback(game, 'BAD LANDING');
+        player.grounded = true;
+        player.movementPhase = 'crash';
         player.crashTimer = 0;
         return;
       }
       if (player.completedFlips > 0) {
         game.combo = Math.min(8, game.combo + player.completedFlips);
         game.trickScore += 450 * player.completedFlips * game.combo;
-        game.message = player.completedFlips > 1 ? 'Double backflip!' : 'Backflip!';
-        game.feedback = {
-          text: player.completedFlips > 1 ? 'DOUBLE BACKFLIP' : 'BACKFLIP',
-          score: `+${450 * player.completedFlips * game.combo}`,
-          age: 0,
-        };
+        startFeedback(
+          game,
+          player.completedFlips > 1 ? 'DOUBLE BACKFLIP' : 'BACKFLIP',
+          `+${450 * player.completedFlips * game.combo}`
+        );
       }
       player.grounded = true;
-      player.y = groundY;
-      player.velocityY = 0;
-      player.rotation = 0;
+      player.movementPhase = 'landing';
+      player.phaseTimer = 0;
+      player.groundAngle = targetGroundAngle;
+      player.rotation = targetGroundAngle;
       player.completedFlips = 0;
       setPlayerState(player, 'landing');
     }
+  } else if (player.movementPhase === 'landing') {
+    player.y = groundY;
+    player.groundAngle += (targetGroundAngle - player.groundAngle) * 0.18;
+    player.rotation = player.groundAngle;
+    player.phaseTimer += dt;
+    setPlayerState(player, 'landing');
+    if (player.phaseTimer >= LANDING_DURATION) {
+      player.movementPhase = 'ride';
+      player.phaseTimer = 0;
+    }
+  } else {
+    player.y = groundY;
+    player.groundAngle += (targetGroundAngle - player.groundAngle) * 0.14;
+    player.rotation = player.groundAngle;
+    setPlayerState(player, Math.abs(targetGroundAngle) > 0.12 ? 'crouch' : game.speed < 300 ? 'push' : 'ride');
+    if (game.speed > 275 && Math.random() < dt * 18) {
+      game.dust.push({
+        x: playerWorldX - 42,
+        y: groundY + 2,
+        age: 0,
+        life: 0.55 + Math.random() * 0.28,
+        drift: -22 - Math.random() * 28,
+        size: 2 + Math.random() * 2.8,
+      });
+    }
   }
+
+  if (player.y > groundY) {
+    player.y = groundY;
+    player.velocityY = Math.min(0, player.velocityY);
+  }
+
+  game.dust.forEach((particle) => {
+    particle.age += dt;
+    particle.x += particle.drift * dt;
+    particle.y -= 8 * dt;
+  });
+  game.dust = game.dust.filter((particle) => particle.age < particle.life);
 
   while (game.nextChunkX < game.worldX + width * 2.2) {
     addChunk(game, game.nextChunkX);
@@ -449,8 +554,7 @@ function updateGame(game, dt, width, height) {
       game.score += 100 * game.combo;
       if (game.starCount % 8 === 0) {
         game.combo = Math.min(8, game.combo + 1);
-        game.message = 'Star combo!';
-        game.feedback = { text: 'STAR LINE', score: `x${game.combo}`, age: 0 };
+        startFeedback(game, 'STAR LINE', `x${game.combo}`);
       }
     }
   });
@@ -465,8 +569,11 @@ function updateGame(game, dt, width, height) {
     if (Math.abs(dx) < obstacle.size * 0.62 && playerNearGround) {
       obstacle.hit = true;
       game.status = 'crashed';
-      game.message = 'You hit a rock';
-      game.feedback = { text: 'ROCK HIT', score: '', age: 0 };
+      startFeedback(game, 'ROCK HIT');
+      player.y = groundY;
+      player.velocityY = 0;
+      player.grounded = true;
+      player.movementPhase = 'crash';
       player.crashTimer = 0;
     }
   });
@@ -475,6 +582,7 @@ function updateGame(game, dt, width, height) {
   game.stars = game.stars.filter((star) => star.x > pruneBefore && !star.collected);
   game.obstacles = game.obstacles.filter((obstacle) => obstacle.x > pruneBefore);
   game.decor = game.decor.filter((item) => item.x > pruneBefore);
+  game.dust = game.dust.filter((particle) => particle.x > pruneBefore);
 }
 
 function renderGame(ctx, images, game, width, height) {
@@ -532,6 +640,34 @@ function renderGame(ctx, images, game, width, height) {
   const playerHeight = Math.max(118, Math.min(166, height * 0.215));
   const playerWidth = playerHeight * 0.78;
   const playerX = width * player.xRatio;
+  const playerWorldX = game.worldX + width * player.xRatio;
+  const groundY = terrainY(playerWorldX, height);
+  const airHeight = Math.max(0, groundY - player.y);
+  const shadowScale = Math.max(0.45, 1 - airHeight / (height * 0.24));
+  const shadowAlpha = Math.max(0.1, 0.34 - airHeight / (height * 0.85));
+
+  ctx.save();
+  ctx.translate(playerX, groundY + 4);
+  ctx.rotate(player.groundAngle);
+  ctx.scale(shadowScale, 1);
+  ctx.beginPath();
+  ctx.ellipse(0, 0, playerWidth * 0.36, 5, 0, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(14, 20, 16, ${shadowAlpha})`;
+  ctx.fill();
+  ctx.restore();
+
+  game.dust.forEach((particle) => {
+    const progress = particle.age / particle.life;
+    const screenX = particle.x - game.worldX;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, 1 - progress) * 0.36;
+    ctx.beginPath();
+    ctx.arc(screenX, particle.y, particle.size * (1 + progress), 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(241, 214, 154, 0.75)';
+    ctx.fill();
+    ctx.restore();
+  });
+
   if (player.stateBlend < 1 && previousCharacterImage !== characterImage) {
     drawAnchoredSprite(
       ctx,
@@ -558,6 +694,28 @@ function renderGame(ctx, images, game, width, height) {
     player.rotation,
     player.stateBlend
   );
+
+  ctx.save();
+  ctx.translate(playerX, player.y);
+  ctx.rotate(player.rotation);
+  ctx.strokeStyle = 'rgba(250, 214, 142, 0.7)';
+  ctx.lineWidth = 1.4;
+  [-0.22, 0.22].forEach((offset) => {
+    const wheelX = playerWidth * offset;
+    const wheelY = -playerHeight * 0.05;
+    ctx.save();
+    ctx.translate(wheelX, wheelY);
+    ctx.rotate(player.wheelSpin);
+    ctx.beginPath();
+    ctx.arc(0, 0, 5.5, 0, Math.PI * 2);
+    ctx.moveTo(-5, 0);
+    ctx.lineTo(5, 0);
+    ctx.moveTo(0, -5);
+    ctx.lineTo(0, 5);
+    ctx.stroke();
+    ctx.restore();
+  });
+  ctx.restore();
 
   if (game.feedback && game.status === 'playing') {
     const progress = Math.min(1, game.feedback.age / FEEDBACK_DURATION);
@@ -609,6 +767,8 @@ function EndlessSkatingPage() {
 
   const startRun = useCallback(() => {
     const game = gameRef.current;
+    window.localStorage?.setItem('endless-skating-seen-instructions', 'true');
+    game.hasSeenInstructions = true;
     game.status = 'playing';
     game.message = 'Ayubowan!';
     game.feedback = { text: 'AYUBOWAN!', score: '', age: 0 };
@@ -616,19 +776,32 @@ function EndlessSkatingPage() {
     setPhase('playing');
   }, []);
 
+  const restartRun = useCallback(() => {
+    const best = Number(window.localStorage?.getItem('endless-skating-best') || 0);
+    const next = createGameState(best);
+    next.status = 'playing';
+    next.hasSeenInstructions = true;
+    next.feedback = { text: 'GO!', score: '', age: 0 };
+    next.lastTime = performance.now();
+    addChunk(next, 580);
+    addChunk(next, 1340);
+    gameRef.current = next;
+    syncHud();
+  }, [syncHud]);
+
   const jump = useCallback(() => {
     const game = gameRef.current;
     if (game.status !== 'playing') {
       return;
     }
-    if (game.player.grounded) {
+    if (game.player.grounded && game.player.movementPhase === 'ride') {
       const playerWorldX = game.worldX + window.innerWidth * game.player.xRatio;
-      const slopeBoost = Math.max(0, terrainSlope(playerWorldX, window.innerHeight)) * 11;
-      game.player.grounded = false;
-      game.player.velocityY = -540 - Math.min(120, slopeBoost) - Math.max(0, game.speed - 360) * 0.12;
-      game.player.rotation = 0;
+      const downhillBoost = Math.max(0, terrainAngle(playerWorldX, window.innerHeight)) * 180;
+      game.player.movementPhase = 'takeoff';
+      game.player.phaseTimer = 0;
+      game.player.takeoffVelocity = -590 - Math.min(95, downhillBoost) - Math.max(0, game.speed - 300) * 0.16;
       game.player.completedFlips = 0;
-      setPlayerState(game.player, 'jump');
+      setPlayerState(game.player, 'crouch');
     }
   }, []);
 
@@ -648,6 +821,10 @@ function EndlessSkatingPage() {
 
   useEffect(() => {
     const onGameActionClick = (event) => {
+      if (event.defaultPrevented) {
+        return;
+      }
+
       const actionElement = event.target.closest?.('[data-skating-action]');
       if (!actionElement) {
         return;
@@ -660,13 +837,16 @@ function EndlessSkatingPage() {
       if (action === 'start') {
         startRun();
       }
+      if (action === 'restart') {
+        restartRun();
+      }
     };
 
     document.addEventListener('click', onGameActionClick);
     return () => {
       document.removeEventListener('click', onGameActionClick);
     };
-  }, [resetGame, startRun]);
+  }, [resetGame, restartRun, startRun]);
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -780,7 +960,11 @@ function EndlessSkatingPage() {
             type="button"
             className="primary-button"
             data-skating-action="instructions"
-            onClick={() => resetGame('instructions')}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              resetGame('instructions');
+            }}
           >
             Start
           </button>
@@ -798,7 +982,11 @@ function EndlessSkatingPage() {
             type="button"
             className="primary-button"
             data-skating-action="start"
-            onClick={startRun}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              startRun();
+            }}
           >
             Begin Run
           </button>
@@ -819,8 +1007,12 @@ function EndlessSkatingPage() {
             <button
               type="button"
               className="primary-button"
-              data-skating-action="instructions"
-              onClick={() => resetGame('instructions')}
+              data-skating-action="restart"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                restartRun();
+              }}
             >
               Restart
             </button>
