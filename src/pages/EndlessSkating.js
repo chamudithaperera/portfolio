@@ -548,8 +548,8 @@ function updateGame(game, dt, width, height) {
   if (player.movementPhase === 'takeoff') {
     player.phaseTimer += dt;
     const takeoffProgress = clamp(player.phaseTimer / TAKEOFF_DURATION, 0, 1);
-    const crouchDip = Math.sin(takeoffProgress * Math.PI) * 10;
-    player.y = groundY + crouchDip;
+    const preloadLift = smoothstep(takeoffProgress) * 5;
+    player.y = groundY - preloadLift;
     player.groundAngle = lerp(player.groundAngle, targetGroundAngle, 0.18);
     player.visualGroundAngle = lerp(player.visualGroundAngle, player.groundAngle, 0.24);
     player.rotation = lerp(player.rotation, player.groundAngle - 0.1 * takeoffProgress, 0.32);
@@ -712,6 +712,15 @@ function updateGame(game, dt, width, height) {
 
 function renderGame(ctx, images, game, width, height) {
   ctx.clearRect(0, 0, width, height);
+  ctx.save();
+  if (game.shake > 0) {
+    const shakeStrength = game.shake * 10;
+    ctx.translate(
+      (Math.random() - 0.5) * shakeStrength,
+      (Math.random() - 0.5) * shakeStrength * 0.65
+    );
+  }
+
   drawBackground(ctx, images, game, width, height);
 
   game.decor.forEach((item) => {
@@ -765,6 +774,7 @@ function renderGame(ctx, images, game, width, height) {
   const playerHeight = Math.max(118, Math.min(166, height * 0.215));
   const playerWidth = playerHeight * 0.78;
   const playerX = width * player.xRatio;
+  const playerDrawX = playerX + player.screenOffsetX;
   const playerWorldX = game.worldX + width * player.xRatio;
   const groundY = terrainY(playerWorldX, height);
   const airHeight = Math.max(0, groundY - player.y);
@@ -772,8 +782,8 @@ function renderGame(ctx, images, game, width, height) {
   const shadowAlpha = Math.max(0.1, 0.34 - airHeight / (height * 0.85));
 
   ctx.save();
-  ctx.translate(playerX, groundY + 4);
-  ctx.rotate(player.groundAngle);
+  ctx.translate(playerDrawX, groundY + 4);
+  ctx.rotate(player.visualGroundAngle || player.groundAngle);
   ctx.scale(shadowScale, 1);
   ctx.beginPath();
   ctx.ellipse(0, 0, playerWidth * 0.36, 5, 0, 0, Math.PI * 2);
@@ -793,11 +803,33 @@ function renderGame(ctx, images, game, width, height) {
     ctx.restore();
   });
 
+  game.impactParticles.forEach((particle) => {
+    const progress = particle.age / particle.life;
+    const screenX = particle.x - game.worldX;
+    ctx.save();
+    ctx.translate(screenX, particle.y);
+    ctx.rotate(particle.rotation);
+    ctx.globalAlpha = Math.max(0, 1 - progress) * 0.88;
+    ctx.fillStyle = 'rgba(250, 204, 21, 0.92)';
+    ctx.beginPath();
+    ctx.moveTo(0, -particle.size * 1.8);
+    ctx.lineTo(particle.size * 0.72, -particle.size * 0.34);
+    ctx.lineTo(particle.size * 1.9, 0);
+    ctx.lineTo(particle.size * 0.72, particle.size * 0.34);
+    ctx.lineTo(0, particle.size * 1.8);
+    ctx.lineTo(-particle.size * 0.72, particle.size * 0.34);
+    ctx.lineTo(-particle.size * 1.9, 0);
+    ctx.lineTo(-particle.size * 0.72, -particle.size * 0.34);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  });
+
   if (player.stateBlend < 1 && previousCharacterImage !== characterImage) {
     drawAnchoredSprite(
       ctx,
       previousCharacterImage,
-      playerX,
+      playerDrawX,
       player.y,
       playerWidth,
       playerHeight,
@@ -810,7 +842,7 @@ function renderGame(ctx, images, game, width, height) {
   drawAnchoredSprite(
     ctx,
     characterImage,
-    playerX,
+    playerDrawX,
     player.y,
     playerWidth,
     playerHeight,
@@ -821,7 +853,7 @@ function renderGame(ctx, images, game, width, height) {
   );
 
   ctx.save();
-  ctx.translate(playerX, player.y);
+  ctx.translate(playerDrawX, player.y);
   ctx.rotate(player.rotation);
   ctx.strokeStyle = 'rgba(250, 214, 142, 0.7)';
   ctx.lineWidth = 1.4;
@@ -842,7 +874,9 @@ function renderGame(ctx, images, game, width, height) {
   });
   ctx.restore();
 
-  if (game.feedback && game.status === 'playing') {
+  ctx.restore();
+
+  if (game.feedback && (game.status === 'playing' || game.status === 'crashed')) {
     const progress = Math.min(1, game.feedback.age / FEEDBACK_DURATION);
     const alpha = Math.sin((1 - progress) * Math.PI * 0.5);
     ctx.save();
@@ -920,10 +954,14 @@ function EndlessSkatingPage() {
       return;
     }
     if (game.player.grounded && game.player.movementPhase === 'ride') {
-      const playerWorldX = game.worldX + window.innerWidth * game.player.xRatio;
-      const downhillBoost = Math.max(0, terrainAngle(playerWorldX, window.innerHeight)) * 180;
+      const rect = canvasRef.current?.getBoundingClientRect();
+      const width = rect?.width || window.innerWidth;
+      const height = rect?.height || window.innerHeight;
+      const playerWorldX = game.worldX + width * game.player.xRatio;
+      const downhillBoost = Math.max(0, terrainAngle(playerWorldX, height)) * 180;
       game.player.movementPhase = 'takeoff';
       game.player.phaseTimer = 0;
+      game.player.airTimer = 0;
       game.player.takeoffVelocity = -590 - Math.min(95, downhillBoost) - Math.max(0, game.speed - 300) * 0.16;
       game.player.completedFlips = 0;
       setPlayerState(game.player, 'crouch');
