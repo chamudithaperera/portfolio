@@ -62,10 +62,10 @@ const PLAYER_WHEEL_ANCHOR_X = 0.5;
 const FEEDBACK_DURATION = 1.35;
 const TERRAIN_POINT_SPACING = 360;
 const GRAVITY = 1420;
-const TAKEOFF_DURATION = 0.1;
-const LANDING_DURATION = 0.14;
-const CRASH_DURATION = 0.68;
-const BACKFLIP_SPEED = Math.PI * 2.35;
+const TAKEOFF_DURATION = 0.16;
+const LANDING_DURATION = 0.24;
+const CRASH_DURATION = 0.92;
+const BACKFLIP_SPEED = Math.PI * 2.15;
 
 const INITIAL_HUD = {
   score: 0,
@@ -79,6 +79,8 @@ const INITIAL_HUD = {
 };
 
 const smoothstep = (value) => value * value * (3 - 2 * value);
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const lerp = (from, to, amount) => from + (to - from) * amount;
 
 const terrainControlY = (index, height) => {
   const base = height * 0.74;
@@ -170,6 +172,7 @@ function createGameState(best = 0) {
       grounded: true,
       rotation: 0,
       groundAngle: 0,
+      visualGroundAngle: 0,
       wheelSpin: 0,
       completedFlips: 0,
       state: 'push',
@@ -177,7 +180,13 @@ function createGameState(best = 0) {
       stateBlend: 1,
       movementPhase: 'ride',
       phaseTimer: 0,
+      airTimer: 0,
       crashTimer: 0,
+      takeoffVelocity: -600,
+      screenOffsetX: 0,
+      crashVelocityX: 0,
+      crashSpin: 0,
+      hasBounced: false,
     },
     inputHeld: false,
     stars: [],
@@ -193,6 +202,8 @@ function createGameState(best = 0) {
     sceneMood: 0,
     feedback: null,
     dust: [],
+    impactParticles: [],
+    shake: 0,
     hasSeenInstructions:
       typeof window === 'undefined'
         ? false
@@ -218,6 +229,82 @@ const normalizeRotation = (rotation) => {
 function startFeedback(game, text, score = '') {
   game.message = text;
   game.feedback = { text, score, age: 0 };
+}
+
+function addDustBurst(game, x, y, count = 12) {
+  for (let index = 0; index < count; index += 1) {
+    const angle = -Math.PI * (0.08 + Math.random() * 0.58);
+    const speed = 42 + Math.random() * 118;
+    game.dust.push({
+      x: x - 6 + Math.random() * 18,
+      y: y + Math.random() * 10,
+      age: 0,
+      life: 0.42 + Math.random() * 0.46,
+      vx: Math.cos(angle) * speed - 70,
+      vy: Math.sin(angle) * speed - 16,
+      drift: -36 - Math.random() * 55,
+      size: 2.4 + Math.random() * 4.8,
+    });
+  }
+}
+
+function addImpactBurst(game, x, y) {
+  for (let index = 0; index < 11; index += 1) {
+    const angle = -Math.PI + (index / 10) * Math.PI * 0.88 + (Math.random() - 0.5) * 0.34;
+    const speed = 74 + Math.random() * 128;
+    game.impactParticles.push({
+      x,
+      y: y - 22 + Math.random() * 18,
+      age: 0,
+      life: 0.36 + Math.random() * 0.32,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      size: 2.6 + Math.random() * 3.4,
+      rotation: Math.random() * Math.PI,
+    });
+  }
+}
+
+function beginCrash(game, text, groundY, targetGroundAngle, options = {}) {
+  const player = game.player;
+  game.status = 'crashed';
+  game.shake = Math.max(game.shake, options.shake || 0.55);
+  startFeedback(game, text);
+  player.grounded = false;
+  player.movementPhase = 'crash';
+  player.crashTimer = 0;
+  player.phaseTimer = 0;
+  player.airTimer = 0;
+  player.velocityY = options.velocityY ?? -210;
+  player.crashVelocityX = options.velocityX ?? -170;
+  player.screenOffsetX = options.offsetX ?? 0;
+  player.crashSpin = options.spin ?? -6.6;
+  player.hasBounced = false;
+  player.groundAngle = targetGroundAngle;
+  player.visualGroundAngle = targetGroundAngle;
+  player.y = Math.min(player.y, groundY - 8);
+  setPlayerState(player, options.state || 'landing');
+}
+
+function updateParticles(game, dt) {
+  game.dust.forEach((particle) => {
+    particle.age += dt;
+    particle.x += (particle.vx ?? particle.drift) * dt;
+    particle.y += (particle.vy ?? -8) * dt;
+    if (particle.vy !== undefined) {
+      particle.vy += GRAVITY * dt * 0.34;
+    }
+  });
+  game.dust = game.dust.filter((particle) => particle.age < particle.life);
+
+  game.impactParticles.forEach((particle) => {
+    particle.age += dt;
+    particle.x += particle.vx * dt;
+    particle.y += particle.vy * dt;
+    particle.vy += GRAVITY * dt * 0.22;
+    particle.rotation += dt * 8;
+  });
+  game.impactParticles = game.impactParticles.filter((particle) => particle.age < particle.life);
 }
 
 function addChunk(game, startX) {
@@ -412,21 +499,42 @@ function updateGame(game, dt, width, height) {
       game.message = '';
     }
   }
+  game.shake = Math.max(0, game.shake - dt * 1.7);
 
   if (game.status === 'crashed') {
     player.crashTimer += dt;
-    game.worldX += game.speed * dt * 0.34;
-    game.speed = Math.max(0, game.speed - 620 * dt);
-    player.y = groundY;
-    player.groundAngle += (targetGroundAngle - player.groundAngle) * 0.16;
-    player.rotation += dt * 5.4;
-    setPlayerState(player, 'landing');
+    const crashProgress = clamp(player.crashTimer / CRASH_DURATION, 0, 1);
+    game.worldX += game.speed * dt * lerp(0.3, 0.08, smoothstep(crashProgress));
+    game.speed = Math.max(0, game.speed - lerp(520, 860, crashProgress) * dt);
+    player.screenOffsetX += player.crashVelocityX * dt;
+    player.crashVelocityX = lerp(player.crashVelocityX, 0, dt * 3.4);
+    player.velocityY += GRAVITY * dt * 0.92;
+    player.y += player.velocityY * dt;
+    player.groundAngle = lerp(player.groundAngle, targetGroundAngle, 0.12);
+    player.visualGroundAngle = lerp(player.visualGroundAngle, targetGroundAngle, 0.18);
+    player.rotation += player.crashSpin * dt * (1 - crashProgress * 0.56);
+    player.crashSpin = lerp(player.crashSpin, 0, dt * 1.8);
+    setPlayerState(player, crashProgress < 0.45 ? 'backflip' : 'landing');
+
+    if (player.y >= groundY) {
+      player.y = groundY;
+      if (!player.hasBounced && Math.abs(player.velocityY) > 120) {
+        player.velocityY = -Math.min(190, Math.abs(player.velocityY) * 0.28);
+        player.hasBounced = true;
+        game.shake = Math.max(game.shake, 0.18);
+        addDustBurst(game, playerWorldX - 24, groundY + 4, 7);
+      } else {
+        player.velocityY = 0;
+      }
+    }
+
     if (player.crashTimer > CRASH_DURATION) {
       game.status = 'gameover';
       game.message = 'Game Over';
       game.best = Math.max(game.best, Math.floor(game.score));
       window.localStorage?.setItem('endless-skating-best', String(game.best));
     }
+    updateParticles(game, dt);
     return;
   }
 
@@ -438,19 +546,26 @@ function updateGame(game, dt, width, height) {
   player.wheelSpin += game.speed * dt * 0.09;
 
   if (player.movementPhase === 'takeoff') {
-    player.y = groundY;
-    player.groundAngle += (targetGroundAngle - player.groundAngle) * 0.16;
-    player.rotation = player.groundAngle;
     player.phaseTimer += dt;
+    const takeoffProgress = clamp(player.phaseTimer / TAKEOFF_DURATION, 0, 1);
+    const crouchDip = Math.sin(takeoffProgress * Math.PI) * 10;
+    player.y = groundY + crouchDip;
+    player.groundAngle = lerp(player.groundAngle, targetGroundAngle, 0.18);
+    player.visualGroundAngle = lerp(player.visualGroundAngle, player.groundAngle, 0.24);
+    player.rotation = lerp(player.rotation, player.groundAngle - 0.1 * takeoffProgress, 0.32);
     setPlayerState(player, 'crouch');
     if (player.phaseTimer >= TAKEOFF_DURATION) {
       player.movementPhase = 'air';
       player.phaseTimer = 0;
+      player.airTimer = 0;
       player.grounded = false;
       player.velocityY = player.takeoffVelocity || -600;
+      player.y = groundY - 2;
+      player.rotation = player.groundAngle - 0.14;
       setPlayerState(player, 'jump');
     }
   } else if (!player.grounded) {
+    player.airTimer += dt;
     player.velocityY += GRAVITY * dt;
     player.y += player.velocityY * dt;
     if (game.inputHeld) {
@@ -458,10 +573,13 @@ function updateGame(game, dt, width, height) {
       setPlayerState(player, 'backflip');
     } else if (player.velocityY < -190) {
       setPlayerState(player, 'highAir');
+      player.rotation = lerp(player.rotation, player.groundAngle - 0.22, 0.08);
     } else if (player.velocityY < 130) {
       setPlayerState(player, 'grab');
+      player.rotation = lerp(player.rotation, player.groundAngle + 0.03, 0.07);
     } else {
       setPlayerState(player, 'landing');
+      player.rotation = lerp(player.rotation, targetGroundAngle + 0.12, 0.09);
     }
 
     const fullFlips = Math.floor(Math.abs(player.rotation) / (Math.PI * 2));
@@ -473,11 +591,13 @@ function updateGame(game, dt, width, height) {
       const normalizedRotation = normalizeRotation(player.rotation);
       const landedCleanly = normalizedRotation < 0.72;
       if (!landedCleanly) {
-        game.status = 'crashed';
-        startFeedback(game, 'BAD LANDING');
-        player.grounded = true;
-        player.movementPhase = 'crash';
-        player.crashTimer = 0;
+        beginCrash(game, 'BAD LANDING', groundY, targetGroundAngle, {
+          velocityY: -130,
+          velocityX: -105,
+          spin: player.rotation < 0 ? -5.8 : 5.8,
+          shake: 0.42,
+        });
+        addDustBurst(game, playerWorldX - 18, groundY + 4, 10);
         return;
       }
       if (player.completedFlips > 0) {
@@ -492,15 +612,21 @@ function updateGame(game, dt, width, height) {
       player.grounded = true;
       player.movementPhase = 'landing';
       player.phaseTimer = 0;
-      player.groundAngle = targetGroundAngle;
-      player.rotation = targetGroundAngle;
+      player.airTimer = 0;
+      player.groundAngle = lerp(player.groundAngle, targetGroundAngle, 0.55);
+      player.visualGroundAngle = targetGroundAngle;
+      player.rotation = lerp(player.rotation, targetGroundAngle, 0.48);
       player.completedFlips = 0;
+      addDustBurst(game, playerWorldX - 26, groundY + 3, 4);
       setPlayerState(player, 'landing');
     }
   } else if (player.movementPhase === 'landing') {
+    const landingProgress = clamp(player.phaseTimer / LANDING_DURATION, 0, 1);
+    const settle = Math.sin((1 - landingProgress) * Math.PI) * 4;
     player.y = groundY;
-    player.groundAngle += (targetGroundAngle - player.groundAngle) * 0.18;
-    player.rotation = player.groundAngle;
+    player.groundAngle = lerp(player.groundAngle, targetGroundAngle, 0.2);
+    player.visualGroundAngle = lerp(player.visualGroundAngle, player.groundAngle, 0.22);
+    player.rotation = lerp(player.rotation, player.groundAngle + settle * 0.012, 0.36);
     player.phaseTimer += dt;
     setPlayerState(player, 'landing');
     if (player.phaseTimer >= LANDING_DURATION) {
@@ -509,7 +635,8 @@ function updateGame(game, dt, width, height) {
     }
   } else {
     player.y = groundY;
-    player.groundAngle += (targetGroundAngle - player.groundAngle) * 0.14;
+    player.groundAngle = lerp(player.groundAngle, targetGroundAngle, 0.14);
+    player.visualGroundAngle = lerp(player.visualGroundAngle, player.groundAngle, 0.18);
     player.rotation = player.groundAngle;
     setPlayerState(player, Math.abs(targetGroundAngle) > 0.12 ? 'crouch' : game.speed < 300 ? 'push' : 'ride');
     if (game.speed > 275 && Math.random() < dt * 18) {
@@ -529,12 +656,7 @@ function updateGame(game, dt, width, height) {
     player.velocityY = Math.min(0, player.velocityY);
   }
 
-  game.dust.forEach((particle) => {
-    particle.age += dt;
-    particle.x += particle.drift * dt;
-    particle.y -= 8 * dt;
-  });
-  game.dust = game.dust.filter((particle) => particle.age < particle.life);
+  updateParticles(game, dt);
 
   while (game.nextChunkX < game.worldX + width * 2.2) {
     addChunk(game, game.nextChunkX);
@@ -568,13 +690,15 @@ function updateGame(game, dt, width, height) {
     const playerNearGround = player.y > terrainY(playerWorldX, height) - 34;
     if (Math.abs(dx) < obstacle.size * 0.62 && playerNearGround) {
       obstacle.hit = true;
-      game.status = 'crashed';
-      startFeedback(game, 'ROCK HIT');
-      player.y = groundY;
-      player.velocityY = 0;
-      player.grounded = true;
-      player.movementPhase = 'crash';
-      player.crashTimer = 0;
+      beginCrash(game, 'ROCK HIT', groundY, targetGroundAngle, {
+        velocityY: -260,
+        velocityX: -210,
+        spin: -8.8,
+        shake: 0.72,
+        state: 'backflip',
+      });
+      addImpactBurst(game, obstacle.x, terrainY(obstacle.x, height));
+      addDustBurst(game, playerWorldX - 20, groundY + 6, 16);
     }
   });
 
@@ -583,6 +707,7 @@ function updateGame(game, dt, width, height) {
   game.obstacles = game.obstacles.filter((obstacle) => obstacle.x > pruneBefore);
   game.decor = game.decor.filter((item) => item.x > pruneBefore);
   game.dust = game.dust.filter((particle) => particle.x > pruneBefore);
+  game.impactParticles = game.impactParticles.filter((particle) => particle.x > pruneBefore);
 }
 
 function renderGame(ctx, images, game, width, height) {
