@@ -44,6 +44,7 @@ import withBase from '../utils/basePath';
 import { apiRequest, streamApiRequest } from '../utils/api';
 import { fallbackCountryOptions, loadCountryOptions } from '../utils/countries';
 import { useTheme } from '../theme';
+import skatingGameImage from '../assets/game/background-sigiriya.png';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -103,6 +104,9 @@ const siteKeywords =
 const projectsPageTitle = 'Projects | Chamuditha Perera';
 const projectsPageDescription =
   "Selected projects by Chamuditha Perera, software engineer: Flutter apps, React websites, Spring Boot APIs, dashboards, admin panels, and UI/UX product work.";
+const gamesPageTitle = 'Games | Chamuditha Perera';
+const gamesPageDescription =
+  'Playable browser games created by Chamuditha Perera, including a Sri Lanka-inspired endless skating game.';
 const pricingPageTitle = 'Pricing | Chamuditha Perera';
 const pricingPageDescription =
   'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.';
@@ -114,6 +118,20 @@ const siteTouchIcon = `${siteUrl}/site-icon-192.png`;
 
 const locationUrl =
   'https://www.google.com/maps/search/?api=1&query=No+83%2C+Galle+Road%2C+Kalutara+North%2C+Sri+Lanka';
+
+const gameItems = [
+  {
+    title: 'Endless Skating',
+    description:
+      'A fast browser skating game with trick timing, score chasing, animated scenery, and Sri Lanka-inspired backgrounds.',
+    image: skatingGameImage,
+    href: '/Endless-Skating',
+    genre: 'Arcade runner',
+    platform: 'Web',
+    status: 'Playable now',
+    tags: ['Canvas', 'React', 'Keyboard', 'Mobile touch'],
+  },
+];
 
 const reviewServiceOptions = [
   'Website Development',
@@ -1497,7 +1515,7 @@ function Hero() {
             <a className="secondary-button" href="#contact">
               Get In Touch <Icon name="arrowUpRight" size={15} />
             </a>
-            <a className="game-button" href="/Endless-Skating">
+            <a className="game-button" href="/games">
               <Icon name="gamepad" size={18} /> Bored? Play my game
             </a>
           </div>
@@ -2178,6 +2196,124 @@ function ProjectsPage() {
       <Navigation />
       <main>
         <Projects mode="page" projectsData={portfolioContent.projects} />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function GamesPage() {
+  const { themeColor } = useTheme();
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') {
+      return;
+    }
+
+    try {
+      window.scrollTo(0, 0);
+    } catch (error) {
+      void error;
+    }
+  }, []);
+
+  return (
+    <div className="bolt-shell games-page-shell">
+      <Helmet>
+        <title>{gamesPageTitle}</title>
+        <meta name="description" content={gamesPageDescription} />
+        <meta name="keywords" content={`${siteKeywords}, browser games, React games, endless skating game`} />
+        <meta name="author" content={siteName} />
+        <meta name="application-name" content={siteName} />
+        <meta name="apple-mobile-web-app-title" content={siteName} />
+        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+        <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+        <link rel="canonical" href={`${siteUrl}/games`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${siteUrl}/games`} />
+        <meta property="og:title" content={gamesPageTitle} />
+        <meta property="og:description" content={gamesPageDescription} />
+        <meta property="og:image" content={socialImage} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1536" />
+        <meta property="og:image:height" content="1024" />
+        <meta property="og:image:alt" content={socialImageAlt} />
+        <meta property="og:site_name" content={siteName} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={gamesPageTitle} />
+        <meta name="twitter:description" content={gamesPageDescription} />
+        <meta name="twitter:image" content={socialImage} />
+        <meta name="twitter:image:alt" content={socialImageAlt} />
+        <meta name="theme-color" content={themeColor} />
+        <link rel="icon" type="image/png" sizes="96x96" href={siteLogo} />
+        <link rel="shortcut icon" type="image/x-icon" href={siteIcon} sizes="any" />
+        <link rel="apple-touch-icon" href={siteTouchIcon} />
+      </Helmet>
+      <Navigation />
+      <main>
+        <section className="section games-page-section">
+          <div className="section-divider" />
+          <Reveal className="section-inner">
+            <div className="games-page-header">
+              <SectionHeading
+                index="Playground"
+                title="Created"
+                accent="Games"
+                align="left"
+                description="A small collection of playable browser games I have created. Pick a card and jump straight in."
+              />
+              <Link className="projects-back-button" to="/">
+                <Icon name="arrowLeft" size={14} />
+                Back to Home
+              </Link>
+            </div>
+
+            <div className="games-grid">
+              {gameItems.map((game, index) => (
+                <motion.div
+                  key={game.title}
+                  initial={{ opacity: 0, y: 24, scale: 0.985 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.24 }}
+                  transition={{ duration: 0.65, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <Link className="game-card card-3d" to={game.href} aria-label={`Play ${game.title}`}>
+                    <div className="game-card-image">
+                      <img src={game.image} alt={`${game.title} game preview`} />
+                      <span className="game-card-status">
+                        <span /> {game.status}
+                      </span>
+                    </div>
+                    <div className="game-card-copy">
+                      <p className="project-overline">Portfolio Game</p>
+                      <h3>{game.title}</h3>
+                      <p>{game.description}</p>
+
+                      <div className="game-card-meta" aria-label={`${game.title} details`}>
+                        <span><Icon name="gamepad" size={13} /> {game.genre}</span>
+                        <span><Icon name="code" size={13} /> {game.platform}</span>
+                      </div>
+
+                      <div className="game-card-footer">
+                        <div className="tag-row">
+                          {game.tags.map((tag) => (
+                            <span key={tag} className="tech-tag colorful-tag">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        <span className="project-card-cta">
+                          <Icon name="arrowRight" size={12} />
+                          <span>Play game</span>
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </Reveal>
+        </section>
       </main>
       <Footer />
     </div>
@@ -4263,5 +4399,5 @@ function Home() {
   );
 }
 
-export { FloatingAiAgent, PricingPage, ProjectsPage, ReviewPage };
+export { FloatingAiAgent, GamesPage, PricingPage, ProjectsPage, ReviewPage };
 export default Home;
