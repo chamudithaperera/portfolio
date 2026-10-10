@@ -750,12 +750,14 @@ class GameScene extends Phaser.Scene {
     const worldLeft = this.worldX - 160;
     const worldRight = this.worldX + GAME_WIDTH + 360;
     this.coins.forEach((coin) => {
+      if (coin.collected) return;
       coin.sprite.rotation += dt * 4.5;
       const screenX = coin.worldX - this.worldX;
       coin.sprite.setPosition(screenX, coin.worldY);
       if (!coin.collected && Phaser.Math.Distance.Between(screenX, coin.worldY, this.player.x, this.player.y - 72) < 54) {
         coin.collected = true;
-        coin.sprite.disableBody(true, true);
+        coin.sprite.setActive(false);
+        coin.sprite.setVisible(false);
         this.runStats.coins += 1;
         if (!this.player.grounded) this.runStats.airCoins += 1;
         this.addCoinBurst(screenX, coin.worldY);
