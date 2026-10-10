@@ -1,0 +1,122 @@
+[
+  {
+    "name": "01_cruise.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      10,
+      23,
+      274,
+      484
+    ],
+    "source_frame": 1
+  },
+  {
+    "name": "02_accelerate.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      293,
+      107,
+      370,
+      386
+    ],
+    "source_frame": 2
+  },
+  {
+    "name": "03_crouch.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      637,
+      168,
+      287,
+      331
+    ],
+    "source_frame": 3
+  },
+  {
+    "name": "04_jump_takeoff.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      921,
+      36,
+      300,
+      448
+    ],
+    "source_frame": 4
+  },
+  {
+    "name": "05_airborne.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      1235,
+      33,
+      278,
+      431
+    ],
+    "source_frame": 5
+  },
+  {
+    "name": "06_backflip_start.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      17,
+      584,
+      305,
+      414
+    ],
+    "source_frame": 6
+  },
+  {
+    "name": "07_backflip_inverted.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      271,
+      522,
+      343,
+      349
+    ],
+    "source_frame": 7
+  },
+  {
+    "name": "08_flip_recovery.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      640,
+      576,
+      272,
+      387
+    ],
+    "source_frame": 8
+  },
+  {
+    "name": "09_landing.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      920,
+      610,
+      305,
+      354
+    ],
+    "source_frame": 9
+  },
+  {
+    "name": "10_deep_crouch_recovery.png",
+    "width": 512,
+    "height": 512,
+    "bbox_source": [
+      1207,
+      661,
+      317,
+      324
+    ],
+    "source_frame": 10
+  }
+]

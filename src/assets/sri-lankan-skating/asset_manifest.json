@@ -1,0 +1,51 @@
+{
+  "title": "Sri Lankan Sunset Skater \u2014 Art Asset Pack",
+  "notes": [
+    "All exported PNGs have RGBA transparency where appropriate.",
+    "For parallax, use one distant and one midground layer per biome, plus the shared foreground.",
+    "Foreground parallax layer is a decorative silhouette, not the physics collision terrain.",
+    "Board is a wooden skateboard with wheels matching the supplied rider art."
+  ],
+  "resolution": {
+    "background_layers": [
+      2048,
+      720
+    ],
+    "board": [
+      256,
+      64
+    ],
+    "rock_variations": [
+      128,
+      128
+    ]
+  },
+  "biomes": {
+    "sigiriya_sunset": {
+      "distant": "distant/distant_sigiriya.png",
+      "midground": "midground/midground_temple_palms.png",
+      "foreground": "foreground/foreground_tropical_jungle.png"
+    },
+    "ella_morning": {
+      "distant": "distant/distant_ella.png",
+      "midground": "midground/midground_tea_bridge.png",
+      "foreground": "foreground/foreground_tropical_jungle.png"
+    }
+  },
+  "suggested_scroll_factors": {
+    "distant": 0.12,
+    "midground": 0.34,
+    "foreground": 0.72
+  },
+  "assets": [
+    "distant/distant_sigiriya.png",
+    "distant/distant_ella.png",
+    "midground/midground_temple_palms.png",
+    "midground/midground_tea_bridge.png",
+    "foreground/foreground_tropical_jungle.png",
+    "board/wooden_skateboard.png",
+    "rocks/rock_01_round_mossy.png",
+    "rocks/rock_02_tall.png",
+    "rocks/rock_03_flat_cluster.png"
+  ]
+}

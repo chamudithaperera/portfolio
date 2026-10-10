@@ -1,0 +1,222 @@
+{
+  "title": "Sri Lankan game props - 9 transparent PNGs",
+  "assetCount": 9,
+  "assets": [
+    {
+      "filename": "trees/tree_01_coconut_palm.png",
+      "name": "Coconut palm tree",
+      "width": 256,
+      "height": 512,
+      "displayType": "decorative",
+      "suggestedOrigin": [
+        0.5,
+        0.95
+      ],
+      "sourceCrop": [
+        73,
+        0,
+        476,
+        398
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        9,
+        237,
+        247,
+        497
+      ]
+    },
+    {
+      "filename": "trees/tree_02_bodhi_tree.png",
+      "name": "Bodhi-inspired tropical tree",
+      "width": 256,
+      "height": 512,
+      "displayType": "decorative",
+      "suggestedOrigin": [
+        0.5,
+        0.95
+      ],
+      "sourceCrop": [
+        483,
+        0,
+        1043,
+        398
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        9,
+        325,
+        247,
+        497
+      ]
+    },
+    {
+      "filename": "trees/tree_03_jackfruit_tree.png",
+      "name": "Jackfruit tree",
+      "width": 256,
+      "height": 512,
+      "displayType": "decorative",
+      "suggestedOrigin": [
+        0.5,
+        0.95
+      ],
+      "sourceCrop": [
+        1055,
+        0,
+        1490,
+        400
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        9,
+        257,
+        247,
+        497
+      ]
+    },
+    {
+      "filename": "temples/temple_01_ancient_stone_gateway.png",
+      "name": "Ancient Sri Lankan carved-stone gateway",
+      "width": 512,
+      "height": 512,
+      "displayType": "decorative",
+      "suggestedOrigin": [
+        0.5,
+        0.95
+      ],
+      "sourceCrop": [
+        22,
+        400,
+        542,
+        702
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        12,
+        204,
+        500,
+        497
+      ]
+    },
+    {
+      "filename": "temples/temple_02_stupa_and_pillars.png",
+      "name": "Stupa and heritage stone pillars",
+      "width": 512,
+      "height": 512,
+      "displayType": "decorative",
+      "suggestedOrigin": [
+        0.5,
+        0.95
+      ],
+      "sourceCrop": [
+        562,
+        397,
+        1116,
+        703
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        12,
+        227,
+        500,
+        497
+      ]
+    },
+    {
+      "filename": "balloons/balloon_01_lotus_sunset.png",
+      "name": "Sunset lotus-patterned hot air balloon",
+      "width": 384,
+      "height": 512,
+      "displayType": "interactive",
+      "suggestedOrigin": [
+        0.5,
+        0.5
+      ],
+      "sourceCrop": [
+        27,
+        699,
+        293,
+        1010
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        12,
+        54,
+        372,
+        497
+      ]
+    },
+    {
+      "filename": "balloons/balloon_02_blue_gold_lotus.png",
+      "name": "Blue and gold patterned hot air balloon",
+      "width": 384,
+      "height": 512,
+      "displayType": "interactive",
+      "suggestedOrigin": [
+        0.5,
+        0.5
+      ],
+      "sourceCrop": [
+        342,
+        697,
+        620,
+        1008
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        12,
+        87,
+        372,
+        497
+      ]
+    },
+    {
+      "filename": "ramps/ramp_01_festival_wooden.png",
+      "name": "Decorated wooden village ramp",
+      "width": 256,
+      "height": 128,
+      "displayType": "interactive",
+      "suggestedOrigin": [
+        0.5,
+        0.95
+      ],
+      "sourceCrop": [
+        636,
+        717,
+        1107,
+        1002
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        18,
+        9,
+        237,
+        119
+      ]
+    },
+    {
+      "filename": "ramps/ramp_02_ancient_stone.png",
+      "name": "Curved stone launch ramp with vines",
+      "width": 256,
+      "height": 128,
+      "displayType": "interactive",
+      "suggestedOrigin": [
+        0.5,
+        0.95
+      ],
+      "sourceCrop": [
+        1115,
+        718,
+        1525,
+        997
+      ],
+      "containsTransparency": true,
+      "boundsInCanvas": [
+        46,
+        9,
+        210,
+        119
+      ]
+    }
+  ]
+}

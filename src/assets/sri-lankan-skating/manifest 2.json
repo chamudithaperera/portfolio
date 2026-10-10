@@ -1,0 +1,33 @@
+{
+  "theme": "Sri Lankan tropical sunset / gold lotus / deep teal",
+  "coin": {
+    "frames": 6,
+    "frame_size": [
+      64,
+      64
+    ],
+    "spritesheet_size": [
+      384,
+      64
+    ],
+    "transparent": true
+  },
+  "menu_icons": {
+    "count": 8,
+    "size": [
+      64,
+      64
+    ],
+    "format": "editable SVG",
+    "names": [
+      "play",
+      "pause",
+      "restart",
+      "home",
+      "settings",
+      "sound_on",
+      "sound_off",
+      "fullscreen"
+    ]
+  }
+}
