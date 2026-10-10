@@ -334,7 +334,7 @@ class PreloadScene extends Phaser.Scene {
       color: '#fff7d6',
       fontStyle: '700',
     }).setOrigin(0.5);
-    const barBg = this.add.rectangle(width / 2, height / 2 + 5, 420, 8, 0xffffff, 0.2);
+    this.add.rectangle(width / 2, height / 2 + 5, 420, 8, 0xffffff, 0.2);
     const bar = this.add.rectangle(width / 2 - 210, height / 2 + 5, 0, 8, 0xf5c86a, 1).setOrigin(0, 0.5);
     const label = this.add.text(width / 2, height / 2 + 38, 'Loading 0%', {
       fontFamily: 'Inter, Arial',
