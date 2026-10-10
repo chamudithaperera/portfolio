@@ -490,11 +490,17 @@ html {
 .skating-game-page {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
   background: #07111f;
   color: #fff;
   touch-action: none;
   user-select: none;
+}
+
+body.skating-route-active {
+  overflow: hidden;
 }
 
 .skating-game-canvas {

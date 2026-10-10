@@ -834,7 +834,7 @@ class GameScene extends Phaser.Scene {
       const difficulty = Phaser.Math.Clamp(this.nextSpawnX / 7000, 0, 1);
       const ground = this.terrain.heightAt(this.nextSpawnX);
       this.spawnCoins(this.nextSpawnX, ground, difficulty);
-      if (this.nextSpawnX > 900 && this.random.next() < 0.62 + difficulty * 0.18) {
+      if (this.nextSpawnX > 1800 && this.random.next() < 0.42 + difficulty * 0.2) {
         this.spawnRock(this.nextSpawnX + this.random.range(120, 260));
       }
       if (this.random.next() < 0.36) this.spawnRamp(this.nextSpawnX + this.random.range(300, 460));
@@ -1187,12 +1187,14 @@ function EndlessSkatingPage() {
 
   useEffect(() => {
     if (!mountRef.current || gameRef.current) return undefined;
+    document.body.classList.add('skating-route-active');
     const save = loadSaveData();
     const audio = new AudioManager(save);
     const game = new Phaser.Game(createGameConfig(mountRef.current, save, audio));
     gameRef.current = game;
 
     return () => {
+      document.body.classList.remove('skating-route-active');
       audio.dispose();
       game.destroy(true);
       gameRef.current = null;
