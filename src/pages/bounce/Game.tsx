@@ -485,11 +485,7 @@ export function GameScene({
   return (
     <group>
       {/* Lighting Setup */}
-      <hemisphereLight
-        skyColor={seasonTheme.skyColor}
-        groundColor={seasonTheme.platformColor}
-        intensity={getConfig('hemiIntensity')}
-      />
+      <hemisphereLight args={[seasonTheme.skyColor, seasonTheme.platformColor, getConfig('hemiIntensity')]} />
       <directionalLight
         position={[15, 25, 20]}
         intensity={getConfig('sunIntensity')}
@@ -870,8 +866,8 @@ function MultiTypeSpringMesh({spring}: {spring: SpringItem}) {
             <meshStandardMaterial color="#334155" metalness={0.7} roughness={0.3} />
           </mesh>
           {[0, 0.15, 0.3].map((sy, idx) => (
-            <mesh key={idx} position={[0, sy - 0.05, 0]} castShadow>
-              <torusGeometry args={[0.25, 0.07, 12, 24]} rotation={[Math.PI / 2 + 0.1, 0, 0]} />
+            <mesh key={idx} position={[0, sy - 0.05, 0]} rotation={[Math.PI / 2 + 0.1, 0, 0]} castShadow>
+              <torusGeometry args={[0.25, 0.07, 12, 24]} />
               <meshStandardMaterial
                 color="#facc15"
                 metalness={0.85}
@@ -1276,8 +1272,8 @@ function VibrantMeadowBackdrop({theme}: {theme: SeasonTheme}) {
         {x: 74, y: 22, s: 1.4},
       ].map((island, idx) => (
         <group key={idx} position={[island.x, island.y, -16]}>
-          <mesh position={[0, -0.6, 0]}>
-            <coneGeometry args={[2.0 * island.s, 1.6 * island.s, 16]} rotation={[Math.PI, 0, 0]} />
+          <mesh position={[0, -0.6, 0]} rotation={[Math.PI, 0, 0]}>
+            <coneGeometry args={[2.0 * island.s, 1.6 * island.s, 16]} />
             <meshStandardMaterial color="#1e4e56" roughness={0.9} />
           </mesh>
           <mesh position={[0, 0.2, 0]}>
