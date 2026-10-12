@@ -276,7 +276,7 @@ export default function App() {
         score: prev.score + 1000,
       }));
     }
-  }, [currentLevel.id, eggsCollected, gameState.score]);
+  }, [currentLevel.id, eggsCollected]);
 
   const handleNextLevel = useCallback(() => {
     setLevelClearModal(false);

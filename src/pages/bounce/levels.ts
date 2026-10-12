@@ -1,4 +1,4 @@
-import {LevelData, SeasonTheme, SpringType} from './types';
+import {LevelData, SeasonTheme} from './types';
 
 export const SEASONS: SeasonTheme[] = [
   {
