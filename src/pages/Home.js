@@ -45,6 +45,7 @@ import { apiRequest, streamApiRequest } from '../utils/api';
 import { fallbackCountryOptions, loadCountryOptions } from '../utils/countries';
 import { useTheme } from '../theme';
 import skatingGameImage from '../assets/game/background-sigiriya.png';
+import bounceGameImage from '../assets/game/bounce-preview.svg';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -130,6 +131,17 @@ const gameItems = [
     platform: 'Web',
     status: 'Playable now',
     tags: ['Canvas', 'React', 'Keyboard', 'Mobile touch'],
+  },
+  {
+    title: '3D Bounce',
+    description:
+      'A bright 3D platform game where a red orb rolls, jumps, collects golden eggs and keys, and clears staged worlds.',
+    image: bounceGameImage,
+    href: '/bounce',
+    genre: '3D platformer',
+    platform: 'Web',
+    status: 'Playable now',
+    tags: ['Three.js', 'Physics', 'Keyboard', 'Touch controls'],
   },
 ];
 

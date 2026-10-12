@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import Admin from './pages/Admin';
+import BounceGamePage from './pages/bounce/App.tsx';
 import EndlessSkatingPage from './pages/EndlessSkating';
 import Home, { FloatingAiAgent, GamesPage, PricingPage, ProjectsPage, ReviewPage } from './pages/Home';
 import { ThemeProvider } from './theme';
@@ -85,6 +86,7 @@ function AppRoutes() {
           <Route path="/games" element={<GamesPage />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/review" element={<ReviewPage />} />
+          <Route path="/bounce" element={<BounceGamePage />} />
           <Route path="/Endless-Skating" element={<EndlessSkatingPage />} />
           <Route path="*" element={<Home />} />
         </Routes>
@@ -95,7 +97,8 @@ function AppRoutes() {
 
 function AppContent() {
   const location = useLocation();
-  const showAiAgent = !location.pathname.startsWith('/admin') && location.pathname !== '/Endless-Skating';
+  const gameRoutes = ['/Endless-Skating', '/bounce'];
+  const showAiAgent = !location.pathname.startsWith('/admin') && !gameRoutes.includes(location.pathname);
 
   return (
     <>
