@@ -536,9 +536,15 @@ class GameScene extends Phaser.Scene {
   createWorld() {
     const { width, height } = this.scale;
     this.sky = this.add.graphics().setScrollFactor(0).setDepth(-90);
-    this.distant = this.add.tileSprite(width / 2, height / 2, width * 1.15, height, `env-${this.environmentKey}-distant`).setDepth(-80);
-    this.midground = this.add.tileSprite(width / 2, height / 2, width * 1.15, height, `env-${this.environmentKey}-midground`).setDepth(-65);
-    this.foreground = this.add.tileSprite(width / 2, height / 2, width * 1.15, height, `env-${this.environmentKey}-foreground`).setDepth(-32).setAlpha(0.76);
+    this.distant = this.add.tileSprite(width / 2, height / 2, width * 1.15, height, `env-${this.environmentKey}-distant`)
+      .setDepth(-80)
+      .setAlpha(0.94);
+    this.midground = this.add.tileSprite(width / 2, height / 2, width * 1.15, height, `env-${this.environmentKey}-midground`)
+      .setDepth(-65)
+      .setAlpha(0.78);
+    this.foreground = this.add.tileSprite(width / 2, height * 0.59, width * 1.15, height, `env-${this.environmentKey}-foreground`)
+      .setDepth(-32)
+      .setAlpha(0.08);
     this.haze = this.add.rectangle(width / 2, height / 2, width, height, this.environment.haze, 0.12).setDepth(-45).setScrollFactor(0);
     this.sun = this.add.circle(width * 0.74, height * 0.18, 44, 0xffdf91, 0.72).setDepth(-85).setScrollFactor(0);
     this.moon = this.add.circle(width * 0.22, height * 0.18, 24, 0xdbeafe, 0).setDepth(-85).setScrollFactor(0);
@@ -582,14 +588,19 @@ class GameScene extends Phaser.Scene {
 
   createHud() {
     const hudStyle = {
-      fontFamily: 'JetBrains Mono, monospace',
-      fontSize: '16px',
+      fontFamily: 'Inter, Arial',
+      fontSize: '15px',
       color: '#fff7d6',
-      stroke: '#15101e',
-      strokeThickness: 4,
+      fontStyle: '700',
     };
-    this.hudText = this.add.text(22, 18, '', hudStyle).setDepth(80).setScrollFactor(0);
-    this.comboText = this.add.text(22, 96, '', { ...hudStyle, fontSize: '20px', color: '#f5c86a' }).setDepth(80).setScrollFactor(0);
+    this.hudPanel = this.add.graphics().setDepth(79).setScrollFactor(0);
+    this.hudText = this.add.text(32, 26, '', hudStyle).setDepth(80).setScrollFactor(0);
+    this.comboText = this.add.text(32, 112, '', {
+      ...hudStyle,
+      fontSize: '16px',
+      color: '#f5c86a',
+      fontFamily: 'JetBrains Mono, monospace',
+    }).setDepth(80).setScrollFactor(0);
     this.noticeText = this.add.text(this.scale.width / 2, 108, '', {
       fontFamily: 'Space Grotesk, Arial',
       fontSize: '26px',
@@ -597,7 +608,11 @@ class GameScene extends Phaser.Scene {
       stroke: '#15101e',
       strokeThickness: 5,
     }).setOrigin(0.5).setDepth(85).setScrollFactor(0).setAlpha(0);
-    this.pauseButton = this.add.image(this.scale.width - 36, 35, 'icon-pause').setDisplaySize(34, 34).setDepth(90).setScrollFactor(0).setInteractive({ useHandCursor: true });
+    this.pauseHalo = this.add.circle(this.scale.width - 38, 38, 27, 0x111827, 0.62)
+      .setStrokeStyle(1, 0xf5c86a, 0.48)
+      .setDepth(89)
+      .setScrollFactor(0);
+    this.pauseButton = this.add.image(this.scale.width - 38, 38, 'icon-pause').setDisplaySize(32, 32).setDepth(90).setScrollFactor(0).setInteractive({ useHandCursor: true });
     this.pauseButton.on('pointerdown', (pointer) => {
       pointer.event?.stopPropagation?.();
       this.togglePause();
@@ -815,6 +830,7 @@ class GameScene extends Phaser.Scene {
     this.decor.forEach((item) => {
       item.sprite.x = item.worldX - this.worldX * item.factor;
       if (item.groundLocked) {
+        item.sprite.x = item.worldX - this.worldX;
         item.sprite.y = this.terrain.heightAt(item.worldX) + item.offsetY;
       }
     });
@@ -891,12 +907,12 @@ class GameScene extends Phaser.Scene {
     const ground = this.terrain.heightAt(worldX);
     if (choice < 0.58) {
       const index = Math.floor(this.random.range(0, 3));
-      const sprite = this.add.image(worldX - this.worldX * 0.82, ground + 18, `tree-${index}`).setOrigin(0.5, 1).setScale(this.random.range(0.36, 0.58)).setDepth(3).setAlpha(0.9);
-      this.decor.push({ sprite, worldX, factor: 0.82, groundLocked: true, offsetY: 18 });
+      const sprite = this.add.image(worldX - this.worldX, ground + 16, `tree-${index}`).setOrigin(0.5, 1).setScale(this.random.range(0.28, 0.46)).setDepth(3).setAlpha(0.82);
+      this.decor.push({ sprite, worldX, factor: 1, groundLocked: true, offsetY: 16 });
     } else {
       const index = Math.floor(this.random.range(0, 2));
-      const sprite = this.add.image(worldX - this.worldX * 0.55, ground - 70, `temple-${index}`).setOrigin(0.5, 1).setScale(this.random.range(0.28, 0.42)).setDepth(-1).setAlpha(0.78);
-      this.decor.push({ sprite, worldX, factor: 0.55, groundLocked: true, offsetY: -70 });
+      const sprite = this.add.image(worldX - this.worldX, ground + 2, `temple-${index}`).setOrigin(0.5, 1).setScale(this.random.range(0.2, 0.31)).setDepth(1).setAlpha(0.68);
+      this.decor.push({ sprite, worldX, factor: 1, groundLocked: true, offsetY: 2 });
     }
   }
 
@@ -912,6 +928,7 @@ class GameScene extends Phaser.Scene {
     this.distant.tilePositionX = this.worldX * 0.12;
     this.midground.tilePositionX = this.worldX * 0.34;
     this.foreground.tilePositionX = this.worldX * 0.72;
+    this.foreground.setY(this.scale.height * 0.61 + Math.sin(time * 0.22) * 2);
     this.haze.setAlpha(0.08 + (1 - day) * 0.15);
 
     this.drawTerrain();
@@ -965,13 +982,21 @@ class GameScene extends Phaser.Scene {
   updateHud(force = false) {
     if (!force && this.lastHudUpdate && this.time.now - this.lastHudUpdate < 80) return;
     this.lastHudUpdate = this.time.now;
+    this.hudPanel.clear();
+    this.hudPanel.fillStyle(0x0f172a, 0.56);
+    this.hudPanel.lineStyle(1, 0xf5c86a, 0.28);
+    this.hudPanel.fillRoundedRect(18, 18, 248, this.runStats.flips ? 132 : 92, 18);
+    this.hudPanel.strokeRoundedRect(18, 18, 248, this.runStats.flips ? 132 : 92, 18);
+    this.hudPanel.fillStyle(0xf5c86a, 0.18);
+    this.hudPanel.fillRoundedRect(32, 35, 82, 30, 14);
     this.hudText.setText([
       `${Math.floor(this.runStats.distance).toLocaleString()} m`,
       `Score ${this.runStats.score.toLocaleString()}`,
-      `Lotus ${this.runStats.coins} / Wallet ${this.save.lifetimeCoins + this.runStats.coins}`,
+      `Lotus ${this.runStats.coins}  Wallet ${this.save.lifetimeCoins + this.runStats.coins}`,
       this.mode === 'zen' ? 'Zen Mode' : `Best ${Math.round(this.save.bestDistance).toLocaleString()} m`,
     ]);
-    this.comboText.setText(this.runStats.flips ? `Combo x${Math.round(this.runStats.combo * 10) / 10} • Flips ${this.runStats.flips}` : '');
+    this.hudText.setLineSpacing(5);
+    this.comboText.setText(this.runStats.flips ? `Combo x${Math.round(this.runStats.combo * 10) / 10}  Flips ${this.runStats.flips}` : '');
   }
 
   checkMissions() {
