@@ -162,7 +162,7 @@ export function GameScene({
       const angle = (i / count) * Math.PI * 2;
       const speed = (2.2 + Math.random() * 3.5) * speedMult;
       newP.push({
-        id: Math.random() + Date.now(),
+        id: `${Date.now()}-${i}-${Math.random()}`,
         position: [x, y, z],
         velocity: [
           Math.cos(angle) * speed + (Math.random() - 0.5),
@@ -543,7 +543,7 @@ export function GameScene({
       {/* Platforms */}
       {currentLevel.platforms.map((plat) => (
         <ReferencePlatformCliff
-          key={plat.id}
+          key={`platform-${plat.id}`}
           platform={plat}
           theme={seasonTheme}
           texture={patternTexture}
@@ -552,47 +552,47 @@ export function GameScene({
 
       {/* Rope Bridges */}
       {currentLevel.bridges?.map((bridge) => (
-        <RopeBridgeMesh key={bridge.id} bridge={bridge} />
+        <RopeBridgeMesh key={`bridge-${bridge.id}`} bridge={bridge} />
       ))}
 
       {/* Elevator Lifts */}
       {currentLevel.lifts?.map((lift) => (
-        <LiftElevatorMesh key={lift.id} lift={lift} theme={seasonTheme} />
+        <LiftElevatorMesh key={`lift-${lift.id}`} lift={lift} theme={seasonTheme} />
       ))}
 
       {/* Multi-Type Springs */}
       {currentLevel.springs.map((spring) => (
-        <MultiTypeSpringMesh key={spring.id} spring={spring} />
+        <MultiTypeSpringMesh key={`spring-${spring.id}`} spring={spring} />
       ))}
 
       {/* Golden Eggs */}
       {eggs.map((egg) => (
-        <GoldenEggMesh key={egg.id} egg={egg} />
+        <GoldenEggMesh key={`egg-${egg.id}`} egg={egg} />
       ))}
 
       {/* 3 Golden Keys */}
       {keys.map((key) => (
-        <GoldenKeyMesh key={key.id} goldenKey={key} />
+        <GoldenKeyMesh key={`key-${key.id}`} goldenKey={key} />
       ))}
 
       {/* Checkpoints */}
       {checkpoints.map((cp) => (
-        <CheckpointPole key={cp.id} checkpoint={cp} />
+        <CheckpointPole key={`checkpoint-${cp.id}`} checkpoint={cp} />
       ))}
 
       {/* Bombs */}
       {bombs.map((bomb) => (
-        <BombHazardMesh key={bomb.id} bomb={bomb} />
+        <BombHazardMesh key={`bomb-${bomb.id}`} bomb={bomb} />
       ))}
 
       {/* Spikes */}
       {currentLevel.spikes.map((spike) => (
-        <SpikeHazardMesh key={spike.id} spike={spike} theme={seasonTheme} />
+        <SpikeHazardMesh key={`spike-${spike.id}`} spike={spike} theme={seasonTheme} />
       ))}
 
       {/* Ladders */}
       {currentLevel.ladders.map((ladder) => (
-        <ClimbLadder key={ladder.id} ladder={ladder} />
+        <ClimbLadder key={`ladder-${ladder.id}`} ladder={ladder} />
       ))}
 
       {/* Exit Door (Requires all 3 Keys to Unlock) */}
@@ -605,7 +605,7 @@ export function GameScene({
 
       {/* Particle Effects */}
       {particles.map((p) => (
-        <mesh key={p.id} position={p.position}>
+        <mesh key={`particle-${p.id}`} position={p.position}>
           <sphereGeometry args={[p.size || 0.12, 10, 10]} />
           <meshBasicMaterial color={p.color || '#fcd34d'} />
         </mesh>

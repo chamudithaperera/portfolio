@@ -42,7 +42,9 @@ export function usePlayground() {
 
     const initSDK = async () => {
       try {
+        const isStandalonePortfolioPage = window.self === window.top;
         const isSandboxPreview =
+          isStandalonePortfolioPage ||
           window.location.hostname === 'test.com' ||
           (window as any).__PLAYGROUND_PREVIEW__ === true;
 
