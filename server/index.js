@@ -131,6 +131,32 @@ const seoPages = {
     ],
     robots: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
   },
+  games: {
+    title: 'Games | Chamuditha Perera',
+    description:
+      'Playable browser games created by Chamuditha Perera, including Endless Skating and 3D Bounce.',
+    keywords: `${defaultKeywords}, Chamuditha games, browser games, web games, Three.js game, canvas game`,
+    canonicalPath: '/games',
+    fallbackHeading: 'Created Games',
+    fallbackParagraphs: [
+      'Playable browser games created by Chamuditha Perera, including Endless Skating and 3D Bounce.',
+      'Available games include a Sri Lanka-inspired skating runner and a 3D physics platformer with golden eggs, keys, and staged worlds.',
+    ],
+    robots: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+  },
+  bounce: {
+    title: '3D Bounce | Chamuditha Perera',
+    description:
+      'Play 3D Bounce, a bright Three.js physics platformer by Chamuditha Perera.',
+    keywords: `${defaultKeywords}, 3D Bounce, Red Orb Odyssey, Three.js game, browser platformer`,
+    canonicalPath: '/bounce',
+    fallbackHeading: '3D Bounce',
+    fallbackParagraphs: [
+      '3D Bounce is a bright browser platform game where a red orb rolls, jumps, collects golden eggs and keys, and clears staged worlds.',
+      'Enable JavaScript in a modern browser to play the WebGL game.',
+    ],
+    robots: 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+  },
   pricing: {
     title: 'Pricing | Chamuditha Perera',
     description:
@@ -282,6 +308,14 @@ function getSeoPage(requestPath) {
     return seoPages.projects;
   }
 
+  if (cleanPath === '/games' || cleanPath.startsWith('/games/')) {
+    return seoPages.games;
+  }
+
+  if (cleanPath === '/bounce' || cleanPath.startsWith('/bounce/')) {
+    return seoPages.bounce;
+  }
+
   if (cleanPath === '/pricing' || cleanPath.startsWith('/pricing/')) {
     return seoPages.pricing;
   }
@@ -404,6 +438,7 @@ function renderFallbackContent(seo) {
     '<nav aria-label="Portfolio pages">',
     `<a href="${siteOrigin}/">Home</a> | `,
     `<a href="${siteOrigin}/projects">Projects</a> | `,
+    `<a href="${siteOrigin}/games">Games</a> | `,
     `<a href="${siteOrigin}/pricing">Pricing</a> | `,
     `<a href="${siteOrigin}/review">Review</a>`,
     '</nav>',
@@ -422,6 +457,7 @@ function renderNoScriptContent(seo) {
     '<nav aria-label="Portfolio pages without JavaScript">',
     `<a href="${siteOrigin}/">Home</a> | `,
     `<a href="${siteOrigin}/projects">Projects</a> | `,
+    `<a href="${siteOrigin}/games">Games</a> | `,
     `<a href="${siteOrigin}/pricing">Pricing</a> | `,
     `<a href="${siteOrigin}/review">Review</a>`,
     '</nav>',

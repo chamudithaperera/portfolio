@@ -53,7 +53,7 @@
     "server": "nodemon server/index.js",
     "client": "PORT=3000 react-scripts start",
     "dev": "concurrently \"npm:server\" \"npm:client\"",
-    "build": "react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "seed:pricing": "node scripts/seed-pricing.js",
     "seed:work-experience": "node scripts/seed-work-experience.js",
     "test": "react-scripts test",
