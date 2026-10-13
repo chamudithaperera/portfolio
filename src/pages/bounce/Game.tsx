@@ -143,7 +143,14 @@ export function GameScene({
       orbBodyRef.current.setLinvel({x: 0, y: 0, z: 0}, true);
       orbBodyRef.current.setAngvel({x: 0, y: 0, z: 0}, true);
     }
-  }, [currentLevelIndex]);
+  }, [
+    currentLevel.bombs,
+    currentLevel.checkpoints,
+    currentLevel.eggs,
+    currentLevel.keys,
+    currentLevel.spawnPoint,
+    currentLevelIndex,
+  ]);
 
   // Respawn at last checkpoint when damaged
   useEffect(() => {

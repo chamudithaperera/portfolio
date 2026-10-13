@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 /**
  * Properties for the BackgroundMusic component.
@@ -272,7 +272,7 @@ export function BackgroundMusic({
   }, []);
 
   // Initialize AudioContext and Master Gain
-  const getOrCreateContext = (): AudioContext | null => {
+  const getOrCreateContext = useCallback((): AudioContext | null => {
     if (typeof window === 'undefined') return null;
     if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
       return audioCtxRef.current;
@@ -339,9 +339,9 @@ export function BackgroundMusic({
       useFallbackRef.current = true;
       return null;
     }
-  };
+  }, [effectiveMuted, volume]);
 
-  const stopWebAudioSource = (): void => {
+  const stopWebAudioSource = useCallback((): void => {
     if (sourceNodeRef.current) {
       try {
         sourceNodeRef.current.stop();
@@ -359,9 +359,9 @@ export function BackgroundMusic({
       }
       trackGainRef.current = null;
     }
-  };
+  }, []);
 
-  const startWebAudioLoop = (): void => {
+  const startWebAudioLoop = useCallback((): void => {
     if (useFallbackRef.current) return;
 
     const ctx = getOrCreateContext();
@@ -404,7 +404,7 @@ export function BackgroundMusic({
     source.start(0);
     sourceNodeRef.current = source;
     trackGainRef.current = trackGain;
-  };
+  }, [getOrCreateContext, stopWebAudioSource]);
 
   // Fetch and decode audio file when URL changes
   useEffect(() => {
@@ -465,7 +465,7 @@ export function BackgroundMusic({
       stopWebAudioSource();
       loopResultRef.current = null;
     };
-  }, [url]);
+  }, [getOrCreateContext, startWebAudioLoop, stopWebAudioSource, url]);
 
   // Handle Play/Pause with true pause & resume
   useEffect(() => {
@@ -495,7 +495,7 @@ export function BackgroundMusic({
         void ctx.suspend().catch(() => {});
       }
     }
-  }, [isPlaying, useFallback]);
+  }, [isPlaying, startWebAudioLoop, useFallback]);
 
   // Handle tab visibility changes (suspend on hide, resume on visible)
   useEffect(() => {
@@ -556,7 +556,7 @@ export function BackgroundMusic({
       }
       loopResultRef.current = null;
     };
-  }, []);
+  }, [stopWebAudioSource]);
 
   if (useFallback && url) {
     return (
