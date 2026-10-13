@@ -43,7 +43,9 @@ import {
 } from './utils/usePlayground';
 import {SpriteRenderer, SpriteActionConfig, SpriteAnimationState} from './SpriteRenderer';
 
-const BACKGROUND_MUSIC_URL = 'assets/audio/bgm_ceylon_groove.mp3';
+const ASSET_BASE_URL = `${process.env.PUBLIC_URL || ''}/endless-skating/`;
+const assetUrl = (path: string) => `${ASSET_BASE_URL}${path}`;
+const BACKGROUND_MUSIC_URL = assetUrl('assets/audio/bgm_ceylon_groove.mp3');
 
 interface LandmarkInfo {
   key: string;
@@ -86,29 +88,29 @@ const LANDMARKS: LandmarkInfo[] = [
 
 // Asset manifest mapping with 3-layer background and landmarks system
 const ASSETS_MANIFEST: Record<string, string> = {
-  bg_lanka_sunset_sky: 'assets/images/bg_lanka_sunset_sky.png',
-  layer_lanka_stupa_hills: 'assets/images/layer_lanka_stupa_hills.png',
-  layer_lanka_jungle_palms: 'assets/images/layer_lanka_jungle_palms.png',
-  layer_landmark_stupa: 'assets/images/layer_landmark_stupa.png',
-  layer_landmark_sigiriya: 'assets/images/layer_landmark_sigiriya.png',
-  layer_landmark_ella_bridge: 'assets/images/layer_landmark_ella_bridge.png',
-  layer_landmark_lotus_tower: 'assets/images/layer_landmark_lotus_tower.png',
-  obstacle_tuk_tuk: 'assets/images/obstacle_tuk_tuk.png',
-  obstacle_coconut_cart: 'assets/images/obstacle_coconut_cart.png',
-  obstacle_wooden_roadblock: 'assets/images/obstacle_wooden_roadblock.png',
-  obstacle_clay_pot: 'assets/images/obstacle_clay_pot.png',
-  obstacle_hanging_banner: 'assets/images/obstacle_hanging_banner.png',
-  item_ancient_coin: 'assets/images/item_ancient_coin.png',
-  item_king_coconut_powerup: 'assets/images/item_king_coconut_powerup.png',
-  item_ceylon_ruby: 'assets/images/item_ceylon_ruby.png',
-  ui_heart_icon: 'assets/images/ui_heart_icon.png',
-  player_idle: 'assets/images/player_lanka_skater_idle.png',
-  player_run: 'assets/images/player_lanka_skater_run.png',
-  player_jump: 'assets/images/player_lanka_skater_jump.png',
-  player_ground_slide: 'assets/images/player_lanka_skater_ground_slide.png',
-  player_hurt: 'assets/images/player_lanka_skater_hurt.png',
-  player_death: 'assets/images/player_lanka_skater_death.png',
-  player_dizzy: 'assets/images/player_lanka_skater_dizzy.png',
+  bg_lanka_sunset_sky: assetUrl('assets/images/bg_lanka_sunset_sky.png'),
+  layer_lanka_stupa_hills: assetUrl('assets/images/layer_lanka_stupa_hills.png'),
+  layer_lanka_jungle_palms: assetUrl('assets/images/layer_lanka_jungle_palms.png'),
+  layer_landmark_stupa: assetUrl('assets/images/layer_landmark_stupa.png'),
+  layer_landmark_sigiriya: assetUrl('assets/images/layer_landmark_sigiriya.png'),
+  layer_landmark_ella_bridge: assetUrl('assets/images/layer_landmark_ella_bridge.png'),
+  layer_landmark_lotus_tower: assetUrl('assets/images/layer_landmark_lotus_tower.png'),
+  obstacle_tuk_tuk: assetUrl('assets/images/obstacle_tuk_tuk.png'),
+  obstacle_coconut_cart: assetUrl('assets/images/obstacle_coconut_cart.png'),
+  obstacle_wooden_roadblock: assetUrl('assets/images/obstacle_wooden_roadblock.png'),
+  obstacle_clay_pot: assetUrl('assets/images/obstacle_clay_pot.png'),
+  obstacle_hanging_banner: assetUrl('assets/images/obstacle_hanging_banner.png'),
+  item_ancient_coin: assetUrl('assets/images/item_ancient_coin.png'),
+  item_king_coconut_powerup: assetUrl('assets/images/item_king_coconut_powerup.png'),
+  item_ceylon_ruby: assetUrl('assets/images/item_ceylon_ruby.png'),
+  ui_heart_icon: assetUrl('assets/images/ui_heart_icon.png'),
+  player_idle: assetUrl('assets/images/player_lanka_skater_idle.png'),
+  player_run: assetUrl('assets/images/player_lanka_skater_run.png'),
+  player_jump: assetUrl('assets/images/player_lanka_skater_jump.png'),
+  player_ground_slide: assetUrl('assets/images/player_lanka_skater_ground_slide.png'),
+  player_hurt: assetUrl('assets/images/player_lanka_skater_hurt.png'),
+  player_death: assetUrl('assets/images/player_lanka_skater_death.png'),
+  player_dizzy: assetUrl('assets/images/player_lanka_skater_dizzy.png'),
 };
 
 // Spritesheet configuration
