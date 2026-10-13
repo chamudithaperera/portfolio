@@ -497,9 +497,6 @@ export function GameScene({
         position={[15, 25, 20]}
         intensity={getConfig('sunIntensity')}
         color="#ffffff"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-bias={-0.0001}
       />
       <ambientLight color="#ffffff" intensity={1.5} />
 
@@ -522,12 +519,12 @@ export function GameScene({
       <group ref={orbMeshRef} position={currentLevel.spawnPoint}>
         {/* Dark Outline Shell */}
         <mesh>
-          <sphereGeometry args={[0.48, 32, 32]} />
+          <sphereGeometry args={[0.48, 20, 20]} />
           <meshBasicMaterial color="#111827" side={THREE.BackSide} />
         </mesh>
         {/* Vibrant Glossy Red Body */}
-        <mesh castShadow receiveShadow>
-          <sphereGeometry args={[0.45, 32, 32]} />
+        <mesh>
+          <sphereGeometry args={[0.45, 20, 20]} />
           <meshStandardMaterial
             color="#ef233c"
             roughness={0.12}
@@ -538,11 +535,11 @@ export function GameScene({
         </mesh>
         {/* Specular White Shine Glint */}
         <mesh position={[0.16, 0.22, 0.36]} rotation={[0.2, -0.3, 0.4]}>
-          <circleGeometry args={[0.13, 24]} />
+          <circleGeometry args={[0.13, 16]} />
           <meshBasicMaterial color="#ffffff" transparent opacity={0.92} side={THREE.DoubleSide} />
         </mesh>
         <mesh position={[0.26, 0.30, 0.32]}>
-          <circleGeometry args={[0.045, 16]} />
+          <circleGeometry args={[0.045, 10]} />
           <meshBasicMaterial color="#ffffff" transparent opacity={0.95} side={THREE.DoubleSide} />
         </mesh>
       </group>
@@ -650,7 +647,7 @@ function ReferencePlatformCliff({
   const width = platform.size[0];
   const height = platform.size[1];
   const depth = platform.size[2];
-  const tuftsCount = Math.max(2, Math.floor(width * 2.2));
+  const tuftsCount = Math.min(8, Math.max(2, Math.floor(width * 1.15)));
 
   return (
     <>
@@ -664,7 +661,7 @@ function ReferencePlatformCliff({
 
       <group ref={meshRef} position={platform.position}>
         {/* Main Body Block */}
-        <mesh castShadow receiveShadow>
+        <mesh>
           <boxGeometry args={[width, height, depth]} />
           <meshStandardMaterial
             color={theme.platformColor}
@@ -674,7 +671,7 @@ function ReferencePlatformCliff({
         </mesh>
 
         {/* Grass Top Slab */}
-        <mesh position={[0, height / 2 + 0.05, 0]} receiveShadow>
+        <mesh position={[0, height / 2 + 0.05, 0]}>
           <boxGeometry args={[width + 0.08, 0.14, depth + 0.1]} />
           <meshStandardMaterial color={theme.platformGrassColor} roughness={0.3} />
         </mesh>
@@ -711,7 +708,7 @@ function ReferencePlatformCliff({
 
 // ---------------- ROPE BRIDGE COMPONENT ----------------
 function RopeBridgeMesh({bridge}: {bridge: RopeBridge}) {
-  const plankCount = Math.max(3, Math.floor(bridge.length / 0.45));
+  const plankCount = Math.min(12, Math.max(3, Math.floor(bridge.length / 0.7)));
   const plankWidth = bridge.length / plankCount;
 
   return (
@@ -723,11 +720,11 @@ function RopeBridgeMesh({bridge}: {bridge: RopeBridge}) {
       <group position={bridge.position}>
         {[-bridge.length / 2, bridge.length / 2].map((endX, idx) => (
           <group key={idx} position={[endX, 0.4, 0]}>
-            <mesh position={[0, 0, 1.2]} castShadow>
+            <mesh position={[0, 0, 1.2]}>
               <cylinderGeometry args={[0.08, 0.08, 1.0, 8]} />
               <meshStandardMaterial color="#78350f" roughness={0.8} />
             </mesh>
-            <mesh position={[0, 0, -1.2]} castShadow>
+            <mesh position={[0, 0, -1.2]}>
               <cylinderGeometry args={[0.08, 0.08, 1.0, 8]} />
               <meshStandardMaterial color="#78350f" roughness={0.8} />
             </mesh>
@@ -748,7 +745,7 @@ function RopeBridgeMesh({bridge}: {bridge: RopeBridge}) {
           const sag = -Math.sin((i / plankCount) * Math.PI) * 0.12;
           return (
             <group key={i} position={[px, sag, 0]}>
-              <mesh castShadow receiveShadow>
+              <mesh>
                 <boxGeometry args={[plankWidth * 0.88, 0.14, 2.6]} />
                 <meshStandardMaterial color={i % 2 === 0 ? '#b45309' : '#92400e'} roughness={0.7} />
               </mesh>
@@ -787,7 +784,7 @@ function LiftElevatorMesh({lift, theme}: {lift: LiftElevator; theme: SeasonTheme
       </RigidBody>
 
       <group ref={meshRef} position={lift.startPosition}>
-        <mesh castShadow receiveShadow>
+        <mesh>
           <boxGeometry args={[platWidth, 0.35, 3.4]} />
           <meshStandardMaterial color="#334155" metalness={0.6} roughness={0.4} />
         </mesh>
@@ -799,15 +796,15 @@ function LiftElevatorMesh({lift, theme}: {lift: LiftElevator; theme: SeasonTheme
 
         {[-1.5, 1.5].map((rz, idx) => (
           <group key={idx} position={[0, 0.4, rz]}>
-            <mesh rotation={[0, 0, Math.PI / 2]} castShadow>
+            <mesh rotation={[0, 0, Math.PI / 2]}>
               <cylinderGeometry args={[0.03, 0.03, platWidth * 0.95, 8]} />
               <meshStandardMaterial color="#94a3b8" metalness={0.7} />
             </mesh>
-            <mesh position={[-platWidth / 3, -0.2, 0]} castShadow>
+            <mesh position={[-platWidth / 3, -0.2, 0]}>
               <cylinderGeometry args={[0.035, 0.035, 0.45, 8]} />
               <meshStandardMaterial color="#94a3b8" metalness={0.7} />
             </mesh>
-            <mesh position={[platWidth / 3, -0.2, 0]} castShadow>
+            <mesh position={[platWidth / 3, -0.2, 0]}>
               <cylinderGeometry args={[0.035, 0.035, 0.45, 8]} />
               <meshStandardMaterial color="#94a3b8" metalness={0.7} />
             </mesh>
@@ -843,13 +840,13 @@ function MultiTypeSpringMesh({spring}: {spring: SpringItem}) {
     <group ref={springRef} position={spring.position}>
       {spring.type === 'leaf' && (
         <>
-          <mesh position={[0, -0.15, 0]} castShadow>
+          <mesh position={[0, -0.15, 0]}>
             <cylinderGeometry args={[0.15, 0.25, 0.4, 12]} />
             <meshStandardMaterial color="#15803d" roughness={0.6} />
           </mesh>
           <group position={[0, 0.18, 0]}>
-            <mesh scale={[1.8, 0.4, 1.2]} castShadow receiveShadow>
-              <sphereGeometry args={[0.6, 24, 24]} />
+            <mesh scale={[1.8, 0.4, 1.2]}>
+              <sphereGeometry args={[0.6, 16, 16]} />
               <meshStandardMaterial
                 color="#22c55e"
                 emissive="#16a34a"
@@ -862,18 +859,17 @@ function MultiTypeSpringMesh({spring}: {spring: SpringItem}) {
               <meshBasicMaterial color="#86efac" />
             </mesh>
           </group>
-          <pointLight color="#22c55e" intensity={1.0} distance={2.0} />
         </>
       )}
 
       {spring.type === 'super' && (
         <>
-          <mesh position={[0, -0.2, 0]} castShadow>
+          <mesh position={[0, -0.2, 0]}>
             <cylinderGeometry args={[0.4, 0.45, 0.2, 16]} />
             <meshStandardMaterial color="#334155" metalness={0.7} roughness={0.3} />
           </mesh>
           {[0, 0.15, 0.3].map((sy, idx) => (
-            <mesh key={idx} position={[0, sy - 0.05, 0]} rotation={[Math.PI / 2 + 0.1, 0, 0]} castShadow>
+            <mesh key={idx} position={[0, sy - 0.05, 0]} rotation={[Math.PI / 2 + 0.1, 0, 0]}>
               <torusGeometry args={[0.25, 0.07, 12, 24]} />
               <meshStandardMaterial
                 color="#facc15"
@@ -884,7 +880,7 @@ function MultiTypeSpringMesh({spring}: {spring: SpringItem}) {
               />
             </mesh>
           ))}
-          <mesh position={[0, 0.36, 0]} castShadow receiveShadow>
+          <mesh position={[0, 0.36, 0]}>
             <cylinderGeometry args={[0.48, 0.48, 0.1, 20]} />
             <meshStandardMaterial
               color="#eab308"
@@ -894,18 +890,17 @@ function MultiTypeSpringMesh({spring}: {spring: SpringItem}) {
               emissiveIntensity={0.5}
             />
           </mesh>
-          <pointLight color="#fde047" intensity={2.2} distance={2.5} />
         </>
       )}
 
       {spring.type === 'mushroom' && (
         <>
-          <mesh position={[0, 0.05, 0]} castShadow>
+          <mesh position={[0, 0.05, 0]}>
             <cylinderGeometry args={[0.22, 0.32, 0.6, 16]} />
             <meshStandardMaterial color="#f8fafc" roughness={0.5} />
           </mesh>
-          <mesh position={[0, 0.38, 0]} scale={[1.3, 0.8, 1.3]} castShadow receiveShadow>
-            <sphereGeometry args={[0.65, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <mesh position={[0, 0.38, 0]} scale={[1.3, 0.8, 1.3]}>
+            <sphereGeometry args={[0.65, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
             <meshStandardMaterial
               color="#a855f7"
               emissive="#7e22ce"
@@ -924,7 +919,6 @@ function MultiTypeSpringMesh({spring}: {spring: SpringItem}) {
               <meshBasicMaterial color="#ffffff" />
             </mesh>
           ))}
-          <pointLight color="#c084fc" intensity={2.8} distance={3.0} />
         </>
       )}
     </group>
@@ -980,7 +974,7 @@ function GoldenEggMesh({egg}: {egg: GoldenEgg}) {
         <sphereGeometry args={[0.34, 24, 24]} />
         <meshBasicMaterial color="#1e293b" side={THREE.BackSide} />
       </mesh>
-      <mesh scale={[0.75, 1.0, 0.75]} castShadow>
+      <mesh scale={[0.75, 1.0, 0.75]}>
         <sphereGeometry args={[0.32, 32, 32]} />
         <meshStandardMaterial
           color="#fed7aa"
@@ -994,7 +988,6 @@ function GoldenEggMesh({egg}: {egg: GoldenEgg}) {
         <circleGeometry args={[0.07, 16]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={0.9} side={THREE.DoubleSide} />
       </mesh>
-      <pointLight color="#fde047" intensity={1.2} distance={2.0} />
     </group>
   );
 }
@@ -1015,7 +1008,7 @@ function GoldenKeyMesh({goldenKey}: {goldenKey: GoldenKey}) {
 
   return (
     <group ref={keyRef} position={goldenKey.position}>
-      <mesh position={[0, 0.35, 0]} castShadow>
+      <mesh position={[0, 0.35, 0]}>
         <torusGeometry args={[0.2, 0.06, 12, 24]} />
         <meshStandardMaterial
           color="#fbbf24"
@@ -1025,7 +1018,7 @@ function GoldenKeyMesh({goldenKey}: {goldenKey: GoldenKey}) {
           emissiveIntensity={0.5}
         />
       </mesh>
-      <mesh position={[0, 0.05, 0]} castShadow>
+      <mesh position={[0, 0.05, 0]}>
         <cylinderGeometry args={[0.045, 0.045, 0.5, 12]} />
         <meshStandardMaterial
           color="#fbbf24"
@@ -1035,15 +1028,14 @@ function GoldenKeyMesh({goldenKey}: {goldenKey: GoldenKey}) {
           emissiveIntensity={0.5}
         />
       </mesh>
-      <mesh position={[0.1, -0.08, 0]} castShadow>
+      <mesh position={[0.1, -0.08, 0]}>
         <boxGeometry args={[0.14, 0.06, 0.04]} />
         <meshStandardMaterial color="#fbbf24" metalness={0.8} roughness={0.2} />
       </mesh>
-      <mesh position={[0.08, 0.02, 0]} castShadow>
+      <mesh position={[0.08, 0.02, 0]}>
         <boxGeometry args={[0.1, 0.06, 0.04]} />
         <meshStandardMaterial color="#fbbf24" metalness={0.8} roughness={0.2} />
       </mesh>
-      <pointLight color="#f59e0b" intensity={2.0} distance={2.5} />
     </group>
   );
 }
@@ -1061,15 +1053,15 @@ function CheckpointPole({checkpoint}: {checkpoint: CheckpointData}) {
 
   return (
     <group position={checkpoint.position}>
-      <mesh position={[0, -0.15, 0]} castShadow>
+      <mesh position={[0, -0.15, 0]}>
         <cylinderGeometry args={[0.25, 0.35, 0.3, 12]} />
         <meshStandardMaterial color="#334155" roughness={0.8} />
       </mesh>
-      <mesh position={[0, 0.5, 0]} castShadow>
+      <mesh position={[0, 0.5, 0]}>
         <cylinderGeometry args={[0.04, 0.04, 1.2, 12]} />
         <meshStandardMaterial color="#cbd5e1" metalness={0.6} roughness={0.3} />
       </mesh>
-      <mesh ref={flagRef} position={[0.3, 0.9, 0]} castShadow>
+      <mesh ref={flagRef} position={[0.3, 0.9, 0]}>
         <boxGeometry args={[0.5, 0.3, 0.03]} />
         <meshStandardMaterial
           color={checkpoint.activated ? '#22c55e' : '#94a3b8'}
@@ -1097,7 +1089,7 @@ function BombHazardMesh({bomb}: {bomb: BombHazard}) {
 
   return (
     <group ref={bombRef} position={bomb.position}>
-      <mesh castShadow>
+      <mesh>
         <sphereGeometry args={[0.36, 24, 24]} />
         <meshStandardMaterial color="#18181b" roughness={0.4} metalness={0.3} />
       </mesh>
@@ -1109,7 +1101,6 @@ function BombHazardMesh({bomb}: {bomb: BombHazard}) {
         <cylinderGeometry args={[0.02, 0.02, 0.16, 8]} />
         <meshStandardMaterial color="#d97706" />
       </mesh>
-      <pointLight position={[0.1, 0.55, 0]} color="#f97316" intensity={1.8} distance={1.8} />
     </group>
   );
 }
@@ -1119,7 +1110,7 @@ function SpikeHazardMesh({spike}: {spike: SpikeHazard; theme: SeasonTheme}) {
   return (
     <group position={spike.position}>
       {[-0.35, 0, 0.35].map((sx, idx) => (
-        <mesh key={idx} position={[sx, spike.size[1] / 2, 0]} castShadow>
+        <mesh key={idx} position={[sx, spike.size[1] / 2, 0]}>
           <coneGeometry args={[0.18, 0.45, 8]} />
           <meshStandardMaterial color="#334155" metalness={0.7} roughness={0.3} />
         </mesh>
@@ -1134,16 +1125,16 @@ function ClimbLadder({ladder}: {ladder: LadderItem}) {
 
   return (
     <group position={ladder.position}>
-      <mesh position={[-0.35, ladder.height / 2, 0]} castShadow>
+      <mesh position={[-0.35, ladder.height / 2, 0]}>
         <cylinderGeometry args={[0.035, 0.035, ladder.height, 8]} />
         <meshStandardMaterial color="#78350f" roughness={0.7} />
       </mesh>
-      <mesh position={[0.35, ladder.height / 2, 0]} castShadow>
+      <mesh position={[0.35, ladder.height / 2, 0]}>
         <cylinderGeometry args={[0.035, 0.035, ladder.height, 8]} />
         <meshStandardMaterial color="#78350f" roughness={0.7} />
       </mesh>
       {Array.from({length: numRungs}).map((_, i) => (
-        <mesh key={i} position={[0, i * 0.5 + 0.25, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
+        <mesh key={i} position={[0, i * 0.5 + 0.25, 0]} rotation={[0, 0, Math.PI / 2]}>
           <cylinderGeometry args={[0.025, 0.025, 0.7, 8]} />
           <meshStandardMaterial color="#78350f" roughness={0.6} />
         </mesh>
@@ -1180,15 +1171,15 @@ function ExitGoalArchway({
   return (
     <group position={position}>
       {/* Stone Pillars */}
-      <mesh position={[-0.8, 0, 0]} castShadow>
+      <mesh position={[-0.8, 0, 0]}>
         <boxGeometry args={[0.25, 2.2, 0.35]} />
         <meshStandardMaterial color="#1e293b" roughness={0.7} />
       </mesh>
-      <mesh position={[0.8, 0, 0]} castShadow>
+      <mesh position={[0.8, 0, 0]}>
         <boxGeometry args={[0.25, 2.2, 0.35]} />
         <meshStandardMaterial color="#1e293b" roughness={0.7} />
       </mesh>
-      <mesh position={[0, 1.15, 0]} castShadow>
+      <mesh position={[0, 1.15, 0]}>
         <boxGeometry args={[1.85, 0.3, 0.4]} />
         <meshStandardMaterial color="#0f172a" roughness={0.7} />
       </mesh>
@@ -1199,7 +1190,6 @@ function ExitGoalArchway({
             <torusGeometry args={[0.65, 0.08, 12, 32]} />
             <meshBasicMaterial color="#5cd600" />
           </mesh>
-          <pointLight color="#5cd600" intensity={2.5} distance={3.5} />
         </>
       ) : (
         <group ref={lockRef}>
@@ -1215,7 +1205,7 @@ function ExitGoalArchway({
             const hasSlotKey = idx < keysCollected;
             return (
               <group key={idx} position={[kx, -0.1, 0.12]}>
-                <mesh castShadow>
+                <mesh>
                   <boxGeometry args={[0.24, 0.3, 0.1]} />
                   <meshStandardMaterial
                     color={hasSlotKey ? '#eab308' : '#334155'}
@@ -1232,7 +1222,6 @@ function ExitGoalArchway({
               </group>
             );
           })}
-          <pointLight color="#eab308" intensity={1.5} distance={2.0} />
         </group>
       )}
     </group>

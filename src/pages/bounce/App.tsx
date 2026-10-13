@@ -713,15 +713,21 @@ export default function App() {
             ref={canvasWrapperRef}
             className="flex-1 w-full min-h-0 relative bg-[#00d2ff] overflow-hidden flex items-center justify-center">
             <Canvas
+              dpr={[0.85, 1.25]}
               camera={{
                 position: [getConfig('cameraX'), getConfig('cameraY'), getConfig('cameraZ')],
                 fov: getConfig('fov'),
               }}
-              shadows
-              gl={{antialias: true, powerPreference: 'high-performance'}}
+              gl={{
+                antialias: false,
+                powerPreference: 'high-performance',
+                stencil: false,
+                depth: true,
+              }}
               className="w-full h-full block">
               <Physics
                 gravity={[0, getConfig('gravity'), 0]}
+                interpolate={false}
                 paused={
                   gameState.status !== 'PLAYING' ||
                   isGameMenuOpen ||
