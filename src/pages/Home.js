@@ -44,8 +44,8 @@ import withBase from '../utils/basePath';
 import { apiRequest, streamApiRequest } from '../utils/api';
 import { fallbackCountryOptions, loadCountryOptions } from '../utils/countries';
 import { useTheme } from '../theme';
-import skatingGameImage from '../assets/game/background-sigiriya.png';
-import bounceGameImage from '../assets/game/bounce-preview.svg';
+import skatingGameImage from '../assets/game/endless-skating-cover.png';
+import bounceGameImage from '../assets/game/3d-bounce-cover.png';
 
 const navItems = [
   { label: 'About', href: '#about' },
