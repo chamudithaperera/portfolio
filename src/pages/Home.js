@@ -41,6 +41,7 @@ import {
   siCss,
 } from 'simple-icons';
 import withBase from '../utils/basePath';
+import HeroDeveloperAnimation from '../components/HeroDeveloperAnimation';
 import { apiRequest, streamApiRequest } from '../utils/api';
 import { fallbackCountryOptions, loadCountryOptions } from '../utils/countries';
 import { useTheme } from '../theme';
@@ -1408,31 +1409,6 @@ function SocialLink({ icon, label, href }) {
   );
 }
 
-function ShowcaseIdentity() {
-  return (
-    <div className="hero-showcase" aria-hidden="true">
-      <div className="hero-showcase-aura hero-showcase-aura-a" />
-      <div className="hero-showcase-aura hero-showcase-aura-b" />
-      <div className="hero-showcase-panel">
-        <picture>
-          <source srcSet={withBase('/assets/imgs/header/coding-hero-v2.webp')} type="image/webp" />
-          <img
-            className="hero-showcase-image"
-            src={withBase('/assets/imgs/header/coding-hero-v2.png')}
-            alt=""
-            loading="eager"
-            decoding="async"
-          />
-        </picture>
-        <span className="hero-showcase-sheen" />
-      </div>
-      <span className="hero-showcase-orb hero-showcase-orb-a" />
-      <span className="hero-showcase-orb hero-showcase-orb-b" />
-      <span className="hero-showcase-grid" />
-    </div>
-  );
-}
-
 function FloatingTechBadge({ badge }) {
   const prefersReducedMotion = useFramerReducedMotion();
   const badgeMotion = prefersReducedMotion
@@ -1554,7 +1530,7 @@ function Hero() {
               <FloatingTechBadge key={badge.key} badge={badge} />
             ))}
           </div>
-          <ShowcaseIdentity />
+          <HeroDeveloperAnimation />
           <span className="floating-label floating-label-b">
             <Icon name="sparkles" size={12} /> Available
           </span>
