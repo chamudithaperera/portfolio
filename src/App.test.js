@@ -206,6 +206,8 @@ const portfolioContent = {
 };
 
 beforeEach(() => {
+  // These tests exercise the site after its separately tested welcome intro.
+  sessionStorage.setItem('portfolio-welcome-intro-played', '1');
   global.fetch = jest.fn(async (url) => {
     if (url === '/api/content/portfolio') {
       return mockJsonResponse(portfolioContent);
@@ -220,6 +222,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  sessionStorage.removeItem('portfolio-welcome-intro-played');
   delete global.fetch;
   window.history.pushState({}, '', '/');
 });

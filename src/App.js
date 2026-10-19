@@ -8,6 +8,7 @@ import BounceGamePage from './pages/bounce/App.tsx';
 import EndlessSkatingPage from './pages/EndlessSkating';
 import Home, { FloatingAiAgent, GamesPage, PricingPage, ProjectsPage, ReviewPage } from './pages/Home';
 import { ThemeProvider } from './theme';
+import WelcomeIntro from './components/WelcomeIntro';
 
 function VisitTracker() {
   const location = useLocation();
@@ -95,10 +96,10 @@ function AppRoutes() {
   );
 }
 
-function AppContent() {
+function AppContent({ introActive }) {
   const location = useLocation();
   const gameRoutes = ['/Endless-Skating', '/bounce'];
-  const showAiAgent = !location.pathname.startsWith('/admin') && !gameRoutes.includes(location.pathname);
+  const showAiAgent = !introActive && !location.pathname.startsWith('/admin') && !gameRoutes.includes(location.pathname);
 
   return (
     <>
@@ -112,8 +113,14 @@ function App() {
   return (
     <ThemeProvider>
       <Router basename={process.env.PUBLIC_URL || '/'}>
-        <VisitTracker />
-        <AppContent />
+        <WelcomeIntro>
+          {introActive => (
+            <>
+              <VisitTracker />
+              <AppContent introActive={introActive} />
+            </>
+          )}
+        </WelcomeIntro>
       </Router>
     </ThemeProvider>
   );

@@ -1,0 +1,21 @@
+.welcome-intro{position:fixed;inset:0;z-index:9999;background:#08090D;overflow:hidden;
+padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.welcome-intro .bgglow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 45% at 50% 50%,rgba(184,203,242,.10),transparent 70%);opacity:0}
+.welcome-intro .stage{position:absolute;inset:0;height:100dvh}
+.welcome-intro .center{position:absolute;left:50%;top:50%;width:min(94vw,1400px);text-align:center;transform:translate(-50%,-50%);margin:0;line-height:1}
+.welcome-intro .welcome{font-size:clamp(3rem,13vw,11rem);font-weight:700;letter-spacing:.02em;text-transform:uppercase;padding-left:.02em;opacity:0;white-space:nowrap}
+.welcome-intro canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0}
+.welcome-intro .brand{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;font-size:clamp(1.5rem,6vw,4rem);font-weight:600;letter-spacing:-.015em;white-space:nowrap}
+.welcome-intro .brand .c{display:inline-block;opacity:0;will-change:transform,opacity,filter}
+.welcome-intro .sub{position:absolute;left:50%;top:50%;width:min(88vw,34rem);text-align:center;margin:0;
+transform:translate(-50%,calc(var(--off) + 14px));font-size:clamp(.95rem,2.4vw,1.35rem);font-weight:300;
+color:#A7AFBD;line-height:1.45;opacity:0;letter-spacing:.01em}
+.welcome-intro{--off:clamp(14px,3.6vw,30px)}
+.welcome-intro .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.welcome-intro .skip{position:absolute;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));
+background:none;border:0;color:#A7AFBD;font:400 .8rem Inter, system-ui, -apple-system, sans-serif;letter-spacing:.04em;min-height:44px;padding:0 .75rem;cursor:pointer;opacity:.7}
+.welcome-intro .skip:hover,.welcome-intro .skip:focus-visible{opacity:1;color:#fff}
+.welcome-intro .skip:focus-visible{outline:1px solid #D6DBE5;outline-offset:2px}
+
+.welcome-intro { color: #fff; font-family: Inter, system-ui, -apple-system, sans-serif; isolation: isolate; }
+.welcome-intro, .welcome-intro * { box-sizing: border-box; }
