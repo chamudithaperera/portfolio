@@ -2,7 +2,7 @@ import * as THREE from 'three';
 // Device choreography and canvas screens adapted from the supplied HeroDeveloperAnimation.html.
 export function mountDeveloperAnimation(st, { onError, onReady }) {
     let environment, resizeObserver, animationId, observer;
-    let disposed = false, visible = true, paused = false;
+    let disposed = false, visible = true;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const resize = () => {
         if (!renderer || !cam || disposed)
@@ -396,7 +396,7 @@ export function mountDeveloperAnimation(st, { onError, onReady }) {
         st.appendChild(renderer.domElement);
         scene = new THREE.Scene();
         scene.background = null;
-        cam = new THREE.PerspectiveCamera(25, 1, .1, 60);
+        cam = new THREE.PerspectiveCamera(22, 1, .1, 60);
         const ec = mk(1024, 512), e = ec.getContext('2d'), eg = e.createLinearGradient(0, 0, 0, 512);
         eg.addColorStop(0, '#33363f');
         eg.addColorStop(.5, '#0c0c10');
@@ -525,7 +525,7 @@ export function mountDeveloperAnimation(st, { onError, onReady }) {
     let last = performance.now();
     function draw(now) {
         animationId = undefined;
-        if (disposed || paused || !visible || document.hidden || reducedMotion.matches)
+        if (disposed || !visible || document.hidden || reducedMotion.matches)
             return;
         clock = (clock + Math.min((now - last) / 1000, .1) * CFG.speed) % DUR;
         last = now;
@@ -565,5 +565,5 @@ export function mountDeveloperAnimation(st, { onError, onReady }) {
         dispose();
         onError(error);
     }
-    return { dispose, setPaused(value) { paused = value; resume(); } };
+    return { dispose };
 }

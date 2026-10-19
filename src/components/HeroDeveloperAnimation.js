@@ -5,7 +5,6 @@ export default function HeroDeveloperAnimation() {
   const stageRef = useRef(null);
   const sceneRef = useRef(null);
   const [status, setStatus] = useState('loading');
-  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -25,12 +24,6 @@ export default function HeroDeveloperAnimation() {
     };
   }, []);
 
-  function togglePlayback() {
-    const next = !paused;
-    setPaused(next);
-    sceneRef.current?.setPaused(next);
-  }
-
   return (
     <div className="hero-showcase hero-developer-animation">
       <div className="hero-showcase-aura hero-showcase-aura-a" aria-hidden="true" />
@@ -44,11 +37,6 @@ export default function HeroDeveloperAnimation() {
       {status === 'loading' && <span className="hero-animation-loading">Preparing the workspace…</span>}
       {status === 'fallback' && (
         <img className="hero-animation-fallback" src={withBase('/assets/imgs/header/coding-hero-v2.webp')} alt="Website and mobile app development showcase" />
-      )}
-      {status === 'ready' && (
-        <button className="hero-animation-toggle" type="button" onClick={togglePlayback} aria-pressed={paused}>
-          {paused ? 'Play animation' : 'Pause animation'}
-        </button>
       )}
     </div>
   );
