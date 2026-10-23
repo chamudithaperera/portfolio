@@ -1,14 +1,16 @@
 import './App.css';
 import './utils/basePath';
-import { useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import Admin from './pages/Admin';
-import BounceGamePage from './pages/bounce/App.tsx';
-import EndlessSkatingPage from './pages/EndlessSkating';
 import Home, { FloatingAiAgent, GamesPage, PricingPage, ProjectsPage, ReviewPage } from './pages/Home';
 import { ThemeProvider } from './theme';
 import WelcomeIntro from './components/WelcomeIntro';
+
+// Keep game engines and admin tools out of the portfolio's initial download.
+const Admin = lazy(() => import('./pages/Admin'));
+const BounceGamePage = lazy(() => import('./pages/bounce/App.tsx'));
+const EndlessSkatingPage = lazy(() => import('./pages/EndlessSkating'));
 
 function VisitTracker() {
   const location = useLocation();
@@ -81,16 +83,18 @@ function AppRoutes() {
         exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: -14, scale: 0.995 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
-        <Routes location={location}>
-          <Route path="/admin/*" element={<Admin />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/games" element={<GamesPage />} />
-          <Route path="/pricing" element={<PricingPage />} />
-          <Route path="/review" element={<ReviewPage />} />
-          <Route path="/bounce" element={<BounceGamePage />} />
-          <Route path="/Endless-Skating" element={<EndlessSkatingPage />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
+        <Suspense fallback={<div role="status" className="route-loading">Loading…</div>}>
+          <Routes location={location}>
+            <Route path="/admin/*" element={<Admin />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/games" element={<GamesPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/review" element={<ReviewPage />} />
+            <Route path="/bounce" element={<BounceGamePage />} />
+            <Route path="/Endless-Skating" element={<EndlessSkatingPage />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   );

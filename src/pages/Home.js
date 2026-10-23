@@ -45,8 +45,10 @@ import HeroDeveloperAnimation from '../components/HeroDeveloperAnimation';
 import { apiRequest, streamApiRequest } from '../utils/api';
 import { fallbackCountryOptions, loadCountryOptions } from '../utils/countries';
 import { useTheme } from '../theme';
-import skatingGameImage from '../assets/game/endless-skating-cover.png';
-import bounceGameImage from '../assets/game/3d-bounce-cover.png';
+import skatingGameImage from '../assets/game/endless-skating-cover-960.webp';
+import skatingGameImageSmall from '../assets/game/endless-skating-cover-480.webp';
+import bounceGameImage from '../assets/game/3d-bounce-cover-960.webp';
+import bounceGameImageSmall from '../assets/game/3d-bounce-cover-480.webp';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -127,6 +129,7 @@ const gameItems = [
     description:
       'A fast browser skating game with trick timing, score chasing, animated scenery, and Sri Lanka-inspired backgrounds.',
     image: skatingGameImage,
+    imageSmall: skatingGameImageSmall,
     href: '/Endless-Skating',
     genre: 'Arcade runner',
     platform: 'Web',
@@ -138,6 +141,7 @@ const gameItems = [
     description:
       'A bright 3D platform game where a red orb rolls, jumps, collects golden eggs and keys, and clears staged worlds.',
     image: bounceGameImage,
+    imageSmall: bounceGameImageSmall,
     href: '/bounce',
     genre: '3D platformer',
     platform: 'Web',
@@ -2267,7 +2271,16 @@ function GamesPage() {
                 >
                   <Link className="game-card card-3d" to={game.href} aria-label={`Play ${game.title}`}>
                     <div className="game-card-image">
-                      <img src={game.image} alt={`${game.title} game preview`} />
+                      <img
+                        src={game.image}
+                        srcSet={`${game.imageSmall} 480w, ${game.image} 960w`}
+                        sizes="(max-width: 480px) calc(100vw - 40px), (max-width: 1023px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 120px) / 2), 580px"
+                        width="960"
+                        height="540"
+                        loading="lazy"
+                        decoding="async"
+                        alt={`${game.title} game preview`}
+                      />
                       <span className="game-card-status">
                         <span /> {game.status}
                       </span>

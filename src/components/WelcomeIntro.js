@@ -58,8 +58,7 @@ export default function WelcomeIntro({ children }) {
           <div className="bgglow" aria-hidden="true" />
           <div className="stage" aria-hidden="true">
             <p className="center welcome">WELCOME</p>
-            <canvas />
-            <p className="center brand">{[...BRAND].map((letter, index) => <span className="c" key={index}>{letter}</span>)}</p>
+            <p className="center brand">{BRAND}</p>
             <p className="sub">{SUBTITLE}</p>
           </div>
           <span className="sr" id="welcome-intro-description">Welcome to {BRAND}. {SUBTITLE}</span>
