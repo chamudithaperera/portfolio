@@ -11,6 +11,7 @@ import WelcomeIntro from './components/WelcomeIntro';
 const Admin = lazy(() => import('./pages/Admin'));
 const BounceGamePage = lazy(() => import('./pages/bounce/App.tsx'));
 const EndlessSkatingPage = lazy(() => import('./pages/EndlessSkating'));
+const TicTacToePage = lazy(() => import('./pages/tic-tac-toe/App.tsx'));
 
 function VisitTracker() {
   const location = useLocation();
@@ -92,6 +93,7 @@ function AppRoutes() {
             <Route path="/review" element={<ReviewPage />} />
             <Route path="/bounce" element={<BounceGamePage />} />
             <Route path="/Endless-Skating" element={<EndlessSkatingPage />} />
+            <Route path="/tic-tac-toe" element={<TicTacToePage />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </Suspense>
@@ -102,7 +104,7 @@ function AppRoutes() {
 
 function AppContent({ introActive }) {
   const location = useLocation();
-  const gameRoutes = ['/Endless-Skating', '/bounce'];
+  const gameRoutes = ['/Endless-Skating', '/bounce', '/tic-tac-toe'];
   const showAiAgent = !introActive && !location.pathname.startsWith('/admin') && !gameRoutes.includes(location.pathname);
 
   return (

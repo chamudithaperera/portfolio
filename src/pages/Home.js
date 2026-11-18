@@ -49,6 +49,8 @@ import skatingGameImage from '../assets/game/endless-skating-cover-960.webp';
 import skatingGameImageSmall from '../assets/game/endless-skating-cover-480.webp';
 import bounceGameImage from '../assets/game/3d-bounce-cover-960.webp';
 import bounceGameImageSmall from '../assets/game/3d-bounce-cover-480.webp';
+import ticTacToeGameImage from '../assets/game/3d-tic-tac-toe-cover-960.webp';
+import ticTacToeGameImageSmall from '../assets/game/3d-tic-tac-toe-cover-480.webp';
 
 const navItems = [
   { label: 'About', href: '#about' },
@@ -110,7 +112,7 @@ const projectsPageDescription =
   "Selected projects by Chamuditha Perera, software engineer: Flutter apps, React websites, Spring Boot APIs, dashboards, admin panels, and UI/UX product work.";
 const gamesPageTitle = 'Games | Chamuditha Perera';
 const gamesPageDescription =
-  'Playable browser games created by Chamuditha Perera, including a Sri Lanka-inspired endless skating game.';
+  'Playable browser games created by Chamuditha Perera, including 3D Tic Tac Toe, 3D Bounce, and a Sri Lanka-inspired endless skating game.';
 const pricingPageTitle = 'Pricing | Chamuditha Perera';
 const pricingPageDescription =
   'Website and mobile app pricing packages from Chamuditha Perera, with options for portfolios, business websites, admin panels, and custom apps.';
@@ -147,6 +149,18 @@ const gameItems = [
     platform: 'Web',
     status: 'Playable now',
     tags: ['Three.js', 'Physics', 'Keyboard', 'Touch controls'],
+  },
+  {
+    title: '3D Tic Tac Toe',
+    description:
+      'A neon space-themed 3D strategy game with animated pieces, an orbiting board, and three AI difficulty levels.',
+    image: ticTacToeGameImage,
+    imageSmall: ticTacToeGameImageSmall,
+    href: '/tic-tac-toe',
+    genre: '3D strategy',
+    platform: 'Web',
+    status: 'Playable now',
+    tags: ['Three.js', 'React', 'Adaptive AI', 'Touch controls'],
   },
 ];
 
@@ -2214,7 +2228,7 @@ function GamesPage() {
       <Helmet>
         <title>{gamesPageTitle}</title>
         <meta name="description" content={gamesPageDescription} />
-        <meta name="keywords" content={`${siteKeywords}, browser games, React games, endless skating game`} />
+        <meta name="keywords" content={`${siteKeywords}, browser games, React games, 3D tic tac toe, endless skating game`} />
         <meta name="author" content={siteName} />
         <meta name="application-name" content={siteName} />
         <meta name="apple-mobile-web-app-title" content={siteName} />
