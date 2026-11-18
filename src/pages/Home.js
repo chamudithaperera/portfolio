@@ -2288,7 +2288,7 @@ function GamesPage() {
                       <img
                         src={game.image}
                         srcSet={`${game.imageSmall} 480w, ${game.image} 960w`}
-                        sizes="(max-width: 480px) calc(100vw - 40px), (max-width: 1023px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 120px) / 2), 580px"
+                        sizes="(max-width: 480px) calc(100vw - 40px), (max-width: 1023px) calc(100vw - 48px), (max-width: 1280px) calc((100vw - 144px) / 3), 380px"
                         width="960"
                         height="540"
                         loading="lazy"

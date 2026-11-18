@@ -25,6 +25,7 @@
     "helmet": "^8.0.0",
     "lucide-react": "^1.55.0",
     "phaser": "^4.2.1",
+    "postprocessing": "6.38.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
